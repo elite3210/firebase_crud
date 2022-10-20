@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heinz Sport SAC</title>
+    <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+    <datalist id="colaborador">
+        <option value="Angela">
+        <option value="Mariela">
+    </datalist>
+
+    <form id="tarea-form">
+        <label for="tarea-description">Nombre:</label>
+        <input type="text" list="colaborador" name="car" id="tarea-description">
+        
+        <br>
+        <label for="tarea-title">Entrada  :</label>
+        <input type="datetime-local" id='tarea-title'>
+        <br>
+        <label for="salida-title">Salida :</label>
+        <input type="datetime-local" id='salida-title'>
+
+
+        <br>
+        <button id="boton-task-save">Guardar</button>
+    </form>
+    <br>
+    <div class="caja" id="tareas-container"></div>
+
+    <script type="module" src="./index.js"></script>
+</body>
+
+</html>

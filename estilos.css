@@ -1,0 +1,22 @@
+div{
+    background-color: #03292b;
+    font-size: small;
+    border: 1px solid rgb(123, 5, 153);
+    line-height:40%
+}
+
+form{
+    background-color: rgb(184, 247, 255);
+}
+
+.caja{
+    background-color: #00b8c2;
+}
+p{
+    color: #95faff;
+    line-height:20%
+}
+h3{
+    color: #95faff;
+    line-height:20%
+}
