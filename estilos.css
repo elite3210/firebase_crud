@@ -1,12 +1,12 @@
 div{
     background-color: #03292b;
     font-size: small;
-    border: 1px solid rgb(123, 5, 153);
+    border: 1.8px solid rgb(4, 1, 48);
     line-height:40%
 }
 
 form{
-    background-color: rgb(184, 247, 255);
+    background-color: rgb(4, 1, 48);
 }
 
 .caja{
