@@ -12,7 +12,7 @@ window.addEventListener('DOMContentLoaded',async ()=>{
     tasks.forEach(doc => {
         
         const tasks = doc.data()
-        html += '<div><h3>$[tasks.titulo]</h3><p>${tasks.descripcion.value}</p><p>${tasks.salida.value}</p></div><br>'
+        html += `<tr><td>${tasks.description}</td><td>${tasks.title}</td><td>${tasks.salida}</td><td>${Math.round((new Date(`${tasks.salida}`).getTime())/(1000*60*60))-Math.round((new Date(`${tasks.title}`).getTime())/(1000*60*60))}</td></tr>`
     });
     
     tareasContainer.innerHTML = html

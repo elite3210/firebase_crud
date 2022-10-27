@@ -1,22 +1,47 @@
-div{
-    background-color: #03292b;
-    font-size: small;
-    border: 1.8px solid rgb(4, 1, 48);
-    line-height:40%
-}
+@import "https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css";
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;700&display=swap');
+/*Barra de navegacion*/
+
+
 
 form{
-    background-color: rgb(4, 1, 48);
+    background-color: rgb(130, 128, 161);
+    color: white;
+}
+.fecha{
+    width: 24mm;
 }
 
-.caja{
-    background-color: #00b8c2;
+table{
+    border-collapse: collapse;
+    width: 100%;
 }
-p{
-    color: #95faff;
-    line-height:20%
+
+tr:hover{background-color: rgb(130, 128, 161);}
+tr:nth-child(even){background-color: rgb(235, 235, 235);}
+td{
+    border-bottom: 1px solid rgb(4, 1, 48);
+    padding: 5px;
+    color: #230438;
+    line-height:50% ;
+    font-size:small;
 }
-h3{
-    color: #95faff;
-    line-height:20%
+th{
+    background-color: rgb(130, 128, 161);
+    color: white;
+    font-size: medium;
+    height: 7mm;
+}
+.pie_tabla{
+    background-color: rgb(130, 128, 161)  ;
+    font-size: larger;
+    color: white;
+}
+.titulo_form{
+    justify-content: space-between;
+}
+footer{
+    background-color: rgb(130, 128, 161);
+    position: fixed ;
+    color: white;
 }
