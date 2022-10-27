@@ -8,31 +8,137 @@
     <link rel="stylesheet" href="estilos.css">
 </head>
 <body>
-    <script type="module" src="./index.js"></script>
+    <header>
+        <nav class="navbar" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+          <a class="navbar-item" href="http://www.heinzsport.com">
+            <img src="./heinz_sport_sac_logo.png" width="112" height="28">
+          </a>
+      
+          <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+          </a>
+        </div>
+      
+        <div id="navbarBasicExample" class="navbar-menu">
+          <div class="navbar-start">
+            <a class="navbar-item">
+              Home
+            </a>
+      
+            <a class="navbar-item">
+              Catálogo
+            </a>
+      
+            <div class="navbar-item has-dropdown is-hoverable">
+              <a class="navbar-link">
+                Producción
+              </a>
+      
+              <div class="navbar-dropdown">
+                <a class="navbar-item">
+                  Recursos Humanos
+                </a>
+                <a class="navbar-item">
+                  Reportes
+                </a>
+                <a class="navbar-item">
+                  Contacto
+                </a>
+                <hr class="navbar-divider">
+                <a class="navbar-item">
+                  Documentos
+                </a>
+              </div>
+            </div>
+          </div>
+      
+          <div class="navbar-end">
+            <div class="navbar-item">
+              <div class="buttons">
+                <a class="button is-primary">
+                  <strong>Sign up</strong>
+                </a>
+                <a class="button is-light">
+                  Log in
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+    
     <datalist id="colaborador">
         <option value="Angela">
         <option value="Mariela">
+        <option value="Xiomara"></option>
     </datalist>
 
     <form id="tarea-form">
-        <label for="tarea-description">Nombre:</label>
-        <input type="text" list="colaborador" name="car" id="tarea-description">
-        
-        <br>
-        <label for="tarea-title">Entrada  :</label>
-        <input type="datetime-local" id='tarea-title'>
-        <br>
-        <label for="salida-title">Salida :</label>
-        <input type="datetime-local" id='salida-title'>
 
-
-        <br>
-        <button id="boton-task-save">Guardar</button>
+            <label for="tarea-title">Entrada  :</label>
+            <input class="fecha" type="datetime-local" id='tarea-title'>
+            <label for="salida-title">Salida :</label>
+            <input class="fecha"  type="datetime-local" id='salida-title'>
+            <br>
+            <label for="tarea-description">Nombre:</label>
+            <input type="text" list="colaborador" name="car" id="tarea-description">
+            <button id="boton-task-save">Guardar</button>
+            
+            
+            
     </form>
-    <br>
-    <div class="caja" id="tareas-container"></div>
-
     
+    <br>
+    <table>
+          
+        <tr> <th>Nombre</th><th>Inicio</th><th>Fin</th><th>Horas</th></tr>
+        <tbody  class="caja" id="tareas-container">
+            
+        </tbody>  
+        <tfoot><tr><td></td><td></td><td class="pie_tabla">Suma Total</td><td class="pie_tabla">64</td></tr></tfoot>
+            
+    </table>
+        
+    
+    
+
+    <script type="module" src="./index.js"></script>
+<script>
+
+document.addEventListener('DOMContentLoaded', () => {
+
+// Get all "navbar-burger" elements
+const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+
+// Add a click event on each of them
+$navbarBurgers.forEach( el => {
+  el.addEventListener('click', () => {
+
+    // Get the target from the "data-target" attribute
+    const target = el.dataset.target;
+    const $target = document.getElementById(target);
+
+    // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
+    el.classList.toggle('is-active');
+    $target.classList.toggle('is-active');
+
+  });
+});
+
+});
+       
+
+</script>
 </body>
+<footer>  
+    <p>----------------------------------------------</p>
+    <p>Heinz Sport SAC</p>
+    <p>Av. isabel chimpu ocllo N° 265 - Carbayllo</p>
+    <p>Tel.: +51 (01)7446948</p>
+</footer>
 
 </html>
