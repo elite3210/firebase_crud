@@ -74,11 +74,10 @@
     <datalist id="colaborador">
         <option value="Angela">
         <option value="Mariela">
-        <option value="Xiomara"></option>
+        <option value="Xiomara">
     </datalist>
 
     <form id="tarea-form">
-
             <label for="tarea-title">Entrada  :</label>
             <input class="fecha" type="datetime-local" id='tarea-title'>
             <label for="salida-title">Salida :</label>
@@ -86,20 +85,15 @@
             <br>
             <label for="tarea-description">Nombre:</label>
             <input type="text" list="colaborador" name="car" id="tarea-description">
-            <button id="boton-task-save">Guardar</button>
-            
-            
-            
-    </form>
+            <button id="boton-task-save">Guardar</button>      
+    </form><br>
     
-    <br>
-    <table>
-          
+    <table>   
         <tr> <th>Nombre</th><th>Inicio</th><th>Fin</th><th>Horas</th></tr>
         <tbody  class="caja" id="tareas-container">
             
         </tbody>  
-        <tfoot><tr><td></td><td></td><td class="pie_tabla">Suma Total</td><td class="pie_tabla">64</td></tr></tfoot>
+        <tfoot id="pie_table"><tr><td></td><td></td><td class="pie_tabla">Suma Total</td><td class="pie_tabla">64</td></tr></tfoot>
             
     </table>
         
@@ -133,6 +127,7 @@ $navbarBurgers.forEach( el => {
        
 
 </script>
+
 </body>
 <footer>  
 

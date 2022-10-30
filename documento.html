@@ -74,121 +74,115 @@
         @import "https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css";
         @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;700&display=swap');
         /*Tablas*/
-        table{
-            border-collapse: collapse;
+        tbody{
+          border: 1px solid black;
         }
         .amarillo{
-            border: 1.8px;
-            background-color: rgb(252, 249, 89);
+            background-color: yellow;
         }
         .rojo{
-            border: 1.8px;
-            background-color: rgb(233, 2, 52);
+            background-color: red;
         }
         .rosado{
-            border: 1.8px;
-            background-color: rgb(255, 16, 215);
+            background-color: magenta;
         }
         .azul{
-            border: 1.8px;
-            background-color: rgb(43, 6, 252);
+            background-color: rgb(89, 59, 255);
         }
         .naranja{
-            border: 1.8px;
-            background-color: rgb(255, 160, 35);
+            background-color: orange;
         }
         .verde{
-            border: 1.8px;
-            background-color: rgb(6, 204, 88);
+            background-color: rgb(24, 255, 120);
         }
         th{
             color: black;
-            border: 1px solid black;
+            border: 1px solid rgb(255, 255, 255);
         }
         td{
-            border: 1px solid black;
+            
             color: black;
         }
     </style>
-    
-    <div>
-        <table>
-            <thead class="amarillo">
-                <tr><th>Descripcion</th><th>Cantidad 12</th><th>Cantidad 100</th></tr>
-            </thead>
-            <tbody class="amarillo"> 
-                <tr><td>Amarillo conte</td><td>8 gr.</td><td>32 gr.</td></tr>
-                <tr><td>Amarillo felipe</td><td>2.5 gr.</td><td>10 gr.</td></tr>
-                <tr><td>Dioxido de Titanio</td><td>10.5 gr.</td><td>22 gr.</td></tr>
-                <tr><td>Masterbach Blanco</td><td>20 gr.</td><td>80 gr.</td></tr>
-            </tbody>
-        </table>
-    </div></br>
-    <div>
-        <table>
+      <div>
+        <table id="tablazo">
             <thead class="verde">
-                <tr><th>Descripcion</th><th>Cantidad 12</th><th>Cantidad 100</th></tr>
+                <tr><th>Descripcion</th><th>Cantidad 12</th><th>Cantidad 50</th></tr>
             </thead>
-            <tbody class="verde"> 
-                <tr><td>Amarillo conte</td><td>8 gr.</td><td>32 gr.</td></tr>
-                <tr><td>Amarillo felipe</td><td>2.5 gr.</td><td>10 gr.</td></tr>
-                <tr><td>Dioxido de Titanio</td><td>10.5 gr.</td><td>22 gr.</td></tr>
-                <tr><td>Masterbach Blanco</td><td>20 gr.</td><td>80 gr.</td></tr>
+            <tbody> 
+                <tr><td>Amarillo felipe</td><td class="c">5 gr.</td><td class="c2">20 gr.</td></tr>
+                <tr><td>Pigmento Azul</td><td class="c">0.8 gr.</td><td class="c2">3.2 gr.</td></tr>
+                <tr><td>Dioxido de Titanio</td><td class="c">12 gr.</td><td class="c2">48 gr.</td></tr>
+                <tr><td>Masterbach Blanco</td><td class="c">15 gr.</td><td class="c2">60 gr.</td></tr>
             </tbody>
+            <tfoot id="pie_tabla"></tfoot>
         </table>
     </div></br>  
     <div>
-        <table>
-            <thead class="rosado">
-                <tr><th>Descripcion</th><th>Cantidad 12</th><th>Cantidad 100</th></tr>
-            </thead>
-            <tbody class="rosado"> 
-                <tr><td>Amarillo conte</td><td>8 gr.</td><td>32 gr.</td></tr>
-                <tr><td>Amarillo felipe</td><td>2.5 gr.</td><td>10 gr.</td></tr>
-                <tr><td>Dioxido de Titanio</td><td>10.5 gr.</td><td>22 gr.</td></tr>
-                <tr><td>Masterbach Blanco</td><td>20 gr.</td><td>80 gr.</td></tr>
-            </tbody>
-        </table>
-    </div></br>
-    <div>
-        <table>
-            <thead class="naranja">
-                <tr><th>Descripcion</th><th>Cantidad 12</th><th>Cantidad 100</th></tr>
-            </thead>
-            <tbody class="naranja"> 
-                <tr><td>Amarillo conte</td><td>8 gr.</td><td>32 gr.</td></tr>
-                <tr><td>Amarillo felipe</td><td>2.5 gr.</td><td>10 gr.</td></tr>
-                <tr><td>Dioxido de Titanio</td><td>10.5 gr.</td><td>22 gr.</td></tr>
-                <tr><td>Masterbach Blanco</td><td>20 gr.</td><td>80 gr.</td></tr>
-            </tbody>
-        </table>
-    </div></br>
-    <div>
-        <table>
-            <thead class="azul">
-                <tr><th>Descripcion</th><th>Cantidad 12</th><th>Cantidad 100</th></tr>
-            </thead>
-            <tbody class="azul"> 
-                <tr><td>Amarillo conte</td><td>8 gr.</td><td>32 gr.</td></tr>
-                <tr><td>Amarillo felipe</td><td>2.5 gr.</td><td>10 gr.</td></tr>
-                <tr><td>Dioxido de Titanio</td><td>10.5 gr.</td><td>22 gr.</td></tr>
-                <tr><td>Masterbach Blanco</td><td>20 gr.</td><td>80 gr.</td></tr>
-            </tbody>
-        </table>
-    </div></br>
-    <div>
-        <table>
-            <thead class="rojo">
-                <tr><th>Descripcion</th><th>Cantidad 12</th><th>Cantidad 100</th></tr>
-            </thead>
-            <tbody class="rojo"> 
-                <tr><td>Amarillo conte</td><td>8 gr.</td><td>32 gr.</td></tr>
-                <tr><td>Amarillo felipe</td><td>2.5 gr.</td><td>10 gr.</td></tr>
-                <tr><td>Dioxido de Titanio</td><td>10.5 gr.</td><td>22 gr.</td></tr>
-                <tr><td>Masterbach Blanco</td><td>20 gr.</td><td>80 gr.</td></tr>
-            </tbody>
-        </table>
-    </div></br>
+      <table id="productos">
+          <thead class="amarillo">
+              <tr><th>Descripcion</th><th>Cantidad 12</th><th>Cantidad 50</th></tr>
+          </thead>
+          <tbody> 
+              <tr><td>Amarillo conte</td><td>8 gr.</td><td>32 gr.</td></tr>
+              <tr><td>Amarillo felipe</td><td>2.5 gr.</td><td>10 gr.</td></tr>
+              <tr><td>Dioxido de Titanio</td><td>10.5 gr.</td><td>22 gr.</td></tr>
+              <tr><td>Masterbach Blanco</td><td>20 gr.</td><td>80 gr.</td></tr>
+          </tbody>
+          <tfoot id="pie_tabla2"></tfoot>
+      </table>
+  </div></br>
+
+  <div>
+    <table id="productos">
+          <thead class="rosado">
+              <tr><th>Descripcion</th><th>Cantidad 12</th><th>Cantidad 50</th></tr>
+          </thead>
+          <tbody> 
+              <tr><td>Magenta Flourecente</td><td>20 gr.</td><td>80 gr.</td></tr>
+              <tr><td>Pigmento rojo</td><td>2 gr.</td><td>8.0 gr.</td></tr>
+              <tr><td>Dioxido de Titanio</td><td>40 gr.</td><td>160 gr.</td></tr>
+              <tr><td>Masterbach Blanco</td><td>30 gr.</td><td>120 gr.</td></tr>
+          </tbody>
+    </table>
+  </div></br>
+  <div>
+      <table id="productos">
+          <thead class="naranja">
+              <tr><th>Descripcion</th><th>Cantidad 12</th><th>Cantidad 100</th></tr>
+          </thead>
+          <tbody> 
+              <tr><td>Pigmento Naranja</td><td>7 gr.</td><td>32 gr.</td></tr>
+              <tr><td>Pigmento rojo</td><td>1.0 gr.</td><td>4.0 gr.</td></tr>
+              <tr><td>Dioxido de Titanio</td><td>7.0 gr.</td><td>28 gr.</td></tr>
+              <tr><td>Masterbach Blanco</td><td>20 gr.</td><td>80 gr.</td></tr>
+          </tbody>
+      </table>
+  </div></br>
+  <div>
+      <table id="productos">
+          <thead class="azul">
+              <tr><th>Descripcion</th><th>Cantidad 12</th><th>Cantidad 100</th></tr>
+          </thead>
+          <tbody> 
+              <tr><td>Pigmento azul</td><td>7 gr.</td><td>28 gr.</td></tr>
+              <tr><td>Dioxido de Titanio</td><td>7 gr.</td><td>28 gr.</td></tr>
+              <tr><td>Masterbach Blanco</td><td>20 gr.</td><td>80 gr.</td></tr>
+          </tbody>
+      </table>
+  </div></br>
+  <div>
+      <table  id="productos">
+          <thead class="rojo">
+              <tr><th>Descripcion</th><th>Cantidad 12</th><th>Cantidad 100</th></tr>
+          </thead>
+          <tbody> 
+              <tr><td>Pigmento Rojo</td><td>7 gr.</td><td>28 gr.</td></tr>
+              <tr><td>Dioxido de Titanio</td><td>7 gr.</td><td>28 gr.</td></tr>
+              <tr><td>Masterbach Blanco</td><td>15 gr.</td><td>60 gr.</td></tr>
+          </tbody>
+      </table>
+  </div></br>
 
     <script>
 
@@ -215,6 +209,41 @@
         });
                
         
+    </script>
+    <script>
+
+        let total = 0;
+        let total2 =0;
+        /*seleccionamos todos los nodos 'td' en una lista ojeto*/
+        let celdasPrecio = document.querySelectorAll('.c');
+        let celdasPrecio2 = document.querySelectorAll('.c2');
+        /*recorremos lista ojeto*/
+        for(let i = 0;i<celdasPrecio.length;++i){
+            total += parseFloat(celdasPrecio[i].firstChild.data); /*accedemos a cada primer hijo del nodo 'td' y obtenemos su dato*/
+        }
+        for(let j = 0;j<celdasPrecio2.length;++j){
+            total2 += parseFloat(celdasPrecio2[j].firstChild.data); /*accedemos a cada primer hijo del nodo 'td' y obtenemos su dato*/
+        }
+        let nuevaFila = document.createElement('tr');/*creamos un nodo en el arbol html de tipo 'tr'*/
+
+        let celdaEtiquetaTotal = document.createElement('td')
+        let textoEtiqueta=document.createTextNode('Total:')/*creamos un nodo en el arbol html de tipo 'tr'*/
+        celdaEtiquetaTotal.appendChild(textoEtiqueta)
+        nuevaFila.appendChild(celdaEtiquetaTotal)
+    
+        let celdaValorTotal = document.createElement('td');
+        let textoCeldaValorTotal=document.createTextNode(total);
+        celdaValorTotal.appendChild(textoCeldaValorTotal);
+        nuevaFila.appendChild(celdaValorTotal);
+        
+        let celdaValorTotal2 = document.createElement('td');
+        let textoCeldaValorTotal2=document.createTextNode(total2);
+        celdaValorTotal2.appendChild(textoCeldaValorTotal2);
+        nuevaFila.appendChild(celdaValorTotal2);
+
+        document.getElementById('pie_tabla').appendChild(nuevaFila)
+        
+
     </script>
 </body>
 </html>
