@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="html2pdf.bundle.min.js"></script>
     <title>Heinz Sport SAC</title>
 </head>
 <body>
@@ -69,6 +70,7 @@
         </div>
       </nav>
     </header>
+
     <style>
         /*Barra de navegacion*/
         @import "https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css";
@@ -132,7 +134,6 @@
           <tfoot id="pie_tabla2"></tfoot>
       </table>
   </div></br>
-
   <div>
     <table id="productos">
           <thead class="rosado">
@@ -183,7 +184,7 @@
           </tbody>
       </table>
   </div></br>
-
+  <button id="btnCrearPdf">Click aquí</button>
     <script>
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -244,6 +245,33 @@
         document.getElementById('pie_tabla').appendChild(nuevaFila)
         
 
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // Escuchamos el click del botón
+        const $boton = document.querySelector("#btnCrearPdf");
+        $boton.addEventListener("click", () => {
+        const $elementoParaConvertir = document.body; // <-- Aquí puedes elegir cualquier elemento del DOM
+        html2pdf()
+            .set({
+                margin: 1,
+                filename: 'documento.pdf',
+                
+                html2canvas: {
+                    scale: 2, // A mayor escala, mejores gráficos, pero más peso
+                    letterRendering: true,
+                },
+                jsPDF: {
+                    unit: "in",
+                    format: "a4",
+                    orientation: 'portrait' // landscape o portrait
+                }
+            })
+            .from($elementoParaConvertir)
+            .save()
+            .catch(err => console.log(err));
+    });
+});
     </script>
 </body>
 </html>

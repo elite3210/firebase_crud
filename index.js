@@ -5,7 +5,7 @@ const tareasContainer = document.getElementById('tareas-container')
 const total_container = document.getElementById('total_container')
 
 window.addEventListener('DOMContentLoaded',async ()=>{
-    console.log(traerTasks())                 
+                    
     const tasks = await traerTasks()
 
     let html = ""
