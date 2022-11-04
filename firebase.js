@@ -1,7 +1,7 @@
 
   // Import the functions you need from the SDKs you need
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.2/firebase-app.js";
-  import {getFirestore,collection,addDoc,getDocs,onSnapshot} from "https://www.gstatic.com/firebasejs/9.6.2/firebase-firestore.js"
+  import {getFirestore,collection,addDoc,getDocs,onSnapshot} from "https://www.gstatic.com/firebasejs/9.6.2/firebase-firestore.js";
   // TODO: Add SDKs for Firebase products that you want to use
   // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -18,9 +18,17 @@
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
   const db = getFirestore()
-
+  /*Save a New Task in Firestore*/ 
   export const guardarTask = (title,description,salida)=>{
     addDoc(collection(db,'Micoleccion'),{title,description,salida});
   }
-
+  /*funcion de firestore que trae los datos de la carpeta coleccion */
   export const traerTasks = () => getDocs(collection(db,'Micoleccion'));
+
+  /*creando la suscripcion que se deara escuchandop cuand los datos cambian*/
+  /*export const onGetTasks = ()=> console.log('onGetTasks')*/
+  export {
+    onSnapshot,
+    collection,
+    db
+  }

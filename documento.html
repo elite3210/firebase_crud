@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="html2pdf.bundle.min.js"></script>
     <title>Heinz Sport SAC</title>
+    <script src="./html2pdf_bundle.js" type="module"></script>
+    
 </head>
 <body>
     <header>
@@ -247,6 +248,7 @@
 
     </script>
     <script>
+      import {html2pdf} from './html2pdf_bundle.js'
       document.addEventListener("DOMContentLoaded", () => {
         // Escuchamos el click del botón
         const $boton = document.querySelector("#btnCrearPdf");
@@ -255,7 +257,7 @@
         html2pdf()
             .set({
                 margin: 1,
-                filename: 'documento.pdf',
+                filename: 'documento1.pdf',
                 
                 html2canvas: {
                     scale: 2, // A mayor escala, mejores gráficos, pero más peso

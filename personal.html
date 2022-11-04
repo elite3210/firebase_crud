@@ -75,21 +75,32 @@
         <option value="Angela">
         <option value="Mariela">
         <option value="Xiomara">
+        <option value="Heinz">
+        <option value="Elí">
     </datalist>
 
     <form id="tarea-form">
+      <div class="cajota">
+          <div class="cajita2">
+          <div class="cajita">
             <label for="tarea-title">Entrada  :</label>
             <input class="fecha" type="datetime-local" id='tarea-title'>
+            
             <label for="salida-title">Salida :</label>
             <input class="fecha"  type="datetime-local" id='salida-title'>
-            <br>
+          </div>
+            
             <label for="tarea-description">Nombre:</label>
             <input type="text" list="colaborador" name="car" id="tarea-description">
-            <button id="boton-task-save">Guardar</button>      
+          </div>
+          <div class="boton">
+            <button id="boton-task-save">Guardar</button> 
+          </div>
+        </div>    
     </form><br>
     
     <table>   
-        <tr><th>Nombre</th><th>Dia</th><th>Inicio</th><th>Fin</th><th>Horas</th><th>Importe</th></tr>
+        <tr><th>Nombre</th><th>Dia</th><th>Inicio</th><th>Fin</th><th>Horas</th><th>Numero</th></tr>
         <tbody  class="caja" id="tareas-container">
             
         </tbody>  
