@@ -1,7 +1,7 @@
 
   // Import the functions you need from the SDKs you need
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.2/firebase-app.js";
-  import {getFirestore,collection,addDoc,getDocs,onSnapshot} from "https://www.gstatic.com/firebasejs/9.6.2/firebase-firestore.js";
+  import {getFirestore,collection,addDoc,getDocs,onSnapshot,deleteDoc,doc} from "https://www.gstatic.com/firebasejs/9.6.2/firebase-firestore.js";
   // TODO: Add SDKs for Firebase products that you want to use
   // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -25,10 +25,11 @@
   /*funcion de firestore que trae los datos de la carpeta coleccion */
   export const traerTasks = () => getDocs(collection(db,'Micoleccion'));
 
-  /*creando la suscripcion que se deara escuchandop cuand los datos cambian*/
-  /*export const onGetTasks = ()=> console.log('onGetTasks')*/
-  export {
-    onSnapshot,
-    collection,
-    db
-  }
+  /*creando la suscripcion que se deseara escuchar cuando los datos cambian
+   crea un efecto inmediato sobre la tabla, como si se introduciera dorecto a la tabla cuando se guarda*/
+
+  export const onGetTasks = (callback)=> onSnapshot(collection(db,'Micoleccion'),callback)
+
+  /*usaremos el metodo de firesote para eliminar un registro */
+
+  export const deleteTask = (id)=>{deleteDoc(doc(db,'Micoleccion',id))}

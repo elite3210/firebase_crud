@@ -17,7 +17,7 @@ table{
     width: 100%;
 }
 
-tr:hover{background-color: rgb(130, 128, 161);}
+tr:hover{background-color: rgb(255, 151, 241);}
 tr:nth-child(even){background-color: rgb(200, 200, 200);}
 td{
     border-bottom: 1px solid rgb(4, 1, 48);
