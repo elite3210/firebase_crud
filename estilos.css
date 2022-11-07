@@ -3,8 +3,7 @@
 /*Barra de navegacion*/
 
 
-
-form{
+.form1{
     background-color: rgb(130, 128, 161);
     color: white;
 }
@@ -55,6 +54,15 @@ footer{
     grid-template-columns: repeat(4,1fr);
 }
 .boton{
-
-    display: flex;
+    
+    font-size:xx-large;
+}
+.boton2{
+    
+    font-size:xx-large;
+    -webkit-text-stroke: 2px black;
+    color: rgb(0, 255, 13);
+}
+.container-btn{
+    align-items:initial;
 }

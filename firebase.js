@@ -1,7 +1,7 @@
 
   // Import the functions you need from the SDKs you need
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.2/firebase-app.js";
-  import {getFirestore,collection,addDoc,getDocs,onSnapshot,deleteDoc,doc} from "https://www.gstatic.com/firebasejs/9.6.2/firebase-firestore.js";
+  import {getFirestore,collection,addDoc,getDocs,onSnapshot,deleteDoc,doc,getDoc} from "https://www.gstatic.com/firebasejs/9.6.2/firebase-firestore.js";
   // TODO: Add SDKs for Firebase products that you want to use
   // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -18,18 +18,19 @@
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
   const db = getFirestore()
+
   /*Save a New Task in Firestore*/ 
-  export const guardarTask = (title,description,salida)=>{
-    addDoc(collection(db,'Micoleccion'),{title,description,salida});
-  }
+  export const guardarTask = (title,description,salida)=>{ addDoc(collection(db,'Micoleccion'),{title,description,salida});}
+ 
   /*funcion de firestore que trae los datos de la carpeta coleccion */
   export const traerTasks = () => getDocs(collection(db,'Micoleccion'));
 
   /*creando la suscripcion que se deseara escuchar cuando los datos cambian
    crea un efecto inmediato sobre la tabla, como si se introduciera dorecto a la tabla cuando se guarda*/
-
   export const onGetTasks = (callback)=> onSnapshot(collection(db,'Micoleccion'),callback)
 
   /*usaremos el metodo de firesote para eliminar un registro */
-
   export const deleteTask = (id)=>{deleteDoc(doc(db,'Micoleccion',id))}
+
+  /*usaremos el metodo getDoc 'en singular' para traer un documento de firestore */
+  export const traerTask = (id)=>{getDoc(doc(db,'Micoleccion',id))}

@@ -6,9 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Heinz Sport SAC</title>
     <link rel="stylesheet" href="estilos.css">
+    <script src="https://kit.fontawesome.com/434a77214b.js" crossorigin="anonymous"></script>
+    
 </head>
 <body>
-    <header>
+  <header>
         <nav class="navbar" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
           <a class="navbar-item" href="http://www.heinzsport.com">
@@ -58,60 +60,61 @@
           <div class="navbar-end">
             <div class="navbar-item">
               <div class="buttons">
-                <a class="button is-primary">
-                  <strong>Sign up</strong>
-                </a>
-                <a class="button is-light">
-                  Log in
-                </a>
+                <a class="button is-primary"><strong>Sign up</strong></a>
+                <a class="button is-light" data-toggle="modal" data-target="#exampleModal">Log in</a>
+                <a class="button is-light">Log out</a>
               </div>
             </div>
           </div>
         </div>
       </nav>
-    </header>
-    
-    <datalist id="colaborador">
+  </header>
+
+
+  <datalist id="colaborador">
         <option value="Angela">
         <option value="Mariela">
         <option value="Xiomara">
         <option value="Heinz">
         <option value="Elí">
-    </datalist>
+  </datalist>
 
-    <form id="tarea-form">
+  <form id="tarea-form" class="form1">
       <div class="cajota">
           <div class="cajita2">
           <div class="cajita">
-            <label for="tarea-title">Entrada  :</label>
+            <label for="tarea-title" required>Entrada  :</label>
             <input class="fecha" type="datetime-local" id='tarea-title'>
             
-            <label for="salida-title">Salida :</label>
+            <label for="salida-title" required>Salida :</label>
             <input class="fecha"  type="datetime-local" id='salida-title'>
           </div>
             
             <label for="tarea-description">Nombre:</label>
-            <input type="text" list="colaborador" name="car" id="tarea-description">
+            <input type="text" list="colaborador" name="car" id="tarea-description" required>
           </div>
-          <div class="boton">
-            <button id="boton-task-save">Guardar</button> 
+          <div id="container-btn" class="container-btn">
+            <button id="boton-task-save" class="boton"><i class="fa-solid fa-floppy-disk"></i></button> 
           </div>
-        </div>    
-    </form><br>
+      </div>    
+  </form><br>
     
-    <table>   
+  <table>   
         <tr><th>Nombre</th><th>Dia</th><th>Inicio</th><th>Fin</th><th>Horas</th><th>Numero</th></tr>
         <tbody  class="caja" id="tareas-container">
             
         </tbody>  
         <tfoot id="pie_table"><tr><td></td><td></td><td class="pie_tabla">Suma Total</td><td class="pie_tabla">64</td></tr></tfoot>
             
-    </table>
+  </table>
         
     
-    
-
-    <script type="module" src="./index.js"></script>
+<script type="module" src="./index.js"></script>
+<script>
+  const guardado = document.getElementById('boton-task-save')
+  guardado.addEventListener('click',()=>{guardado.classList.replace('boton','boton2')})
+  setTimeout(guardado.addEventListener('mouseleave',()=>{guardado.classList.replace('boton2','boton')}),2000)
+</script>
 <script>
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -138,7 +141,6 @@ $navbarBurgers.forEach( el => {
        
 
 </script>
-
 </body>
 <footer>  
 
