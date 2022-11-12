@@ -2,7 +2,6 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-  
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Heinz Sport SAC</title>
     <link rel="stylesheet" href="estilos.css">
@@ -70,16 +69,14 @@
       </nav>
   </header>
 
-
-  <datalist id="colaborador">
-        <option value="Angela">
-        <option value="Mariela">
-        <option value="Xiomara">
-        <option value="Heinz">
-        <option value="Elí">
-  </datalist>
-
   <form id="tarea-form" class="form1">
+    <datalist id="colaborador">
+      <option value="Angela">
+      <option value="Mariela">
+      <option value="Xiomara">
+      <option value="Heinz">
+      <option value="Elí">
+    </datalist>
       <div class="cajota">
           <div class="cajita2">
           <div class="cajita">
@@ -102,48 +99,48 @@
   <table>   
         <tr><th>Nombre</th><th>Dia</th><th>Inicio</th><th>Fin</th><th>Horas</th><th>Numero</th></tr>
         <tbody  class="caja" id="tareas-container">
-            
-        </tbody>  
-        <tfoot id="pie_table"><tr><td></td><td></td><td class="pie_tabla">Suma Total</td><td class="pie_tabla">64</td></tr></tfoot>
+      
+        </tbody>
             
   </table>
         
     
-<script type="module" src="./index.js"></script>
-<script>
-  const guardado = document.getElementById('boton-task-save')
-  guardado.addEventListener('click',()=>{guardado.classList.replace('boton','boton2')})
-  setTimeout(guardado.addEventListener('mouseleave',()=>{guardado.classList.replace('boton2','boton')}),2000)
-</script>
-<script>
+  <script type="module" src="./index.js"></script>
+  <!--Scrip para el comportamiento del boton guardar-->
+  <script>
+    const guardado = document.getElementById('boton-task-save')
+    guardado.addEventListener('click',()=>{guardado.classList.replace('boton','boton2')})
+    setTimeout(guardado.addEventListener('mouseleave',()=>{guardado.classList.replace('boton2','boton')}),2000)
+  </script>
+  <!--Scrip para el comportamiento de barra de navegacion-->
+  <script>
 
-document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('DOMContentLoaded', () => {
 
-// Get all "navbar-burger" elements
-const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+  // Get all "navbar-burger" elements
+  const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
 
-// Add a click event on each of them
-$navbarBurgers.forEach( el => {
-  el.addEventListener('click', () => {
+  // Add a click event on each of them
+  $navbarBurgers.forEach( el => {
+    el.addEventListener('click', () => {
 
-    // Get the target from the "data-target" attribute
-    const target = el.dataset.target;
-    const $target = document.getElementById(target);
+      // Get the target from the "data-target" attribute
+      const target = el.dataset.target;
+      const $target = document.getElementById(target);
 
-    // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
-    el.classList.toggle('is-active');
-    $target.classList.toggle('is-active');
+      // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
+      el.classList.toggle('is-active');
+      $target.classList.toggle('is-active');
+
+    });
+  });
 
   });
-});
+        
 
-});
-       
-
-</script>
+  </script>
 </body>
-<footer>  
-
+<footer>
 </footer>
 
 </html>

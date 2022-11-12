@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--<link rel="stylesheet" href="./style_toggle.css" />-->
+    <style>
+        * {
+    margin: 0;
+    padding: 1px;
+    box-sizing: border-box;
+}
+:root {
+    --blue: #787879;
+    --dark: #e4c30b;
+    --ligth: #ffffff;
+  }
+.nombre{
+    height: 65px;
+    width: 65px;
+    background-color: var(--ligth);
+    border-radius: 5px;
+    left: 5px;
+    justify-content:center;
+}
+.persona{
+    height: 100px;
+    width: 350px;
+    width:inherit;
+    display: flex;
+    align-items: center;
+    justify-content:right;
+    background-color: var(--blue);
+    transition: all 0.3s ease-in-out;
+}
+
+.persona.dark{
+    background-color: var(--dark);
+}
+.toggle{
+    position: relative;
+    height: 65px;
+    width: 300px;
+    border-radius: 100px;
+    background-color: #fff;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+    cursor: pointer;
+}
+.toggle::before{
+    content: "";
+    position: absolute;
+    height: 55px;
+    width: 55px;
+    background: var(--blue);
+    border-radius: 50%;
+    top: 50%;
+    left: 5px;
+    transform: translateY(-49%);
+    transition: all 0.3s ease-in-out;
+}
+
+.toggle.active::before{
+    background-color: var(--dark);
+    left: calc(100% - 47px - 14px);
+
+}
+    </style>
+    <title>Toggle Button with Dark/Light Mode</title>
+</head>
+<body>
+    <div class="persona">
+        <div class="nombre">
+            <h3>Angela:</h3>
+            <h4 class="inicio"></h4>
+            <h4 class="final"></h4>
+
+        </div>
+        <div class="toggle"></div>
+    </div>
+    
+
+    <!--javascript-->
+    <script>
+        const body =document.querySelector('.persona'),
+        toggle = document.querySelector('.toggle');
+        let getMode = localStorage.getItem('mode');
+
+        if(getMode && getMode ==='dark'){           
+            body.classList.add('dark')
+            toggle.classList.add('active')
+        } else{
+               
+        }
+
+        console.log(getMode)
+        let hora ='8:10 AM'
+
+        toggle.addEventListener('click',()=>{
+            body.classList.toggle('dark');
+            toggle.classList.toggle('active');
+
+            if(!body.classList.contains('dark')){
+                console.log('fin de jornada')
+                const final =document.querySelector('.final')
+                final.textContent='8:30 PM'
+                return localStorage.setItem('mode','light')
+                
+            } 
+            if(body.classList.contains('dark')){
+                console.log('inicio de jornada')
+                const inicio =document.querySelector('.inicio')
+                inicio.textContent=hora
+                return localStorage.setItem('mode','light')
+            }else
+            return localStorage.setItem('mode','dark')
+            
+        })
+
+      
+    </script>
+</body>
+</html>

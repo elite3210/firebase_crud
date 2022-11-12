@@ -1,13 +1,17 @@
-import {guardarTask,onGetTasks, deleteTask, traerTask} from './firebase.js'
+import {guardarTask,onGetTasks, deleteTask} from './firebase.js'
 
 const tareaForm = document.getElementById('tarea-form')
 const tareasContainer = document.getElementById('tareas-container')
 
 
-window.addEventListener('DOMContentLoaded',async ()=>{
+//window.addEventListener('DOMContentLoaded',async ()=>{
      
-    onGetTasks((querySnapshot) =>{
-
+   export const registroTrabajadores = onGetTasks((querySnapshot) =>{
+    //console.log(querySnapshot)
+    console.log(querySnapshot.docs.length)
+    console.log('estoy dentro de registrotrabajadores')
+    if(querySnapshot){
+        console.log('estoy dentro del if de registrotrabajadores')
         /*const task = await traerTasks()*/
         let html = "";
         let contador =0;
@@ -39,27 +43,29 @@ window.addEventListener('DOMContentLoaded',async ()=>{
         })
 
         const btnEdit = tareasContainer.querySelectorAll('.btn-edit')
+        
         btnEdit.forEach((btn)=>{
             btn.addEventListener('click',(e)=>{console.log(e.target.dataset.id)});
-           // btn.addEventListener('click', async(e)=>{
+           //btn.addEventListener('click', async(e)=>{
                 //const fila = await traerTask(e.target.dataset.id)
                 //console.log(fila)
-            //});
+            });
              
-        })
-    })
-
-    
+       // })
+    } else{tareasContainer.innerHTML='<p>Para acceder a inventario necesitas estar autorizado</p>'}
 })
 
-/*escucha el evento submit para enviar datos del formuladrio a la base de datos firesore */
+    
+//})
+
+/*escucha el evento submit para enviar datos (nombre,fecha de inicio y, fecha de salida ) del formuladrio a la base de datos firesore */
 
 tareaForm.addEventListener('submit',(e)=>{
     e.preventDefault()
 
-    const titulo =      tareaForm['tarea-title'];
-    const descripcion = tareaForm['tarea-description'];
-    const salida =      tareaForm['salida-title'];
+    const titulo        = tareaForm['tarea-title'];
+    const descripcion   = tareaForm['tarea-description'];
+    const salida        = tareaForm['salida-title'];
 
     guardarTask(titulo.value,descripcion.value,salida.value)
 
