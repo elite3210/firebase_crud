@@ -1,4 +1,4 @@
-import { getDocs, collection } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-firestore.js"
+import { getDocs, collection } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js"
 import { db, auth } from "./firebase.js";
 /* collections es un metodo para escoger colleciones de la db y getDocs es para traer todos documentos de una collecion */
 const tareaForm = document.getElementById('tarea-form')

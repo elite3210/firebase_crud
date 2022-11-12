@@ -1,35 +1,31 @@
-import {guardarTask,onGetTasks, deleteTask} from './firebase.js'
+import {guardarTask,onGetTasks,deleteTask,traerTask} from './firebase.js'
 
 const tareaForm = document.getElementById('tarea-form')
 const tareasContainer = document.getElementById('tareas-container')
 
-
-//window.addEventListener('DOMContentLoaded',async ()=>{
-     
-   export const registroTrabajadores = onGetTasks((querySnapshot) =>{
+export const registroTrabajadores = onGetTasks((querySnapshot) =>{
     //console.log(querySnapshot)
-    console.log(querySnapshot.docs.length)
-    console.log('estoy dentro de registrotrabajadores')
+    //console.log(querySnapshot.docs.length)
+    //console.log('estoy dentro de registrotrabajadores')
     if(querySnapshot){
-        console.log('estoy dentro del if de registrotrabajadores')
-        /*const task = await traerTasks()*/
+        //console.log('estoy dentro del if de registrotrabajadores')
         let html = "";
         let contador =0;
         const dia=['Domingo','Lunes','Martes','Miercoles','Jueves','Viernes','Sabado']
         
         querySnapshot.forEach(doc =>{
             
-            const task = doc.data()
-            html += `<tr><td>${task.description}</td><td>${dia[`${new Date(`${task.title}`).getDay()}`]}</td><td>${task.title}</td><td>${task.salida}</td>
-                    <td>${(((new Date(`${task.salida}`).getTime())-(new Date(`${task.title}`).getTime()))-((new Date(`${task.salida}`).getTime())-(new Date(`${task.title}`).getTime()))%(1000*60*60))/(1000*60*60)}
-                    <span>:${((((new Date(`${task.salida}`).getTime()))-(new Date(`${task.title}`).getTime()))%(1000*60*60))/60000}</span></td>
-                    <td><span></span>${((new Date(`${task.salida}`).getTime())-(new Date(`${task.title}`).getTime()))/(1000*60*60)/**3.125*/}</td>
+            const fila = doc.data()
+            html += `<tr><td>${fila.description}</td><td>${dia[`${new Date(`${fila.title}`).getDay()}`]}</td><td>${fila.title}</td><td>${fila.salida}</td>
+                    <td>${(((new Date(`${fila.salida}`).getTime())-(new Date(`${fila.title}`).getTime()))-((new Date(`${fila.salida}`).getTime())-(new Date(`${fila.title}`).getTime()))%(1000*60*60))/(1000*60*60)}
+                    <span>:${((((new Date(`${fila.salida}`).getTime()))-(new Date(`${fila.title}`).getTime()))%(1000*60*60))/60000}</span></td>
+                    <td><span></span>${((new Date(`${fila.salida}`).getTime())-(new Date(`${fila.title}`).getTime()))/(1000*60*60)/**3.125*/}</td>
                     <td><button class ='btn-delete' data-id=${doc.id}>del</button></td>
                     <td><button class ='btn-edit' data-id=${doc.id}>edit</button></td>
                     </tr>`
             
             contador += 1
-            //horas += ((new Date(`${task.salida}`).getTime())-(new Date(`${task.title}`).getTime()))/(1000*60*60)
+            //horas += ((new Date(`${fila.salida}`).getTime())-(new Date(`${fila.title}`).getTime()))/(1000*60*60)
         });
 
         console.log('# REgistros:',contador)
@@ -38,25 +34,28 @@ const tareasContainer = document.getElementById('tareas-container')
         tareasContainer.innerHTML =html;
 
         const btnDelete = tareasContainer.querySelectorAll('.btn-delete')
-        btnDelete.forEach(btn=>{
-            btn.addEventListener('click',(e)=>{deleteTask(e.target.dataset.id)})
-        })
+            btnDelete.forEach(btn=>{
+                btn.addEventListener('click',(e)=>{deleteTask(e.target.dataset.id)})
+            })
 
         const btnEdit = tareasContainer.querySelectorAll('.btn-edit')
         
         btnEdit.forEach((btn)=>{
-            btn.addEventListener('click',(e)=>{console.log(e.target.dataset.id)});
-           //btn.addEventListener('click', async(e)=>{
-                //const fila = await traerTask(e.target.dataset.id)
-                //console.log(fila)
-            });
+            btn.addEventListener('click', async (e)=>{
+                let id = e.target.dataset.id;
+                console.log(id);
+                const doc = await traerTask(e.target.dataset.id);
+                console.log(doc)
+                })
+        });
              
-       // })
     } else{tareasContainer.innerHTML='<p>Para acceder a inventario necesitas estar autorizado</p>'}
 })
 
     
-//})
+
+
+//window.addEventListener('DOMContentLoaded',async ()=>{ await registroTrabajadores(querySnapshot)})
 
 /*escucha el evento submit para enviar datos (nombre,fecha de inicio y, fecha de salida ) del formuladrio a la base de datos firesore */
 
