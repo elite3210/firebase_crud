@@ -1,7 +1,7 @@
 
   // Import the functions you need from the SDKs you need
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js";
-  import {getFirestore,collection,addDoc,getDocs,onSnapshot,deleteDoc,doc,getDoc} from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js";
+  import {getFirestore,collection,addDoc,getDocs,onSnapshot,deleteDoc,doc,getDoc,query,where} from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js";
   import { getAuth } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-auth.js"
   // TODO: Add SDKs for Firebase products that you want to use
   // https://firebase.google.com/docs/web/setup#available-libraries
@@ -37,3 +37,36 @@
 
   /*metodo getDoc 'en singular' para traer un documento de firestore */
   export const traerTask = (id)=>{getDoc(doc(db,'Micoleccion',id))}
+
+  // Create a reference to the cities collection
+//import { collection, query, where } from "firebase/firestore";
+const panillaRef = collection(db, 'Micoleccion');
+
+export const datos2= []
+
+export const traerConsulta = async (nombre)=>{
+  //const q = await query(panillaRef, where("description", "==", nombre));
+  const querySnapshot = await getDocs(query(panillaRef, where("description", "==", nombre)));
+  
+  querySnapshot.forEach((doc) => {
+    // doc.data() is never undefined for query doc snapshots
+    //console.log(doc.id, " => ", doc.data());})
+    datos2.push(doc.data().description)
+    
+  })
+  //console.log(datos2)
+}
+
+
+/*
+const querySnapshot = traerConsulta(nombre);
+    
+
+const dato2 = querySnapshot.forEach((doc) => {
+    //doc.data() is never undefined for query doc snapshots
+    //console.log(doc.id, " => ", doc.data());})
+    doc.data()
+    })
+
+    console.log(datos2);
+*/
