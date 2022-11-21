@@ -1,14 +1,13 @@
-import {guardarTask,onGetTasks,deleteTask,traerTask, traerConsulta} from './firebase.js'
 
 
-const tareaForm = document.getElementById('tarea-form')
-const tareasContainer = document.getElementById('tareas-container')
 
-export const registroTrabajadores = onGetTasks((querySnapshot) =>{
+
+
+export const pintarConsulta = traerConsulta((nombre) => {
     //console.log(querySnapshot)
     //console.log(querySnapshot.docs.length)
     //console.log('estoy dentro de registrotrabajadores')
-    if(querySnapshot){
+    //if(querySnapshot){
         //console.log('estoy dentro del if de registrotrabajadores')
         let html = "";
         let contador =0;
@@ -50,43 +49,5 @@ export const registroTrabajadores = onGetTasks((querySnapshot) =>{
                 })
         });
              
-    } else{tareasContainer.innerHTML='<p>Para acceder a inventario necesitas estar autorizado</p>'}
+    //} else{tareasContainer.innerHTML='<p>Para acceder a inventario necesitas estar autorizado</p>'}
 })
-
-
-
-
-
-/*
-onAuthStateChanged(auth, async (user)=>{
-    if (user){
-        window.addEventListener('DOMContentLoaded',async ()=>{ 
-        const planillaRef = collection(db,'Micollecion')
-        const q = query(planillaRef, where("description", "==", "Xiomara"))
-        const querySnapshot = await getDocs(q);
-        console.log(querySnapshot)
-    })
-    }else{
-        console.log('Registrarse para ver los datos')
-    }
-})
-*/
-
-
-//window.addEventListener('DOMContentLoaded',async ()=>{ await registroTrabajadores(querySnapshot)})
-
-/*escucha el evento submit para enviar datos (nombre,fecha de inicio y, fecha de salida ) del formuladrio a la base de datos firesore */
-
-tareaForm.addEventListener('submit',(e)=>{
-    e.preventDefault()
-
-    const titulo        = tareaForm['tarea-title'];
-    const descripcion   = tareaForm['tarea-description'];
-    const salida        = tareaForm['salida-title'];
-
-    guardarTask(titulo.value,descripcion.value,salida.value)
-
-    /*tareaForm.reset()*/
-})
-
-

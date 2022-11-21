@@ -1,8 +1,9 @@
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-auth.js"
-import { db, auth } from "./firebase.js";
+import { db, auth, traerConsulta } from "./firebase.js";
 //import { setupPosts } from "./main_2.js";
 import { registroTrabajadores } from "./index.js";
-import { getDocs, collection } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js"
+
+import { getDocs, collection, query, where  } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js"
 
  /* signup  script */
 const signupform = document.querySelector('#signup-form')
@@ -43,6 +44,8 @@ logout.addEventListener('click', async(e)=>{
 })
 
 
+
+
 onAuthStateChanged(auth, async (user)=>{
     if (user){
         window.addEventListener('DOMContentLoaded',async ()=>{ 
@@ -54,3 +57,6 @@ onAuthStateChanged(auth, async (user)=>{
         console.log('Registrarse para ver los datos')
     }
 })
+
+
+
