@@ -1,66 +1,31 @@
-import {traerConsulta, datos2} from './firebase.js'
-
-/*export const traerConsulta = async (nombre)=>{
-    //const q = await query(panillaRef, where("description", "==", nombre));
-    const querySnapshot = await getDocs(query(panillaRef, where("description", "==", nombre)));*/
-    
-    //querySnapshot.forEach((doc) => {
-      // doc.data() is never undefined for query doc snapshots
-      //console.log(doc.id, " => ", doc.data());})
-      //console.log(doc.data());})
-  //}
-  /*let nombre = 'Angela'
-  traerConsulta(nombre)
-
-  console.log(datos2)*/
-
- const lista2 = {
-    "salida": "2022-11-04T17:55",
-    "title": "2022-11-04T09:35",
-    "description": "Angela"
-}
+import {traerConsulta,guardarTask} from './firebase.js'
 
 
-  const objetc = {a:1,b:3,c:4}
-  const lista =[]
-  for (const i in datos2) {
-        //const element = datos2[fila];
-    lista.push(`${[datos2[i]]}`)
-  }
-console.log(lista)
+//llamando a la funcion traer consulta que incluye la tabla grid js
+const boton=document.getElementById('boton');
 
-const tabla = document.createElement('table')
-  const fila = document.createElement('tr')
-  const columna = document.createElement('td')
-  columna.innerText='hola mundo'
-  fila.appendChild(columna)
-tabla.appendChild(fila)
-document.body.append(tabla)
-
-
-let datos= [
-    ['Eli', 'elite3210@gmail.com','2022/11/13T08:10'],
-    ['Mike', 'mike@gmail.com','2022-11-04T17:55'],
-    ['John', 'john@example.com'],
-    ['Mike', 'mike@gmail.com'],
-    ['John', 'john@example.com'],
-    ['Mike', 'mike@gmail.com'],
-    ['John', 'john@example.com'],
-    ['Mike', 'mike@gmail.com']
-]
+boton.addEventListener('click',async(nombre)=>{
+  nombre.preventDefault()
+  console.log('estoy dentro de addevent'+nombre)
+  var nombre = document.getElementById('nombre')
+  var nombre =nombre.value
+  await traerConsulta(nombre)
+ 
+})
 
 
 
+//para guaradr los registo en firebase
+const tareaForm = document.getElementById('tarea-form')
+tareaForm.addEventListener('submit',(e)=>{
+  e.preventDefault()
 
-new gridjs.Grid({ 
-    width: '100%',
-    sort: true,
-    search: true,
-    pagination: {
-    limit: 3,
-    enable: true,
-    //summary:false,
-    },columns: ['Name', 'Email','Salida'],
-    data: [lista]
-}).render(document.getElementById('table'));
+  const titulo        = tareaForm['tarea-title'];
+  const descripcion   = tareaForm['tarea-description'];
+  const salida        = tareaForm['salida-title'];
+  let payStatus       = false;
 
+  guardarTask(titulo.value,descripcion.value,salida.value,payStatus)
+
+  tareaForm.reset()
+})

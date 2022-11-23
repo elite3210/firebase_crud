@@ -51,3 +51,10 @@ export const pintarConsulta = traerConsulta((nombre) => {
              
     //} else{tareasContainer.innerHTML='<p>Para acceder a inventario necesitas estar autorizado</p>'}
 })
+
+var arr=[]
+var obj={}
+var name='hola'
+obj['name']=name
+arr.push(obj)
+console.log(arr)

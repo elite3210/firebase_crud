@@ -6,6 +6,13 @@
     <title>Heinz Sport SAC</title>
     <link rel="stylesheet" href="estilos.css">
     <script src="https://kit.fontawesome.com/434a77214b.js" crossorigin="anonymous"></script>
+    <!--Style para grid js-->
+    <link href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css" rel="stylesheet"/>
+    <style>
+        body{
+            background-color: #202020;
+        }
+    </style>
     
 </head>
 <body>
@@ -95,7 +102,7 @@
           </div>
       </div>    
   </form><br>
-    
+ <!-- 
   <table>   
         <tr><th>Nombre</th><th>Dia</th><th>Inicio</th><th>Fin</th><th>Horas</th><th>Numero</th></tr>
         <tbody  class="caja" id="tareas-container">
@@ -104,8 +111,27 @@
             
   </table>
         
-    
-  <script type="module" src="./index.js"></script>
+  -->   
+  
+  <form action="" class="fomulario">
+    <datalist id="colaborador">
+        <option value="Angela">
+        <option value="Mariela">
+        <option value="Xiomara">
+        <option value="Heinz">
+        <option value="Elí">
+      </datalist>
+    <input type="text" list="colaborador" id="nombre">
+    <button id="boton">Consultar</button>
+</form>
+
+<div id="table"></div>
+
+
+<!--Scrip para el comportamiento de la tabla grid js-->
+<script src="https://cdn.jsdelivr.net/npm/gridjs/dist/gridjs.umd.js"></script>
+<script type="module" src="./script.js"></script>
+
   <!--Scrip para el comportamiento del boton guardar-->
   <script>
     const guardado = document.getElementById('boton-task-save')
