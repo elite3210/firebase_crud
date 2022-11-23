@@ -114,6 +114,7 @@
                 
                 <label for="tarea-description">Nombre:</label>
                 <input type="text" list="colaborador" name="car" id="tarea-description" required>
+                <input type="boolean" id="payStatus">
               </div>
               <div id="container-btn" class="container-btn">
                 <button id="boton-task-save" class="boton"><i class="fa-solid fa-floppy-disk"></i></button> 
@@ -122,7 +123,7 @@
       </form><br>
        <!--tabla que recibe los datos de firestore--> 
       <table>   
-            <tr><th>Nombre</th><th>Dia</th><th>Inicio</th><th>Fin</th><th>Horas</th><th>Numero</th><th>Eliminar</th><th>Editar</th></tr>
+            <tr><th>Nombre</th><th>Dia</th><th>Inicio</th><th>Fin</th><th>Horas</th><th>Numero</th><th>Pagado</th><th>Eliminar</th><th>Editar</th></tr>
             <tbody  class="caja" id="tareas-container">
           
             </tbody>

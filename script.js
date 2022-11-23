@@ -4,11 +4,13 @@ import {traerConsulta,guardarTask} from './firebase.js'
 //llamando a la funcion traer consulta que incluye la tabla grid js
 const boton=document.getElementById('boton');
 
-boton.addEventListener('click',async(nombre)=>{
-  nombre.preventDefault()
-  console.log('estoy dentro de addevent'+nombre)
-  var nombre = document.getElementById('nombre')
-  var nombre =nombre.value
+boton.addEventListener('click',async(e)=>{
+  e.preventDefault()
+  
+  let nombre = document.getElementById('nombre').value
+  console.log('nombre de adevent',nombre)
+ 
+  console.log('nombre de adevent value', nombre)
   await traerConsulta(nombre)
  
 })

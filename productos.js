@@ -1,8 +1,95 @@
-import {guardarTask,onGetTasks,deleteTask,traerTask,traerConsulta2,traerConsulta} from './firebase.js'
+import {guardarProduct,onGetProduct,deleteProduct,traeroneProduct,updateProduct} from './firebase.js'
 
-const datos = [{nombre:'Angela',sexo:'femenino',edad:25},{nombre:'Cuzco',sexo:'Masculino',edad:43},{nombre:'Heinz',sexo:'Masculino',edad:16},{nombre:'Xiomara',sexo:'femenino',edad:18},{nombre:'Mariela',sexo:'femenino',edad:45}]
 
-console.log('hola mundo')
+
+
+//para guaradr los registo en firebase
+const tareaForm = document.getElementById('tarea-form')
+let editStatus=false;
+let id ='';
+
+tareaForm.addEventListener('submit',(e)=>{
+  e.preventDefault()
+  
+  const categoria         = tareaForm['pro-categoria'];
+  const codigo            = tareaForm['pro-codigo'];
+  const descripcion       = tareaForm['pro-description'];
+  let active              = true;
+
+  if(!editStatus){
+        guardarProduct(categoria.value,codigo.value,descripcion.value,active)
+    }else{
+        updateProduct(id,{categoria:categoria.value,codigo:codigo.value,descripcion:descripcion.value})
+        editStatus=false
+    }
+
+  tareaForm.reset()
+})
+
+//traer los productos de firebase
+const tareasContainer = document.getElementById('tareas-container')
+
+
+const registroProductos = onGetProduct((querySnapshot) =>{
+    
+    if(querySnapshot){
+        console.log('estoy dentro del if de registrotrabajadores')
+        let html = "";
+        let contador =0;
+   
+        querySnapshot.forEach(doc =>{
+            
+            const fila = doc.data()
+            html += `<tr><td>${fila.categoria}</td>
+                        <td>${fila.codigo}</td>
+                        <td>${fila.descripcion}</td>
+                        <td>${fila.active}</td>
+                        <td><button class ='btn-delete' data-id=${doc.id}>del</button></td>
+                        <td><button class ='btn-edit' data-id=${doc.id}>edit</button></td>
+                    </tr>`
+            
+            contador += 1
+            //horas += ((new Date(`${fila.salida}`).getTime())-(new Date(`${fila.title}`).getTime()))/(1000*60*60)
+            
+        });
+        console.timeEnd('tiempo consulta')
+        console.log('# REgistros:',contador)
+        //console.log('Importe:',horas*3.125)
+    
+        tareasContainer.innerHTML =html;
+
+        const btnDelete = tareasContainer.querySelectorAll('.btn-delete')
+            btnDelete.forEach(btn=>{
+                btn.addEventListener('click',(e)=>{deleteProduct(e.target.dataset.id)})
+            })
+
+        const btnEdit = tareasContainer.querySelectorAll('.btn-edit')
+        
+        btnEdit.forEach((btn)=>{
+            btn.addEventListener('click', async (e)=>{
+               id=e.target.dataset.id
+                //console.log(e.target.dataset.id);
+                
+                const doc = await traeroneProduct(e.target.dataset.id);
+                let producto=doc.data()
+                
+                console.log(producto)
+                tareaForm['pro-categoria'].value    =producto.categoria;
+                tareaForm['pro-codigo'].value       =producto.codigo;
+                tareaForm['pro-description'].value  =producto.descripcion;
+
+                editStatus=true;
+                tareaForm['boton-task-save'].innerHTML='Actualizar'
+                })
+        });
+             
+    } else{tareasContainer.innerHTML='<p>Para acceder a inventario necesitas estar autorizado</p>'}
+})
+
+
+
+
+
 
 /*
 const getDatos=()=>{
@@ -39,6 +126,7 @@ setTimeout(()=>{
 
 /*---------------------------------------------------------------------
 */
+/*
 let entrada ='2022-11-14T10:07'
 let salida='2022-11-14T13:05'
 
@@ -85,28 +173,31 @@ function operar(dividendo,divisor){
 operar(10,3)
 
 /*--------------------------------------*---------------------------------------------------------- */
-
+/*
 let objetos= [
     {
         "paystatus": false,
         "salida": "2022-11-20T21:05",
         "title": "2022-11-20T09:05",
         "description": "Elí",
-        "dia": "Domingo"
+        "dia": "Domingo",
+        "dias":3
     },
     {
         "description": "Elí",
         "title": "2022-11-20T08:17",
         "paystatus": false,
         "salida": "2022-11-20T20:53",
-        "dia": "Domingo"
+        "dia": "Domingo",
+        "dias":3
     },
     {
         "description": "Elí",
         "title": "2022-11-18T08:22",
         "salida": "2022-11-18T20:23",
         "paystatus": false,
-        "dia": "Viernes"
+        "dia": "Viernes",
+        "dias":3
     },
     {
         "salida": "2022-11-16T22:21",
@@ -114,9 +205,15 @@ let objetos= [
         "paystatus": false,
         "title": "2022-11-16T08:11",
         
-        "dia": "Miercoles"
+        "dia": "Miercoles",
+        "dias":3
     }
 ]
+
+let salario = {Domingo:7,Lunes:1,Martes:2,Miercoles:3,Jueves:4,Viernes:5,Sabado:6}
+let dia='Domingo'
+let feria = dia;
+console.log('extraer valor de objeto:',objetos[1].dias*salario.dia)
 
 for(let i in objetos){
     objetos[i]['entrada']=objetos[i].title;
@@ -139,3 +236,4 @@ new gridjs.Grid({
     data:objetos
     
   }).render(document.getElementById('table'));
+  */

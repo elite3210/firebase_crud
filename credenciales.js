@@ -1,6 +1,6 @@
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-auth.js"
 import { db, auth} from "./firebase.js";
-import {guardarTask,onGetTasks,deleteTask,traerTask} from './firebase.js'
+import {guardarTask,onGetTasks,deleteTask,traerTask,updateTask} from './firebase.js'
 //import { setupPosts } from "./main_2.js";
 //import { registroTrabajadores } from "./index.js";
 
@@ -8,6 +8,8 @@ import { getDocs, collection,query,where} from "https://www.gstatic.com/firebase
 
  /* signup  script */
 const signupform = document.querySelector('#signup-form')
+let editStatus=false;
+let id=''
 
 signupform.addEventListener('submit', async (e)=>{
     e.preventDefault();
@@ -117,7 +119,7 @@ const registroTrabajadores = onGetTasks((querySnapshot) =>{
                         <td>${horasMinutos(`${fila.title}`,`${fila.salida}`)}</span></td>
                         <td>${horasDecimales(`${fila.title}`,`${fila.salida}`)}</td>
                         <td>${fila.payStatus}</td>
-                        <td>${fila.create}</td>
+                        
                         <td><button class ='btn-delete' data-id=${doc.id}>del</button></td>
                         <td><button class ='btn-edit' data-id=${doc.id}>edit</button></td>
                     </tr>`
@@ -140,13 +142,20 @@ const registroTrabajadores = onGetTasks((querySnapshot) =>{
         const btnEdit = tareasContainer.querySelectorAll('.btn-edit')
         
         btnEdit.forEach((btn)=>{
-            btn.addEventListener('click', (e)=>{
-                let id = e.target.dataset.id;
-                console.log(id);
-                console.time('tiempo:')
-                const doc = traerTask(e.target.dataset.id);
-                console.timeEnd('tiempo:')
-                console.log(doc)
+            btn.addEventListener('click', async (e)=>{
+                
+                id=e.target.dataset.id;
+                const doc =await traerTask(e.target.dataset.id);
+                let tarea=doc.data()
+
+                tareaForm['tarea-title'].value=tarea.title;
+                tareaForm['tarea-description'].value=tarea.description;
+                tareaForm['salida-title'].value=tarea.salida;
+                tareaForm['payStatus'].value=tarea.payStatus 
+
+
+                editStatus=true;
+                tareaForm['boton-task-save'].innerHTML='Actualizar'
                 })
         });
              
@@ -159,10 +168,16 @@ tareaForm.addEventListener('submit',(e)=>{
     const titulo        = tareaForm['tarea-title'];
     const descripcion   = tareaForm['tarea-description'];
     const salida        = tareaForm['salida-title'];
-    let payStatus       = false;
+    let payStatus       = tareaForm['payStatus'];
     
-
+if(!editStatus){
     guardarTask(titulo.value,descripcion.value,salida.value,payStatus)
+
+}else{
+    updateTask(id,{title:titulo.value,description:descripcion.value,salida:salida.value,payStatus:payStatus.value})
+    editStatus=false
+}
+    
 
     tareaForm.reset()
 })

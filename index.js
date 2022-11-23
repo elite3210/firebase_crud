@@ -32,7 +32,7 @@ export const registroTrabajadores = traerTask((querySnapshot) =>{
                         <td>${nombreDia(`${fila.title}`)}</td>
                         <td>${fila.title}</td>
                         <td>${fila.salida}</td>
-                        <td>${horasMinutos(`${fila.title}`,`${fila.salida}`)}</span></td>
+                        <td>${horasMinutos(`${fila.title}`,`${fila.salida}`)}</td>
                         <td><span></span>${horasDecimales(`${fila.title}`,`${fila.salida}`)}</td>
                         <td><button class ='btn-delete' data-id=${doc.id}>del</button></td>
                         <td><button class ='btn-edit' data-id=${doc.id}>edit</button></td>
@@ -56,13 +56,19 @@ export const registroTrabajadores = traerTask((querySnapshot) =>{
         const btnEdit = tareasContainer.querySelectorAll('.btn-edit')
         
         btnEdit.forEach((btn)=>{
-            btn.addEventListener('click', (e)=>{
-                let id = e.target.dataset.id;
-                console.log(id);
-                console.time('tiempo:')
-                const doc = traerTask(e.target.dataset.id);
-                console.timeEnd('tiempo:')
-                console.log(doc)
+            btn.addEventListener('click', async (e)=>{
+            
+                console.log('id del boton edit:',ie.target.dataset.id);
+
+                const doc = await traerTask(e.target.dataset.id);
+                const task = doc.data()
+                console.log(task)
+                tareaForm['tarea-title'].value=task.title;
+                tareaForm['tarea-description'].value=task.description;
+                tareaForm['salida-title'].value=task.salida;
+                tareaForm['payStatus'].value=task.payStatus;
+
+
                 })
         });
              
