@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/434a77214b.js" crossorigin="anonymous"></script>
+    <!--Style para grid js-->
+    <link href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css" rel="stylesheet"/>
+    <title>::Consultas::</title>
+</head>
+<body>
+
+    <form action="" class="fomulario">
+        <datalist id="tienda">
+            <option value="Fabrica17">
+            <option value="Fabrica16">
+            <option value="Zapaton1035">
+            <option value="Paruro">
+            <option value="Huancayo">
+          </datalist>
+        <input type="text" list="tienda" id="tienda">
+        <input type="text" id="modelo">
+
+        <button id="boton">Consultar</button>
+    </form>
+    
+    <div id="table"></div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/gridjs/dist/gridjs.umd.js"></script>
+    <script type="module" src="./consultas.js"></script>
+</body>
+</html>

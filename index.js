@@ -45,7 +45,6 @@ export const registroTrabajadores = traerTask((querySnapshot) =>{
         console.timeEnd('tiempo consulta')
         console.log('# REgistros:',contador)
         //console.log('Importe:',horas*3.125)
-    
         tareasContainer.innerHTML =html;
 
         const btnDelete = tareasContainer.querySelectorAll('.btn-delete')

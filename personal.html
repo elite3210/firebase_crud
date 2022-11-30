@@ -12,6 +12,9 @@
         body{
             background-color: #202020;
         }
+        label{
+          color: white;
+        }
     </style>
     
 </head>
@@ -87,11 +90,11 @@
       <div class="cajota">
           <div class="cajita2">
           <div class="cajita">
-            <label for="tarea-title" required>Entrada  :</label>
-            <input class="fecha" type="datetime-local" id='tarea-title'>
+            <label for="tarea-title" >Entrada  :</label>
+            <input class="fecha" type="datetime-local" id='tarea-title' required>
             
-            <label for="salida-title" required>Salida :</label>
-            <input class="fecha"  type="datetime-local" id='salida-title'>
+            <label for="salida-title" >Salida :</label>
+            <input class="fecha"  type="datetime-local" id='salida-title' required>
           </div>
             
             <label for="tarea-description">Nombre:</label>
@@ -123,9 +126,12 @@
       </datalist>
     <input type="text" list="colaborador" id="nombre">
     <button id="boton">Consultar</button>
+    <label id="acumulador">Horas</label>
+    <label id="salario">Horas.</label>
 </form>
 
 <div id="table"></div>
+
 
 
 <!--Scrip para el comportamiento de la tabla grid js-->

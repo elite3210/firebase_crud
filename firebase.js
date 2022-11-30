@@ -72,21 +72,29 @@ export const traerConsulta = async (nombre)=>{
   console.log('extraccion 3directa:',nombre2)
   console.log('extraccion directa:',2*salario.nombre2)
   let index           =0
+  let horasAcumuladas =0
 
 
   querySnapshot.forEach((doc) => {
     objetos.push(doc.data());
     objetos[index]['dia']=nombreDia(doc.data().title);
     objetos[index]['entrada']=doc.data().title
+    objetos[index]['salida_']=doc.data().salida
     objetos[index]['horas']=horasMinutos(doc.data().title,doc.data().salida);
-    objetos[index]['pago']=horasDecimales(doc.data().title,doc.data().salida)*salario.Angela
     delete objetos[index].description;
     delete objetos[index].payStatus;
     delete objetos[index].title;
+    delete objetos[index].salida;
    
     index +=1; 
+    horasAcumuladas  +=horasDecimales(doc.data().title,doc.data().salida)
   })
-  console.log(objetos)
+
+  let acumulador = document.getElementById('acumulador')
+  acumulador.innerHTML=horasAcumuladas.toFixed(2)
+
+  
+  
   
   new gridjs.Grid({ 
   
@@ -94,3 +102,4 @@ export const traerConsulta = async (nombre)=>{
     
   }).render(document.getElementById('table'));
 }
+
