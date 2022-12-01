@@ -25,12 +25,9 @@ header {
     }
 }
 .borrar-curso {
-    background-color: red;
-    border-radius: 50%;
-    padding: 5px 10px;
-    text-decoration: none;
-    color: white;
-    font-weight: bold;
+    padding: 2px;
+    color: red;
+    font-size: 20px;
 }
 
 ul {
@@ -58,8 +55,8 @@ ul {
 
     top:100%;
     z-index: 1;
-    background-color: white;
-    padding: 20px;
+    background-color: rgb(250, 239, 255);
+    padding: 6px;
     min-height: 400px;
     min-width: 300px;
 }
@@ -70,33 +67,6 @@ ul {
     border-radius: 10px;
     color: white;
 }
-.contenido-hero {
-    margin-top: 80px;
-    color: white;
-}
-.contenido-hero form {
-    position: relative;
-    margin-bottom: 0;
-}
-.contenido-hero form #buscador {
-    height: 50px;
-    margin-bottom: 0;
-}
-.contenido-hero form .submit-buscador {
-    position: absolute;
-    right:0;
-    top:0;
-    height: 100%;
-    padding: 0;
-    display: block;
-    text-indent: -9999px;
-    width: 50px;
-    background-image: url(../img/lupa.png);
-    background-position: right center;
-    background-repeat: no-repeat;
-    border:none;
-}
-
 
 .barra {
     padding: 20px 0;
@@ -180,3 +150,75 @@ display: block;
 margin-bottom: 10px;
 text-decoration: none;
 }
+
+/* contador de item del carrito
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+.circulo-carrito{
+    position: absolute ;
+    width: 20px;
+    height: 20px;
+    align-items: center;
+    background-color: red;
+    top: -7px;
+    right: 46%;
+    border-radius: 50%;
+    color: white;
+}
+
+.box{
+    padding: 0px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 40px 0;
+    border-radius: 16px;
+    border: 2px solid #d1d1d1;
+    }
+
+
+.box .button_inc .button_dec{
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.box .button_inc:active{
+    background: #ccc;
+}
+.box .button_dec:active{
+    background: #ccc;
+}
+.box input{
+    width: 30px;
+    height: 20px;
+    font-size: 14px;
+    margin: 0 2px;
+    border-color: transparent;
+    background: transparent;
+    color: #8f8f8f;
+    padding: 0px;
+}
+
+.box .button_inc{
+    border-left: 2px solid #d1d1d1;
+    padding-right: 10px;
+   padding-left: 10px;
+    font-size: 20px;
+    font-weight: 800px;
+    color: #8f8f8f;
+}
+.box .button_dec{
+    border-right: 2px solid #d1d1d1;
+    font-size: 20px;
+   padding-right: 10px;
+   padding-left: 10px;
+    font-weight: 800px;
+    color: #8f8f8f;
+    
+}
+td{
+    padding: 2px;
+    }
