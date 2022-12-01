@@ -13,7 +13,13 @@ cargarEventListeners()
 function cargarEventListeners(){
     listaCursos.addEventListener('click',agregarCurso);
     //elimina cursos del carrito
-    carrito.addEventListener('click',eliminarCurso)
+    carrito.addEventListener('click',(e)=>{
+        if(true){
+            eliminarCurso(e)
+        }else{
+            agregarCurso(e)
+        }
+    })
     //muestra los cursos del localStorage
     document.addEventListener('DOMContentLoaded',()=>{
         articulosCarrito=JSON.parse(localStorage.getItem('carrito')) || []; 
@@ -29,9 +35,10 @@ function cargarEventListeners(){
 
 //Funciones
 function eliminarCurso(e){
+    e.preventDefault()
     //const cursoId=e.target.classList('.borrar-curso')
     console.log(e.target.classList)
-    if(e.target.classList.contains('borrar-curso')){
+    if(e.target.classList.contains('borrar-curso')  || e.target.classList.contains('mas')  || e.target.classList.contains('menos')){
         const cursoId = e.target.getAttribute('data-id')
         //elimina del arreglo el curso con el id seleccionado
         articulosCarrito=articulosCarrito.filter(curso=>curso.id !== cursoId)
@@ -42,7 +49,7 @@ function eliminarCurso(e){
 
 function agregarCurso(e){
     e.preventDefault()
-    if(e.target.classList.contains('agregar-carrito')){
+    if(e.target.classList.contains('agregar-carrito')  || e.target.classList.contains('mas') ){
     const cursoSelecionado=e.target.parentElement.parentElement
     
     leerDatosCurso(cursoSelecionado)
@@ -85,12 +92,16 @@ function pintarCarrito(){
     let contador=0
     articulosCarrito.forEach((curso)=>{
         const fila =document.createElement('tr')
-        fila.innerHTML=`
+        fila.innerHTML=`<td><i data-id='${curso.id}' class='borrar-curso fa fa-trash'></i></td>
                         <td><img src='${curso.imagen}' width='100'></td>
                         <td>${curso.titulo}</td>
                         <td>${curso.precio}</td>
-                        <td>${curso.cantidad}</td>
-                        <td><a class='borrar-curso' data-id='${curso.id}'>X</a></td>
+                        <td class='box'>
+                        <!--<label for='name'>Males:</label>-->
+                        <div class='dec button_dec' data-id='${curso.id}'>&#8722</div>
+                        <input type='text' class ='input-filed' name='qty' value='${curso.cantidad}' data-id='${curso.id}'>
+                        <div class ='inc button_inc' data-id='${curso.id}'>+</div></td>
+                        
                         `;
         //agregando al tbody
         contenedorCarrito.appendChild(fila);

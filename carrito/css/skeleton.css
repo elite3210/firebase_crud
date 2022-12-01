@@ -380,25 +380,6 @@ hr {
   border-top: 1px solid #E1E1E1; }
 
 
-/* contador de item del carrito
-–––––––––––––––––––––––––––––––––––––––––––––––––– */
-.circulo-carrito{
-  position: absolute ;
-  width: 20px;
-  height: 20px;
-  align-items: center;
-  background-color: red;
-  top: -10px;
-  right: +46px;
-  border-radius: 50%;
-}
-.count-product{
-  padding-left: 6px;
-  color: white;
-}
-
-
-
 /* Clearing
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 
