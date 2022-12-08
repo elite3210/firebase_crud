@@ -7,7 +7,7 @@
     <link href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css" rel="stylesheet"/>
     <script src="https://kit.fontawesome.com/434a77214b.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
-    <title>::Productos::</title>
+    <title>Document</title>
     <style>
         body{
             background-color: #202020;
@@ -16,7 +16,6 @@
         tbody{
             border-radius: 18px;
             background-color: beige;
-            margin: 5px;
         }
         table{
             
@@ -28,7 +27,7 @@
         th{
             background-color: rgb(168, 168, 151);
         }
-        th, td{
+        td{
             text-align: left;
             border-bottom: 2px solid rgb(124, 124, 124);
             color: black;
@@ -45,7 +44,7 @@
         }
         .btn-edit:hover{
             color: blue;
-            font-size: 25px;
+            
         }
 
         .btn-delete{
@@ -54,7 +53,6 @@
         }
         .btn-delete:hover{
             color: red;
-            font-size: 25px;
         }
         .celda{
             background-color: transparent;
@@ -80,8 +78,10 @@
         form{
             background-color: rgb(201, 201, 182)
         }
+        input{
+            width: 60px;
+        }
     </style>
-
 </head>
 <body>
     <header>
@@ -130,87 +130,58 @@
         </nav>
       </header>
 
-    <div class="ventana">
-
-    <form id="tarea-form" class="form1">
-     
-              <div class="cajita">
-                <label for="categoria" >Categoria:</label>
-                <input class="categoria" type="text" id='categoria'>
-              
-                <label for="nombre" >Nombre :</label>
-                <input class="combre"  type="text" id='nombre'  required>
-
-                <label for="stock" >Stock :</label>
-                <input class="stock"  type="number" id='stock'>
-
-                <label for="unidad" >Unidad :</label>
-                <input class="unidad"  type="text" id='unidad'>
-
-                <label for="precio_anterior" >Precio Anterior :</label>
-                <input class="codigo"  type="number" id='precio_anterior'>
-
-                <label for="precio" >Precio :</label>
-                <input class="precio"  type="number" id='precio'>
-
-                <label for="description">Descripcion:</label>
-                <input type="text" id="description">
-
-                <label for="activo" >Activo :</label>
-                <input class="codigo"  type="number"  id='activo'>
-
-                <label for="costo" >costo :</label>
-                <input class="costo"  type="number"  id='costo'>
 
 
-                <label for="imagen" >Imagen :</label>
-                <input class="imagen"  type="text" id='imagen'>
 
-                <label for="codigo" >codigo :</label>
-                <input class="codigo"  type="text"  id='codigo'>
-              </div>
 
-              <div id="container-btn" class="container-btn">
-                <button id="boton-task-save" class="boton"><i class="fa-solid fa-floppy-disk"></i></button> 
-              </div>
-              
-    </form><br>
-    <table>   
-        <tr><th>Categoria</th><th>Codigo</th><th>Nombre</th><th>Color</th><th>Stock</th><th>Unidad</th><th>Antes</th><th>Precio</th><th>Descripcion</th><th>Activo</th><th>Eliminar</th><th>Editar</th></tr>
-        <tbody  class="caja" id="tareas-container">
-      
-        </tbody>
-            
-  </table>
-<div class="button-content">
-  <button>Guardar</button><button>Imprimir</button>
-</div>
-</div>
+    
+<form  id="formulario">
+    <input type="text" id="Vendedor"></br>
+    <input type="text" id="Cliente"></br>
+    <input type="text" id="codigo">
+<button  id="boton">Ingresar</button>
+</form>
 
-    <div id="table"></div>
-    <script type="module" src="./productos.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/gridjs/dist/gridjs.umd.js"></script>
-    <!--crip del menu de navegacion-->
+<table id='table'>  
+    <thead>
+        <tr><th>Item</th><th>Codigo</th><th>Cantidad</th><th>Unidad</th><th>Descripcion</th><th>Precio</th><th></th><th></th></tr>
+    </thead>
+
+    <tbody id="container"></tbody>
+    
+    <tfoot class="button-content">
+        <tr><th></th><th></th><th></th><th></th><th>S/</th><th><input type="text" value="10"></input></th><th></th><th></th></tr>
+        <tr><th></th><th></th><th></th><th></th><th>S/</th><th><input type="text" value="10"></input></th><th></th><th></th></tr>
+        <tr><th></th><th></th><th></th><th></th><th>S/</th><th><input type="text" value="10"></input></th><th></th><th></th></tr>
+            <tr><th></th><th></th><th></th><th></th><th><button id="btn-guardar">Guardar</button></th><th><button>Imprimir</button></th><th></th><th></th></tr>
+    </tfoot >
+</table>
+
+
+
+
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-        // Get all "navbar-burger" elements
-        const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
-        // Add a click event on each of them
-        $navbarBurgers.forEach( el => {
-          el.addEventListener('click', () => {
-        
-            // Get the target from the "data-target" attribute
-            const target = el.dataset.target;
-            const $target = document.getElementById(target);
-        
-            // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
-            el.classList.toggle('is-active');
-            $target.classList.toggle('is-active');
-        
-          });
-        });
-        
-        });
+    document.addEventListener('DOMContentLoaded', () => {
+    // Get all "navbar-burger" elements
+    const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+    // Add a click event on each of them
+    $navbarBurgers.forEach( el => {
+      el.addEventListener('click', () => {
+    
+        // Get the target from the "data-target" attribute
+        const target = el.dataset.target;
+        const $target = document.getElementById(target);
+    
+        // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
+        el.classList.toggle('is-active');
+        $target.classList.toggle('is-active');
+    
+      });
+    });
+    
+    });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/gridjs/dist/gridjs.umd.js"></script>
+    <script type="module" src="./ventas.js"></script>
 </body>
 </html>

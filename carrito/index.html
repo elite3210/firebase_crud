@@ -9,14 +9,15 @@
     <link rel="stylesheet" href="css/skeleton.css">
     <link rel="stylesheet" href="css/custom.css">
     <script src="https://kit.fontawesome.com/434a77214b.js" crossorigin="anonymous"></script>
+    
 </head>
 <body>
     <header id="header" class="header">
     <div class="container">
         <div class="row">
-            <div class="four columns">
-                <img src="img/heinz_sport_sac_logo.png" width ='200' id="logo">
-            </div>
+            <a class="navbar-item row" href="http://www.heinzsport.com">
+                <img src="./heinz_sport_sac_logo.png" width="112" height="28">
+            </a>
             <div class="two columns u-pull-right">
                 <ul>
                     <li class="submenu">
@@ -35,8 +36,9 @@
                                 </thead>
                                 <tbody></tbody>
                             </table>
-                            <a href="#" id="total-carrito" class="button u-full-width"></a>
-                            <a href="#" id="vaciar-carrito" class="button u-full-width">Vaciar Carrito</a>
+                            <span class="u-full-width importe-total">S/.</span><a href="#" id="total-carrito" class="button importe-total"></a></br>
+                            <a href="#" id="vaciar-carrito" class="vaciar-carrito button">Vaciar Carrito</a>
+                            <a href="#" id="continuar-carrito" class="continuar-carrito button">Continuar</a>
                         </div>
                     </li>
                 </ul>
@@ -45,147 +47,7 @@
     </div>
     </header>
 
-<!--
-    <div class="barra">
-        <div class="container">
-            <div class="row">
-                    <div class="four columns icono icono1">
-                        <p>Productos con alta rotacion de mercado <br>
-                </p>
-                    </div>
-                    <div class="four columns icono icono2">
-                        <p>Material de primera <br>
-                        variedad</p>
-                    </div>
-                    <div class="four columns icono icono3">
-                        <p>Envios<br>
-                            A nivel nacional</p>
-                    </div>
-            </div>
-        </div>
-
-    </div>
--->
-
-
-
     <div id="lista-cursos" class="container">
-        <h1 id="encabezado" class="encabezado"></h1>
-        <div class="row">
-            <div class="four columns">
-                <div class="card">
-                    <img src="img/sorbetes_rayados_clasicos.jpg" class="imagen-curso u-full-width">
-                    <div class="info-card">
-                        <h4>Sorbetes rayados clasicos</h4>
-                        <p>Planchas</p>
-                        <img src="img/estrellas.png">
-                        <p class="precio">S/13.5  <span class="u-pull-right ">13</span></p>
-                        <a href="#" class="u-full-width button-primary button input agregar-carrito" data-id="1">Agregar Al Carrito</a>
-                    </div>
-                </div> <!--.card-->
-            </div>
-            <div class="four columns">
-                    <div class="card">
-                        <img src="img/sorbetes_monocolor_clasicos.jpg" class="imagen-curso u-full-width">
-                        <div class="info-card">
-                            <h4>Sorbetes monocolor clasicos</h4>
-                            <p>Planchas</p>
-                            <img src="img/estrellas.png">
-                            <p class="precio">S/13  <span class="u-pull-right ">12.5</span></p>
-                            <a href="#" class="u-full-width button-primary button input agregar-carrito" data-id="2">Agregar Al Carrito</a>
-                        </div>
-                    </div>
-            </div>
-            <div class="four columns">
-                    <div class="card">
-                        <img src="img/sorbeton.jpg" class="imagen-curso u-full-width">
-                        <div class="info-card">
-                            <h4>Sorbeton</h4>
-                            <p>Planchas (500 unidades)</p>
-                            <img src="img/estrellas.png">
-                            <p class="precio">S/38  <span class="u-pull-right ">32</span></p>
-                            <a href="#" class="u-full-width button-primary button input agregar-carrito" data-id="3">Agregar Al Carrito</a>
-                        </div>
-                    </div> <!--.card-->
-            </div>
-
-        </div> <!--.row-->
-        <div class="row">
-            <div class="four columns">
-                <div class="card">
-                    <img src="img/sorbete_flexible_rayado.jpg" class="imagen-curso u-full-width">
-                    <div class="info-card">
-                        <h4>Sorbete flexible rayado</h4>
-                        <p>Planchas</p>
-                        <img src="img/estrellas.png">
-                        <p class="precio">S/32 <span class="u-pull-right ">31</span></p>
-                        <a href="#" class="u-full-width button-primary button input agregar-carrito" data-id="4">Agregar Al Carrito</a>
-                    </div>
-                </div> <!--.card-->
-            </div>
-            <div class="four columns">
-                    <div class="card">
-                        <img src="img/sorbetes_monocolor_negro.jpg" class="imagen-curso u-full-width">
-                        <div class="info-card">
-                            <h4>Sorbetes monocolor negro</h4>
-                            <p>Planchas</p>
-                            <img src="img/estrellas.png">
-                            <p class="precio">S/13 <span class="u-pull-right ">12.5</span></p>
-                            <a href="#" class="u-full-width button-primary button input agregar-carrito" data-id="5">Agregar Al Carrito</a>
-                        </div>
-                    </div> <!--.card-->
-            </div>
-            <div class="four columns">
-                    <div class="card">
-                        <img src="img/sorbetes_forrados_papel.jpg" class="imagen-curso u-full-width">
-                        <div class="info-card">
-                            <h4>Sorbetes forrados papel</h4>
-                            <p>Planchas</p>
-                            <img src="img/estrellas.png">
-                            <p class="precio">S/33  <span class="u-pull-right ">32</span></p>
-                            <a href="#" class="u-full-width button-primary button input agregar-carrito" data-id="6">Agregar Al Carrito</a>
-                        </div>
-                    </div> <!--.card-->
-            </div>
-        </div> <!--.row-->
-        <div class="row">
-            <div class="four columns">
-                <div class="card">
-                    <img src="img/paliglobos_delgados.jpg" class="imagen-curso u-full-width">
-                    <div class="info-card">
-                        <h4>Paliglobos delgados</h4>
-                        <p>Millares</p>
-                        <img src="img/estrellas.png">
-                        <p class="precio">S/42 <span class="u-pull-right ">39</span></p>
-                        <a href="#" class="u-full-width button-primary button input agregar-carrito" data-id="7">Agregar Al Carrito</a>
-                    </div>
-                </div> <!--.card-->
-            </div>
-            <div class="four columns">
-                    <div class="card">
-                        <img src="img/paliglobos_gruesos40.png" class="imagen-curso u-full-width">
-                        <div class="info-card">
-                            <h4>Paliglobos gruesos #40</h4>
-                            <p>Millares</p>
-                            <img src="img/estrellas.png">
-                            <p class="precio">S/142  <span class="u-pull-right ">132</span></p>
-                            <a href="#" class="u-full-width button-primary button input agregar-carrito" data-id="8">Agregar Al Carrito</a>
-                        </div>
-                    </div> <!--.card-->
-            </div>
-            <div class="four columns">
-                    <div class="card">
-                        <img src="img/paliglobos desarmables base.jpg" class="imagen-curso u-full-width">
-                        <div class="info-card">
-                            <h4>Paliglobos desarmables base</h4>
-                            <p>Caja de 200 sets</p>
-                            <img src="img/estrellas.png">
-                            <p class="precio">S/200  <span class="u-pull-right ">180</span></p>
-                            <a href="#" class="u-full-width button-primary button input agregar-carrito" data-id="9">Agregar Al Carrito</a>
-                        </div>
-                    </div> <!--.card-->
-            </div>
-        </div> <!--.row-->
     </div>  
 
     <footer id="footer" class="footer">
@@ -209,7 +71,7 @@
         </div>
     </footer>
 
-    <script src="js/app.js"></script>
+    <script type="module" src="./js/app.js"></script>
 
 </body>
 </html>

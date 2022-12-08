@@ -5,8 +5,10 @@
     <meta http-equiv="X-UA-Compatible">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Heinz Sport SAC</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
     <script src="./html2pdf_bundle.js" type="module"></script>
-    <style>
+    <!--
+      <style>
 
       .sidenav {
         height: 100%;
@@ -87,6 +89,8 @@
         .sidenavRight a {font-size: 18px;}
       }
     </style>
+    -->
+
     <style>
           /*Barra de navegacion
           @import "https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css";
@@ -116,6 +120,9 @@
           .blanco{
               background-color: rgb(196, 223, 255);
           }
+          .morado{
+            background-color: rgb(207, 86, 255);
+          }
           th{
               color: black;
               border: 1px solid rgb(255, 255, 255);
@@ -126,9 +133,58 @@
           }
     </style>
     
+    
 </head>
 <body>
   <header>
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+      <div class="navbar-brand">
+        <a class="navbar-item" href="http://www.heinzsport.com">
+          <img src="./imagenes/heinz_sport_sac_logo.png" width="112" height="28">
+        </a>
+    
+        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
+      </div>
+    
+      <div id="navbarBasicExample" class="navbar-menu">
+        <div class="navbar-start">
+          <a class="navbar-item" href="./index.html">Home</a>
+          <a class="navbar-item"href="./carrito/index.html">Catálogo</a>
+    
+          <div class="navbar-item has-dropdown is-hoverable">
+            <a class="navbar-link">Intranet</a>
+    
+            <div class="navbar-dropdown">
+              <a class="navbar-item" href="./personal.html">Recursos Humanos</a>
+              <a class="navbar-item" href="./menu.html">Eventos</a>
+              <a class="navbar-item" href="./entrada_salida.html">Registro</a>
+              <hr class="navbar-divider">
+              <a class="navbar-item" href="./documento.html">Documentos</a>
+              <a class="navbar-item" href="./productos.html">productos</a>
+              <a class="navbar-item" href="./ventas.html">Ventas</a>
+            </div>
+          </div>
+        </div>
+    
+        <div class="navbar-end">
+          <div class="navbar-item">
+            <div class="buttons">
+              <a class="button is-primary"><strong>Sign up</strong></a>
+              <a class="button is-light">Log in</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+  
+  
+   <!-- 
+    <header>
     <div id="mySidenav" class="sidenav">
       <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
       <a class="menu-home" href="./index.html" onclick="closeNav()">&#9925Home</a>
@@ -150,68 +206,6 @@
       <span style="font-size:30px;cursor:pointer; right: inherit" onclick="openNavRight()">&#9776;</span>
     </div>
   </header>
-   <!-- <header>
-        <nav class="navbar" role="navigation" aria-label="main navigation">
-        <div class="navbar-brand">
-          <a class="navbar-item" href="http://www.heinzsport.com">
-            <img src="./imagenes/heinz_sport_sac_logo.png" width="112" height="28">
-          </a>
-      
-          <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-            <span aria-hidden="true"></span>
-            <span aria-hidden="true"></span>
-            <span aria-hidden="true"></span>
-          </a>
-        </div>
-      
-        <div id="navbarBasicExample" class="navbar-menu">
-          <div class="navbar-start">
-            <a class="navbar-item" href="./index.html">
-              Home
-            </a>
-      
-            <a class="navbar-item">
-              Catálogo
-            </a>
-      
-            <div class="navbar-item has-dropdown is-hoverable">
-              <a class="navbar-link">
-                Producción
-              </a>
-      
-              <div class="navbar-dropdown">
-                <a class="navbar-item" href="./personal.html">
-                  Recursos Humanos
-                </a>
-                <a class="navbar-item" href="./eventos.html">
-                  Eventos
-                </a>
-                <a class="navbar-item">
-                  Contacto
-                </a>
-                <hr class="navbar-divider">
-                <a class="navbar-item" href="./documento.html">
-                  Documentos
-                </a>
-              </div>
-            </div>
-          </div>
-      
-          <div class="navbar-end">
-            <div class="navbar-item">
-              <div class="buttons">
-                <a class="button is-primary">
-                  <strong>Sign up</strong>
-                </a>
-                <a class="button is-light">
-                  Log in
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </nav>
-    </header>
 -->
 
 
@@ -306,6 +300,107 @@
         </tbody>
     </table>
   </div></br>
+
+
+
+  <div>
+    <table id="productos">
+        <thead class="naranja">
+            <h3>Sorbeton Naranja:</h3>
+            <tr><th>Descripcion</th><th>Cantidad 12</th><th>Cantidad 50</th></tr>
+        </thead>
+        <tbody> 
+            <tr><td>Pigmento Naranja Felipe</td><td>3 gr.</td><td>12 gr.</td></tr>
+            <tr><td>Pigmento Flourecente Naranja</td><td>40 gr.</td><td>160 gr.</td></tr>
+            <tr><td>Dioxido de Titanio</td><td>40 gr.</td><td>160 gr.</td></tr>
+            <tr><td>Masterbach Blanco</td><td>40 gr.</td><td>160 gr.</td></tr>
+        </tbody>
+    </table>
+  </div></br>
+  <div>
+    <table id="productos">
+        <thead class="amarillo">
+            <h3>Sorbeton Amarillo:</h3>
+            <tr><th>Descripcion</th><th>Cantidad 12</th><th>Cantidad 50</th></tr>
+        </thead>
+        <tbody> 
+            <tr><td>Pigmento Amarillo Felipe</td><td>2 gr.</td><td>8 gr.</td></tr>
+            <tr><td>Amarillo Conte</td><td>8 gr.</td><td>32 gr.</td></tr>
+            <tr><td>Dioxido de Titanio</td><td>36 gr.</td><td>144 gr.</td></tr>
+            <tr><td>Masterbach Blanco</td><td>30 gr.</td><td>120 gr.</td></tr>
+        </tbody>
+    </table>
+  </div></br>
+
+  <div>
+    <table id="productos">
+        <thead class="morado">
+            <h3>Sorbeton Morado:</h3>
+            <tr><th>Descripcion</th><th>Cantidad 12</th><th>Cantidad 50</th></tr>
+        </thead>
+        <tbody> 
+            <tr><td>Pigmento Magenta Flourecente</td><td>12 gr.</td><td>48 gr.</td></tr>
+            <tr><td>Pigmento Azul felipe</td><td>0.4 gr.</td><td>1.6 gr.</td></tr>
+            <tr><td>Dioxido de Titanio</td><td>40 gr.</td><td>160 gr.</td></tr>
+            <tr><td>Masterbach Blanco</td><td>40 gr.</td><td>160 gr.</td></tr>
+        </tbody>
+    </table>
+  </div></br>
+
+  <div>
+    <table id="productos">
+        <thead class="rosado">
+            <h3>Sorbeton Rosado:</h3>
+            <tr><th>Descripcion</th><th>Cantidad 12</th><th>Cantidad 50</th></tr>
+        </thead>
+        <tbody> 
+            <tr><td>Pigmento Magenta Flourecente</td><td>12 gr.</td><td>48 gr.</td></tr>
+            <tr><td>Dioxido de Titanio</td><td>40 gr.</td><td>160 gr.</td></tr>
+            <tr><td>Masterbach Blanco</td><td>40 gr.</td><td>160 gr.</td></tr>
+        </tbody>
+    </table>
+  </div></br>
+
+  <div>
+    <table id="productos">
+        <thead class="blanco">
+            <h3>Sorbeton Celeste:</h3>
+            <tr><th>Descripcion</th><th>Cantidad 12</th><th>Cantidad 50</th></tr>
+        </thead>
+        <tbody> 
+            <tr><td>Masterbach Celeste Andino</td><td>60 gr.</td><td>240 gr.</td></tr>
+            <tr><td>Dioxido de Titanio</td><td>40 gr.</td><td>160 gr.</td></tr>
+        </tbody>
+    </table>
+  </div></br>
+
+  <div>
+    <table id="productos">
+        <thead class="rojo">
+            <h3>Sorbeton Rojo:</h3>
+            <tr><th>Descripcion</th><th>Cantidad 12</th><th>Cantidad 50</th></tr>
+        </thead>
+        <tbody> 
+            <tr><td>Masterbach Rojo Escarlata</td><td>100 gr.</td><td>400 gr.</td></tr>
+        </tbody>
+    </table>
+  </div></br>
+
+  <div>
+    <table id="productos">
+        <thead class="verde">
+            <h3>Sorbeton Verde:</h3>
+            <tr><th>Descripcion</th><th>Cantidad 12</th><th>Cantidad 50</th></tr>
+        </thead>
+        <tbody> 
+            <tr><td>Pigmento Amarillo Felipe</td><td>4 gr.</td><td>16 gr.</td></tr>
+            <tr><td>Pigmento Azul Felipe</td><td>0.7 gr.</td><td>2.8 gr.</td></tr>
+            <tr><td>Pigmento verde Flourecente</td><td>12 gr.</td><td>48 gr.</td></tr>
+            <tr><td>Dioxido de Titanio</td><td>36 gr.</td><td>144 gr.</td></tr>
+            <tr><td>Masterbach Blanco</td><td>30 gr.</td><td>120gr.</td></tr>
+        </tbody>
+    </table>
+  </div></br>
   <button id="btnCrearPdf">Click aquí</button>
   
   <script>
@@ -325,7 +420,6 @@
     document.getElementById("mySidenavRight").style.width = "0";
   }
   </script>
-
     <script>
 
         document.addEventListener('DOMContentLoaded', () => {

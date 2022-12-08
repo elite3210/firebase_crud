@@ -108,28 +108,42 @@ const registroTrabajadores = onGetTasks((querySnapshot) =>{
         const horasDecimales = (entrada,salida)=>{return horasEnteras(entrada,salida) + Math.trunc((lapsoMiliseg(entrada,salida)%(1000*60*60))/(1000*60*60)*100)/100}
 
         const horasMinutos= (entrada,salida)=>{return horasEnteras(entrada,salida) +':'+minutosEnteros(entrada,salida)}
-   
+        let registros=[]
+      
         querySnapshot.forEach(doc =>{
-            
+            let id =doc.id
             const fila = doc.data()
-            html += `<tr><td>${fila.description}</td>
-                        <td>${nombreDia(`${fila.title}`)}</td>
-                        <td>${fila.title}</td>
-                        <td>${fila.salida}</td>
-                        <td>${horasMinutos(`${fila.title}`,`${fila.salida}`)}</span></td>
-                        <td>${horasDecimales(`${fila.title}`,`${fila.salida}`)}</td>
-                        <td>${fila.payStatus}</td>
-                        
-                        <td><button class ='btn-delete' data-id=${doc.id}>del</button></td>
-                        <td><button class ='btn-edit' data-id=${doc.id}>edit</button></td>
-                    </tr>`
+            registros.push(fila)
+            registros[contador].id=id
             
             contador += 1
             //horas += ((new Date(`${fila.salida}`).getTime())-(new Date(`${fila.title}`).getTime()))/(1000*60*60)
             
         });
+        let sinPago= registros.filter(jornada=>jornada.title>'2022-11-26T08:00' & jornada.description=='Mariela' )
+        console.log(sinPago)
+        sinPago.forEach(jornada=>{
+
+            html += `<tr><td>${jornada.description}</td>
+                        <td>${nombreDia(`${jornada.title}`)}</td>
+                        <td>${jornada.title}</td>
+                        <td>${jornada.salida}</td>
+                        <td>${horasMinutos(`${jornada.title}`,`${jornada.salida}`)}</span></td>
+                        <td>${horasDecimales(`${jornada.title}`,`${jornada.salida}`)}</td>
+                        <td>${jornada.payStatus}</td>
+                        
+                        <td><button class ='btn-delete' data-id=${jornada.id}>del</button></td>
+                        <td><button class ='btn-edit' data-id=${jornada.id}>edit</button></td>
+                    </tr>`
+            
+
+
+        })
+
+
         console.timeEnd('tiempo consulta')
-        console.log('# REgistros:',contador)
+        
+        
         //console.log('Importe:',horas*3.125)
     
         tareasContainer.innerHTML =html;
@@ -176,6 +190,7 @@ if(!editStatus){
 }else{
     updateTask(id,{title:titulo.value,description:descripcion.value,salida:salida.value,payStatus:payStatus.value})
     editStatus=false
+    tareaForm['boton-task-save'].innerHTML='Registrar'
 }
     
 

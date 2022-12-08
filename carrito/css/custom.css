@@ -105,6 +105,7 @@ ul {
 }
 
 #lista-cursos .row {
+    display: flex;
     margin-bottom:20px;
 }
 .agregar-carrito {
@@ -222,3 +223,10 @@ text-decoration: none;
 td{
     padding: 2px;
     }
+.importe-total{
+    font-size: 35px;
+    background-color: transparent;
+    border-color: transparent;
+    padding: 0px;
+    
+}
