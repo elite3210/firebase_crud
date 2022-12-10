@@ -14,26 +14,40 @@ cargarEventListeners()
 function cargarEventListeners(){
 
     btn_ingresar.addEventListener('click',async(e)=>{
-    e.preventDefault()
+        e.preventDefault()
 
-    let id=form['codigo'].value.toUpperCase()        //captura el codigo del formulario, puede ser tambien un barcode
-    console.log('id:',id)
-    if(id){                                             //comprueba si existe o se ingreso un codigo
-        let traerDoc = await traeroneProduct(id);
-        console.log('traerDoc:',traerDoc)
-        let fila = traerDoc.data()
-        console.log('fila:',fila)
-        
-        objetos.push(fila)
-            objetos[indice].id=traerDoc.id
-            indice++  
-        
-        
-        console.log('contenido del objeto llamados:',objetos)
-        pintarTabla(objetos)
-    }else{
-        alert('Ingresa un codigo!')
-    }
+        let id=form['codigo'].value.toUpperCase()        //captura el codigo del formulario, puede ser tambien un barcode
+        console.log('id:',id)
+        if(id){                                             //comprueba si se ingreso un codigo
+            
+            if(indice==0){
+                let traerDoc = await traeroneProduct(id);
+                console.log('traerDoc:',traerDoc)
+                let fila = traerDoc.data()
+                fila.id=traerDoc.id
+                console.log('objeto fila con id:',fila)
+                objetos.push(fila)
+                indice++
+                pintarTabla(objetos)
+            }else{
+                if(objetos[0].id!=id){
+                    let traerDoc = await traeroneProduct(id);
+                    console.log('traerDoc:',traerDoc)
+                    let fila = traerDoc.data()
+                    fila.id=traerDoc.id
+                    console.log('objeto fila con id:',fila)
+                    objetos.push(fila)
+                    pintarTabla(objetos)
+                    indice++
+                }else{
+                    alert('duplicado!')
+                }
+            }
+            console.log('contenido del objeto llamados:',objetos)
+            
+        }else{
+            alert('Ingresa un codigo!')
+        }
     
     })
 
