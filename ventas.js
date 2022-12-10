@@ -13,7 +13,7 @@ cargarEventListeners()
 
 function cargarEventListeners(){
 
-btn_ingresar.addEventListener('click',async(e)=>{
+    btn_ingresar.addEventListener('click',async(e)=>{
     e.preventDefault()
 
     let id=form['codigo'].value.toUpperCase()        //captura el codigo del formulario, puede ser tambien un barcode
@@ -35,10 +35,9 @@ btn_ingresar.addEventListener('click',async(e)=>{
         alert('Ingresa un codigo!')
     }
     
-})
+    })
 
-btn_guardar.addEventListener('click',crearVenta)
-
+    btn_guardar.addEventListener('click',crearVenta)
 }
 
 function pintarTabla(objetos){
@@ -63,10 +62,11 @@ function pintarTabla(objetos){
     tabla.appendChild(fila)
 }
 
-let id=''
-let nuevo_stock=''
-let cantidad_venta=0
 function crearVenta(e){
+    let id=''
+    let nuevo_stock=''
+    let cantidad_venta=1
+
     id=tabla.childNodes[0].childNodes[5].childNodes[0].id
     console.log('id:',id)
     console.log('objetos de contenedor:',objetos)
@@ -76,7 +76,7 @@ function crearVenta(e){
     console.log('saldo stock:',nuevo_stock)
 
     actualizarStock(id,nuevo_stock)
-    registrarVenta()
+    registrarVenta(id,cantidad_venta)
 }
 
 function actualizarStock(id,nuevo_stock){
@@ -85,7 +85,8 @@ function actualizarStock(id,nuevo_stock){
         })
     
 }
-function registrarVenta(){
+
+function registrarVenta(id,cantidad_venta){
     console.log('registrando la venta en la DB')
     //const imagen              = form['imagen']
     let cliente='Heinz'
