@@ -2,6 +2,7 @@ import {guardarTask,onGetTasks,deleteTask,traerTask,traeroneProduct,updateProduc
 
 
 const btn_ingresar = document.getElementById('boton')
+const btn_semaforo   = document.querySelector('.semaforo')
 const form=document.getElementById('formulario')
 const tabla = document.getElementById('container');
 const btn_guardar =document.getElementById('btn-guardar')
@@ -12,15 +13,21 @@ let indice=0
 cargarEventListeners()
 
 function cargarEventListeners(){
-
+    
     btn_ingresar.addEventListener('click',async(e)=>{
         e.preventDefault()
+        btn_semaforo.classList.remove('semaforo-verde')
+        btn_semaforo.classList.remove('semaforo-ambar')
+        btn_semaforo.classList.remove('semaforo-rojo')
 
-        let id=form['codigo'].value.toUpperCase()        //captura el codigo del formulario, puede ser tambien un barcode
+
+        var id=form['codigo'].value.toUpperCase()        //captura el codigo del formulario, puede ser tambien un barcode
         console.log('id:',id)
         if(id){                                             //comprueba si se ingreso un codigo
             
             if(indice==0){
+                btn_semaforo.classList.toggle('semaforo-verde')
+                btn_semaforo.textContent='exito!'
                 let traerDoc = await traeroneProduct(id);
                 console.log('traerDoc:',traerDoc)
                 let fila = traerDoc.data()
@@ -30,7 +37,12 @@ function cargarEventListeners(){
                 indice++
                 pintarTabla(objetos)
             }else{
-                if(objetos[0].id!=id){
+                console.log('id de some:',id)
+                let duplicado = objetos.some((elem)=>{return elem.id===id})
+                console.log('some devuelve :',duplicado)
+                if(!duplicado){
+                    btn_semaforo.classList.toggle('semaforo-verde')
+                    btn_semaforo.textContent='exito!'
                     let traerDoc = await traeroneProduct(id);
                     console.log('traerDoc:',traerDoc)
                     let fila = traerDoc.data()
@@ -40,13 +52,15 @@ function cargarEventListeners(){
                     pintarTabla(objetos)
                     indice++
                 }else{
-                    alert('duplicado!')
+                    btn_semaforo.classList.toggle('semaforo-rojo')
+                    btn_semaforo.textContent='duplicado'
                 }
             }
             console.log('contenido del objeto llamados:',objetos)
             
         }else{
-            alert('Ingresa un codigo!')
+            btn_semaforo.classList.toggle('semaforo-ambar')
+            btn_semaforo.textContent='vacio'
         }
     
     })
@@ -81,12 +95,12 @@ function crearVenta(e){
     let nuevo_stock=''
     let cantidad_venta=1
 
-    id=tabla.childNodes[0].childNodes[5].childNodes[0].id
+    id=tabla.childNodes[0].childNodes[5].childNodes[0].id                       //obtener id de cada fila
     console.log('id:',id)
     console.log('objetos de contenedor:',objetos)
-    cantidad_venta = tabla.childNodes[0].childNodes[5].childNodes[0].value
-    let en_almacen=objetos[0].stock
-    nuevo_stock=en_almacen-cantidad_venta
+    cantidad_venta = tabla.childNodes[0].childNodes[5].childNodes[0].value      // extrayendo la cantidad a vender
+    let en_almacen=objetos[0].stock                                             //cantidad en stock
+    nuevo_stock=en_almacen-cantidad_venta                                       // calculo para nuevo stock
     console.log('saldo stock:',nuevo_stock)
 
     actualizarStock(id,nuevo_stock)
