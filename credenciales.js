@@ -113,14 +113,15 @@ const registroTrabajadores = onGetTasks((querySnapshot) =>{
         querySnapshot.forEach(doc =>{
             let id =doc.id
             const fila = doc.data()
+            fila.id=id
             registros.push(fila)
-            registros[contador].id=id
             
             contador += 1
             //horas += ((new Date(`${fila.salida}`).getTime())-(new Date(`${fila.title}`).getTime()))/(1000*60*60)
             
         });
-        let sinPago= registros.filter(jornada=>jornada.title>'2022-11-26T08:00' & jornada.description=='Mariela' )
+
+        let sinPago= registros.filter((jornada)=>{return jornada.title>'2022-11-27T08:00' & jornada.description=='Xiomara'} )
         console.log(sinPago)
         sinPago.forEach(jornada=>{
 
@@ -136,8 +137,6 @@ const registroTrabajadores = onGetTasks((querySnapshot) =>{
                         <td><button class ='btn-edit' data-id=${jornada.id}>edit</button></td>
                     </tr>`
             
-
-
         })
 
 
