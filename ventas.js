@@ -26,6 +26,7 @@ function cargarEventListeners(){
         if(id){                                             //comprueba si se ingreso un codigo
             
             if(indice==0){
+                form['codigo'].select()
                 btn_semaforo.classList.toggle('semaforo-verde')
                 btn_semaforo.textContent='exito!'
                 let traerDoc = await traeroneProduct(id);
@@ -43,6 +44,7 @@ function cargarEventListeners(){
                 let duplicado = objetos.some((elem)=>{return elem.id===id})
                 console.log('some devuelve :',duplicado)
                 if(!duplicado){
+                    form['codigo'].select()
                     btn_semaforo.classList.toggle('semaforo-verde')
                     btn_semaforo.textContent='exito!'
                     let traerDoc = await traeroneProduct(id);
@@ -85,8 +87,8 @@ function pintarTabla(objetos){
                         <td><input type='number' class='cantidad' id='${producto.id}' value=${producto.cantidad} ></td>
                         <td>${producto.unidad}</td>
                         <td>${producto.descripcion}</td>
-                        <td><input type='number' class='precio' id='${producto.id}' value=${producto.precio} disabled></td>
-                        <td><input type='number' class='importe' id='${producto.id}' value=${producto.importe} </td>
+                        <td><input type='number' class='precio' id='${producto.id}' value=${producto.precio}></td>
+                        <td><input type='number' class='importe' id='${producto.id}' value=${producto.importe} disabled></td>
 
                         <td><button class ='btn-delete fa fa-trash' id=''data-id=${producto.id}></button></td>
                         <td><button class ='btn-edit fa-solid fa-pen-to-square' color='transparent'data-id=${producto.id}></button></td>
@@ -145,10 +147,28 @@ function actualizaImporte(e){
 
         if(e.key==='Enter'){
             e.preventDefault()
-            objetos[0].cantidad=tabla.childNodes[0].childNodes[5].childNodes[0].value 
-            console.log('presionaste la tecla Enter, objeto:',objetos[0].cantidad)
-            pintarTabla(objetos)
             
+            let newQty = parseInt(tabla.childNodes[0].childNodes[5].childNodes[0].value) 
+            //let newPrice = parseInt(tabla.childNodes[0].childNodes[1].childNodes[0].value)
+            console.log(newQty)
+            //console.log(tabla.childNodes[0].childNodes[0].childNodes[0].value) 1 3 7
+            console.log(tabla.childNodes[0].childNodes[5].childNodes[0].value)
 
+            objetos[0].cantidad=newQty
+            //objetos[0].precio=newPrice
+            objetos[0].importe=newQty*objetos[0].precio
+            console.log('presionaste la tecla Enter, objeto:',objetos[0].cantidad)
+            limpiarTabla(e)
+            pintarTabla(objetos)
+            console.log('OBJETO ACTUALIZADO:',objetos)
         }
+}
+
+
+function limpiarTabla(){
+    //forma lenta de limpiar
+    //contenedorCarrito.innerHTML=''
+    while(tabla.firstChild){
+        tabla.removeChild(tabla.firstChild)
+    }
 }
