@@ -25,9 +25,7 @@ tareaForm.addEventListener('submit',(e)=>{
     
     if(!editStatus){
         guardarProduct( codigo.value,
-                        
                         categoria.value,
-
                         nombre.value,
                         costo.value,
                         stock.value,
@@ -61,36 +59,35 @@ tareaForm.addEventListener('submit',(e)=>{
 //traer los productos de firebase
 const tareasContainer = document.getElementById('tareas-container')
 
-let objetoProducto=[]
 const registroProductos = onGetProduct((querySnapshot) =>{
-    
+    let objetoProducto=[]
+    tareasContainer.innerHTML='';                           //borra el contenido previo, hacer una funcion limpiar...
     if(querySnapshot){
 
-        let html = "";
-        let indice=0
         querySnapshot.forEach(doc =>{
             
-            const fila = doc.data()
-            objetoProducto.push(fila)
-            objetoProducto[indice].id=doc.id
-            html += `<tr>
-                        <td>${fila.categoria}</td>
-                        <td>${doc.id}</td>
-                        <td>${fila.nombre}</td>
-                        <td>${fila.atributo}</td>
-                        <td>${fila.stock}</td>
-                        <td>${fila.unidad}</td>
-                        <td>${fila.precio_anterior}</td>
-                        <td><input type='number' class='celda' id='${doc.id}' value='${fila.precio}' disabled></td>
-                        <td>${fila.descripcion}</td>
-                        <td>${fila.activo}</td>
-                        
-                        <td><button class ='btn-delete fa fa-trash' id=''data-id=${doc.id}></button></td>
-                        <td><button class ='btn-edit fa-solid fa-pen-to-square' color='transparent'data-id=${doc.id}></button></td>
-                    </tr>`
-                    indice++
+            let fila = document.createElement('tr')
+            const objeto  = doc.data()
+            objeto.id     = doc.id
+            objetoProducto.push(objeto)
+
+            fila.innerHTML = `
+                                <td>${objeto.categoria}</td>
+                                <td>${objeto.id}</td>
+                                <td>${objeto.nombre}</td>
+                                <td>${objeto.stock}</td>
+                                <td>${objeto.unidad}</td>
+                                <td>${objeto.precio_anterior}</td>
+                                <td><input type='number' class='celda' id='${objeto.id}' value='${objeto.precio}' disabled></td>
+                                <td>${objeto.descripcion}</td>
+                                <td>${objeto.activo}</td>
+                                
+                                <td><button class ='btn-delete fa fa-trash' id=''data-id=${objeto.id}></button></td>
+                                <td><button class ='btn-edit fa-solid fa-pen-to-square' color='transparent'data-id=${objeto.id}></button></td>
+                            `
+                  
+            tareasContainer.appendChild(fila);
         });
-        tareasContainer.innerHTML =html;
         console.log('objetoProductos:',objetoProducto)
         //funcionamiento boton eliminar
         const btnDelete = tareasContainer.querySelectorAll('.btn-delete')
@@ -102,17 +99,17 @@ const registroProductos = onGetProduct((querySnapshot) =>{
         const btnEdit = tareasContainer.querySelectorAll('.btn-edit')
         //funcionamiento boton eleditar
         btnEdit.forEach((btn)=>{
-            btn.addEventListener('click', async (e)=>{
+            btn.addEventListener('click', (e)=>{
                 id=e.target.dataset.id   
                 console.log('id es:',id)                                   //se asigna el id para luegp usar en update product
-                const doc = await traeroneProduct(e.target.dataset.id);
-                let producto=doc.data()
+                const producto = objetoProducto.find((producto)=>{return producto.id ===id });
+                
                 
                 console.log('objeto producto solicitado btn edit:',producto)
 
                 tareaForm['imagen'].value           = producto.imagen 
                 tareaForm['categoria'].value        = producto.categoria
-                tareaForm['codigo'].value          = doc.id
+                tareaForm['codigo'].value           = producto.id
                 tareaForm['nombre'].value           = producto.nombre 
                 tareaForm['costo'].value            = producto.costo 
                 tareaForm['stock'].value            = producto.stock 

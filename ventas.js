@@ -8,7 +8,7 @@ const tabla = document.getElementById('container');
 const btn_guardar =document.getElementById('btn-guardar')
 
 let objetos=[]
-let indice=0
+let indice =0
 
 cargarEventListeners()
 
@@ -32,6 +32,8 @@ function cargarEventListeners(){
                 console.log('traerDoc:',traerDoc)
                 let fila = traerDoc.data()
                 fila.id=traerDoc.id
+                fila.cantidad=1
+                fila.importe=fila.precio*fila.cantidad
                 console.log('objeto fila con id:',fila)
                 objetos.push(fila)
                 indice++
@@ -66,6 +68,10 @@ function cargarEventListeners(){
     })
 
     btn_guardar.addEventListener('click',crearVenta)
+
+    tabla.addEventListener('click',actualizaCantidad)
+    tabla.addEventListener('keypress',actualizaImporte)
+        
 }
 
 function pintarTabla(objetos){
@@ -76,10 +82,11 @@ function pintarTabla(objetos){
         fila.innerHTML = `
                         <td>${contador}</td>
                         <td>${producto.id}</td>
-                        <td><input type='number' class='cantidad' id='${producto.id}' value=1 ></td>
+                        <td><input type='number' class='cantidad' id='${producto.id}' value=${producto.cantidad} ></td>
                         <td>${producto.unidad}</td>
                         <td>${producto.descripcion}</td>
-                        <td><input type='number' class='precio' id='${producto.id}' value='${producto.precio}' disabled></td>
+                        <td><input type='number' class='precio' id='${producto.id}' value=${producto.precio} disabled></td>
+                        <td><input type='number' class='importe' id='${producto.id}' value=${producto.importe} </td>
 
                         <td><button class ='btn-delete fa fa-trash' id=''data-id=${producto.id}></button></td>
                         <td><button class ='btn-edit fa-solid fa-pen-to-square' color='transparent'data-id=${producto.id}></button></td>
@@ -88,9 +95,13 @@ function pintarTabla(objetos){
         
     });
     tabla.appendChild(fila)
+    
+    console.log('celda:',tabla)
 }
 
+
 function crearVenta(e){
+
     let id=''
     let nuevo_stock=''
     let cantidad_venta=1
@@ -124,4 +135,20 @@ function registrarVenta(id,cantidad_venta){
 
     guardarVenta(cliente,vendedor,productoVendido,cantidad)
     console.log('venta registrada')
+}
+
+function actualizaCantidad(e){
+    console.log('click en:',e.target)
+}
+
+function actualizaImporte(e){
+
+        if(e.key==='Enter'){
+            e.preventDefault()
+            objetos[0].cantidad=tabla.childNodes[0].childNodes[5].childNodes[0].value 
+            console.log('presionaste la tecla Enter, objeto:',objetos[0].cantidad)
+            pintarTabla(objetos)
+            
+
+        }
 }

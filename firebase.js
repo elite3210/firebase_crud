@@ -30,7 +30,7 @@
   /*Save a New Task in Firestore*/ 
   export const guardarTask = (title,description,salida,payStatus)=>{addDoc(collection(db,'Micoleccion'),{title,description,salida,payStatus})}
   export const guardarVenta = (cliente,vendedor,productoVendido,cantidad)=>{addDoc(ventasRef,{cliente,vendedor,productoVendido,cantidad})}
-  export const guardarProduct = async (imagen,categoria,nombre,costo,stock,unidad,precio_anterior,precio,activo,descripcion)=>{await setDoc(doc(productRef,'TT0071'),{imagen,categoria,nombre,costo,stock,unidad,precio_anterior,precio,activo,descripcion})}
+  export const guardarProduct = async (codigo,categoria,nombre,costo,stock,unidad,precio_anterior,precio,activo,descripcion,imagen)=>{await setDoc(doc(productRef,codigo),{imagen,categoria,nombre,costo,stock,unidad,precio_anterior,precio,activo,descripcion})}
  
   /*funcion de firestore que trae los datos de la carpeta coleccion */
   // export const traerTasks = () => getDocs(collection(db,'Micoleccion'));
