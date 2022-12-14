@@ -6,6 +6,8 @@ const btn_semaforo   = document.querySelector('.semaforo')
 const form=document.getElementById('formulario')
 const tabla = document.getElementById('container');
 const btn_guardar =document.getElementById('btn-guardar')
+const celda_total=document.getElementById('celda_total')
+const fecha=document.getElementById('fecha')
 
 let objetos=[]
 let indice =0
@@ -13,14 +15,14 @@ let indice =0
 cargarEventListeners()
 
 function cargarEventListeners(){
-    
+    let tiempoTranscurrido=Date.now()
+    let hoy=new Date(tiempoTranscurrido)
+    fecha.textContent=hoy.toLocaleDateString()
     btn_ingresar.addEventListener('click',async(e)=>{
         e.preventDefault()
         btn_semaforo.classList.remove('semaforo-verde')
         btn_semaforo.classList.remove('semaforo-ambar')
         btn_semaforo.classList.remove('semaforo-rojo')
-
-
         var id=form['codigo'].value.toUpperCase()        //captura el codigo del formulario, puede ser tambien un barcode
         console.log('id:',id)
         if(id){                                             //comprueba si se ingreso un codigo
@@ -70,6 +72,7 @@ function cargarEventListeners(){
             btn_semaforo.classList.toggle('semaforo-ambar')
             btn_semaforo.textContent='vacio'
         }
+        importeTotal()
     })
 
     btn_guardar.addEventListener('click',crearVenta)
@@ -152,6 +155,7 @@ function actualizaImporte(e){
             }
             limpiarTabla(e)
             pintarTabla(objetos)
+            importeTotal()
             console.log('objeto actualizado:',objetos)
         }
 }
@@ -162,4 +166,12 @@ function limpiarTabla(){
     while(tabla.firstChild){
         tabla.removeChild(tabla.firstChild)
     }
+}
+
+function importeTotal(){
+    
+    let total=objetos.reduce((tot,producto)=>tot+producto.importe,0)
+    console.log('calculando el total...',total)
+    celda_total.value=total
+
 }
