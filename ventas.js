@@ -39,6 +39,7 @@ function cargarEventListeners(){
                 objetos.push(fila)
                 indice++
                 pintarTabla(objetos)
+                
             }else{
                 console.log('id de some:',id)
                 let duplicado = objetos.some((elem)=>{return elem.id===id})
@@ -51,9 +52,13 @@ function cargarEventListeners(){
                     console.log('traerDoc:',traerDoc)
                     let fila = traerDoc.data()
                     fila.id=traerDoc.id
+                    fila.cantidad=1
+                    fila.importe=fila.precio*fila.cantidad
                     console.log('objeto fila con id:',fila)
                     objetos.push(fila)
+                    limpiarTabla(e)
                     pintarTabla(objetos)
+                    console.log('cantidad elementos objeto:',objetos.length)
                     indice++
                 }else{
                     btn_semaforo.classList.toggle('semaforo-rojo')
@@ -66,7 +71,6 @@ function cargarEventListeners(){
             btn_semaforo.classList.toggle('semaforo-ambar')
             btn_semaforo.textContent='vacio'
         }
-    
     })
 
     btn_guardar.addEventListener('click',crearVenta)
@@ -78,27 +82,26 @@ function cargarEventListeners(){
 
 function pintarTabla(objetos){
     let contador=1 
-    let fila = document.createElement('tr')    
     objetos.forEach(producto=>{
+        let fila = document.createElement('tr')    
         
         fila.innerHTML = `
+                        <td><button class ='btn-edit fa-solid fa-cart-plus' color='transparent'data-id=${producto.id}></button></td>
                         <td>${contador}</td>
                         <td>${producto.id}</td>
                         <td><input type='number' class='cantidad' id='${producto.id}' value=${producto.cantidad} ></td>
                         <td>${producto.unidad}</td>
                         <td>${producto.descripcion}</td>
                         <td><input type='number' class='precio' id='${producto.id}' value=${producto.precio}></td>
-                        <td><input type='number' class='importe' id='${producto.id}' value=${producto.importe} disabled></td>
-
-                        <td><button class ='btn-delete fa fa-trash' id=''data-id=${producto.id}></button></td>
-                        <td><button class ='btn-edit fa-solid fa-pen-to-square' color='transparent'data-id=${producto.id}></button></td>
-                    `
+                        <td><input type='number' class='importe' id='${producto.id}' value=${producto.importe}></td>
+                        <td><button class ='btn-delete fa fa-trash' id=''data-id=${producto.id}></button></td>                       
+                        `
         contador++
         
+        tabla.appendChild(fila)
+        console.log('TABLA:',tabla)
     });
-    tabla.appendChild(fila)
-    
-    console.log('celda:',tabla)
+
 }
 
 
@@ -144,23 +147,20 @@ function actualizaCantidad(e){
 }
 
 function actualizaImporte(e){
-
+        
         if(e.key==='Enter'){
             e.preventDefault()
             
-            let newQty = parseInt(tabla.childNodes[0].childNodes[5].childNodes[0].value) 
-            //let newPrice = parseInt(tabla.childNodes[0].childNodes[1].childNodes[0].value)
-            console.log(newQty)
-            //console.log(tabla.childNodes[0].childNodes[0].childNodes[0].value) 1 3 7
-            console.log(tabla.childNodes[0].childNodes[5].childNodes[0].value)
-
-            objetos[0].cantidad=newQty
-            //objetos[0].precio=newPrice
-            objetos[0].importe=newQty*objetos[0].precio
-            console.log('presionaste la tecla Enter, objeto:',objetos[0].cantidad)
+            for(let i =0;i<objetos.length;i++){
+            
+                objetos[i].cantidad = parseInt(tabla.children[i].children[3].children[0].value) 
+                objetos[i].precio   = parseInt(tabla.children[i].children[6].children[0].value)
+                objetos[i].importe  =objetos[i].cantidad*objetos[i].precio
+                console.log('objeto actualizado:',i)
+            }
             limpiarTabla(e)
             pintarTabla(objetos)
-            console.log('OBJETO ACTUALIZADO:',objetos)
+            console.log('objeto actualizado:',objetos)
         }
 }
 

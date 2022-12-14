@@ -9,9 +9,10 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
     <title>Document</title>
     <style>
-        body{
-            background-color: #202020;
-            color:rgb(0, 0, 0);
+        
+        .contenedor{
+          margin-left: 15px;
+          width: 800px;
         }
         tbody{
             border-radius: 18px;
@@ -30,13 +31,9 @@
         td{
             text-align: left;
             border-bottom: 2px solid rgb(124, 124, 124);
-            color: black;
+            padding: 0px;
         }
-        td{
-            border-bottom: 1px dotted rgb(87, 87, 87);
-            padding: 0%;
-            
-        }
+
 
         .btn-edit{
             background-color: transparent;
@@ -80,6 +77,8 @@
         }
         input{
             width: 60px;
+            border-color: transparent;
+            background-color: transparent;
         }
      
         .semaforo-rojo{
@@ -91,6 +90,27 @@
         .semaforo-verde{
           background-color: chartreuse;
         }
+        .ruc{
+          margin-left: 38px;
+        }
+        .cliente{
+          margin-left: 20px;
+        }
+        .codigo{
+          margin-left: 17px;
+        }
+        .celda{
+          width: 150px;
+          background-color: beige;
+        }
+        H1{
+          text-align: center;
+        }
+        h4{
+          text-align: right;
+          font-size: 12px;
+        }
+        
     </style>
 </head>
 <body>
@@ -142,32 +162,40 @@
 
 
 
-
+      <div class="contenedor">
 
     
 <form  id="formulario">
-    <input type="text" id="Vendedor"></br>
-    <input type="text" id="Cliente"></br>
-    <input type="text" id="codigo">
+    <h1>COTIZACIÓN</h1><h4>Lima, 13 de Diciembre de 2022</h4>
+    <label for="Vendedor">Vendedor :</label>
+    <input  class='celda vendedor' type="text" id="vendedor"></br>
+    <label for="cliente">Cliente  :</label>
+    <input  class=' celda cliente' type="text" id="cliente"></br>
+    <label for="ruc">RUC      :</label>
+    <input class='celda ruc' type="text" id="ruc"></br>
+    <label class='boton' for="boton">Codigo :</label>
+    <input class='celda codigo'  type="text" id="codigo">
+    
 <button  id="boton">Ingresar</button>
 <button class="semaforo" id="semaforo">''</button>
 </form>
 
 <table id='table'>  
     <thead>
-        <tr><th>Item</th><th>Codigo</th><th>Cantidad</th><th>Unidad</th><th>Descripcion</th><th>Precio</th><th>Importe</th><th></th><th></th></tr>
+        <tr><th></th><th>Item</th><th>Codigo</th><th>Cantidad</th><th>Unidad</th><th>Descripcion</th><th>Precio</th><th>Importe</th><th></th></tr>
     </thead>
 
     <tbody id="container"></tbody>
     
     <tfoot class="button-content">
-        <tr><th></th><th></th><th></th><th></th><th>S/</th><th><input type="text" value="10"></input></th><th></th><th></th></tr>
-        <tr><th></th><th></th><th></th><th></th><th>S/</th><th><input type="text" value="10"></input></th><th></th><th></th></tr>
-        <tr><th></th><th></th><th></th><th></th><th>S/</th><th><input type="text" value="10"></input></th><th></th><th></th></tr>
-            <tr><th></th><th></th><th></th><th></th><th><button id="btn-guardar">Guardar</button></th><th><button>Imprimir</button></th><th></th><th></th></tr>
+        <tr><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th></tr>
+         <!--<tr><th></th><th></th><th></th><th></th><th></th><th>S/</th><th><input type="text" value="10"></input></th><th></th><th></th></tr>
+        --><tr><th></th><th></th><th></th><th></th><th></th><th>Total (S/)</th><th><input type="text" value="10"></input></th><th></th><th></th></tr>
+            <tr><th></th><th></th><th></th><th><th></th></th><th></th><th><button id="btn-guardar">Guardar</button></th><th><button>Imprimir</button></th><th></th></tr>
+            <tr><th></th><th></th><th></th><th></th><th><h4>Heinz Sport SAC :: RUC 20605216715</h4></th><th></th><th></th><th></th><th></th></tr>
     </tfoot >
 </table>
-
+</div>
     <script>
     document.addEventListener('DOMContentLoaded', () => {
     // Get all "navbar-burger" elements
