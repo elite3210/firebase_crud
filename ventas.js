@@ -35,30 +35,29 @@ function cargarEventListeners(){
                 fila.id=traerDoc.id
                 fila.cantidad=1
                 fila.importe=fila.precio*fila.cantidad
-                console.log('objeto fila con id:',fila)
+                
                 objetos.push(fila)
                 indice++
                 pintarTabla(objetos)
                 
             }else{
-                console.log('id de some:',id)
-                let duplicado = objetos.some((elem)=>{return elem.id===id})
-                console.log('some devuelve :',duplicado)
+                
+                let duplicado = objetos.some((elem)=>{return elem.id===id})     //verifica por ID si el nuevo elemento ya existe en el objeto
+                
                 if(!duplicado){
-                    form['codigo'].select()
+                    form['codigo'].select()                                     //selecciona el texto para ser borrado con el siguiente ingreso de lector barcode   
                     btn_semaforo.classList.toggle('semaforo-verde')
                     btn_semaforo.textContent='exito!'
-                    let traerDoc = await traeroneProduct(id);
-                    console.log('traerDoc:',traerDoc)
-                    let fila = traerDoc.data()
+                    let traerDoc = await traeroneProduct(id);                   //trae un producto de la DB
+                    
+                    let fila = traerDoc.data()                                  //.data() metodo para mostrar solo los datos del usuario
                     fila.id=traerDoc.id
                     fila.cantidad=1
                     fila.importe=fila.precio*fila.cantidad
-                    console.log('objeto fila con id:',fila)
+                    
                     objetos.push(fila)
                     limpiarTabla(e)
                     pintarTabla(objetos)
-                    console.log('cantidad elementos objeto:',objetos.length)
                     indice++
                 }else{
                     btn_semaforo.classList.toggle('semaforo-rojo')
@@ -74,10 +73,8 @@ function cargarEventListeners(){
     })
 
     btn_guardar.addEventListener('click',crearVenta)
-
-    tabla.addEventListener('click',actualizaCantidad)
-    tabla.addEventListener('keypress',actualizaImporte)
-        
+    tabla.addEventListener('dblclick',actualizaImporte)
+    tabla.addEventListener('keypress',actualizaImporte)       
 }
 
 function pintarTabla(objetos){
@@ -103,7 +100,6 @@ function pintarTabla(objetos){
     });
 
 }
-
 
 function crearVenta(e){
 
@@ -142,10 +138,6 @@ function registrarVenta(id,cantidad_venta){
     console.log('venta registrada')
 }
 
-function actualizaCantidad(e){
-    console.log('click en:',e.target)
-}
-
 function actualizaImporte(e){
         
         if(e.key==='Enter'){
@@ -163,7 +155,6 @@ function actualizaImporte(e){
             console.log('objeto actualizado:',objetos)
         }
 }
-
 
 function limpiarTabla(){
     //forma lenta de limpiar
