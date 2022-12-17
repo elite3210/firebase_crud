@@ -1,9 +1,14 @@
 var doc = new jsPDF;
+doc.size('a5')
         doc.text('Heinz Sport SAC',10,10)
+       
         doc.line(10,10,60,10)
         doc.line(10,11,60,11)
-        doc.addPage('a4','l')
-       // doc.save('prueba.pdf')
+        
+        doc.line(10,100,60,100)
+        doc.line(10,101,60,101)
+        doc.addPage('a5')
+        doc.save('prueba4.pdf')
 
         let arrayObjeto = [
         {
@@ -169,10 +174,3 @@ var doc = new jsPDF;
             unidad: "Planchas"
         }
     ]
-
-
-    
-
-    let sub_producto=arrayObjeto.filter(producto=>producto.color !='Blanco')
-
-    console.log(sub_producto)

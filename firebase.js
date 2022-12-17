@@ -57,7 +57,7 @@
   export const queryProductos = (nombre)=>getDocs(query(collection(db,'Productos'), where("web_site", "==", true)));
 
 
-  export const traerConsulta = (nombre)=>{return getDocs(query(collection(db,'Micoleccion'), where("description", "==", nombre), where("payStatus", "==", false),orderBy('title','desc'),limit(60)))}
+  export const traerConsulta = (nombre)=>{return getDocs(query(collection(db,'Micoleccion'), where("description", "==", nombre), where("payStatus", "==", false), orderBy('title','desc'),limit(60)))}
 
 
 

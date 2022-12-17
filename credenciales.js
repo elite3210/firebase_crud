@@ -121,7 +121,7 @@ const registroTrabajadores = onGetTasks((querySnapshot) =>{
             
         });
 
-        let sinPago= registros.filter((jornada)=>{return jornada.title>'2022-11-27T08:00' & jornada.description=='Xiomara'} )
+        let sinPago= registros.filter((jornada)=>{return jornada.title>'2022-12-12T08:00' & jornada.description=='Mariela'} )
         console.log(sinPago)
         sinPago.forEach(jornada=>{
 

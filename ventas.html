@@ -11,20 +11,18 @@
     <style>
         
         .contenedor{
-          margin-left: 15px;
-          width: 800px;
+          background-color: rgb(201, 201, 182);
+          width: 100%;
+          border-radius: 10px;
+          margin: 2px;
         }
-        tbody{
-            border-radius: 18px;
-            background-color: beige;
+        .contenedor2{
+
+          width: 100%;
+
+          margin: 2px;
         }
-        table{
-            
-            border-collapse: collapse;
-            width: 100%;
-            margin: 5px solid red;
-            
-        }
+
         th{
             background-color: rgb(168, 168, 151);
         }
@@ -40,7 +38,7 @@
             border-color: transparent;
         }
         .btn-edit:hover{
-            color: blue;
+            color: rgb(51, 255, 0);
             
         }
 
@@ -55,6 +53,8 @@
             background-color: transparent;
             border-color: transparent; 
             padding: 0%;
+            width: 150px;
+            background-color: beige;
         }
         .ventana{
             background-color: rgb(254, 255, 241)
@@ -63,18 +63,17 @@
             padding: none;
         }
         tr:nth-child(even){background-color: rgb(228, 226, 226);}
-        tr:hover{
-            background-color: aquamarine;
-        }
+        /*tr:hover{
+            background-color: rgb(228, 164, 253);
+        }*/
         
         .button-content{
-            background-color: rgb(168, 168, 151);
+            background-color: rgb(170, 170, 167);
             text-align: right;
             padding: 10px;
+            border-radius: 10px;
         }
-        form{
-            background-color: rgb(201, 201, 182)
-        }
+
         input{
             width: 60px;
             border-color: transparent;
@@ -99,9 +98,10 @@
         .codigo{
           margin-left: 17px;
         }
-        .celda{
-          width: 150px;
-          background-color: beige;
+        .tabla{
+          padding: 5px;
+          width: 100%;
+          
         }
         H1{
           text-align: center;
@@ -162,40 +162,43 @@
 
 
 
-      <div class="contenedor">
+  <div class="contenedor">
+    <form  id="formulario">
+        <h1>COTIZACIÓN</h1><h4 id="fecha">Lima, 13 de Diciembre de 2022</h4>
+        <label for="Vendedor">Vendedor :</label>
+        <input  class='celda vendedor' type="text" id="vendedor"></br>
+        <label for="cliente">Cliente  :</label>
+        <input  class=' celda cliente' type="text" id="cliente"></br>
+        <label for="ruc">RUC      :</label>
+        <input class='celda ruc' type="text" id="ruc"></br>
+        <label class='boton' for="boton">Codigo :</label>
+        <input class='celda codigo'  type="text" id="codigo">  
+    <button  id="boton" >Ingresar</button>
+    <button class="semaforo" id="semaforo">''</button>
+    </form>
+  </div>
+  <div class="contenedor2">
+    <table id='table' class="tabla">  
+        <thead>
+            <tr><th></th><th>Item</th><th>Codigo</th><th>Cantidad</th><th>Unidad</th><th>Descripcion</th><th>Precio</th><th>Importe</th><th></th></tr>
+        </thead>
 
-    
-<form  id="formulario">
-    <h1>COTIZACIÓN</h1><h4 id="fecha">Lima, 13 de Diciembre de 2022</h4>
-    <label for="Vendedor">Vendedor :</label>
-    <input  class='celda vendedor' type="text" id="vendedor"></br>
-    <label for="cliente">Cliente  :</label>
-    <input  class=' celda cliente' type="text" id="cliente"></br>
-    <label for="ruc">RUC      :</label>
-    <input class='celda ruc' type="text" id="ruc"></br>
-    <label class='boton' for="boton">Codigo :</label>
-    <input class='celda codigo'  type="text" id="codigo">
-    
-<button  id="boton">Ingresar</button>
-<button class="semaforo" id="semaforo">''</button>
-</form>
-
-<table id='table'>  
-    <thead>
-        <tr><th></th><th>Item</th><th>Codigo</th><th>Cantidad</th><th>Unidad</th><th>Descripcion</th><th>Precio</th><th>Importe</th><th></th></tr>
-    </thead>
-
-    <tbody id="container"></tbody>
-    
-    <tfoot class="button-content">
-        <tr><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th></tr>
-         <!--<tr><th></th><th></th><th></th><th></th><th></th><th>S/</th><th><input type="text" value="10"></input></th><th></th><th></th></tr>
-        --><tr><th></th><th></th><th></th><th></th><th></th><th>Total (S/)</th><th><input id="celda_total" type="text" value="0"></input></th><th></th><th></th></tr>
-            <tr><th></th><th></th><th></th><th><th></th></th><th></th><th><button id="btn-guardar">Guardar</button></th><th><button>Imprimir</button></th><th></th></tr>
-            <tr><th></th><th></th><th></th><th></th><th><h4>Heinz Sport SAC :: RUC 20605216715</h4></th><th></th><th></th><th></th><th></th></tr>
-    </tfoot >
-</table>
-</div>
+        <tbody id="container"></tbody>
+        
+        <tfoot class="button-content">
+            <tr><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th></tr>
+            <!--<tr><th></th><th></th><th></th><th></th><th></th><th>S/</th><th><input type="text" value="10"></input></th><th></th><th></th></tr>
+            --><tr><th></th><th></th><th></th><th></th><th></th><th>Total (S/)</th><th><input id="celda_total" type="text" value="0"></input></th><th></th><th></th></tr>
+                
+        </tfoot >
+    </table>
+  </div>
+  <div class="contenedor">
+    <button id="btn-guardar">Guardar</button>
+    <button>Imprimir</button>
+    <h4>Heinz Sport SAC :: RUC 20605216715</h4>
+  </div>
+  
     <script>
     document.addEventListener('DOMContentLoaded', () => {
     // Get all "navbar-burger" elements

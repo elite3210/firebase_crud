@@ -54,7 +54,7 @@ boton.addEventListener('click',async(e)=>{
   }).render(document.getElementById('table'));
 
 
-  acumulador.innerHTML=horasSinpago.horasAcumuladas
+  //acumulador.innerHTML=horasSinpago.horasAcumuladas
  
 })
 
