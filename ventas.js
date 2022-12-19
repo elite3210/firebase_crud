@@ -69,19 +69,17 @@ function cargarEventListeners(){
     tabla.addEventListener('keypress',actualizaImporte)       
 }
 
-var contador=1
+
 function pintarTabla(objetos){
     console.log('Lo que hay en LS:',objetos)
     if(objetos==null){
-        let contador=1
-        pintarFilasVacias(contador)
+        pintarFilasVacias(objetos)
     }else{
         limpiarTabla()
         pintarFilasLlenas(objetos)
-        pintarFilasVacias(contador)
-        importeTotal()   
+        pintarFilasVacias(objetos)
+        actualizaImporteTotal()   
     }
-    
 }
 
 function crearVenta(){
@@ -151,7 +149,7 @@ function limpiarTabla(){
     }
 }
 
-function importeTotal(){
+function actualizaImporteTotal(){
     
     let total=objetos.reduce((tot,producto)=>tot+producto.importe,0)
     
@@ -177,30 +175,31 @@ function eliminarProducto(e){
         console.log('diste clik en boton delete... nuevo objeto',objetos)
         pintarTabla(objetos)
 }
-var counter = true
+
+let alternador = true
+
 function filaMuestraStock(e){
+    let id_producto=e.target.getAttribute('data-id')                            //captura el ID producto de la fila
+    let ubicacion = objetos.findIndex((elem)=>{return elem.id==id_producto})    //captura el indice o poscion del objeto producto de la fila
     
-    if(counter){
-        let id_producto=e.target.getAttribute('data-id')
-        let producto_encontado=objetos.find((elem)=>{return elem.id==id_producto})
+    if(alternador){
+        let producto_encontado=objetos.find((elem)=>{return elem.id==id_producto})  //encuentra el productos en el objeto con el ID anterior
         console.log('clik en editar, el stock es:',producto_encontado.stock)
         let fila =document.createElement('tr')
         let celda =document.createElement('td')
         celda.textContent=producto_encontado.stock
         fila.appendChild(celda)
-        let ubicacion = e.target.getElementsByTagName('td')
-        console.log(ubicacion)
-        tabla.insertBefore(fila,tabla.children[1]) 
-        counter=false
+        console.log('findIndex:',ubicacion)
+        tabla.insertBefore(fila,tabla.children[ubicacion+1]) 
+        alternador=false
     }else{
-        tabla.removeChild(tabla.children[1])
-        counter++
+        tabla.removeChild(tabla.children[ubicacion+1])
+        alternador=true
     }
-
 }
 
 function pintarFilasLlenas(objetos){
-    contador=1
+    let contador=1
     objetos.forEach(producto=>{
         let fila = document.createElement('tr')    
         
@@ -221,9 +220,10 @@ function pintarFilasLlenas(objetos){
     sincronizarLocalStorage(objetos)
 }
 
-function pintarFilasVacias(contador){
+function pintarFilasVacias(objetos){
+    let filasLlenas=objetos.length
     let filasVacias=10
-    for(let i =0;i<filasVacias-contador;i++){
+    for(let i =0;i<filasVacias-filasLlenas;i++){
         let fila = document.createElement('tr')
         fila.innerHTML= ` <td></td>
                             <td></td>
