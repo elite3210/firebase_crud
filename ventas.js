@@ -6,11 +6,12 @@ const btn_semaforo   = document.querySelector('.semaforo')
 const form=document.getElementById('formulario')
 const tabla = document.getElementById('container');
 const btn_guardar =document.getElementById('btn-guardar')
+const btn_imprimir =document.getElementById('btn-imprimir')
 const celda_total=document.getElementById('celda_total')
 const fecha=document.getElementById('fecha')
 
-let objetos=[]
-let indice =0
+let objetos=JSON.parse(localStorage.getItem('cotizacion'))
+//let objetos=[]
 
 cargarEventListeners()
 
@@ -19,6 +20,7 @@ function cargarEventListeners(){
     let tiempoTranscurrido=Date.now()
     let hoy=new Date(tiempoTranscurrido)
     fecha.textContent=hoy.toLocaleDateString()
+
     btn_ingresar.addEventListener('click',async(e)=>{
         e.preventDefault()
         btn_semaforo.classList.remove('semaforo-verde')
@@ -27,24 +29,11 @@ function cargarEventListeners(){
         var id=form['codigo'].value.toUpperCase()        //captura el codigo del formulario, puede ser tambien un barcode
         console.log('id:',id)
         if(id){                                             //comprueba si se ingreso un codigo
-            
-            if(indice==0){
-                form['codigo'].select()
-                btn_semaforo.classList.toggle('semaforo-verde')
-                btn_semaforo.textContent='exito!'
-                let traerDoc = await traeroneProduct(id);
-                console.log('traerDoc:',traerDoc)
-                let fila = traerDoc.data()
-                fila.id=traerDoc.id
-                fila.cantidad=1
-                fila.importe=fila.precio*fila.cantidad
-                
-                objetos.push(fila)
-                indice++
-                pintarTabla(objetos)
-                
-            }else{
-                
+                console.log('codigo ingresado...')
+                console.log('objeto a evaluar:',objetos)
+                if(objetos==null){
+                    objetos=[]                                                  //un atajo para que funcione el codigo por primera vez, corregir en futuro
+                }
                 let duplicado = objetos.some((elem)=>{return elem.id===id})     //verifica por ID si el nuevo elemento ya existe en el objeto
                 
                 if(!duplicado){
@@ -61,63 +50,42 @@ function cargarEventListeners(){
                     objetos.push(fila)
                     limpiarTabla(e)
                     pintarTabla(objetos)
-                    indice++
                 }else{
                     btn_semaforo.classList.toggle('semaforo-rojo')
                     btn_semaforo.textContent='duplicado'
                 }
-            }
-            console.log('contenido del objeto llamados:',objetos)
+            
+            console.log('contenido del objeto:',objetos)
             
         }else{
             btn_semaforo.classList.toggle('semaforo-ambar')
             btn_semaforo.textContent='vacio'
-        }
-        importeTotal()
+        }    
     })
 
     btn_guardar.addEventListener('click',crearVenta)
+    btn_imprimir.addEventListener('click',generaPDF)
     tabla.addEventListener('click',operacionesEnTabla)
     tabla.addEventListener('keypress',actualizaImporte)       
 }
 
+var contador=1
 function pintarTabla(objetos){
-    
-    
-    if(objetos.length==0){
+    console.log('Lo que hay en LS:',objetos)
+    if(objetos==null){
         let contador=1
         pintarFilasVacias(contador)
     }else{
-        
         limpiarTabla()
-        console.log('objetos antes de llamra db:',objetos)
-        let contador=1 
-        objetos.forEach(producto=>{
-            let fila = document.createElement('tr')    
-            
-            fila.innerHTML = `
-                            <td><button class ='btn-edit fa-solid fa-circle-plus' color='transparent'data-id=${producto.id}></button></td>
-                            <td>${contador}</td>
-                            <td>${producto.id}</td>
-                            <td><input type='number' class='cantidad' id='${producto.id}' value=${producto.cantidad} ></td>
-                            <td>${producto.unidad}</td>
-                            <td>${producto.descripcion}</td>
-                            <td><input type='number' class='precio' id='${producto.id}' value=${producto.precio} min="0"></td>
-                            <td><input type='number' class='importe' id='${producto.id}' value=${producto.importe}></td>
-                            <td><button class ='btn-delete fa fa-trash' id=''data-id=${producto.id}></button></td>                       
-                            `
-            contador++
-            
-            tabla.appendChild(fila)
-            
-        });
+        pintarFilasLlenas(objetos)
         pintarFilasVacias(contador)
+        importeTotal()   
     }
     
 }
 
-function crearVenta(e){
-
+function crearVenta(){
+/*
     let id=''
     let nuevo_stock=''
     let cantidad_venta=1
@@ -129,9 +97,14 @@ function crearVenta(e){
     let en_almacen=objetos[0].stock                                             //cantidad en stock
     nuevo_stock=en_almacen-cantidad_venta                                       // calculo para nuevo stock
     console.log('saldo stock:',nuevo_stock)
-
     actualizarStock(id,nuevo_stock)
     registrarVenta(id,cantidad_venta)
+*/
+    localStorage.removeItem('cotizacion');
+    objetos=[]
+    form.reset()
+    pintarTabla(objetos) 
+    console.log('Registrando la venta en la base de datos...') 
 }
 
 function actualizarStock(id,nuevo_stock){
@@ -166,7 +139,6 @@ function actualizaImporte(e){
             }
             limpiarTabla(e)
             pintarTabla(objetos)
-            importeTotal()
             console.log('objeto actualizado:',objetos)
         }
 }
@@ -193,7 +165,7 @@ function operacionesEnTabla(e){
         eliminarProducto(e)
     }
     if(e.target.classList.contains('btn-edit')){
-        mostrarStock(e)
+        filaMuestraStock(e)
     }
 }
 
@@ -206,7 +178,7 @@ function eliminarProducto(e){
         pintarTabla(objetos)
 }
 var counter = true
-function mostrarStock(e){
+function filaMuestraStock(e){
     
     if(counter){
         let id_producto=e.target.getAttribute('data-id')
@@ -227,24 +199,74 @@ function mostrarStock(e){
 
 }
 
-function pintarFilasVacias(contador){
-    let filasVacias=13
-    let counter=contador
-    for(let i =0;i<filasVacias-counter;i++){
-        let fila = document.createElement('tr')
-            fila.innerHTML= ` <td></td>
-                    <td></td>
-                    <td></td>
-                    <td><input type='number' class='cantidad'  value='' ></td>
-                    <td></td>
-                    <td></td>
-                    <td><input type='number' class='precio'  value='' min="0"></td>
-                    <td><input type='number' class='importe'  value=''></td>
-                    <td></td> 
-                    `
-            tabla.appendChild(fila)
-    }
+function pintarFilasLlenas(objetos){
+    contador=1
+    objetos.forEach(producto=>{
+        let fila = document.createElement('tr')    
         
-        
+        fila.innerHTML = `
+                        <td><button class ='btn-edit fa-solid fa-circle-plus' color='transparent'data-id=${producto.id}></button></td>
+                        <td>${contador}</td>
+                        <td>${producto.id}</td>
+                        <td><input type='number' class='cantidad' id='${producto.id}' value=${producto.cantidad} ></td>
+                        <td>${producto.unidad}</td>
+                        <td>${producto.descripcion}</td>
+                        <td><input type='number' class='precio' id='${producto.id}' value=${producto.precio} min="0"></td>
+                        <td><input type='number' class='importe' id='${producto.id}' value=${producto.importe}></td>
+                        <td><button class ='btn-delete fa fa-trash' id=''data-id=${producto.id}></button></td>                       
+                        `
+        contador++
+        tabla.appendChild(fila)
+    });
+    sincronizarLocalStorage(objetos)
 }
+
+function pintarFilasVacias(contador){
+    let filasVacias=10
+    for(let i =0;i<filasVacias-contador;i++){
+        let fila = document.createElement('tr')
+        fila.innerHTML= ` <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><input></td>
+                            <td></td>
+                            <td></td> 
+                            `
+                            //al borrar el tag input del td no funcionara la funcion presente, averiguar
+        tabla.appendChild(fila)
+    }
+}
+
+function sincronizarLocalStorage(objetos){
+    localStorage.setItem('cotizacion',JSON.stringify(objetos))
+    objetos=JSON.parse(localStorage.getItem('cotizacion'))
+}
+
+function generaPDF(){
+    console.log('generando pdf...')
+    const elementoParaConvertir = document.body; // <-- Aquí puedes elegir cualquier elemento del DOM
+        html2pdf()
+            .set({
+                margin: 0.25,
+                filename: 'cotizacion',
+                //se borro image jpg, averiguar codigo origina en github del cdn html2pdf
+                html2canvas: {
+                    scale: 5, // A mayor escala, mejores gráficos, pero más peso
+                    letterRendering: true,
+                },
+                jsPDF: {
+                    unit: "in",
+                    format: "a5",
+                    orientation: 'landscape' // landscape o portrait
+                }
+            })
+            .from(elementoParaConvertir)
+            .save()
+            .catch(err => console.log(err));
+    
+}
+
 
