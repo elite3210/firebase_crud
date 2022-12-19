@@ -7,6 +7,10 @@
     <link href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css" rel="stylesheet"/>
     <script src="https://kit.fontawesome.com/434a77214b.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <script src="https://parzibyte.github.io/ejemplos-javascript/html-a-pdf/html2pdf.bundle.min.js"></script>
+
+    
+
     <title>Document</title>
     <style>
         
@@ -28,8 +32,10 @@
         }
         td{
             text-align: left;
-            border-bottom: 2px solid rgb(124, 124, 124);
+            border-bottom: 2px  rgb(124, 124, 124);
             padding: 0px;
+            vertical-align:middle;
+            align-content: center;
         }
 
 
@@ -39,6 +45,7 @@
         }
         .btn-edit:hover{
             color: rgb(51, 255, 0);
+            background-color: black;
             
         }
 
@@ -172,7 +179,7 @@
         <label for="ruc">RUC      :</label>
         <input class='celda ruc' type="text" id="ruc"></br>
         <label class='boton' for="boton">Codigo :</label>
-        <input class='celda codigo'  type="text" id="codigo">  
+        <input class='celda codigo'  type="text" id="codigo" size="6"><span class="validity"></span>  
     <button  id="boton" >Ingresar</button>
     <button class="semaforo" id="semaforo">''</button>
     </form>
@@ -186,17 +193,15 @@
         <tbody id="container"></tbody>
         
         <tfoot class="button-content">
-            <tr><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th></tr>
-            <!--<tr><th></th><th></th><th></th><th></th><th></th><th>S/</th><th><input type="text" value="10"></input></th><th></th><th></th></tr>
-            --><tr><th></th><th></th><th></th><th></th><th></th><th>Total (S/)</th><th><input id="celda_total" type="text" value="0"></input></th><th></th><th></th></tr>
+           <tr><th></th><th></th><th></th><th></th><th></th><th></th><th>Total (S/)</th><th><input id="celda_total" type="text" value="0"></input></th><th></th><th></th></tr>
                 
         </tfoot >
     </table>
   </div>
   <div class="contenedor">
     <button id="btn-guardar">Guardar</button>
-    <button>Imprimir</button>
-    <h4>Heinz Sport SAC :: RUC 20605216715</h4>
+    <button id="btn-imprimir">Imprimir</button>
+    <h4>Heinz Sport SAC :: RUC 20605216715</h4>    
   </div>
   
     <script>
