@@ -24,6 +24,7 @@
 
   const productRef  = collection(db,'Productos')
   const ventasRef   =collection(db,'Ventas')
+  const cotizacionRef   =collection(db,'Cotizacion')
 
 
 
@@ -31,6 +32,7 @@
   export const guardarTask = (title,description,salida,payStatus)=>{addDoc(collection(db,'Micoleccion'),{title,description,salida,payStatus})}
   export const guardarVenta = (cliente,vendedor,productoVendido,cantidad)=>{addDoc(ventasRef,{cliente,vendedor,productoVendido,cantidad})}
   export const guardarProduct = async (codigo,categoria,nombre,costo,stock,unidad,precio_anterior,precio,activo,descripcion,imagen)=>{await setDoc(doc(productRef,codigo),{imagen,categoria,nombre,costo,stock,unidad,precio_anterior,precio,activo,descripcion})}
+  export const guardarCotizacion = async (id,fecha,vendedor,cliente,detalleCotizacion,estado)=>{await setDoc(doc(cotizacionRef,id),{fecha,vendedor,cliente,detalleCotizacion,estado})}
  
   /*funcion de firestore que trae los datos de la carpeta coleccion */
   // export const traerTasks = () => getDocs(collection(db,'Micoleccion'));
