@@ -1,4 +1,4 @@
-import {guardarTask,onGetTasks,deleteTask,traerTask,traeroneProduct,updateProduct,guardarVenta} from './firebase.js'
+import {guardarTask,onGetTasks,deleteTask,traerTask,traeroneProduct,updateProduct,guardarVenta,guardarCotizacion} from './firebase.js'
 
 
 const btn_ingresar = document.getElementById('boton')
@@ -12,6 +12,7 @@ const fecha=document.getElementById('fecha')
 
 let objetos=JSON.parse(localStorage.getItem('cotizacion'))
 //let objetos=[]
+let start=true
 
 cargarEventListeners()
 
@@ -87,7 +88,6 @@ function crearVenta(){
     let id=''
     let nuevo_stock=''
     let cantidad_venta=1
-
     id=tabla.childNodes[0].childNodes[5].childNodes[0].id                       //obtener id de cada fila
     console.log('id:',id)
     console.log('objetos de contenedor:',objetos)
@@ -95,9 +95,11 @@ function crearVenta(){
     let en_almacen=objetos[0].stock                                             //cantidad en stock
     nuevo_stock=en_almacen-cantidad_venta                                       // calculo para nuevo stock
     console.log('saldo stock:',nuevo_stock)
-    actualizarStock(id,nuevo_stock)
-    registrarVenta(id,cantidad_venta)
+
+    actualizarStock(objeto)
+
 */
+    registrarVenta()
     localStorage.removeItem('cotizacion');
     objetos=[]
     form.reset()
@@ -105,23 +107,30 @@ function crearVenta(){
     console.log('Registrando la venta en la base de datos...') 
 }
 
-function actualizarStock(id,nuevo_stock){
+function actualizarStock(objeto){
+    
 
     updateProduct(id,{stock:nuevo_stock
         })
     
 }
 
-function registrarVenta(id,cantidad_venta){
-    console.log('registrando la venta en la DB')
-    //const imagen              = form['imagen']
-    let cliente='Heinz'
-    let vendedor='Smith'
-    let productoVendido=id
-    let cantidad=cantidad_venta
+function registrarVenta(){
+    let id_cotizacion='CT20122022_2'
+    let tiempoTranscurrido=Date.now()
+    let hoy=new Date(tiempoTranscurrido)    
 
-    guardarVenta(cliente,vendedor,productoVendido,cantidad)
-    console.log('venta registrada')
+    
+    let cliente             = form['cliente'].value
+    let vendedor            = form['vendedor'].value
+    let detalleCotizacion   = JSON.stringify(objetos)
+    let estado              = 'pendiente'
+    let id                  = id_cotizacion
+    let fecha               = hoy.toLocaleDateString()
+    
+    guardarCotizacion(id,fecha,vendedor,cliente,detalleCotizacion,estado)
+    
+    console.log('Registro realizado con exito el:',hoy.toLocaleDateString())
 }
 
 function actualizaImporte(e){
@@ -221,6 +230,7 @@ function pintarFilasLlenas(objetos){
 }
 
 function pintarFilasVacias(objetos){
+    if(start){objetos=[];start=false}
     let filasLlenas=objetos.length
     let filasVacias=10
     for(let i =0;i<filasVacias-filasLlenas;i++){
@@ -268,5 +278,3 @@ function generaPDF(){
             .catch(err => console.log(err));
     
 }
-
-
