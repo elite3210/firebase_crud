@@ -8,6 +8,7 @@
     <script src="https://kit.fontawesome.com/434a77214b.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
     <script src="https://parzibyte.github.io/ejemplos-javascript/html-a-pdf/html2pdf.bundle.min.js"></script>
+    <script src="JsBarcode.code128.min.js"></script>
 
     
 
@@ -168,7 +169,8 @@
       </header>
 
 
-
+      <svg class="barcode" id="barcode"></svg>
+      
   <div class="contenedor">
     <form  id="formulario">
         <h1>COTIZACIÓN</h1><h4 id="fecha">Lima, 13 de Diciembre de 2022</h4>
@@ -176,7 +178,7 @@
         <input  class='celda vendedor' type="text" id="vendedor"></br>
         <label for="cliente">Cliente  :</label>
         <input  class=' celda cliente' type="text" id="cliente"></br>
-        <label for="ruc">RUC      :</label>
+        <label for="ruc">RUC:</label>
         <input class='celda ruc' type="text" id="ruc"></br>
         <label class='boton' for="boton">Codigo :</label>
         <input class='celda codigo'  type="text" id="codigo" size="6"><span class="validity"></span>  
@@ -203,6 +205,8 @@
     <button id="btn-imprimir">Imprimir</button>
     <h4>Heinz Sport SAC :: RUC 20605216715</h4>    
   </div>
+
+  
   
     <script>
     document.addEventListener('DOMContentLoaded', () => {

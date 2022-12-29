@@ -1,14 +1,14 @@
 import {guardarTask,onGetTasks,deleteTask,traerTask,traeroneProduct,updateProduct,guardarVenta,guardarCotizacion} from './firebase.js'
 
 
-const btn_ingresar = document.getElementById('boton')
-const btn_semaforo   = document.querySelector('.semaforo')
-const form=document.getElementById('formulario')
-const tabla = document.getElementById('container');
-const btn_guardar =document.getElementById('btn-guardar')
-const btn_imprimir =document.getElementById('btn-imprimir')
-const celda_total=document.getElementById('celda_total')
-const fecha=document.getElementById('fecha')
+const btn_ingresar      = document.getElementById('boton')
+const form              = document.getElementById('formulario')
+const tabla             = document.getElementById('container');
+const btn_guardar       = document.getElementById('btn-guardar')
+const btn_imprimir      = document.getElementById('btn-imprimir')
+const celda_total       = document.getElementById('celda_total')
+const fecha             = document.getElementById('fecha')
+const btn_semaforo      = document.querySelector('.semaforo')
 
 let objetos=JSON.parse(localStorage.getItem('cotizacion'))
 //let objetos=[]
@@ -18,9 +18,9 @@ cargarEventListeners()
 
 function cargarEventListeners(){
     pintarTabla(objetos)
-    let tiempoTranscurrido=Date.now()
-    let hoy=new Date(tiempoTranscurrido)
-    fecha.textContent=hoy.toLocaleDateString()
+    let tiempoTranscurrido  =Date.now()
+    let hoy                 =new Date(tiempoTranscurrido)
+    fecha.textContent       =hoy.toLocaleDateString()
 
     btn_ingresar.addEventListener('click',async(e)=>{
         e.preventDefault()
@@ -116,10 +116,9 @@ function actualizarStock(objeto){
 }
 
 function registrarVenta(){
-    let id_cotizacion='CT20122022_2'
-    let tiempoTranscurrido=Date.now()
-    let hoy=new Date(tiempoTranscurrido)    
-
+    let id_cotizacion       = 'CT20122022_2'
+    let tiempoTranscurrido  = Date.now()
+    let hoy                 = new Date(tiempoTranscurrido)    
     
     let cliente             = form['cliente'].value
     let vendedor            = form['vendedor'].value
@@ -139,10 +138,9 @@ function actualizaImporte(e){
             e.preventDefault()
             
             for(let i =0;i<objetos.length;i++){
-            
                 objetos[i].cantidad = parseInt(tabla.children[i].children[3].children[0].value) 
                 objetos[i].precio   = parseFloat(tabla.children[i].children[6].children[0].value)
-                objetos[i].importe  =parseFloat(objetos[i].cantidad*objetos[i].precio)
+                objetos[i].importe  = parseFloat(objetos[i].cantidad*objetos[i].precio)
             }
             limpiarTabla(e)
             pintarTabla(objetos)
@@ -255,9 +253,16 @@ function sincronizarLocalStorage(objetos){
     objetos=JSON.parse(localStorage.getItem('cotizacion'))
 }
 
+JsBarcode(".barcode",'SB0070', {
+    lineColor: "#000",
+    width: 1.5,
+    height: 40,
+    displayValue: false
+  });
+
 function generaPDF(){
     console.log('generando pdf...')
-    const elementoParaConvertir = document.body; // <-- Aquí puedes elegir cualquier elemento del DOM
+    const elementoParaConvertir = document.getElementById('barcode'); // <-- Aquí puedes elegir cualquier elemento del DOM
         html2pdf()
             .set({
                 margin: 0.25,
@@ -268,13 +273,20 @@ function generaPDF(){
                     letterRendering: true,
                 },
                 jsPDF: {
-                    unit: "in",
-                    format: "a5",
+                    unit: "mm",
+                    format: [25, 35],
                     orientation: 'landscape' // landscape o portrait
                 }
             })
             .from(elementoParaConvertir)
             .save()
             .catch(err => console.log(err));
-    
+        /*
+        navigator.share({
+            title:'probando esta nueva API',
+            text:'Desde Heinz Sport SAC',
+            url:'./cotizacion.pdf'
+        })
+    */
 }
+

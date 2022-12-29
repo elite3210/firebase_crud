@@ -1,9 +1,10 @@
 import {guardarProduct,onGetProduct,deleteProduct,traeroneProduct,updateProduct} from './firebase.js'
-
+let body=document.getElementsByTagName('body')
 
 
 //para guaradr los registo en firebase
 const tareaForm = document.getElementById('tarea-form')
+
 let editStatus=false;
 let id ='';
 
@@ -56,6 +57,7 @@ tareaForm.addEventListener('submit',(e)=>{
     tareaForm.reset()
 })
 
+
 //traer los productos de firebase
 const tareasContainer = document.getElementById('tareas-container')
 
@@ -72,18 +74,20 @@ const registroProductos = onGetProduct((querySnapshot) =>{
             objetoProducto.push(objeto)
 
             fila.innerHTML = `
+                                <td><label class ='barcode fa-solid fa-barcode' data-id='${objeto.id}' value='${objeto.id}' id='${objeto.id}'></label></td>
                                 <td>${objeto.categoria}</td>
                                 <td>${objeto.id}</td>
                                 <td>${objeto.nombre}</td>
                                 <td>${objeto.stock}</td>
                                 <td>${objeto.unidad}</td>
                                 <td>${objeto.precio_anterior}</td>
-                                <td><input type='number' class='celda' id='${objeto.id}' value='${objeto.precio}' disabled></td>
+                                <td>${objeto.precio}</td>
                                 <td>${objeto.descripcion}</td>
                                 <td>${objeto.activo}</td>
                                 
-                                <td><button class ='btn-delete fa fa-trash' id=''data-id=${objeto.id}></button></td>
-                                <td><button class ='btn-edit fa-solid fa-pen-to-square' color='transparent'data-id=${objeto.id}></button></td>
+                                
+                                <td><button class ='btn-delete fa fa-trash' id='' data-id=${objeto.id}></button></td>
+                                <td><button class ='btn-edit fa-solid fa-pen-to-square' color='transparent' data-id=${objeto.id}></button></td>
                             `
                   
             tareasContainer.appendChild(fila);
@@ -95,6 +99,32 @@ const registroProductos = onGetProduct((querySnapshot) =>{
         btnDelete.forEach(btn=>{
             btn.addEventListener('click',(e)=>{deleteProduct(e.target.dataset.id)})
         })
+
+        //generador de barcode 128
+        const barcode = tareasContainer.querySelectorAll('.barcode')
+        barcode.forEach(elem=>{
+            elem.addEventListener('click',(e)=>{
+                e.preventDefault()
+                let id = e.target.dataset.id
+
+                console.log('barcode en lienzo creado para id:',id)
+
+                //genera codigo de barra en un elemento svg con id barcode
+                JsBarcode('#barcode',id, {
+                    lineColor: "#000",
+                    width: 1.3,
+                    height: 30,
+                    displayValue: true
+                });
+
+                let cuadro_code=document.getElementById('barcode')
+                generaPDF(cuadro_code)
+            })
+        })
+        
+
+
+
 
         const btnEdit = tareasContainer.querySelectorAll('.btn-edit')
         //funcionamiento boton eleditar
@@ -127,4 +157,35 @@ const registroProductos = onGetProduct((querySnapshot) =>{
              
     } else{tareasContainer.innerHTML='<p>Para acceder a inventario necesitas estar autorizado</p>'}
 })
+
+
+  function generaPDF(elementoParaConvertir){
+    console.log('generando pdf en tag:',elementoParaConvertir)
+    // <-- Aquí puedes elegir cualquier elemento del DOM
+        html2pdf()
+            .set({
+                margin: 0.05,
+                filename: 'barcode',
+                //se borro image jpg, averiguar codigo origina en github del cdn html2pdf
+                html2canvas: {
+                    scale: 3, // A mayor escala, mejores gráficos, pero más peso
+                    letterRendering: true,
+                },
+                jsPDF: {
+                    unit: "mm",
+                    format: [25, 35],
+                    orientation: 'landscape' // landscape('l') o portrait('p')
+                }
+            })
+            .from(elementoParaConvertir)
+            .save()
+            .catch(err => console.log(err));
+        /*
+        navigator.share({
+            title:'probando esta nueva API',
+            text:'Desde Heinz Sport SAC',
+            url:'./cotizacion.pdf'
+        })
+    */
+}
 

@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css" rel="stylesheet"/>
     <script src="https://kit.fontawesome.com/434a77214b.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <script src="https://parzibyte.github.io/ejemplos-javascript/html-a-pdf/html2pdf.bundle.min.js"></script>
+    <script src="JsBarcode.code128.min.js"></script>
     <title>::Productos::</title>
     <style>
         body{
@@ -44,7 +45,7 @@
             border-color: transparent;
         }
         .btn-edit:hover{
-            color: blue;
+            color: rgb(3, 245, 15);
     
         }
 
@@ -52,6 +53,21 @@
             background-color: transparent;
             border-color: transparent;
         }
+
+        .barcode{
+            background-color: transparent;
+            border-color: transparent;
+            margin-left: 3px;
+            margin-right: 2px;
+        }
+
+        .barcode:hover{
+          background-color: white;
+          color: blue;
+          
+    
+        }
+
         .btn-delete:hover{
             color: red;
 
@@ -69,7 +85,7 @@
         }
         tr:nth-child(even){background-color: rgb(228, 226, 226);}
         tr:hover{
-            background-color: aquamarine;
+            background-color: rgb(206, 207, 207);
         }
         
         .button-content{
@@ -84,7 +100,7 @@
 
 </head>
 <body>
-    <header>
+  <header>
         <nav class="navbar" role="navigation" aria-label="main navigation">
           <div class="navbar-brand">
             <a class="navbar-item" href="http://www.heinzsport.com">
@@ -128,9 +144,9 @@
             </div>
           </div>
         </nav>
-      </header>
+  </header>
 
-    <div class="ventana">
+  <div class="ventana">
 
     <form id="tarea-form" class="form1">
      
@@ -162,7 +178,6 @@
                 <label for="costo" >costo :</label>
                 <input class="costo"  type="number"  id='costo'>
 
-
                 <label for="imagen" >Imagen :</label>
                 <input class="imagen"  type="text" id='imagen'>
 
@@ -176,22 +191,24 @@
               
     </form><br>
     <table>   
-        <tr><th>Categoria</th><th>Codigo</th><th>Nombre</th><th>Stock</th><th>Unidad</th><th>Antes</th><th>Precio</th><th>Descripcion</th><th>Activo</th><th>Eliminar</th><th>Editar</th></tr>
+        <tr><th></th><th>Categoria</th><th>Codigo</th><th>Nombre</th><th>Stock</th><th>Unidad</th><th>Antes</th><th><i class="fa-solid fa-hand-holding-dollar"></i></th><th>Descripcion</th><th><i class="fa-regular fa-bell-slash"></i></th><th></th><th></th></tr>
         <tbody  class="caja" id="tareas-container">
-      
         </tbody>
-            
-  </table>
-<div class="button-content">
-  <button>Guardar</button><button>Imprimir</button>
-</div>
-</div>
+        
+    </table>
+    <div class="button-content">
+      <button>Guardar</button><button>Imprimir</button>
+    </div>
+  </div>
 
-    <div id="table"></div>
-    <script type="module" src="./productos.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/gridjs/dist/gridjs.umd.js"></script>
-    <!--crip del menu de navegacion-->
-    <script>
+  <div id="table"></div>
+  
+  <svg id="barcode"></svg>
+
+  <script type="module" src="./productos.js"></script>
+
+  <!--crip del menu de navegacion-->
+  <script>
         document.addEventListener('DOMContentLoaded', () => {
         // Get all "navbar-burger" elements
         const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
@@ -211,6 +228,6 @@
         });
         
         });
-    </script>
+  </script>
 </body>
 </html>

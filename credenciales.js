@@ -121,7 +121,7 @@ const registroTrabajadores = onGetTasks((querySnapshot) =>{
             
         });
 
-        let sinPago= registros.filter((jornada)=>{return jornada.title>'2022-12-12T08:00' & jornada.description=='Mariela'} )
+        let sinPago= registros.filter((jornada)=>{return jornada.title<'2022-10-30T08:00' & jornada.description=='Mariela'} )
         console.log(sinPago)
         sinPago.forEach(jornada=>{
 
@@ -136,7 +136,6 @@ const registroTrabajadores = onGetTasks((querySnapshot) =>{
                         <td><button class ='btn-delete' data-id=${jornada.id}>del</button></td>
                         <td><button class ='btn-edit' data-id=${jornada.id}>edit</button></td>
                     </tr>`
-            
         })
 
 
