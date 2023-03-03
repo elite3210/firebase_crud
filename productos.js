@@ -154,7 +154,6 @@ const registroProductos = onGetProduct((querySnapshot) =>{
                 tareaForm['boton-task-save'].innerHTML='Actualizar'
             })
         });
-             
     } else{tareasContainer.innerHTML='<p>Para acceder a inventario necesitas estar autorizado</p>'}
 })
 

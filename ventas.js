@@ -262,7 +262,7 @@ JsBarcode(".barcode",'SB0070', {
 
 function generaPDF(){
     console.log('generando pdf...')
-    const elementoParaConvertir = document.getElementById('barcode'); // <-- Aquí puedes elegir cualquier elemento del DOM
+    const elementoParaConvertir = document.body; // <-- Aquí puedes elegir cualquier elemento del DOM
         html2pdf()
             .set({
                 margin: 0.25,
@@ -274,7 +274,7 @@ function generaPDF(){
                 },
                 jsPDF: {
                     unit: "mm",
-                    format: [25, 35],
+                    format: 'a5',
                     orientation: 'landscape' // landscape o portrait
                 }
             })
