@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clientes</title>
+    <link rel="stylesheet" href="estilos.css">
+    <style>
+      .contenedorClientes{
+          background-image: linear-gradient(to top, #9890e3 0%, #b1f4cf 100%);
+      }
+  </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar" role="navigation" aria-label="main navigation">
+          <div class="navbar-brand">
+            <a class="navbar-item" href="http://www.heinzsport.com">
+              <img src="./imagenes/heinz_sport_sac_logo.png" width="112" height="28">
+            </a>
+        
+            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+            </a>
+          </div>
+        
+          <div id="navbarBasicExample" class="navbar-menu">
+            <div class="navbar-start">
+              <a class="navbar-item" href="./index.html">Home</a>
+              <a class="navbar-item"href="./carrito/index.html">Catálogo</a>
+        
+              <div class="navbar-item has-dropdown is-hoverable">
+                <a class="navbar-link">Intranet</a>
+        
+                <div class="navbar-dropdown">
+                  <a class="navbar-item" href="./jornada.html">Recursos Humanos</a>
+                  <a class="navbar-item" href="./index.html">Eventos</a>
+                  <a class="navbar-item" href="./index.html">Registro</a>
+                  <hr class="navbar-divider">
+                  <a class="navbar-item" href="./documento.html">Documentos</a>
+                  <a class="navbar-item" href="./index.html">productos</a>
+                  <a class="navbar-item" href="./index.html">Ventas</a>
+                </div>
+              </div>
+            </div>
+        
+            <div class="navbar-end">
+              <div class="navbar-item">
+                <div class="buttons">
+                  <a class="button is-primary"><strong>Sign up</strong></a>
+                  <a class="button is-light">Log in</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </nav>
+    </header>
+
+    <div class="contenedorClientes">
+        <form  id="formularioClientes">
+            <h1 id="titulo">Registrar nuevo cliente</h1></br>
+
+            <h4 id="titulo">Datos de empresa:</h4>
+            <label for="razonSocial">Razon social:</label><input  class='celda empresa' type="text" id="razonSocial"></br> 
+            <label for="ruc">RUC :</label><input  class='empresa' type="text" maxlength="11" minlength="8" id="ruc"></br> 
+            <label for="inicioActividad">Inicio Actividad:</label><input  class='celda inicio' type="date" id="inicioActividad"></br> 
+            <fieldset>
+              <legend>Datos de Contacto:</legend>
+              
+              <label for="nombresContacto">Nombres  :</label><input  class=' celda cliente' type="text" id="nombresContacto"></br>
+              <label for="apellidosContacto">Apellidos  :</label><input  class=' celda cliente' type="text" id="apellidosContacto"></br>
+              <label for="email">Correo:</label><input  class=' celda correo' type="email" id="email"></br>
+              <label for="dni">DNI  :</label><input class='dni' type="number" id="dni"></br>
+              <label class='celda cargo' for="cargo">Cargo :</label><input class='cargo'  type="text" id="cargo" ></br>
+              <label class='telefono' for="cargo">Telefono :</label><input class='celda telefono'  type="tel" id="telefono" ></br>
+            </fieldset>
+            
+            <h4 id="titulo">Direccion:</h4>
+            <label for="calle">Calle  :</label><input  class=' celda cliente' type="text" id="calle"></br>
+            <label for="distrito">Distrito  :</label><input class='celda distrito' type="text" id="distrito"></br>
+            <label class='provincia' for="provincia">Provincia:</label><input class='cargo'  type="text" id="provincia" ></br>
+            <label class='celda telefono' for="departamento">Departamento :</label><input class='celda telefono'  type="text" id="departamento" ></br>
+            <label class='ubicacion' for="departamento">Ubicacion :</label><input class='celda telefono'  type="text" id="ubicacion" ></br>
+            <label class='nota' for="nota">Anotacion :</label><textarea class='celda nota' cols="30" type="text" id="nota" ></textarea> </br>
+                
+        <button  id="boton">Ingresar</button>
+        
+        </form>
+        
+    </div>
+    
+    <a href ='https://dniperu.online/buscar-dni-por-nombres-y-apellidos/'>::consulta DNI::</a>
+    <a href ='https://portal.bitel.com.pe/asistencia/consulta-linea'>::consulta Telefono BITEL::</a>
+    <a href ='https://e-consultaruc.sunat.gob.pe/cl-ti-itmrconsruc/jcrS00Alias?accion=consPorRazonSoc&razSoc=MTS'>::consulta RUC::</a>
+    <a href ='http://app.sis.gob.pe/SisConsultaEnLinea/Consulta/frmConsultaEnLinea.aspx'>::Consulta DNI Seguro SIS::</a>
+    <a href ='https://checatuslineas.osiptel.gob.pe/'>::Consulta Telefono Osiptel::</a>
+    <a href ='https://www.claro.com.pe/consulta-de-numero/'>::Consulta Telefono Claro::</a>
+    <a href ='https://www.movistar.com.pe/movil/postpago/conoce-tus-numeros-moviles'>::Consulta Telefono Movistar::</a>
+    <a href ='https://www.entel.pe/consulta-en-linea/'>::Consulta Telefono Entel::</a>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+      // Get all "navbar-burger" elements
+      const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+      // Add a click event on each of them
+      $navbarBurgers.forEach( el => {
+        el.addEventListener('click', () => {
+      
+          // Get the target from the "data-target" attribute
+          const target = el.dataset.target;
+          const $target = document.getElementById(target);
+      
+          // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
+          el.classList.toggle('is-active');
+          $target.classList.toggle('is-active');
+      
+        });
+      });
+      
+      });
+      </script>
+      <script type="module" src="./clientes.js"></script>
+
+</body>
+</html>

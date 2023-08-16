@@ -1,4 +1,4 @@
-import {traerConsultaZapato} from './firebase.js'
+import {traerConsultaZapato} from '../firebase.js'
 
 
 //llamando a la funcion traer consulta que incluye la tabla grid js

@@ -1,0 +1,133 @@
+.cajaMenu{
+    display: flex;
+  }
+  .filtro{
+    display: flex;
+    flex: 1;
+  }
+  .opciones{
+    display: flex;
+    flex: 4;
+    justify-content: right;
+  }
+  
+    tbody{
+        border-radius: 18px;
+        background-color: beige;
+        margin: 5px;
+    }
+    table{
+        
+        border-collapse: collapse;
+        width: 100%;
+        margin: 5px solid red;
+        
+    }
+    th{
+        background-color: rgb(168, 168, 151);
+    }
+    th, td{
+        text-align: left;
+        border-bottom: 2px solid rgb(124, 124, 124);
+        color: black;
+    }
+    td{
+        border-bottom: 1px dotted rgb(248, 248, 248);
+        padding: 0%;
+        
+    }
+    .filaSeleccionada{
+      background-color:rgb(92, 247, 170);
+    }
+
+    .btn-edit{
+        background-color: transparent;
+        border-color: transparent;
+        font-size: 30px;
+
+    }
+    .btn-boleta{
+        background-color: transparent;
+        border-color: transparent;
+        font-size: 30px;
+
+    }
+    .btn-boleta:hover{
+        color: rgb(9, 5, 247);
+
+    }
+    .btn-edit:hover{
+        color: rgb(239, 5, 247);
+
+    }
+
+    .btn-delete{
+        background-color: transparent;
+        border-color: transparent;
+        font-size: 30px;
+    }
+
+    .btn-pagar{
+        background-color: transparent;
+        border-color: transparent;
+        font-size: 30px;
+        margin-left: 3px;
+        margin-right: 2px;
+    }
+
+    .btn-pagar:hover{
+      color: rgb(0, 255, 64);
+    }
+
+    .btn-delete:hover{
+        color: red;
+
+    }
+    .celda{
+        background-color: transparent;
+        border-color: transparent; 
+        padding: 0%;
+    }
+    .ventana{
+        background-color: rgb(254, 255, 241)
+    }
+    tr{
+        padding: none;
+    }
+    .fila:hover{
+      color: darkseagreen;
+    }
+    
+    .button-content{
+        background-color: rgb(168, 168, 151);
+        text-align: right;
+        padding: 10px;
+    }
+    form{ 
+      background-color: rgb(201, 201, 182)
+    }
+
+    .vtnEmergente{
+        background-color: rgba(256, 256, 256, 1);
+        margin-top: 5%;
+        margin-left: 15%;
+        position: absolute;
+    }
+    .boletaFormulario{
+        display: flex;
+    }
+    #btnCerrar{
+        top: 6px;
+        right: 6px;
+        position: absolute;
+    }
+    #btnCerrar:hover{
+        color: red;
+    }
+    .ctnInpBoleta{
+        width: 90%;
+    }
+    .ctnBtnCerrar{
+        text-align: right;
+        width: 10%;
+    }

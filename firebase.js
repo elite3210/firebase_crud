@@ -1,11 +1,10 @@
-
   // Import the functions you need from the SDKs you need
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js";
-  import {getFirestore,collection,addDoc,getDocs,onSnapshot,deleteDoc,doc,getDoc,updateDoc ,query,where,orderBy,limit,setDoc} from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js";
+  import {getFirestore,collection,addDoc,getDocs,onSnapshot,deleteDoc,doc,getDoc,updateDoc,query,where,orderBy,limit,setDoc} from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js";
   import { getAuth } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-auth.js"
+  
   // TODO: Add SDKs for Firebase products that you want to use
   // https://firebase.google.com/docs/web/setup#available-libraries
-
   // Your web app's Firebase configuration
 
   const firebaseConfig = {
@@ -22,259 +21,56 @@
   export const auth = getAuth(app);
   export const db   = getFirestore();
 
-  const productRef  = collection(db,'Productos')
-  const ventasRef   =collection(db,'Ventas')
-  const cotizacionRef   =collection(db,'Cotizacion')
+  const productRef    =collection(db,'Productos')
+  const ventasRef     =collection(db,'Ventas')
+  const cotizacionRef =collection(db,'Cotizacion')
+  const sociosRef     =collection(db,'Socios')
+  const produccionRef =collection(db,'Produccion')
+  const jornadaRef    =collection(db,'Micoleccion')
+  const boletaPagoRef =collection(db,'BoletaPago')
 
 
 
-  /*Save a New Task in Firestore*/ 
+  /*Save a New registro in Firestore*/ 
   export const guardarTask = (title,description,salida,payStatus)=>{addDoc(collection(db,'Micoleccion'),{title,description,salida,payStatus})}
   export const guardarVenta = (cliente,vendedor,productoVendido,cantidad)=>{addDoc(ventasRef,{cliente,vendedor,productoVendido,cantidad})}
   export const guardarProduct = async (codigo,categoria,nombre,costo,stock,unidad,precio_anterior,precio,activo,descripcion,imagen)=>{await setDoc(doc(productRef,codigo),{imagen,categoria,nombre,costo,stock,unidad,precio_anterior,precio,activo,descripcion})}
-  export const guardarCotizacion = async (id,fecha,vendedor,cliente,detalleCotizacion,estado)=>{await setDoc(doc(cotizacionRef,id),{fecha,vendedor,cliente,detalleCotizacion,estado})}
+  export const guardarCotizacion = async (id,fecha,vendedor,cliente,ruc,detalleCotizacion,estado)=>{await setDoc(doc(cotizacionRef,id),{fecha,vendedor,cliente,ruc,detalleCotizacion,estado})}
+  export const guardarSocios = async (ruc,razonSocial,inicioActividad,nombresContacto,apellidosContacto,email,dni,cargo,telefono,calle,distrito,provincia,departamento,ubicacion,nota)=>{await setDoc(doc(sociosRef,ruc),{razonSocial,inicioActividad,nombresContacto,apellidosContacto,email,dni,cargo,telefono,calle,distrito,provincia,departamento,ubicacion,nota})}
+  export const guardarProduccion = (fecha,usuario,almacen,detalleProduccion,estado,fechaRegistro)=>{addDoc(produccionRef,{fecha,usuario,almacen,detalleProduccion,estado,fechaRegistro})}
+  export const guardarBoletaPago = (numBoleta,dniBoleta,nomBoleta,fechaBoleta,tiempoTotal,creado,detalle,payStatus,importe)=>{addDoc(boletaPagoRef,{numBoleta,dniBoleta,nomBoleta,fechaBoleta,tiempoTotal,creado,detalle,payStatus,importe})}
  
   /*funcion de firestore que trae los datos de la carpeta coleccion */
   // export const traerTasks = () => getDocs(collection(db,'Micoleccion'));
 
   /*creando la suscripcion que se deseara escuchar cuando los datos cambian
    crea un efecto inmediato sobre la tabla, como si se introduciera dorecto a la tabla cuando se guarda*/
-  export const onGetTasks = (callback)=> onSnapshot(collection(db,'Micoleccion'),callback)
+  export const onGetTasks   = (callback)=> onSnapshot(collection(db,'Micoleccion'),callback)
   export const onGetProduct = (callback)=> onSnapshot(collection(db,'Productos'),callback)
+  export const onGetSocios  = (callback)=> onSnapshot(collection(db,'Socios'),callback)
+  export const onGetVentas  = (callback)=> onSnapshot(collection(db,'Cotizacion'),callback)
 
   /*metodo de firesote para eliminar un registro de db */
-  export const deleteTask = (id)=>{deleteDoc(doc(db,'Micoleccion',id))}
-  export const deleteProduct = (id)=>{deleteDoc(doc(db,'Productos',id))}
+  export const deleteTask       = (id)=>{deleteDoc(doc(db,'Micoleccion',id))}
+  export const deleteProduct    = (id)=>{deleteDoc(doc(db,'Productos',id))}
 
   /*metodo getDoc 'en singular' para traer un documento de firestore */
-  export const traerTask = (id)=>getDoc(doc(db,'Micoleccion',id))
-  export const traeroneProduct = (id)=> getDoc(doc(db,'Productos',id))
+  export const traerTask        = (id)=>getDoc(doc(db,'Micoleccion',id))
+  export const traeroneProduct  = (id)=> getDoc(doc(db,'Productos',id))
 
   //actualiza una documento
-  export const updateProduct = (id,newFields)=>updateDoc(doc(db,'Productos',id),newFields)
-  export const updateTask = (id,newFields)=>updateDoc(doc(db,'Micoleccion',id),newFields)
-
-  // Create a reference to the cities collection
-  //import { collection, query, where } from "firebase/firestore";
-  export const queryProductos = (nombre)=>getDocs(query(collection(db,'Productos'), where("web_site", "==", true)));
-
-
-  export const traerConsulta = (nombre)=>{return getDocs(query(collection(db,'Micoleccion'), where("description", "==", nombre), where("payStatus", "==", false), orderBy('title','desc'),limit(60)))}
-
-
-
-/*
-
-const citiesRef = collection(db, "cities");
-
-await setDoc(doc(citiesRef, "SF"), {
-    name: "San Francisco", state: "CA", country: "USA",
-    capital: false, population: 860000,
-    regions: ["west_coast", "norcal"] });
-await setDoc(doc(citiesRef, "LA"), {
-    name: "Los Angeles", state: "CA", country: "USA",
-    capital: false, population: 3900000,
-    regions: ["west_coast", "socal"] });
-await setDoc(doc(citiesRef, "DC"), {
-    name: "Washington, D.C.", state: null, country: "USA",
-    capital: true, population: 680000,
-    regions: ["east_coast"] });
-await setDoc(doc(citiesRef, "TOK"), {
-    name: "Tokyo", state: null, country: "Japan",
-    capital: true, population: 9000000,
-    regions: ["kanto", "honshu"] });
-await setDoc(doc(citiesRef, "BJ"), {
-    name: "Beijing", state: null, country: "China",
-    capital: true, population: 21500000,
-    regions: ["jingjinji", "hebei"] });
-
-
-const productosRef = collection(db, "Productos");
-
-await setDoc(doc(productosRef, "SB0070"), {
-            name: "Sorbetes clasico rayado", 
-            precio: 13, 
-            Stock: 780,
-            web_site: false, 
-            Categoria: 'Descartables',
-            atributos: ["22cm", "blanco"] 
-});
-*/
-/*
-const productosRef = collection(db, "Productos");
-
-await setDoc(doc(productosRef,"PB0070"),
-  {
-    unidad: "Caja",
-    precio: 180,
-    categoria: "Piñateria",
-    imagen: "img/paliglobos desarmables base.jpg",
-    precio_anterior: 200,
-    descripcion: "Paliglobos desarmables base tra",
-    stock: 5,
-    activo: 1,
-    nombre: "Paliglobos desarmables base",
-    web_site: 1,
-    costo:6,
-    almacen: "Chimpu",
-    atributos: ["Blanco","22cm"]
-  })
-
+  export const updateProduct    = (id,newFields)=>updateDoc(doc(db,'Productos',id),newFields)
+  export const updateTask       = (id,newFields)=>updateDoc(doc(db,'Micoleccion',id),newFields)
   
-  await setDoc(doc(productosRef,"SB0070"),
-  {
-    nombre: "Sorbetes rayados clásico ",
-    precio_anterior: 14,
-    unidad: "Planchas",
-    activo: 1,
-    precio: 13,
-    stock: 750,
-    categoria: "Descartables",
-    almacen: "Chimpu",
-    descripcion: "Sorbetes clásico surtido",
-    web_site: 1,
-    imagen: "img/sorbetes_rayados_clasicos.jpg",
-    atributos: ["Surtido","22cm"]
-  })
-  await setDoc(doc(productosRef,"SB0050"),
-  {
 
-    web_site: 1,
-    almacen: "fabrica17",
-    imagen: "img/sorbetes_monocolor_clasicos.jpg",
-    stock: 20,
-    precio_anterior: 13,
-    precio: 12.5,
-    nombre: "Sorbete monocolor clasicos",
-    descripcion: "Sorbetes monocolor clásicos",
-    unidad: "Planchas",
-    activo: 1,
-    categoria: "Descartables",
-    costo:6,
-    atributos: ["Surtido","22cm"]
-  })
-  await setDoc(doc(productosRef,"ST0070"),
-  {
-    unidad: "Planchas",
-    stock: 110,
-    web_site: true,
-    imagen: "img/sorbeton.jpg",
-    precio: 32,
-    activo: 1,
-    precio_anterior: 38,
-    almacen: "fabrica17",
-    descripcion: "Sorbetones corte recto ",
-    categoria: "Descartables ",
-    nombre: "Sorbeton recto",
-    costo:6,
-    atributos: ["Surtido","22cm"]
-  })
-  await setDoc(doc(productosRef,"PG0070"),
-  {
-    nombre: "Paliglobos gruesos #40",
-    activo: 1,
-    unidad: "Millares",
-    descripcion: "Paliglobos gruesos #40 Trans",
-    precio: 132,
-    costo:6,
-    categoria: "Piñateria",
-    stock: 90,
-    precio_anterior: 142,
-    web_site: 1,
-    imagen: "img/paliglobos_gruesos40.png",
-    almacen:'Chimpu',
-    atributos: ["Transparente","22cm"]
-  })
-  await setDoc(doc(productosRef,"PD0070"),
-  {
-    categoria: "Piñateria",
-    imagen: "img/paliglobos_delgados.jpg",
-    precio: 39,
-    activo: 1,
-    descripcion: "Paliglobos delgados",
-    stock: 100,
-    nombre: "Paliglobos delgados",
-    unidad: "Millares",
-    precio_anterior: 42,
-    web_site: 1,
-    costo:6,
-    almacen:'Chimpu',
-    atributos: ["Transparente","22cm"]
-  })
-  await setDoc(doc(productosRef,"SF0010"),
-  {
-    imagen: "img/sorbete_flexible_rayado.jpg",
-    web_site: 1,
-    precio_anterior: 32,
-    stock: 5,
-    activo: 1,
-    nombre: "Sorbetes flexifles rayados",
-    descripcion: "Sorbetes flexibles rayados",
-    unidad: "Planchas",
-    categoria: "Descartables",
-    precio: 1,
-    costo:6,
-    almacen:'Chimpu',
-    atributos: ["Transparente","22cm"]
-  })
-  await setDoc(doc(productosRef,"PPH030"),
-  {
-    unidad: "Kilos",
-    imagen: "img/polipropileno.jpg",
-    precio_anterior: 7.8,
-    stock: 3250,
-    activo: 1,
-    nombre: "Polipropileno Virgen Extrusion",
-    precio: 6.5,
-    categoria: "Material",
-    descripcion: "Polipropileno Virgen Extrusion",
-    costo:7.8,
-    web_site: 0,
-    atributos: ["Transparente","Granulos"]
-  })
-  await setDoc(doc(productosRef,"SB0051"),
-  {
-    unidad: "Planchas",
-    nombre: "Sorbetes monocolor negro",
-    stock: 102,
-    precio_anterior: 13,
-    categoria: "Descartables",
-    almacen: "fabrica17",
-    descripcion: "Sorbetes monocolor negro",
-    precio: 12.5,
-    costo:6,
-    web_site: 1,
-    activo: 1,
-    imagen: "img/sorbetes_monocolor_negro.jpg",
-    atributos: ["Negro","22cm"]
-  })
-  await setDoc(doc(productosRef,"SD0070"),
-  {
-    precio_anterior: 33,
-    categoria: "Descartables",
-    almacen: "fabrica17",
-    imagen: "img/sorbetes_forrados_papel.jpg",
-    unidad: "Planchas",
-    descripcion: "Sorbetes Forrados papel",
-    precio: 32,
-    activo: 1,
-    nombre: "Sorbetes forrados papel",
-    web_site: true,
-    stock: 2,
-    costo:27.5,
-    atributos: ["Blanco","22cm"]
+   //consulta un documento con query y where, En construccion...
+  export const queryProduccion = await getDocs(query(produccionRef,where("estado", "==", "pendiente"),orderBy('fecha','desc')));
+  export const queryJornada = await getDocs(query(jornadaRef,where("title", ">", '2023-07-01T08:00')));
+  export const queryBoletaPago = await getDocs(query(boletaPagoRef,where("payStatus", "==", false)));
+  //,orderBy('fecha','desc')
+  //q = query(citiesRef, where("state", "==", "CA"));
 
-  })
+  export const traerConsulta    = (nombre)=>{return getDocs(query(collection(db,'Micoleccion'), where("description", "==", nombre), where("payStatus", "==", false), orderBy('title','desc'),limit(60)))}
 
-
-PD0070x
-SB0070x
-SB0050x
-ST0070x
-PG0070x
-PD0070
-SF0010x
-PPH030x
-SB0051x
-SD0070x
-*/
+/*
+  [{"payStatus":false,"description":"Alexandra","salida":"2023-08-11T20:00","title":"2023-08-11T12:00","id":"CXHWbaafZmhPoT24VKZJ","nombreDia":"Viernes","hora":"8:0","tiempo":8},{"salida":"2023-08-10T19:00","title":"2023-08-10T13:00","description":"Alexandra","payStatus":false,"id":"FPWji4DRBrGGDN3ni2pm","nombreDia":"Jueves","hora":"6:0","tiempo":6},{"payStatus":false,"title":"2023-08-09T14:30","salida":"2023-08-09T17:00","description":"Alexandra","id":"TatBeDxNKr35KGUeq20P","nombreDia":"Miercoles","hora":"2:30","tiempo":2.5},{"salida":"2023-08-09T13:30","payStatus":false,"title":"2023-08-09T08:10","description":"Alexandra","id":"heGZBZ4kTGoSw47lM0Jz","nombreDia":"Miercoles","hora":"5:20","tiempo":5.33},{"description":"Alexandra","payStatus":false,"salida":"2023-08-08T21:00","title":"2023-08-08T12:30","id":"P9yAsex7Rn61EPQnIANz","nombreDia":"Martes","hora":"8:30","tiempo":8.5},{"title":"2023-08-07T13:00","salida":"2023-08-07T20:30","payStatus":false,"description":"Alexandra","id":"bN89KxaUy70cypnmtvlC","nombreDia":"Lunes","hora":"7:30","tiempo":7.5}]*/

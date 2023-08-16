@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/434a77214b.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <script src="./html2Pdf.js"></script>
+    <script src="JsBarcode.code128.min.js"></script>
+    <title>Pago Jornal</title>
+    <link rel="stylesheet" href="estilos.css">
+    <link rel="stylesheet" href="consultaJornada.css">
+</head>
+<body >
+    <header>
+        <nav class="navbar" role="navigation" aria-label="main navigation">
+          <div class="navbar-brand">
+            <a class="navbar-item" href="http://www.heinzsport.com">
+              <img src="./imagenes/heinz_sport_sac_logo.png" width="112" height="28">
+            </a>
+        
+            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+            </a>
+          </div>
+        
+          <div id="navbarBasicExample" class="navbar-menu">
+            <div class="navbar-start">
+              <a class="navbar-item" href="./index.html">Home</a>
+              <a class="navbar-item"href="./carrito/index.html">Catálogo</a>
+        
+              <div class="navbar-item has-dropdown is-hoverable">
+                <a class="navbar-link">Intranet</a>
+        
+                <div class="navbar-dropdown">
+                  <a class="navbar-item" href="./jornada.html">Recursos Humanos</a>
+                  <a class="navbar-item" href="./index.html">Eventos</a>
+                  <a class="navbar-item" href="./index.html">Registro</a>
+                  <hr class="navbar-divider">
+                  <a class="navbar-item" href="./documento.html">Documentos</a>
+                  <a class="navbar-item" href="./index.html">productos</a>
+                  <a class="navbar-item" href="./index.html">Ventas</a>
+                </div>
+              </div>
+            </div>
+        
+            <div class="navbar-end">
+              <div class="navbar-item">
+                <div class="buttons">
+                  <a class="button is-primary"><strong>Sign up</strong></a>
+                  <a class="button is-light">Log in</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </nav>
+    </header>
+    <div id="cajaFormlarios">
+        <form id="tarea-form" class="form2">
+        </form><br>
+    </div>
+    <div id="body">
+
+    <div class="cajaMenu">
+      <div class="filtro">
+        <input type="text" list="colaboradorList" name="car" id="colaborador">
+        <datalist id="colaboradorList">
+          <option value="Angela">
+          <option value="Alexandra">
+          <option value="Rocio">
+          <option value="Mariela">
+          <option value="Xiomara">
+          <option value="Heinz">
+          <option value="Elí">
+        </datalist>
+        
+      </div>
+      <div class="opciones" id="opciones">
+      </div>
+      <button class ='btn-pagar fa-solid fa-circle-chevron-left' color='transparent' data-id='${id}'></button>
+      <button class ='btn-pagar fa-solid fa-circle-chevron-right' color='transparent' data-id='${id}'></button>
+    </div>
+    <table id="tabla">
+  
+    </table>
+  </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+        // Get all "navbar-burger" elements
+        const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+        // Add a click event on each of them
+        $navbarBurgers.forEach( el => {
+          el.addEventListener('click', () => {
+        
+            // Get the target from the "data-target" attribute
+            const target = el.dataset.target;
+            const $target = document.getElementById(target);
+        
+            // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
+            el.classList.toggle('is-active');
+            $target.classList.toggle('is-active');
+        
+          });
+        });
+        
+        });
+        </script>
+    <script type="module" src="./consultaJornada.js"></script>
+</body>
+</html>

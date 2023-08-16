@@ -1,0 +1,81 @@
+body{
+    
+    background: url(./fondoBody.jpg);
+}
+.ventana{
+    background: rgba(214, 214, 243, 0.6);
+    width: 30%;
+    color: rgba(255, 255, 255, 1);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 18px;
+    text-align: center;
+    padding: 33px;
+    min-height: 250px;
+    border-radius: 22px;
+    left: 34%;
+    top: 30%;
+    position: absolute;
+    display: none;
+
+}
+#cerrar{
+    
+    position: absolute;
+    right: 6px;
+    top: 6px;
+
+}
+header{
+    background: rgba(0, 153, 204, 1);
+    width: 1000px;
+    height: 128px;
+    margin: auto;
+    border-radius: 22px 22px 0 0;
+}
+img{
+    width: 25px;
+    height: 25px;
+}
+.fila{
+    display: flex;
+    width: 400px;
+    height: 51px;
+    background-color: black;
+}
+
+.izquierdo{
+    width: 10%;
+    height: 100%;
+    background-color: rgb(240, 6, 6);
+}
+.centro{
+    width: 90%;
+    height: 100%;
+    background-color: rgb(252, 80, 180);
+}
+.derecho{
+    width: 10%;
+    height: 100%;
+    background-color: rgb(82, 85, 248);
+}
+.superior{
+    
+    display: flex;
+    width: 100%;
+    height: 17px;
+    background-color: aquamarine;
+    
+}
+.medio{
+    width: 100%;
+    height: 17px;
+    background-color: rgb(255, 223, 82);
+}
+.nombre{
+    margin: 0px;
+    top: 0px;
+    font-size: 12px;
+    width: 70%;
+    height: 100%;
+    background-color: blueviolet;
+}

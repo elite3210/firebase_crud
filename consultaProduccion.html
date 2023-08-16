@@ -1,18 +1,13 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://kit.fontawesome.com/434a77214b.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
-    <script src="https://parzibyte.github.io/ejemplos-javascript/html-a-pdf/html2pdf.bundle.min.js"></script>
-    <script src="JsBarcode.code128.min.js"></script>
-    <title>::Productos::</title>
+    <title>Document</title>
+    <link rel="stylesheet" href="estilos.css">
     <style>
         body{
-            background-color: #202020;
-            color:rgb(0, 0, 0);
+            background-image: linear-gradient(to left, #3ab5b0 0%, #3d99be 31%, #56317a 100%);
         }
         tbody{
             border-radius: 18px;
@@ -96,11 +91,12 @@
         form{
             background-color: rgb(201, 201, 182)
         }
-    </style>
 
+
+    </style>
 </head>
 <body>
-  <header>
+    <header>
         <nav class="navbar" role="navigation" aria-label="main navigation">
           <div class="navbar-brand">
             <a class="navbar-item" href="http://www.heinzsport.com">
@@ -123,13 +119,13 @@
                 <a class="navbar-link">Intranet</a>
         
                 <div class="navbar-dropdown">
-                  <a class="navbar-item" href="./personal.html">Recursos Humanos</a>
-                  <a class="navbar-item" href="./menu.html">Eventos</a>
-                  <a class="navbar-item" href="./entrada_salida.html">Registro</a>
+                  <a class="navbar-item" href="./jornada.html">Recursos Humanos</a>
+                  <a class="navbar-item" href="./index.html">Eventos</a>
+                  <a class="navbar-item" href="./index.html">Registro</a>
                   <hr class="navbar-divider">
                   <a class="navbar-item" href="./documento.html">Documentos</a>
-                  <a class="navbar-item" href="./productos.html">productos</a>
-                  <a class="navbar-item" href="./ventas.html">Ventas</a>
+                  <a class="navbar-item" href="./index.html">productos</a>
+                  <a class="navbar-item" href="./index.html">Ventas</a>
                 </div>
               </div>
             </div>
@@ -144,34 +140,14 @@
             </div>
           </div>
         </nav>
-  </header>
+    </header>
 
-  <div class="ventana">
-    <button id="btnNuevoProducto">Nuevo Producto</button>
-
-    <form id="tarea-form" class="form1">
-    <!--Aqui se insertara el formulario de producto-->
-    </form><br>
-  </div>
-  <div>
     <table>   
-      <tr><th></th><th><i class="fa-regular fa-bell-slash"></i></th><th>Categoria</th><th>Codigo</th><th>Nombre</th><th>Stock</th><th>Unidad</th><th>Peso</th><th>Precio</th><th><i class="fa-solid fa-hand-holding-dollar"></i></th><th></th><th></th></tr>
-      <tbody  class="caja" id="tablaContainer"></tbody>
-    
+        <tr><th></th><th><i class="fa-regular fa-bell-slash">Fecha</i></th><th>Codigo</th><th>Descripcion</th><th>Cantidad</th><th>Unidad</th><th>Peso</th><th></th><th></th></tr>
+        <tbody  class="caja" id="produccionContainer">
+        </tbody>    
     </table>
-    <div class="button-content">
-      <button id="totalPeso">Peso</button><button id="totalInventario">Importe</button><button id="btnImprimir">Imprimir Barcode</button>
-    </div>
-  </div>
-
-  <div id="table"></div>
-  
-  <svg id="barcode"></svg>
-
-  <script type="module" src="./productos.js"></script>
-
-  <!--crip del menu de navegacion-->
-  <script>
+    <script>
         document.addEventListener('DOMContentLoaded', () => {
         // Get all "navbar-burger" elements
         const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
@@ -191,6 +167,7 @@
         });
         
         });
-  </script>
+        </script>
+    <script type="module" src="./consultaProduccion.js"></script>
 </body>
 </html>

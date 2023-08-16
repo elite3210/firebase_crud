@@ -1,0 +1,20 @@
+section{
+    text-align: center;
+}
+
+#mainTable{
+    width: 80%;
+    text-align: center;
+    margin: auto 10%;
+}
+.miTabla{
+    width: 100%;
+    padding: 20px;
+    background-color:azure;
+}
+.miTabla thead{
+    background-color: gray;
+}
+.miTabla tfoot{
+    background-color: rgb(202, 153, 247);
+}

@@ -1,88 +1,5 @@
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-auth.js"
-import { db, auth} from "./firebase.js";
 import {guardarTask,onGetTasks,deleteTask,traerTask,updateTask} from './firebase.js'
-//import { setupPosts } from "./main_2.js";
-//import { registroTrabajadores } from "./index.js";
-
 import { getDocs, collection,query,where} from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js"
-
- /* signup  script */
-const signupform = document.querySelector('#signup-form')
-let editStatus=false;
-let id=''
-
-signupform.addEventListener('submit', async (e)=>{
-    e.preventDefault();
-    const email = document.querySelector('#signup-email').value
-    const password = document.querySelector('#signup-password').value
-
-    const userCredentials = await createUserWithEmailAndPassword(auth,email,password)
-    console.log(userCredentials)
-    signupform.reset()
-})
-
-    /* signin o login script */
-const signinform = document.querySelector('#login-form')
-
-signinform.addEventListener('submit',async (e)=>{
-    e.preventDefault();
-
-    const email     = document.querySelector('#login-email').value
-    const password  = document.querySelector('#login-password').value
-        
-    const credentials = await signInWithEmailAndPassword(auth, email,password)
-        signupform.reset()
-        console.log('sesion iniciada')
-         
-    })
-
-/* signout o logout script */
-const logout = document.querySelector('#logout')
-
-logout.addEventListener('click', async(e)=>{
-    await signOut(auth)
-    console.log('sesion terminada')
-
-})
-
-
-
-/*
-onAuthStateChanged(auth, async (user)=>{
-    if (user){
-        window.addEventListener('DOMContentLoaded', async ()=>{ 
-      //  const querySnapshot = await getDocs(collection(db,'Micollecion'))
-        registroTrabajadores(querySnapshot.docs)
-        //console.log(querySnapshot.docs)
-    })
-    }else{
-        console.log('Registrarse para ver los datos')
-    }
-})
-
-
-
-export const traerConsulta = async (nombre)=>{
-    const objetos=[]
-    const querySnapshot = await getDocs(query(collection(db,'Micoleccion'), where("description", "==", nombre)));
-*/
-
-onAuthStateChanged(auth, async (user)=>{
-    if (user){
-        window.addEventListener('DOMContentLoaded',()=>{ 
-        console.log('estoy dentro del user true')
-       // const querySnapshot = await getDocs(query(collection(db,'Micoleccion'), where("description", "==", 'Xiomara')));
-        registroTrabajadores()
-        //console.log(querySnapshot.docs)
-    })
-   }else{
-       console.log('User False, Registrarse para ver los datos')
-   }
-})
-
-
-
-
 
 
 const tareaForm = document.getElementById('tarea-form')
@@ -121,7 +38,9 @@ const registroTrabajadores = onGetTasks((querySnapshot) =>{
             
         });
 
-        let sinPago= registros.filter((jornada)=>{return jornada.title<'2022-10-30T08:00' & jornada.description=='Mariela'} )
+        //return jornada.payStatus==false & jornada.description=='Alexandra' & jornada.title<"2023-08-01T08:00" Alexandra
+
+        let sinPago= registros.filter((jornada)=>{return jornada.description=='Alexandra'} )
         console.log(sinPago)
         sinPago.forEach(jornada=>{
 
@@ -135,6 +54,7 @@ const registroTrabajadores = onGetTasks((querySnapshot) =>{
                         
                         <td><button class ='btn-delete' data-id=${jornada.id}>del</button></td>
                         <td><button class ='btn-edit' data-id=${jornada.id}>edit</button></td>
+                        <td><button class ='btn-pagar' data-id=${jornada.id}>pagar</button></td>
                     </tr>`
         })
 
@@ -151,6 +71,13 @@ const registroTrabajadores = onGetTasks((querySnapshot) =>{
                 btn.addEventListener('click',(e)=>{deleteTask(e.target.dataset.id)})
             })
 
+        const btnPagar = tareasContainer.querySelectorAll('.btn-pagar')
+            btnPagar.forEach(btn=>{
+                btn.addEventListener('click',(e)=>{updateTask(e.target.dataset.id,{payStatus:true})})
+            })
+
+            
+
         const btnEdit = tareasContainer.querySelectorAll('.btn-edit')
         
         btnEdit.forEach((btn)=>{
@@ -160,11 +87,10 @@ const registroTrabajadores = onGetTasks((querySnapshot) =>{
                 const doc =await traerTask(e.target.dataset.id);
                 let tarea=doc.data()
 
-                tareaForm['tarea-title'].value=tarea.title;
-                tareaForm['tarea-description'].value=tarea.description;
-                tareaForm['salida-title'].value=tarea.salida;
-                tareaForm['payStatus'].value=tarea.payStatus 
-
+                tareaForm['tarea-title'].value          =tarea.title;
+                tareaForm['tarea-description'].value    =tarea.description;
+                tareaForm['salida-title'].value         =tarea.salida;
+                tareaForm['payStatus'].value            =tarea.payStatus;
 
                 editStatus=true;
                 tareaForm['boton-task-save'].innerHTML='Actualizar'
@@ -180,17 +106,14 @@ tareaForm.addEventListener('submit',(e)=>{
     const titulo        = tareaForm['tarea-title'];
     const descripcion   = tareaForm['tarea-description'];
     const salida        = tareaForm['salida-title'];
-    let payStatus       = tareaForm['payStatus'];
+    const payStatus     = false;                       //por defecto cuando se edita sera falso el pago, porque no se puede editar algo ppagado
     
-if(!editStatus){
-    guardarTask(titulo.value,descripcion.value,salida.value,payStatus)
-
-}else{
-    updateTask(id,{title:titulo.value,description:descripcion.value,salida:salida.value,payStatus:payStatus.value})
-    editStatus=false
-    tareaForm['boton-task-save'].innerHTML='Registrar'
-}
-    
-
+    if(!editStatus){
+        guardarTask(titulo.value,descripcion.value,salida.value,payStatus)//false el pago, por defecto al registrar por primera vez
+    }else{
+        updateTask(id,{title:titulo.value,description:descripcion.value,salida:salida.value,payStatus:payStatus})
+        editStatus=false
+        tareaForm['boton-task-save'].innerHTML='Registrar'
+    }
     tareaForm.reset()
 })

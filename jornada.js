@@ -74,8 +74,3 @@ tareaForm.addEventListener('submit',(e)=>{
 
   tareaForm.reset()
 })
-
-
-
-
-

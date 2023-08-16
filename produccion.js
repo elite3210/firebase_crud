@@ -1,4 +1,4 @@
-import {traeroneProduct,updateProduct,guardarCotizacion} from './firebase.js'
+import {traeroneProduct,updateProduct,guardarProduccion} from './firebase.js'
 
 
 const btn_ingresar      = document.getElementById('boton')
@@ -10,7 +10,7 @@ const celda_total       = document.getElementById('celda_total')
 const fecha             = document.getElementById('fecha')
 const btn_semaforo      = document.querySelector('.semaforo')
 
-let objetos=JSON.parse(localStorage.getItem('cotizacion'))
+let objetos=JSON.parse(localStorage.getItem('produccion'))
 //let objetos=[]
 let start=true
 
@@ -45,7 +45,7 @@ function crearVenta(){
 
     registrarVenta()
     actualizarStock(objetos)
-    localStorage.removeItem('cotizacion');
+    localStorage.removeItem('produccion');
     objetos=[]
     form.reset()
     pintarTabla(objetos) //vueve a pintar el formulario vacio
@@ -53,7 +53,7 @@ function crearVenta(){
 
 function actualizarStock(objetos){
     let id=objetos[0].id 
-    let nuevo_stock=objetos[0].stock - objetos[0].cantidad                                     // calculo para nuevo stock
+    let nuevo_stock=Number(objetos[0].stock) + objetos[0].cantidad                                     // calculo para nuevo stock
     
     updateProduct(id,{stock:nuevo_stock})
     console.log('stock actualizado:',id,nuevo_stock)
@@ -61,20 +61,17 @@ function actualizarStock(objetos){
 
 function registrarVenta(){
     console.log('dentro funcion registraVenta:')
-    let numeroCotizacion    = document.getElementById('cotizacion')
-    let id_cotizacion       = numeroCotizacion.value
+    let fecha               = form['fecha'].value
     let tiempoTranscurrido  = Date.now()
     let hoy                 = new Date(tiempoTranscurrido)    
     
-    let cliente             = form['cliente'].value
-    let ruc                 = form['ruc'].value
-    let vendedor            = form['vendedor'].value
-    let detalleCotizacion   = JSON.stringify(objetos)
+    let usuario             = form['usuario'].value
+    let almacen             = form['almacen'].value
+    let detalleProduccion   = JSON.stringify(objetos)
     let estado              = 'pendiente'
-    let id                  = id_cotizacion
-    let fecha               = hoy.toLocaleDateString()
+    let fechaRegistro       = hoy.toLocaleDateString()
     
-    guardarCotizacion(id,fecha,vendedor,cliente,ruc,detalleCotizacion,estado)
+    guardarProduccion(fecha,usuario,almacen,detalleProduccion,estado,fechaRegistro)
     
     console.log('Registro de cotizacion es un exito:',hoy.toLocaleDateString())
 }
@@ -86,8 +83,8 @@ function actualizaImporte(e){
             
         for(let i =0;i<objetos.length;i++){
             objetos[i].cantidad = parseInt(tabla.children[i].children[3].children[0].value) 
-            objetos[i].precio   = parseFloat(tabla.children[i].children[6].children[0].value)
-            objetos[i].importe  = parseFloat(objetos[i].cantidad*objetos[i].precio)
+            objetos[i].costo   = parseFloat(tabla.children[i].children[6].children[0].value)
+            objetos[i].importe  = parseFloat(objetos[i].cantidad*objetos[i].peso)
         }
         limpiarTabla(e)
         pintarTabla(objetos)
@@ -161,10 +158,10 @@ function pintarFilasLlenas(objetos){
                         <td><button class ='btn-stock fa-solid fa-circle-plus' color='transparent'data-id=${producto.id}></button></td>
                         <td>${contador}</td>
                         <td>${producto.id}</td>
-                        <td><input type='number'  min="0" step="0.1" class='cantidad' id='${producto.id}' value=${producto.cantidad}></td>
+                        <td><input type='number'  min="0" step="0.1" class='cantidad' id='${producto.id}' value=${producto.cantidad} ></td>
                         <td>${producto.unidad}</td>
                         <td>${producto.descripcion}</td>
-                        <td><input type='number' min="0" step="0.1" class='precio' id='${producto.id}' value=${producto.precio}></td>
+                        <td><input type='number' min="0" step="0.01" class='precio' id='${producto.id}' value=${producto.peso}></td>
                         <td><input type='number' class='importe' id='${producto.id}' value=${producto.importe}></td>
                         <td><button class ='btn-delete fa fa-trash' id=''data-id=${producto.id}></button></td>                       
                         `
@@ -196,8 +193,8 @@ function pintarFilasVacias(objetos){
 }
 
 function sincronizarLocalStorage(objetos){
-    localStorage.setItem('cotizacion',JSON.stringify(objetos))
-    objetos=JSON.parse(localStorage.getItem('cotizacion'))
+    localStorage.setItem('produccion',JSON.stringify(objetos))
+    objetos=JSON.parse(localStorage.getItem('produccion'))
 }
 
 /*
@@ -210,11 +207,11 @@ JsBarcode(".barcode",'SB0070', {
 */
 function generaPDF(){
     console.log('generando pdf...')//crear pdf a partir del lenguaje y no de html
-    const areaImpresion       = document.getElementById('documentoPDF'); // <-- Aquí puedes elegir cualquier elemento del DOM
+    const elementoParaConvertir = document.body; // <-- Aquí puedes elegir cualquier elemento del DOM
         html2pdf()
             .set({
-                margin: 5,
-                filename: `Venta`,
+                margin: 0.25,
+                filename: 'cotizacion',
                 //se borro image jpg, averiguar codigo origina en github del cdn html2pdf
                 html2canvas: {
                     scale: 5, // A mayor escala, mejores gráficos, pero más peso
@@ -226,7 +223,7 @@ function generaPDF(){
                     orientation: 'landscape' // landscape o portrait
                 }
             })
-            .from(areaImpresion)
+            .from(elementoParaConvertir)
             .save()
             .catch(err => console.log(err));
         /*
@@ -239,8 +236,9 @@ function generaPDF(){
 }
 
 function pintarFecha(){
-    
-    fecha.textContent       =new Date(Date.now()).toLocaleDateString()
+    let tiempoTranscurrido  =Date.now()
+    let hoy                 =new Date(tiempoTranscurrido)
+    fecha.textContent       =hoy.toLocaleDateString()
 }
 
 async function ingresarProducto(e){
@@ -266,7 +264,7 @@ async function ingresarProducto(e){
             let fila = traerDoc.data()                                  //.data() metodo para mostrar solo los datos del producto
             fila.id=traerDoc.id                                         // el id esta en otro campo, por eso se llama aparte y luego agregar
             fila.cantidad=1                                             //por defecto cantidad igual a 1
-            fila.importe=fila.precio*fila.cantidad                      //calculamos l importe
+            fila.importe=fila.peso*fila.cantidad                      //calculamos l importe
             
             objetos.push(fila)                                          //metemos los datos de fila en objetos
             limpiarTabla(e)                                             //limpir datos de la tabla

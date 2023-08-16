@@ -29,35 +29,37 @@ function cargarEventListeners(){
 //Funciones
 
 //trae los productos de la DB en un array de objetos
-const objetosProductos = onGetProduct(async (querySnapshot) =>{
+const objetosProductos = onGetProduct(async (objetos) =>{
     
     var productos=[]
     let contador=0
-    await querySnapshot.forEach((product) =>{
+    await objetos.forEach((product) =>{
 
         productos.push(product.data())
         productos[contador].id=product.id
         contador++
     });
+//utiliza un array metodo para filtrar los que no deben estar en la web
+    let productosWeb = productos.filter((producto) => producto.activo =='1');
 
+    //console.log('array de objeto productosWeb:',productosWeb)
     //console.log('array de objeto productos:',productos)
     //return productos
-    pintarCatalogo(productos)
+    pintarCatalogo(productosWeb)
 })
 
 
-//pinta el catalo en pagina web
+//pinta el catalogo en pagina web
 function pintarCatalogo(productos){
     
     let contador=0  //cuenta los articulos del carrito solo no por tipo
 
     productos.forEach((producto)=>{
         
-        var card =document.createElement('div')
+        var card = document.createElement('div')
                         card.setAttribute('class','row')
         
-        card.innerHTML +=`<div class="four columns">
-                            <div class="card">
+        card.innerHTML +=`<div class="card four columns">
                                 <img src="${producto.imagen}" class="imagen-curso u-full-width">
                                 <div class="info-card">
                                     <h4>${producto.nombre}</h4>
@@ -68,7 +70,6 @@ function pintarCatalogo(productos){
                                     <a href="#" class="u-full-width button-primary button input agregar-carrito" data-id="${producto.id}">Agregar Al Carrito</a>
                                 </div>
                             </div>
-                        </div>
                         `;
         //agregando al tbody
         listaCursos.appendChild(card);
@@ -105,7 +106,7 @@ function clickCarrito(e){
         })
         pintarCarrito()
     }
-    //incrementa cantidad de un item 
+    //incrementa cantidad de un item si hay click en boton inremento
     if(e.target.classList.contains('button_inc')){
         console.log('diste clik en incrementar:')
         
@@ -192,7 +193,7 @@ function pintarCarrito(){
     //limpiar html del anterior array desactualizado
     limpiarCarrito()
     let totalizador=0           //acumula el valor total del carrito
-    let contador=0  //cuenta los articulos del carrito solo no por tipo
+    let contador=0  //cuenta los tipos de articulos del carrito
     articulosCarrito.forEach((curso)=>{
         const fila =document.createElement('tr')
         fila.innerHTML=`<td><i data-id='${curso.id}' class='borrar-curso fa fa-trash'></i></td>
@@ -215,7 +216,7 @@ function pintarCarrito(){
     sincronizarStorage()
 }
 
-// agregar carrito de compras al Localstorage
+// agregar carrito de compras al Localstorage 
 function sincronizarStorage(){
     localStorage.setItem('carrito',JSON.stringify(articulosCarrito))
 }
