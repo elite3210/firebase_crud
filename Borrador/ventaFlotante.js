@@ -8,9 +8,12 @@ btnAbrir.addEventListener('mouseout',cerrar)
 
 function abrir(){
     const ventana = document.getElementById('vent')
+    const btnEliminar = document.getElementById('btnEliminar')
     ventana.style.display="block"
+    btnEliminar.style.display="block"
 }
 function cerrar(){
     const ventana = document.getElementById('vent')
     ventana.style.display="none"
+    btnEliminar.style.display="none"
 }

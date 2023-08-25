@@ -8,36 +8,46 @@
     <script src="https://kit.fontawesome.com/434a77214b.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
     <script src="https://parzibyte.github.io/ejemplos-javascript/html-a-pdf/html2pdf.bundle.min.js"></script>
+    <script href="./feature.min.js"></script>
     <script src="JsBarcode.code128.min.js"></script>
 
     <title>Tarjetas</title>
 </head>
 
-
-<section>::Orden de Prduccion::</h1></div>
-    <div id="pdfDoc">
-        <form id="formulario">
-            <div>
-            <input type="number" id="pares" value="12">
-            <input type="text" id="serie">
-            <input type="text" id="modelo">
-            <input type="text" id="color">
-            <input type="text" id="suela">
-            <input type="number" id="talla">
-            <button id="btnGenerar">Generar</button>
-            </div id="mainTable">
+<div class="ventana">
+    <section class="izquierda">
+        <div id="pdfDoc">
+            <form id="formulario">
+                <div>
+                <input type="number" id="pares" value="12">
+                <input type="text" id="tarjeta" value="50123" placeholder="tarjeta">
+                <input type="text" id="modelo" value="7052" placeholder="Modelo">
+                <input type="text" id="color" value="Vino" placeholder="Color">
+                <input type="text" id="suela" value="Tabita" placeholder="Suela">
+                <input type="number" id="talla" value="36" placeholder="Talla">
+                <button id="btnGenerar">Generar</button>
+                </div id="mainTable">
+                
+            </form>
             <table class="miTabla">
                 <thead><tr><th>Serie</th><th>Modelo</th><th>Color</th><th>Suela</th><th>Talla</th></tr></thead>
                 <tbody id="contenedor">
                 
                 </tbody>
                 <tfoot><tr><td>Total</td></tr></tfoot>
-                <button id="btnActualizar">Actualiza</button>
+                
                 <button id="pdfOut">Imprimir</button>
             </table>
-        </form>
-    </div>
-</section>
+        </div>
+    </section>
+    <section class="centro">
+        <button id="btnActualizar">Registrar</button>
+        <button id="btnRegistrar">Devolver</button>
+    </section>
+    <section class="derecha">
+        <table class="miTabla2" id="miTabla2"></table>
+    </section>
+</div>
     <script type="module" src="./generaTarjetas.js"></script> 
 </body>
 

@@ -52,11 +52,14 @@ function crearVenta(){
 }
 
 function actualizarStock(objetos){
-    let id=objetos[0].id 
-    let nuevo_stock=objetos[0].stock - objetos[0].cantidad                                     // calculo para nuevo stock
-    
-    updateProduct(id,{stock:nuevo_stock})
-    console.log('stock actualizado:',id,nuevo_stock)
+    let counter=0
+    objetos.forEach((obj)=>{
+        let id=obj.id
+        let nuevo_stock=obj.stock - obj.cantidad
+        updateProduct(id,{stock:nuevo_stock})
+        counter++
+    })
+    alert(`Se actualizó: ${counter} productos`)
 }
 
 function registrarVenta(){
@@ -107,7 +110,7 @@ function actualizaImporteTotal(){
     
     let total=objetos.reduce((tot,producto)=>tot+producto.importe,0)
     
-    celda_total.value=total
+    celda_total.value=total.toFixed(2)
 
 }
 
@@ -163,9 +166,9 @@ function pintarFilasLlenas(objetos){
                         <td>${producto.id}</td>
                         <td><input type='number'  min="0" step="0.1" class='cantidad' id='${producto.id}' value=${producto.cantidad}></td>
                         <td>${producto.unidad}</td>
-                        <td>${producto.descripcion}</td>
+                        <td>${producto.nombre}</td>
                         <td><input type='number' min="0" step="0.1" class='precio' id='${producto.id}' value=${producto.precio}></td>
-                        <td><input type='number' class='importe' id='${producto.id}' value=${producto.importe}></td>
+                        <td><input type='number' class='importe' id='${producto.id}' value=${producto.importe.toFixed(2)}></td>
                         <td><button class ='btn-delete fa fa-trash' id=''data-id=${producto.id}></button></td>                       
                         `
         contador++

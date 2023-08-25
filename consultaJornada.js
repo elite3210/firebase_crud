@@ -3,17 +3,29 @@ import {queryJornada,deleteTask,updateTask,guardarBoletaPago} from './firebase.j
 
 //traer los registros de produccion de firebase
 const tabla                 = document.getElementById('tabla')
-
 const cajaOpciones          = document.getElementById('opciones')
 const listaSeleccion        = document.getElementById('colaborador')
 const cajaFormularios       = document.getElementById('cajaFormlarios')
 const tareaForm             = document.getElementById('tarea-form')
 
 let editStatus=false;
-let frmBoleta=false;
 let personaFiltrada=''
 let tiempoTotBoleta=0
+let id =''          //por comodidad se volvio el id una variable global, hay que corregir que sea local y pasarlo por e.target.dataset
+let objetosLS =''
+let objetosLSFiltrado=''
+let objetosLSBoleta      =[]
+
 let tarifaJornada=[
+                    {tarifa:3.6164,'dni':'72091168','nombre':'Angela'},
+                    {tarifa:3.6719,'dni':'71338629','nombre':'Alexandra'},
+                    {tarifa:3.3594,'dni':'09551196','nombre':'Rocio'},
+                    {tarifa:3.0000,'dni':'70528292','nombre':'Heinz'},
+                    {tarifa:3.3594,'dni':'10216274','nombre':'Mariela'},
+                    {tarifa:4.9144,'dni':'42231772','nombre':'Elí'}
+                ]
+
+let tarifaJornadaAnterior=[
                     {'tarifa':3.5738,'dni':'72091168','nombre':'Angela'},
                     {'tarifa':3.6719,'dni':'71338629','nombre':'Alexandra'},
                     {'tarifa':3.3594,'dni':'09551196','nombre':'Rocio'},
@@ -23,11 +35,6 @@ let tarifaJornada=[
                 ]
 
 console.log('Datos traidos de Firestore:',queryJornada)
-
-let id =''          //por comodidad se volvio el id una variable global, hay que corregir que sea local y pasarlo por e.target.dataset
-let objetosLS =''
-let objetosLSFiltrado=''
-let objetosLSBoleta      =[]
 
 datosFirebase()
 pintarTabla(objetosLS,tabla)
@@ -43,7 +50,7 @@ function datosFirebase(){//trae los datos de firebase
         objeto.id           = doc.id 
         objetoJornada.push(objeto)
     })
-
+    console.log('objJornada:',objetoJornada)
     let objetosProcesados = procesarDatos(objetoJornada)
     sincronizarLocalStorage(objetosProcesados)
 }
@@ -287,41 +294,20 @@ function limpiarElemento(elemento){
 
 function crearBoleta(){//comentario
     const filasSeleccionadas = jornadaContainer.querySelectorAll('.filaSeleccionada')
-    
 
     filasSeleccionadas.forEach((fila)=>{
         let id = fila.getAttribute('data-id')
         objetosLSBoleta.push(objetosLS.filter(obj=>obj.id ==id)[0])
         
     })
-    
     pintarFormularioBoleta(objetosLSBoleta)
-
-
 }
 
 function eventoClickBoleta(){
     
     const btnBoleta         = cajaOpciones.querySelectorAll('.btn-boleta')
     btnBoleta.forEach(btn=>{
-        
         btn.addEventListener('click',crearBoleta)
-        
-
-        /*
-        btn.addEventListener('click',(e)=>{
-            id = e.target.dataset.id
-            console.log('diste click en pagar:',e.target.dataset.id)
-            updateTask(id,{payStatus:true})
-
-            let objetosLSModificado = objetosLS.filter(elemt => elemt.id != id);
-            sincronizarLocalStorage(objetosLSModificado)
-            limpiarTabla()
-            let objetosLSFiltrado2=objetosLSFiltrado.filter(elemt => elemt.id != id)
-            pintarFilas(objetosLSFiltrado2) //vuelve a pintar las filas pero no agrega los escuchas de eventos los addEventListener
-            //cajaOpciones.innerHTML=''
-            
-        })*/
     })
     
 }
@@ -347,24 +333,26 @@ function pintarFormularioBoleta(objetosLSBoleta){
                                 <option value="Elí">
                             </datalist>
                             <div class="boletaFormulario">
+                                <h1>^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</h1>
                                 <div class="ctnInpBoleta">
                                     <label for="dni">DNI:</label>
-                                    <input type="text" min="8"  id="dniBoleta" required><br>
+                                    <input type="text" class= "inpBoleta" min="8"  id="dniBoleta" required><br>
                                     <label for="nombre">Nombre:</label>
-                                    <input type="text" list="colaborador" name="persona" id="nomBoleta" required><br>
-                                    <label for="tarea-title" required>Numero Boleta :</label>
-                                    <input class="boleta" type="text" id='numBoleta'><br>
+                                    <input type="text" class= "inpBoleta" list="colaborador" name="persona" id="nomBoleta" required><br>
+                                    <label for="tarea-title" required>Numero Ticket :</label>
+                                    <input class="boleta inpBoleta" type="text" id='numBoleta'><br>
                                     <label for="salida-title" required>Fecha :</label>
-                                    <input class="fecha2"  type="date" id='fechaBoleta'>
+                                    <input class="fecha2 inpBoleta"  type="date" id='fechaBoleta'>
                                 </div>
                                 <div class="ctnBtnCerrar"><i class="fa-solid fa-circle-xmark" id="btnCerrar"></i></div>
+                                
                             </div>
                             `
 
     formularioBoleta.innerHTML=entradasFormulario
     const body = document.getElementById('body')
     body.style.display='none';
-    pintarFilas(objetosLSBoleta,formularioBoleta)
+    pintarFilasBoleta(objetosLSBoleta,formularioBoleta)
     
     const btnGuardar = document.createElement('button')
     btnGuardar.textContent='Guardar'
@@ -394,16 +382,25 @@ function procesarDatos(objetos){
     const lapsoHoras        = (entrada,salida)=>{return lapsoMiliseg(entrada,salida)/(1000*60*60)}                  //los milisegundos lo convertimos a horas
     const minutosEnteros    = (entrada,salida)=>{return (Math.round(lapsoHoras(entrada,salida)*(60))%(60))}        //la hora lo convertimos a minutos x60 y sacamos su modulo o residuo de minutos
     const horasEnteras      = (entrada,salida)=>{return (lapsoMiliseg(entrada,salida)-lapsoMiliseg(entrada,salida)%(1000*60*60))/(1000*60*60)}
-    const horasDecimales    = (entrada,salida)=>{return horasEnteras(entrada,salida) + Math.trunc((lapsoMiliseg(entrada,salida)%(1000*60*60))/(1000*60*60)*100)/100}
-    const horasMinutos      = (entrada,salida)=>{return horasEnteras(entrada,salida) +':'+minutosEnteros(entrada,salida)}
+    const horasDecimales    = (entrada,salida)=>{return horasEnteras(entrada,salida) + Number((((lapsoMiliseg(entrada,salida)%(1000*60*60))/(1000*60*60)*100)/100).toFixed(2))}
+    const horasMinutos      = (entrada,salida)=>{return horasEnteras(entrada,salida) +':'+minutosEnteros(entrada,salida).toFixed(0)}
     
     objetos.forEach((obj)=>{
-        obj.nombreDia       = nombreDia(obj.title)
-        obj.hora            = horasMinutos(obj.title,obj.salida)
-        obj.tiempo          = horasDecimales(obj.title,obj.salida)
-        personaFiltrada     = tarifaJornada.filter(elemt => elemt.nombre == obj.description)[0]
-        obj.importe         = horasDecimales(obj.title,obj.salida)*personaFiltrada.tarifa
+        obj['nombreDia']       = nombreDia(obj.title)
+        obj['hora']            = horasMinutos(obj.title,obj.salida)
+        obj['tiempo']          = horasDecimales(obj.title,obj.salida)
+        personaFiltrada     = tarifaJornada.filter(elemt => elemt.nombre == obj.description)[0]//del tarifajornada buscar el objeto que contiene su tarifa
+        
+        //obj['importe']         = horasDecimales(obj.title,obj.salida)*personaFiltrada['tarifa'];
+        obj['importe']         = horasDecimales(obj.title,obj.salida)*3.4520;
+        
+        //
+        console.log('obj_despues:')
+        console.log('objimporte:',obj.importe.toFixed(2))
+        console.log('horasdecimales',horasDecimales(obj.title,obj.salida))
+        console.log('---------------------------------------')
     })
+    console.log('persoSelecc___',personaFiltrada['tarifa'])
 
     let objetoOrdenado=objetos.sort(function(a,b){return new Date(b.title).getTime()-new Date(a.title).getTime()})
 
@@ -486,4 +483,36 @@ function actualizarFirestore(objeto){
         let idJor =obj.id;
         updateTask(idJor,{payStatus:true})
     })
+}
+
+function pintarFilasBoleta(objetos,contenedor){//crea filas de tabla y coloca datos de local Sorage
+    let tiempoTotal = objetos.reduce((total,obj)=>total+obj.tiempo,0)
+    let importeTotal = objetos.reduce((total,obj)=>total+obj.importe,0)//buscar la forma de hacer ambas operaciones en uno
+    console.log('tiempototal:',tiempoTotal)
+    const thead     = document.createElement('thead')
+    thead.innerHTML =`<tr><th>Dia</th><th>Entrada</th><th>Salida</th><th>Hora</th></tr>`
+    
+    const tfoot     = document.createElement('tfoot')
+    
+    tfoot.innerHTML =`<tr><th>Horas</th><th id="tiempoTotal">${tiempoTotal}</th><th>Importe S/</th><th id="importeTotal">${importeTotal.toFixed(2)}</th></tr>`
+    const tbody     =document.createElement('tbody')
+    tbody.setAttribute('id',"jornadaContainer")
+    tbody.setAttribute('class',"caja")
+    
+    objetos.forEach((obj)=>{
+        let fila        = document.createElement('tr')
+        fila.classList.add('fila')
+        fila.setAttribute('data-id',obj.id);
+
+        fila.innerHTML  = `
+                        <td>${obj.nombreDia}</td>
+                        <td class="date">${obj.title.slice(11,16)}</td>
+                        <td class="date">${obj.salida.slice(11,16)}</td>
+                        <td class="hora">${obj.hora}</td>
+                        `
+        tbody.appendChild(fila);
+    })
+    contenedor.appendChild(thead)
+    contenedor.appendChild(tbody)
+    contenedor.appendChild(tfoot)
 }

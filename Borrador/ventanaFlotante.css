@@ -2,7 +2,7 @@ body{
     
     background: url(./fondoBody.jpg);
 }
-.ventana{
+.vtnFlotante{
     background: rgba(214, 214, 243, 0.6);
     width: 30%;
     color: rgba(255, 255, 255, 1);
@@ -17,6 +17,10 @@ body{
     position: absolute;
     display: none;
 
+}
+
+.btnEliminar{
+    display: none;
 }
 #cerrar{
     
@@ -78,4 +82,8 @@ img{
     width: 70%;
     height: 100%;
     background-color: blueviolet;
+}
+
+#tblDetalle{
+    margin: auto
 }

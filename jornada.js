@@ -28,7 +28,7 @@ boton.addEventListener('click',async(e)=>{
 
   querySnapshot.forEach((doc) => {
     objetos.push(doc.data());
-    objetos[index]['dia']=nombreDia(doc.data().title);
+    objetos[index]['dia']=nombreDia(doc.data().title);//renombrandos los datos traidos firebase
     objetos[index]['entrada']=doc.data().title
     objetos[index]['salida_']=doc.data().salida
     objetos[index]['horas']=horasMinutos(doc.data().title,doc.data().salida);
@@ -41,20 +41,14 @@ boton.addEventListener('click',async(e)=>{
     horasAcumuladas  +=horasDecimales(doc.data().title,doc.data().salida)
   })
 
+
   let acumulador = document.getElementById('acumulador')
   acumulador.innerHTML=horasAcumuladas.toFixed(2)
 
   
   
   
-  new gridjs.Grid({ 
-  
-    data:objetos
-    
-  }).render(document.getElementById('table'));
-
-
-  //acumulador.innerHTML=horasSinpago.horasAcumuladas
+  new gridjs.Grid({data:objetos}).render(document.getElementById('table'));
  
 })
 

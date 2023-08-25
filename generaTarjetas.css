@@ -1,20 +1,68 @@
-section{
-    text-align: center;
-}
+
 
 #mainTable{
-    width: 80%;
-    text-align: center;
+    
+    
     margin: auto 10%;
 }
 .miTabla{
+    height: 100%;
     width: 100%;
     padding: 20px;
-    background-color:azure;
+    background-color:rgb(231, 230, 230);
+}
+
+.miTabla input{
+    border: 0px;
+    background-color: rgb(231, 230, 230);
 }
 .miTabla thead{
     background-color: gray;
 }
 .miTabla tfoot{
-    background-color: rgb(202, 153, 247);
+    background-color: gray;
+}
+.miTabla2{
+    height: 80px;
+    width: 100%;
+    background-color: rgb(240, 239, 239);
+    color: white;
+}
+
+input{
+    width: 60px;
+}
+
+
+.miTabla .contenedor{
+    background-color: rgb(255, 255, 255)
+}
+.miTabla2 tbody{
+    background-color: rgb(255, 255, 255);
+        height: 20px;
+        width: 100%;
+        color: black;
+}
+
+
+.ventana{
+    width: 100%;
+    display: flex;
+}
+.izquierda{
+    padding: 10px;
+    width: 45%;
+    text-align: center;
+}
+.centro{
+    display: block;
+    width: 10%;
+    margin: auto;
+}
+.derecha{
+    height: 200px;
+    margin: auto;
+    padding: 10px;
+    background-color: rgb(109, 109, 109);
+    width: 45%;
 }

@@ -1,0 +1,162 @@
+
+
+tbody{
+    border-radius: 18px;
+    background-color: beige;
+    margin: 5px;
+}
+table{
+    
+    border-collapse: collapse;
+    width: 100%;
+    margin: 5px solid red;
+    
+}
+th{
+    background-color: rgb(168, 168, 151);
+}
+th, td{
+    text-align: left;
+    border-bottom: 2px solid rgb(124, 124, 124);
+    color: black;
+}
+td{
+    border-bottom: 1px dotted rgb(87, 87, 87);
+    padding: 0%;
+    
+}
+
+.btn-edit{
+    background-color: transparent;
+    border-color: transparent;
+}
+.btn-edit:hover{
+    color: rgb(239, 5, 247);
+
+}
+
+.btn-delete{
+    background-color: transparent;
+    border-color: transparent;
+}
+
+.barcode{
+    background-color: transparent;
+    border-color: transparent;
+    margin-left: 3px;
+    margin-right: 2px;
+}
+
+.barcode:hover{
+  background-color: white;
+  color: blue;
+  
+
+}
+
+.btn-delete:hover{
+    color: red;
+
+}
+.celda{
+    background-color: transparent;
+    border-color: transparent; 
+    padding: 0%;
+}
+
+tr{
+    padding: none;
+}
+/*tr:nth-child(even){background-color: rgb(228, 226, 226);}*/
+tr:hover{
+    background-color:rgb(92, 247, 170);
+}
+
+.button-content{
+    background-color: rgb(168, 168, 151);
+    text-align: right;
+    padding: 10px;
+}
+
+.filaSeleccionada{
+    background-color:rgb(92, 247, 170);
+}
+section{
+    width: 100%;
+    display: flex;
+}
+.izquierda{
+    width: 60%;
+}
+.derecha{
+    height: 100vh;
+    padding: 40px;
+    margin: auto;
+    width: 40%;
+    background-color: rgb(92, 247, 170);
+
+}
+
+#cajaOpciones{
+    display: flex;
+    align-items: end;
+}
+.button-content{
+    background-color: white;
+    height: 60px;
+    width: 60px;
+    border-color: solid 3px  black;
+}
+
+
+#tblDetalle{
+    
+    width: 100%;
+}
+
+.divSuperior{
+    height: 75px;
+    
+    background-color: white;
+    display: flex;
+    align-items: center;
+    padding: 6px;
+}
+.divMedio{
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    height: 70px;
+    background-color: white;
+}
+
+#qr{
+    width: 60%;
+    height: 56px;
+    background-color: white;
+}
+#nombreDoc{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    width: 40%;
+    height: 56px;
+    background-color: white;
+    border: solid 1px black;
+}
+#nombreDoc .divTicket{
+    text-align: center;
+    width: 100%;
+    background-color: rgb(211, 211, 211);
+}
+.divFecha{
+    border-radius: 8px;
+    border: solid 1px black;
+    height: 60px;
+    width: 40%;
+    background-color: rgb(252, 252, 252);
+}
+.divImput{
+    width: 60%;
+}

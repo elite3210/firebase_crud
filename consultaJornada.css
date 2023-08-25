@@ -13,7 +13,7 @@
   
     tbody{
         border-radius: 18px;
-        background-color: beige;
+        background-color: #ffffff;
         margin: 5px;
     }
     table{
@@ -27,15 +27,11 @@
         background-color: rgb(168, 168, 151);
     }
     th, td{
-        text-align: left;
-        border-bottom: 2px solid rgb(124, 124, 124);
+        
+        border-bottom: 2px dotted rgb(170, 168, 168);
         color: black;
     }
-    td{
-        border-bottom: 1px dotted rgb(248, 248, 248);
-        padding: 0%;
-        
-    }
+
     .filaSeleccionada{
       background-color:rgb(92, 247, 170);
     }
@@ -114,7 +110,7 @@
         position: absolute;
     }
     .boletaFormulario{
-        display: flex;
+        display: block;
     }
     #btnCerrar{
         top: 6px;
@@ -130,4 +126,18 @@
     .ctnBtnCerrar{
         text-align: right;
         width: 10%;
+    }
+    .hora{
+        padding-left: 15px;
+        right: 2px;
+     
+    }
+    .date{
+        padding-left: 10px;
+        
+    }
+
+    .inpBoleta{
+        border-color: transparent;
+        padding-left: 10px;
     }

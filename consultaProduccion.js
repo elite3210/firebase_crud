@@ -6,6 +6,17 @@ const produccionContainer = document.getElementById('produccionContainer')
 
 console.log('queryProduccion trajo:',queryProduccion)
 
+let resetaSorbetes =[{codigo:"SB0070"},
+                    {peso:0.68},
+                    {matPeletizado:0.28},
+                    {matVirgen:0.40},
+                    {fundas:0.025}, 
+                    {bolsaPlancha:1},
+                    {pigmentos:0.40}
+                ]
+
+let pesoTotal=0
+let cantidadTotal=0
 
 queryProduccion.forEach((doc) => {
 
@@ -15,6 +26,9 @@ queryProduccion.forEach((doc) => {
     const objeto    = doc.data()
     objeto.id       = doc.id
     let detalle     = JSON.parse(objeto.detalleProduccion)[0]//solo muestra la primera fila del obj, usar method reduce para importe
+    
+    pesoTotal   +=detalle.importe
+    cantidadTotal   +=detalle.cantidad
     
     fila.innerHTML  = `
                     <td><label class ='barcode fa-solid fa-barcode' data-id='${objeto.id}' value='${objeto.id}' id='${objeto.id}'></label></td>
@@ -30,3 +44,8 @@ queryProduccion.forEach((doc) => {
                     `
     produccionContainer.appendChild(fila);
 });
+
+document.getElementById('cantidadTotal').textContent=cantidadTotal;
+document.getElementById('pesoTotal').textContent=pesoTotal;
+
+console.log('peso y Cantidad:',pesoTotal,cantidadTotal)

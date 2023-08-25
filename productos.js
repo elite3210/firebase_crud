@@ -140,7 +140,7 @@ function pintarFormulario(){
                 <input class="nombre"  type="text" id='nombre'  required>
 
                 <label for="stock" >Stock :</label>
-                <input class="stock"  type="number" min = "0" step = "0.1" id='stock'>
+                <input class="stock"  type="number" min = "0" step = "0.01" id='stock'>
 
                 <label for="unidad" >Unidad :</label>
                 <input class="unidad"  type="text" id='unidad'>

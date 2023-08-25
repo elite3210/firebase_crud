@@ -6,6 +6,7 @@ const ventasContainer = document.getElementById('ventasContainer')
 
 const registroVentas = onGetVentas((ventasSnapShot) =>{
     let objetoVentas=[]
+    let ventasTotal=0
     ventasContainer.innerHTML='';  //borra el contenido previo, hacer una funcion limpiar...
 
     if(ventasSnapShot){
@@ -14,10 +15,14 @@ const registroVentas = onGetVentas((ventasSnapShot) =>{
             let fila = document.createElement('tr')
             const objeto  = doc.data()
             objeto.id     = doc.id
+            
+            let detalle=JSON.parse(objeto.detalleCotizacion)
+            let importeTotal = detalle.reduce((total,obj)=>{return total+obj.importe},0)
+            console.log('el detalle en JSON importe:',importeTotal)
+            ventasTotal +=importeTotal
+            objeto.importe=importeTotal
             objetoVentas.push(objeto)
-            let detalle = JSON.parse(objeto.detalleCotizacion)[0]//solo muestra la primera fila del obj, usar method reduce para importe
-            console.log('el detalle en JSON',detalle)
-//Documento</i></th><th>Empresa</th><th>RUC</th><th>Fecha</th><th>Importe</th><
+
             fila.innerHTML = `
                                 <td><label class ='barcode fa-solid fa-barcode' data-id='${objeto.id}' value='${objeto.id}' id='${objeto.id}'></label>${objeto.id}</td>
                                 <td>${objeto.cliente}</td>
@@ -25,15 +30,12 @@ const registroVentas = onGetVentas((ventasSnapShot) =>{
                                 <td>${objeto.fecha}</td>
                                 <td>${objeto.estado}</td>
                                 <td>${objeto.vendedor}</td>
-                                <td>${detalle.importe}</td>
-                                
-                                
-                                
-                                <td><button class ='btn-delete fa fa-trash' id='' data-id=${objeto.id}></button></td>
-                                <td><button class ='btn-edit fa-solid fa-pen-to-square' color='transparent' data-id=${objeto.id}></button></td>
+                                <td>${objeto.importe.toFixed(2)}</td>
                             `
             ventasContainer.appendChild(fila);
             
         })
+        let cldImporte = document.getElementById('cldImporte')
+        cldImporte.textContent=ventasTotal.toFixed(2)
     }
 });
