@@ -127,9 +127,6 @@ const registroProductos = onGetProduct((querySnapshot) =>{
 })
 
 
-
-
-
 function pintarFormulario(){
     let formularioProducto = `
             <div class="cajita">

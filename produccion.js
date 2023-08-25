@@ -58,20 +58,19 @@ async function actualizarStock(objetos){
     let idFundas='EB0010'
     let idBolsas='EB0011'
 
-    let traerDocFundas = await traeroneProduct(idFundas);                   //trae un producto de la DB        
+    let traerDocFundas = await traeroneProduct(idFundas); //trae un producto de la DB        
     let traerDocBolsas = await traeroneProduct(idBolsas); //.data() metodo para mostrar solo los datos del producto
     
-    let stockFundasSorbetes =Number(traerDocFundas.data()['stock']);
-    let stockBolsasPlanchas =Number(traerDocBolsas.data()['stock']); 
+    let stockFundasSorbetes = Number(traerDocFundas.data()['stock']);//trae stock de fundas
+    let stockBolsasPlanchas = Number(traerDocBolsas.data()['stock']); 
 
-    console.log('fundas,bolsas:',stockFundasSorbetes,stockBolsasPlanchas)
-
-    let nuevoStockFundas    =  stockFundasSorbetes-objetos[0].cantidad*25/1000;                              
-    let nuevoStockBolsas    =  stockBolsasPlanchas-objetos[0].cantidad*1/1000;                             
+    let nuevoStockFundas    = stockFundasSorbetes-objetos[0].cantidad*25/1000;                              
+    let nuevoStockBolsas    = stockBolsasPlanchas-objetos[0].cantidad*1/1000;                             
     
     updateProduct(id,{stock:nuevo_stock})//actualiza el stock de producto
     updateProduct(idFundas,{stock:nuevoStockFundas})//actualiza el stock de fundas
     updateProduct(idBolsas,{stock:nuevoStockBolsas})//actualiza el stock de bolsas
+
     console.log('stock actualizado, fundas,bolsas:',id,nuevo_stock,nuevoStockFundas,nuevoStockBolsas)
 }
 

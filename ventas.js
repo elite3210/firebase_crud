@@ -44,14 +44,14 @@ function pintarTabla(objetos){
 function crearVenta(){
 
     registrarVenta()
-    actualizarStock(objetos)
+    
     localStorage.removeItem('cotizacion');
     objetos=[]
     form.reset()
     pintarTabla(objetos) //vueve a pintar el formulario vacio
 }
 
-function actualizarStock(objetos){
+function actualizarStock(objetos){//ACTUALIZA STOCK VARIOS ITEMS
     let counter=0
     objetos.forEach((obj)=>{
         let id=obj.id
@@ -76,10 +76,19 @@ function registrarVenta(){
     let estado              = 'pendiente'
     let id                  = id_cotizacion
     let fecha               = hoy.toLocaleDateString()
+
+    if (numeroCotizacion.value) {
+        console.log('numero:',numeroCotizacion.value)
+        guardarCotizacion(id,fecha,vendedor,cliente,ruc,detalleCotizacion,estado)
+        console.log('Registro de cotizacion es un exito:',hoy.toLocaleDateString())
+        actualizarStock(objetos)
+    } else {
+        alert('Poner numero de Venta')
+    }
     
-    guardarCotizacion(id,fecha,vendedor,cliente,ruc,detalleCotizacion,estado)
     
-    console.log('Registro de cotizacion es un exito:',hoy.toLocaleDateString())
+    
+    
 }
 
 function actualizaImporte(e){
