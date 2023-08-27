@@ -33,6 +33,8 @@
 body{
     background-color: black;
     height: 100vh;
+    margin: 0;
+    padding: 0;
 }
 
 .material-icons{
@@ -43,7 +45,7 @@ body{
     background-color: var(--dt-background-color-container);
     border-radius: var(--dt-border-radius);
     color: var(--dt-text-color);
-    width: 70%;
+    width: 98%;
     margin: 0 auto;
     font-size: 12px;
 }
@@ -136,12 +138,15 @@ body{
 .datatable-container .datatable{
     border-collapse: collapse;
     width: 100%;
+
 }
 .datatable-container .datatable,
 .datatable-container .datatable th,
 .datatable-container .datatable td{
-    padding: var(--dt-padding) var(--dt-padding);
+    padding: var(--dt-padding-s);
 }
+
+
 .datatable-container .datatable th{
     font-weight: bolder;
     text-align: left;
@@ -159,6 +164,7 @@ body{
 }
 .datatable-container .datatable tbody tr:hover{
     background-color: var(--dt-hover-cell-color);
+    box-shadow: 2px 2px 12px rgba(0,0,0,0.2), -1px, -1px, 8px rgba(0, 0, 0, 0.2);
 }
 
 .datatable-container .datatable tbody tr .available::after,
@@ -202,4 +208,5 @@ body{
 .datatable-container .datatable tbody tr .offline::before{
     background-color: var(--dt-status-offline-color);
 }
+
 

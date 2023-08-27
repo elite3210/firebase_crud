@@ -3,8 +3,6 @@ import {Datatable} from './dataTable.js'
 
 
 //traer los registros de produccion de firebase
-const produccionContainer = document.getElementById('produccionContainer')
-
 console.log('queryProduccion trajo:',queryProduccion)
 
 
@@ -43,16 +41,11 @@ queryProduccion.forEach((doc) => {
     */
     detalle['importe']=Math.round(detalle['importe'])
 
-    obj.values= {...value,...detalle}
-
-
-    console.log('obj.values:',value)
-    
+    obj.values= {...value,...detalle}    
 
     items.push(obj)
     pesoTotal   +=detalle.importe
     cantidadTotal   +=detalle.cantidad
-
 });
 
 /*
@@ -122,15 +115,12 @@ usuario
 */
 
 console.log('items',items)
-console.log('items',Object.keys(items[0]['values']))
 
 document.getElementById('cantidadTotal').textContent=cantidadTotal;
 document.getElementById('pesoTotal').textContent=pesoTotal;
 console.log('peso y Cantidad:',pesoTotal,cantidadTotal)
 
-const titulo   = ['','fecha','id','nombre','cantidad','unidad','importe','categoria']
-
-const titulo2   = {CHECK:'',FECHA:'fecha',CODIGO:'id',PRODUCTO:'nombre',CANTIDAD:'cantidad',UNIDAD:'unidad',PESO:'importe'}
+const titulo   = {' ':'',FECHA:'fecha',CODIGO:'id',PRODUCTO:'nombre',CANTIDAD:'cantidad',UNIDAD:'unidad',PESO:'importe'}
 
 const dt = new Datatable('#dataTable',
 [
@@ -138,5 +128,5 @@ const dt = new Datatable('#dataTable',
     {id:'bDelete',text:'eliminar',icon:'delete',action:function(){const elemntos=dt.getSelected(); console.log('eliminar datos...',elemntos);  }}
 ]);
 
-dt.setData(items,titulo2);
+dt.setData(items,titulo);
 dt.makeTable();

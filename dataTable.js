@@ -68,7 +68,7 @@ export class Datatable{
         this.renderHeaders();
         this.renderRows();
         this.renderPagesButtons();
-        this.renderHeaderButtons();
+        
         this.renderSearch();
         this.renderSelectEntries();
     };
@@ -207,6 +207,7 @@ export class Datatable{
                     if (element.checked) {
                         const item  = this.getItem(id);
                         this.selected.push(item)
+                        this.renderHeaderButtons();
                     }else{
                         this.removeSelected(id);
                     }
@@ -310,6 +311,36 @@ export class Datatable{
         });
     };
 
+    search(query){
+        let res =[];
+
+        this.copyItems=[...this.items];
+        for(let i =0; i<this.copyItems.length;i++){
+            const{id,values}=this.copyItems[i];
+            const row = Object.values(values);
+            
+/*
+            for(const key in row) {
+                const cell= row[key];
+                if (cell.toLowerCase().indexOf(query)>=0){
+                    res.push(this.copyItems[i]);
+                    break;
+                }
+            }*/
+            
+            for (let j = 0; j < row.length; j++) {
+                const cell= row[j];
+                console.log('de row su cel:',cell)
+                if (cell.toLowerCase().indexOf(query)>=0){
+                    res.push(this.copyItems[i]);
+                    break;
+                }
+                
+            }
+        }
+        this.copyItems  = [...res];
+    }
+
     renderSelectEntries(){//dibuja los elementos que haya seleccionado previamente, escrito por un seguidor del autor en youube
         const select = this.element.querySelector("#n-entries");
 
@@ -355,36 +386,6 @@ export class Datatable{
             }
         }
         return res;
-    }
-
-    search(query){
-        let res =[];
-
-        this.copyItems=[...this.items];
-        for(let i =0; i<this.copyItems.length;i++){
-            const{id,values}=this.copyItems[i];
-            const row = Object.values(values);
-            
-/*
-            for(const key in row) {
-                const cell= row[key];
-                if (cell.toLowerCase().indexOf(query)>=0){
-                    res.push(this.copyItems[i]);
-                    break;
-                }
-            }*/
-            
-            for (let j = 0; j < row.length; j++) {
-                const cell= row[j];
-                console.log('de row su cel:',cell)
-                if (cell.toLowerCase().indexOf(query)>=0){
-                    res.push(this.copyItems[i]);
-                    break;
-                }
-                
-            }
-        }
-        this.copyItems  = [...res];
     }
 
     getSelected(){
