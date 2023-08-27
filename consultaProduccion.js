@@ -1,4 +1,5 @@
 import {queryProduccion} from './firebase.js'
+import {Datatable} from './dataTable.js'
 
 
 //traer los registros de produccion de firebase
@@ -6,46 +7,136 @@ const produccionContainer = document.getElementById('produccionContainer')
 
 console.log('queryProduccion trajo:',queryProduccion)
 
-let resetaSorbetes =[{codigo:"SB0070"},
-                    {peso:0.68},
-                    {matPeletizado:0.28},
-                    {matVirgen:0.40},
-                    {fundas:0.025}, 
-                    {bolsaPlancha:1},
-                    {pigmentos:0.40}
-                ]
 
 let pesoTotal=0
 let cantidadTotal=0
+const items =[]
 
 queryProduccion.forEach((doc) => {
-
     // doc.data() is never undefined for query doc snapshots
     //console.log(doc.id, " => ", doc.data());
-    let fila        = document.createElement('tr')
-    const objeto    = doc.data()
-    objeto.id       = doc.id
-    let detalle     = JSON.parse(objeto.detalleProduccion)[0]//solo muestra la primera fila del obj, usar method reduce para importe
     
+    const obj       ={}
+    let value       =doc.data()
+    obj.id          =doc.id
+    let detalle     = JSON.parse(value.detalleProduccion)[0]//solo muestra la primera fila del obj, usar method reduce para importe
+
+    delete value['almacen']
+    delete value['detalleProduccion']
+    delete value['estado']
+    delete value['fechaRegistro']
+    delete value['usuario']
+    /*
+    delete detalle['activo']
+    delete detalle['almacen']
+    delete detalle['atributos']
+    delete detalle['categoria']
+    delete detalle['costo']
+    delete detalle['descripcion']
+    delete detalle['fecha']
+    delete detalle['imagen']
+    delete detalle['peso']
+    delete detalle['precio']
+    delete detalle['precio_anterior']
+    delete detalle['stock']
+    delete detalle['web_site']
+    */
+    detalle['importe']=Math.round(detalle['importe'])
+
+    obj.values= {...value,...detalle}
+
+
+    console.log('obj.values:',value)
+    
+
+    items.push(obj)
     pesoTotal   +=detalle.importe
     cantidadTotal   +=detalle.cantidad
-    
-    fila.innerHTML  = `
-                    <td><label class ='barcode fa-solid fa-barcode' data-id='${objeto.id}' value='${objeto.id}' id='${objeto.id}'></label></td>
-                    <td>${objeto.fecha}</td>
-                    <td>${detalle.id}</td>
-                    <td>${detalle.nombre}</td>
-                    <td>${detalle.cantidad}</td>
-                    <td>${detalle.unidad}</td>
-                    <td>${Math.round(detalle.importe)}</td>
-                                
-                    <td><button class ='btn-delete fa fa-trash' id='' data-id=${objeto.id}></button></td>
-                    <td><button class ='btn-edit fa-solid fa-pen-to-square' color='transparent' data-id=${objeto.id}></button></td>
-                    `
-    produccionContainer.appendChild(fila);
+
 });
+
+/*
+activo
+: 
+"1"
+almacen
+: 
+"Chimpu"
+atributos
+: 
+(2) ['Surtido', '22cm']
+cantidad
+: 
+92
+categoria
+: 
+"Descartables"
+costo
+: 
+0.68
+descripcion
+: 
+"Sorbetes clásico rayado S/M "
+detalleProduccion
+: 
+"[{\"activo\":\"1\",\"web_site\":true,\"categoria\":\"Descartables\",\"descripcion\":\"Sorbetes clásico rayado S/M \",\"costo\":0.68,\"precio\":\"10.7\",\"precio_anterior\":\"14\",\"unidad\":\"Planchas\",\"atributos\":[\"Surtido\",\"22cm\"],\"almacen\":\"Chimpu\",\"peso\":\"0.68\",\"imagen\":\"img/sorbetes_rayados_clasicos.jpg\",\"nombre\":\"Sorbetes Rayados Surtido S/M \",\"stock\":450,\"id\":\"SB0070\",\"cantidad\":92,\"importe\":62.56}]"
+estado
+: 
+"pendiente"
+fecha
+: 
+"2023-08-25"
+fechaRegistro
+: 
+"25/8/2023"
+id
+: 
+"SB0070"
+imagen
+: 
+"img/sorbetes_rayados_clasicos.jpg"
+importe
+: 
+62.56
+nombre
+: 
+"Sorbetes Rayados Surtido S/M "
+peso
+: 
+"0.68"
+precio
+: 
+"10.7"
+precio_anterior
+: 
+"14"
+stock
+: 
+450
+unidad
+: 
+"Planchas"
+usuario
+: 
+"Angela "
+*/
+
+console.log('items',items)
+console.log('items',Object.keys(items[0]['values']))
 
 document.getElementById('cantidadTotal').textContent=cantidadTotal;
 document.getElementById('pesoTotal').textContent=pesoTotal;
-
 console.log('peso y Cantidad:',pesoTotal,cantidadTotal)
+
+const titulo   = ['','fecha','id','nombre','cantidad','unidad','importe','categoria']
+
+const titulo2   = {CHECK:'',FECHA:'fecha',CODIGO:'id',PRODUCTO:'nombre',CANTIDAD:'cantidad',UNIDAD:'unidad',PESO:'importe'}
+
+const dt = new Datatable('#dataTable',
+[
+    {id:'bedit',text:'editar',icon:'edit',action:function(){const elemntos=dt.getSelected(); console.log('editar datos...',elemntos);  }},
+    {id:'bDelete',text:'eliminar',icon:'delete',action:function(){const elemntos=dt.getSelected(); console.log('eliminar datos...',elemntos);  }}
+]);
+
+dt.setData(items,titulo2);
+dt.makeTable();

@@ -310,3 +310,13 @@ function actualizaImporteTouch(e){
         console.log('objeto actualizado:',objetos)
     
 }
+
+
+let resetaSorbetes =[{codigo:"SB0070"},
+                    {peso:0.68},
+                    {matPeletizado:0.28},
+                    {matVirgen:0.40},
+                    {fundas:0.025}, 
+                    {bolsaPlancha:1},
+                    {pigmentos:0.40}
+                ]

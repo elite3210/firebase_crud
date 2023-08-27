@@ -1,10 +1,11 @@
 import {onGetSocios} from './firebase.js'
 
-
+console.log('inicio de la carga de pagina..')
 //traer los socios comerciales clientes de firebase
 const sociosContainer = document.getElementById('sociosContainer')
 
 const registroSocios = onGetSocios((sociosSnapShot) =>{
+    console.log('traido de firebase:',registroSocios)
     let objetoSocios=[]
     sociosContainer.innerHTML='';  //borra el contenido previo, hacer una funcion limpiar...
 
@@ -23,7 +24,7 @@ const registroSocios = onGetSocios((sociosSnapShot) =>{
                                 <td>${objeto.inicioActividad}</td>
                                 <td>${objeto.nombresContacto}</td>
                                 <td>${objeto.telefono}</td>
-                                <td>${objeto.calle}</td>
+                                
                                 <td>${objeto.distrito}</td>
                                 <td>${objeto.provincia}</td>
                                 <td>${objeto.departamento}</td>

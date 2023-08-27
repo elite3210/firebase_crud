@@ -30,6 +30,11 @@
 
 }
 
+body{
+    background-color: black;
+    height: 100vh;
+}
+
 .material-icons{
     font-size: 16px;
 }
@@ -38,7 +43,7 @@
     background-color: var(--dt-background-color-container);
     border-radius: var(--dt-border-radius);
     color: var(--dt-text-color);
-    width: 600px;
+    width: 70%;
     margin: 0 auto;
     font-size: 12px;
 }
@@ -145,6 +150,10 @@
 .datatable-container .datatable td{
     border-bottom: solid 1px var(--dt-border-color);
 }
+.datatable-container .datatable thead tr th{
+    color: var(--dt-text-color);
+}
+
 .datatable-container .datatable tbody tr:nth-child(even){
     background-color: var(--dt-even-row-color);
 }

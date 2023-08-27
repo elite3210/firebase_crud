@@ -1,3 +1,7 @@
+var start = Date.now();
+
+
+
 import {guardarProduct,onGetProduct,deleteProduct,updateProduct} from './firebase.js'
 
 //para guaradr los registo en firebase
@@ -29,7 +33,7 @@ const registroProductos = onGetProduct((querySnapshot) =>{
     let objetoProducto=[]
     let totalInventario=0
     let totalPeso=0
-    tareasContainer.innerHTML='';                           //borra el contenido previo, hacer una funcion limpiar...
+    //tareasContainer.innerHTML='';                           //borra el contenido previo, hacer una funcion limpiar...
     if(querySnapshot){
 
         querySnapshot.forEach(doc =>{
@@ -270,3 +274,7 @@ function enviarDB(e){
         tareaForm.innerHTML=''
     
 }
+
+var end = Date.now();
+ 
+console.log('demoro:',end - start);

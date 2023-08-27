@@ -3,97 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
     <title>Document</title>
     <link rel="stylesheet" href="estilos.css">
-    <style>
-        body{
-            background-image: linear-gradient(to left, #3ab5b0 0%, #3d99be 31%, #56317a 100%);
-        }
-        tbody{
-            border-radius: 18px;
-            background-color: beige;
-            margin: 5px;
-        }
-        table{
-            
-            border-collapse: collapse;
-            width: 100%;
-            margin: 5px solid red;
-            
-        }
-        th{
-            background-color: rgb(168, 168, 151);
-        }
-        th, td{
-            text-align: left;
-            border-bottom: 2px solid rgb(124, 124, 124);
-            color: black;
-        }
-        td{
-            border-bottom: 1px dotted rgb(87, 87, 87);
-            padding: 0%;
-            
-        }
-
-        .btn-edit{
-            background-color: transparent;
-            border-color: transparent;
-        }
-        .btn-edit:hover{
-            color: rgb(239, 5, 247);
+    <link rel="stylesheet" href="dataTable.css">
     
-        }
-
-        .btn-delete{
-            background-color: transparent;
-            border-color: transparent;
-        }
-
-        .barcode{
-            background-color: transparent;
-            border-color: transparent;
-            margin-left: 3px;
-            margin-right: 2px;
-        }
-
-        .barcode:hover{
-          background-color: white;
-          color: blue;
-          
-    
-        }
-
-        .btn-delete:hover{
-            color: red;
-
-        }
-        .celda{
-            background-color: transparent;
-            border-color: transparent; 
-            padding: 0%;
-        }
-        .ventana{
-            background-color: rgb(254, 255, 241)
-        }
-        tr{
-            padding: none;
-        }
-        tr:nth-child(even){background-color: rgb(228, 226, 226);}
-        tr:hover{
-            background-color: rgb(206, 207, 207);
-        }
-        
-        .button-content{
-            background-color: rgb(168, 168, 151);
-            text-align: right;
-            padding: 10px;
-        }
-        form{
-            background-color: rgb(201, 201, 182)
-        }
-
-
-    </style>
 </head>
 <body>
     <header>
@@ -143,11 +57,9 @@
     </header>
 
     <table>   
-        <tr><th></th><th>Fecha</th><th>Codigo</th><th>Descripcion</th><th>Cantidad</th><th>Unidad</th><th>Peso</th><th></th><th></th></tr>
-        <tbody  class="caja" id="produccionContainer">
-        </tbody>
         <tr><th></th><th></th><th></th><th>Cantidad</th><th id="cantidadTotal"></th><th>Peso</th><th id="pesoTotal"></th><th></th><th></th></tr>    
     </table>
+    <table id="dataTable" class="datatable"></table>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
         // Get all "navbar-burger" elements
