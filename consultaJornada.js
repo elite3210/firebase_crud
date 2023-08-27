@@ -25,6 +25,10 @@ let tarifaJornada=[
                     {tarifa:4.9144,'dni':'42231772','nombre':'Elí'}
                 ]
 
+
+
+
+
 let tarifaJornadaAnterior=[
                     {'tarifa':3.5738,'dni':'72091168','nombre':'Angela'},
                     {'tarifa':3.6719,'dni':'71338629','nombre':'Alexandra'},
@@ -386,21 +390,14 @@ function procesarDatos(objetos){
     const horasMinutos      = (entrada,salida)=>{return horasEnteras(entrada,salida) +':'+minutosEnteros(entrada,salida).toFixed(0)}
     
     objetos.forEach((obj)=>{
-        obj['nombreDia']       = nombreDia(obj.title)
-        obj['hora']            = horasMinutos(obj.title,obj.salida)
-        obj['tiempo']          = horasDecimales(obj.title,obj.salida)
-        personaFiltrada     = tarifaJornada.filter(elemt => elemt.nombre == obj.description)[0]//del tarifajornada buscar el objeto que contiene su tarifa
-        
-        //obj['importe']         = horasDecimales(obj.title,obj.salida)*personaFiltrada['tarifa'];
-        obj['importe']         = horasDecimales(obj.title,obj.salida)*3.4520;
-        
-        //
-        console.log('obj_despues:')
-        console.log('objimporte:',obj.importe.toFixed(2))
-        console.log('horasdecimales',horasDecimales(obj.title,obj.salida))
-        console.log('---------------------------------------')
+        obj['nombreDia']        = nombreDia(obj.title)
+        obj['hora']             = horasMinutos(obj.title,obj.salida)
+        obj['tiempo']           = horasDecimales(obj.title,obj.salida)
+        const {tarifa}          = tarifaJornada.filter(elemt => elemt.nombre == obj.description.trim())[0]//del objeto tarifaJornada buscar el objeto con el mismo nombre y sacar su tarifa
+        obj['importe']          = horasDecimales(obj.title,obj.salida)*tarifa;
+
+        console.log('lo que devuelve el filter:',tarifaJornada.filter(elemt => elemt.nombre == obj.description.trim()))
     })
-    console.log('persoSelecc___',personaFiltrada['tarifa'])
 
     let objetoOrdenado=objetos.sort(function(a,b){return new Date(b.title).getTime()-new Date(a.title).getTime()})
 
