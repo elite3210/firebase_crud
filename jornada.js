@@ -64,7 +64,7 @@ tareaForm.addEventListener('submit',(e)=>{
   const salida        = tareaForm['salida-title'];
   let payStatus       = false;
 
-  guardarTask(titulo.value,descripcion.value,salida.value,payStatus)
+  guardarTask(titulo.value,descripcion.value.trim(),salida.value,payStatus)
 
   tareaForm.reset()
 })

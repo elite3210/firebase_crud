@@ -1,4 +1,4 @@
-import {queryProduccion} from './firebase.js'
+import {queryProduccion,updateMovimientoInventario} from './firebase.js'
 import {Datatable} from './dataTable.js'
 
 
@@ -10,6 +10,21 @@ let pesoTotal=0
 let cantidadTotal=0
 const items =[]
 
+function actualizarTodo(){
+
+    queryProduccion.forEach((doc) => {
+
+        const obj       ={}
+        let value       =doc.data()
+        obj.id          =doc.id
+        console.log('rechaRegistro:BD',value['fecha'])
+    
+        updateMovimientoInventario(doc.id,{fechaRegistro:value['fecha']})
+    });
+}
+//actualizarTodo()//no llamar a esta funcion...reemplaza fechas
+
+
 queryProduccion.forEach((doc) => {
     // doc.data() is never undefined for query doc snapshots
     //console.log(doc.id, " => ", doc.data());
@@ -17,28 +32,35 @@ queryProduccion.forEach((doc) => {
     const obj       ={}
     let value       =doc.data()
     obj.id          =doc.id
+
     let detalle     = JSON.parse(value.detalleProduccion)[0]//solo muestra la primera fila del obj, usar method reduce para importe
 
     delete value['almacen']
     delete value['detalleProduccion']
     delete value['estado']
-    delete value['fechaRegistro']
     delete value['usuario']
-    /*
-    delete detalle['activo']
-    delete detalle['almacen']
+
+    delete detalle['fecha']
+    delete detalle['imagen']
+    delete detalle['precio_anterior']
+    delete detalle['web_site']
     delete detalle['atributos']
+    delete detalle['activo']
+
+
+   //value['fechaRegistro2']=`${new Date(value['fechaRegistro']).getDate()+1}/${new Date(value['fechaRegistro']).getMonth()+1}/${new Date(value['fechaRegistro']).getFullYear()}`
+    
+    /*
+    delete value['fechaRegistro']
+    delete detalle['almacen']
     delete detalle['categoria']
     delete detalle['costo']
     delete detalle['descripcion']
-    delete detalle['fecha']
-    delete detalle['imagen']
     delete detalle['peso']
     delete detalle['precio']
-    delete detalle['precio_anterior']
     delete detalle['stock']
-    delete detalle['web_site']
     */
+   
     detalle['importe']=Math.round(detalle['importe'])
 
     obj.values= {...value,...detalle}    
@@ -47,6 +69,7 @@ queryProduccion.forEach((doc) => {
     pesoTotal   +=detalle.importe
     cantidadTotal   +=detalle.cantidad
 });
+
 
 /*
 activo
@@ -118,15 +141,16 @@ console.log('items',items)
 
 document.getElementById('cantidadTotal').textContent=cantidadTotal;
 document.getElementById('pesoTotal').textContent=pesoTotal;
-console.log('peso y Cantidad:',pesoTotal,cantidadTotal)
+console.log(`Peso Total:${pesoTotal} Kg Cantidad:${cantidadTotal} Planchas`)
 
-const titulo   = {' ':'',FECHA:'fecha',CODIGO:'id',PRODUCTO:'nombre',CANTIDAD:'cantidad',UNIDAD:'unidad',PESO:'importe'}
+const titulo   = {' ':'',FECHA:'fechaRegistro',CODIGO:'id',PRODUCTO:'nombre',CANTIDAD:'cantidad',UNIDAD:'unidad',PESO:'importe'}
 
 const dt = new Datatable('#dataTable',
 [
     {id:'bedit',text:'editar',icon:'edit',action:function(){const elemntos=dt.getSelected(); console.log('editar datos...',elemntos);  }},
     {id:'bDelete',text:'eliminar',icon:'delete',action:function(){const elemntos=dt.getSelected(); console.log('eliminar datos...',elemntos);  }}
-]);
+]
+);
 
 dt.setData(items,titulo);
 dt.makeTable();

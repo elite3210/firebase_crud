@@ -10,12 +10,13 @@ const celda_total       = document.getElementById('celda_total')
 const fecha             = document.getElementById('fecha')
 const btn_semaforo      = document.querySelector('.semaforo')
 
+
 let objetos=JSON.parse(localStorage.getItem('produccion'))
 //let objetos=[]
 let start=true
 
 cargarEventListeners()
-
+console.log('La receta es: ',JSON.parse(objetos[0].receta))
 function cargarEventListeners(){
     pintarFecha()
     pintarTabla(objetos)
@@ -51,42 +52,47 @@ function crearVenta(){
     pintarTabla(objetos) //vueve a pintar el formulario vacio
 }
 
-async function actualizarStock(objetos){
-    let id=objetos[0].id 
-    let nuevo_stock=Number(objetos[0].stock) + objetos[0].cantidad// calculo para nuevo stock
-    
-    let idFundas='EB0010'
-    let idBolsas='EB0011'
+async function actualizarStock(objetos){//actualiza incremento de produccion y disminuye cantidad de insumos
+    let id=objetos[0].id;
+    let receta =JSON.parse(objetos[0].receta)
+    let cantidadProduccion=objetos[0].cantidad;//cantidad de produccion a registrar
+    let nuevoStockProducto=Number(objetos[0].stock) + cantidadProduccion // calculo para nuevo stock
 
-    let traerDocFundas = await traeroneProduct(idFundas); //trae un producto de la DB        
-    let traerDocBolsas = await traeroneProduct(idBolsas); //.data() metodo para mostrar solo los datos del producto
+    if (receta) {//si tiene receta
+        let contadorInsumo=0
+        for (const insumo of receta) {//recorre la receta y realiza en calculo del nuevo stock y los actualiza
+            let productoIntermedio = await traeroneProduct(insumo.id); //trae un producto de la DB
+            let nuevoStockInsumo    = productoIntermedio.data()['stock']-cantidadProduccion*insumo.cantidad; //calcula la cantidad que quedaria despues del registro
+            console.log(`Cantidad:${cantidadProduccion} Planchas Material:${insumo.id}  Stock: ${productoIntermedio.data()['stock']} Consumo: ${cantidadProduccion*insumo.cantidad} nuevo Stock: ${nuevoStockInsumo}`)
+            updateProduct(insumo.id,{stock:nuevoStockInsumo})//actualiza el stock del insumo
+            contadorInsumo++;
+        }
     
-    let stockFundasSorbetes = Number(traerDocFundas.data()['stock']);//trae stock de fundas
-    let stockBolsasPlanchas = Number(traerDocBolsas.data()['stock']); 
+        updateProduct(id,{stock:nuevoStockProducto});//actualiza el stock de producto
 
-    let nuevoStockFundas    = stockFundasSorbetes-objetos[0].cantidad*25/1000;                              
-    let nuevoStockBolsas    = stockBolsasPlanchas-objetos[0].cantidad*1/1000;                             
+        alert(`Se registró: ${cantidadProduccion} ${objetos[0].unidad} ${objetos[0].nombre} Fabricado con ${contadorInsumo} Isumos`);
+    } else {
+        alert('registrando otros productos sin receta...');
+        updateProduct(id,{stock:nuevoStockProducto});//actualiza el stock de producto
+    }
     
-    updateProduct(id,{stock:nuevo_stock})//actualiza el stock de producto
-    updateProduct(idFundas,{stock:nuevoStockFundas})//actualiza el stock de fundas
-    updateProduct(idBolsas,{stock:nuevoStockBolsas})//actualiza el stock de bolsas
-
-    console.log('stock actualizado, fundas,bolsas:',id,nuevo_stock,nuevoStockFundas,nuevoStockBolsas)
+    
 }
 
-function registrarVenta(){
+function registrarVenta(){//captura los datos del formulario para guardar en BD
     console.log('dentro funcion registraVenta:')
-    let fecha               = form['fecha'].value
     let tiempoTranscurrido  = Date.now()
     let hoy                 = new Date(tiempoTranscurrido)    
     
     let usuario             = form['usuario'].value
+    let almacenProcesos     = form['almacenProcesos'].value
     let almacen             = form['almacen'].value
     let detalleProduccion   = JSON.stringify(objetos)
     let estado              = 'pendiente'
+    let tiempo=Date.now()
     let fechaRegistro       = hoy.toLocaleDateString()
     
-    guardarProduccion(fecha,usuario,almacen,detalleProduccion,estado,fechaRegistro)
+    guardarProduccion(almacenProcesos,usuario,almacen,detalleProduccion,estado,fechaRegistro,tiempo)
     
     console.log('Registro de cotizacion es un exito:',hoy.toLocaleDateString())
 }
@@ -212,14 +218,6 @@ function sincronizarLocalStorage(objetos){
     objetos=JSON.parse(localStorage.getItem('produccion'))
 }
 
-/*
-JsBarcode(".barcode",'SB0070', {
-    lineColor: "#000",
-    width: 1.5,
-    height: 40,
-    displayValue: false
-  });
-*/
 function generaPDF(){
     console.log('generando pdf...')//crear pdf a partir del lenguaje y no de html
     const elementoParaConvertir = document.body; // <-- Aquí puedes elegir cualquier elemento del DOM
@@ -311,12 +309,11 @@ function actualizaImporteTouch(e){
     
 }
 
-
-let resetaSorbetes =[{codigo:"SB0070"},
-                    {peso:0.68},
-                    {matPeletizado:0.28},
-                    {matVirgen:0.40},
-                    {fundas:0.025}, 
-                    {bolsaPlancha:1},
-                    {pigmentos:0.40}
-                ]
+/*
+JsBarcode(".barcode",'SB0070', {
+    lineColor: "#000",
+    width: 1.5,
+    height: 40,
+    displayValue: false
+  });
+*/

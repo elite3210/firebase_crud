@@ -15,6 +15,7 @@ let tarifaJornada=[
 let objetosLS =''
 let datosInicioLS = JSON.parse(localStorage.getItem('datosBoleta'))
 
+
 let activarLS = false
 
 if (activarLS) {
@@ -26,7 +27,7 @@ if (activarLS) {
     
 }
 
-
+console.log('objetosLS:',objetosLS)
 
 
 
@@ -133,6 +134,8 @@ function crearBoleta(){//comentario
 }
 
 function pintarFilasDetalle(array){
+    let importe=array.reduce((acc, obj) => acc + obj.importe, 0)
+    let horas=array.reduce((acc, obj) => acc + obj.tiempo, 0)
     
     const vtnDetalle = document.getElementById("vtnDetalle")
     vtnDetalle.innerHTML=''
@@ -154,16 +157,17 @@ function pintarFilasDetalle(array){
     divMedio.setAttribute('class','divMedio')
     const divFecha = document.createElement('div')
     divFecha.setAttribute('class','divFecha')
-    divFecha.textContent=new Date(Date.now()).toLocaleDateString()
+    divFecha.textContent='26/08/2023'
+    //divFecha.textContent=new Date(Date.now()).toLocaleDateString()
      
     divSuperior.appendChild(qr)
     divSuperior.appendChild(nombreDoc)
     const divInput = document.createElement('div')
     divInput.setAttribute('class','divImput')
     const nombre = document.createElement('div')
-    nombre.textContent='Angela'
+    
     const DNI = document.createElement('div')
-    DNI.textContent='72091168'
+    //DNI.textContent='72091168'
     divInput.appendChild(nombre)
     divInput.appendChild(DNI)
     divMedio.appendChild(divInput)
@@ -178,7 +182,8 @@ function pintarFilasDetalle(array){
     let thead       = document.createElement('thead')
     let tfoot       = document.createElement('tfoot')
     thead.innerHTML=`<tr><th>Dia</th><th>Entrada</th><th>Salida</th><th>Horas</th></tr>`
-    tfoot.innerHTML=`<tr><th>Horas</th><th>64</th><th>Importe</th><th>S/235</th></tr>`
+    tfoot.innerHTML=`<tr><th>Horas</th><th id="celdaHoras">${horas}</th><th>Importe</th><th id="celdaImporte">${importe.toFixed(2)}</th></tr>`
+    
 
     array.forEach((obj,i) => {
     let fila        = document.createElement('tr')
@@ -192,6 +197,7 @@ function pintarFilasDetalle(array){
                     <td>${obj.hora}</td>
                     ` 
     tbody.appendChild(fila);
+    nombre.textContent=obj.description
     });
 
     

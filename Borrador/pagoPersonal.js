@@ -1,4 +1,4 @@
-import {guardarTask,onGetTasks,deleteTask,traerTask,updateTask} from './firebase.js'
+import {guardarTask,onGetTasks,deleteTask,traerTask,updateTask} from '../firebase.js'
 import { getDocs, collection,query,where} from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js"
 
 

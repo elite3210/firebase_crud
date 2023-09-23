@@ -12,7 +12,7 @@
 
     
 
-    <title>Movimiento Stock</title>
+    <title>Cotizacion</title>
     <style>
         
         .contenedor{
@@ -123,6 +123,7 @@
         
     </style>
 </head>
+
 <body>
     <header>
         <nav class="navbar" role="navigation" aria-label="main navigation">
@@ -171,13 +172,14 @@
       </header>
 
 
+      
+      
   <div class="contenedor">
     <form  id="formulario">
-      <h1>Movimiento Stock</h1><h4 id="fecha">Lima, 13 de Diciembre de 2022</h4>
-    
-      <label for="usuario">Usuario  :</label><input  class=' celda cliente' type="text" id="usuario"></br>
-      <label for="usuario">Origen  :</label><input  class=' celda origen' type="text" id="almacenProcesos" value="A.Proceso"></br>
-      <label for="almacen">Destino  :</label><input class='celda almacen' type="text" id="almacen" value="A.Terminado"></br>
+      <h1>RECETA</h1><h4 id="fecha">Lima, 13 de Diciembre de 2022</h4>
+      
+      <label for="usuario">Producto  :</label><input  class=' celda cliente' type="text" id="usuario"></br>
+      <label for="almacen">Descripcion  :</label><input class='celda almacen' type="text" id="almacen"></br>
       <label class='boton' for="boton">Codigo :</label><input class='celda codigo'  type="text" id="codigo" size="6"><span class="validity"></span> 
       
       <button  id="boton" >Ingresar</button>
@@ -194,7 +196,7 @@
         <tbody id="container"></tbody>
         
         <tfoot class="button-content">
-          <tr><th></th><th></th><th></th><th></th><th></th><th></th><th>Total (Kilos)</th><th><input id="celda_total"  class="total" type="text" value="0"></input></th><th></th><th></th></tr>
+          <tr><th></th><th></th><th></th><th></th><th>Peso (Kilos)</th><th><input id="celda_total"  class="total" type="text" value="0"></input></th><th>Costo S/.</th><th><input id="costoTotal"  class="total" type="text" value="0"></th><th></th></tr>
         </tfoot>
     </table>
   </div>
@@ -207,7 +209,7 @@
   
   <a href="./consultaProduccion.html">Consultar</a>
 
-  <script type="module" src="./produccion.js"></script>
+  <script type="module" src="./recetaProducto.js"></script>
 </body>
 <script>
   document.addEventListener('DOMContentLoaded', () => {

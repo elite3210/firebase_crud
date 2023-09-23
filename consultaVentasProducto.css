@@ -1,0 +1,71 @@
+@import "https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css";
+
+/*Barra de navegacion*/
+
+.contenedor{
+    width: 99%;
+    max-width: 120em;
+}
+.contenedor .ul{
+    width: 100%;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 6px;
+    
+}
+.contenedor .li{
+
+    justify-content: center;
+    align-items: center;
+    width: 20%;
+    padding: 0;
+    margin: 0 0.5em 0 0;
+    cursor: pointer;
+}
+.contenedor .li.activo{
+
+    margin: 0 0.5em 0 0;
+}
+
+.contenedor .subContenedor{
+    height: 120vh;
+    width: 100%;
+    position: relative;
+}
+.contenedor .bloque{
+    padding: 1em 0 0 0;
+    position: absolute;
+    top: 0;
+    opacity: 0;
+    transform: translateY(50%);
+    transition: all 0.4s ease;
+}
+
+.contenedor .bloque.activo{
+    height: 10vh;
+    width: 100%;
+    opacity: 1;  
+    transform: translateY(0%);      
+}
+.indicador{
+    position: relative;
+    width: calc(92%/5);
+    height: 5px;
+    background-color:black;
+    left: 0px;
+    transition: all 500ms ease-in-out;
+    margin: 0 0 0 0.2em;
+}
+.header{
+
+    border: solid 2px rgb(219, 219, 219) ;
+    border-radius:6px;
+}
+.linea{
+    background-color: rgb(179, 179, 179);
+    height: 2px;
+    margin: 0 0.2em 0.2em 0.2em;
+}
+

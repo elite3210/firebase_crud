@@ -60,7 +60,7 @@
             </div>
           </div>
         </nav>
-      </header>
+    </header>
 
 
       
@@ -70,30 +70,47 @@
       <div class="logo">
         <img src="./imagenes/heinz_sport_sac_logo.png" width="250" >
       </div>
+      <div class="contacto">
+        <h3 class="web">www.heinzsport.com <i class="fa-solid fa-globe"></i></h3>
+        <h3 class="web">info@heinzsport.com <i class="fa-regular fa-envelope"></i></h3>
+        <h3 class="web">+51 962833765<i class="fa-brands fa-whatsapp"></i></h3>
+      </div>
       <div class="cajita2">
         <h1 id="ruc2">RUC: 20605216715</h1>
-        <h1>COTIZACIÓN</h1>
-        <input  class='celda-cotizacion' type="text" id="cotizacion" placeholder="Numero">
+        <h1>DESPACHO</h1>
+        <input  class='celda-cotizacion' type="number" id="cotizacion" placeholder="Numero">
       </div>
     </div>
 
     <form  id="formulario">
       <div class="cajita1">
         <div class="cajita1_1">
-          <label for="vendedor" ><p>Vendedor :</p></label>
-          <label for="cliente"><p>Cliente :</p></label>
-          <label for="ruc"><h2><p>RUC :</p></label>
-          <label for="codigo"><p>Codigo :</p></label>
+          <label for="vendedor"><p>VENDEDOR:</p></label>
+          <label for="ruc"><h2><p>CODIGO :</p></label>
+          <label for="cliente"><p>CLIENTE :</p></label>
         </div>
+
         <div class="cajita1_3">
-          <input  class='celda vendedor' type="text" id="vendedor"></br> 
-          <input  class='celda cliente' type="text" id="cliente" required></br>
-          <input class='celda ruc' type="text" id="ruc"></br>
-          <input class='celda codigo'  type="text" id="codigo" size="6"><span class="validity"></span> 
+          <input  class='celda vendedor' type="text" id="vendedor" placeholder="Nombre del Vendedor"> 
+          <input class='celda ruc' type="text" id="ruc" required placeholder="Ingresar RUC o DNI">
+          <input  class='celda cliente' type="text" id="cliente" required placeholder="Razon Social o Nombre">
+           
         </div>
       </div>
       <div class="cajita4">
-        <label for="fecha">Fecha:</label><h4 id="fecha">18/08/2023</h4>
+        <datalist id="tipoPago">
+          <option value="Contado">
+          <option value="Credito">
+        </datalist>
+        <datalist id="metodoCobro">
+          <option value="Efectivo">
+          <option value="Transferencia">
+          <option value="Tarjeta">
+        </datalist>
+      
+        <div class="fecha"><label for="fecha">Fecha:</label><h4 id="fecha"></h4></div>
+        <div><label for="tipoPago">Pago:</label><input type="text" list="tipoPago" id="tipoPago"></div>
+        <div><label for="metodoCobro">Cobro:</label><input type="text" list="metodoCobro" id="metodoCobro"></div>
       </div>
     </form>
 
@@ -105,16 +122,21 @@
         <tbody id="container"></tbody>
         
         <tfoot class="button-content">
-          <tr><th></th><th></th><th></th><th></th><th></th><th></th><th>Total (S/)</th><th><input id="celda_total"  class="total" type="text" value="0"></input></th><th></th><th></th></tr>
+          <tr><th>Sub </th><th>Total <th>(S/)</th></th><th><input id="celdaSubTotal"  class="total" type="text" value="0"></input></th><th>Descuento (S/)</th><th><input id="descuento"  class="total" type="text" value="0"></input></th><th>Total (S/)</th><th><input id="celda_total"  class="total" type="text" value="0"></input></th><th></th><th></th></tr>
         </tfoot>
     </table>
+    <h1 class="web"><i class="fa-solid fa-sack-dollar"></i>BCP 191-91738956-0-09 :: Angela Mendoza </h1>
 </section>
 
 
   <div class="cajaBotones">
-    <div>
+    <div class="entradaDato">
+      <label for="codigo" class='codigo'><p>Codigo :</p></label>
+      <input class='celda '  type="text" id="codigo" size="6" placeholder="Ingrese código de producto"><span class="validity"></span>
       <button  id="boton" >Ingresar</button>
       <button class="semaforo" id="semaforo">''</button>
+    </div>
+    <div>
       <button id="btn-guardar" class="btnGuardar">Guardar</button>
       <button id="btn-imprimir" class="btnImprimir">Imprimir</button> 
     </div>
@@ -144,7 +166,7 @@
   });
   
   });
-  </script>
+</script>
   
   
 </html>

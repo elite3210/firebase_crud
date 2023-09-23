@@ -8,70 +8,117 @@
     <link rel="stylesheet" href="css/normalize.css">
     <link rel="stylesheet" href="css/skeleton.css">
     <link rel="stylesheet" href="css/custom.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    
     <script src="https://kit.fontawesome.com/434a77214b.js" crossorigin="anonymous"></script>
     
 </head>
 <body>
-    <header id="header" class="header">
-    <div class="container">
-        <div class="row">
-            <a class="navbar-item row" href="http://www.heinzsport.com">
-                <img src="./heinz_sport_sac_logo.png" width="112" height="28">
-            </a>
-            <div class="two columns u-pull-right">
-                <ul>
-                    <li class="submenu">
-                        <img src="img/cart2.png" width="50" id="img-carrito">
-                        <div class="circulo-carrito"><span class="count-product">0</span></div>
-                        <div id="carrito">
-                            <table id="lista-carrito" class="u-full-width">
-                                <thead>
-                                    <tr>
-                                        <th></th>
-                                        <th>Imagen</th>
-                                        <th>Nombre</th>
-                                        <th>S/.</th>
-                                        <th>Cantidad</th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
-                            <span class="u-full-width importe-total">S/.</span><a href="#" id="total-carrito" class="button importe-total"></a></br>
-                            <a href="#" id="vaciar-carrito" class="vaciar-carrito button">Vaciar Carrito</a>
-                            <a href="#" id="continuar-carrito" class="continuar-carrito button">Continuar</a>
-                        </div>
-                    </li>
-                </ul>
+    <header id="header" class="header2">
+        <nav class="navbar container" role="navigation" aria-label="main navigation">
+            <div class="navbar-brand">
+                <a class="navbar-item" href="http://www.heinzsport.com">
+                  <img src="../imagenes/logo_heinz_sport.svg" width="168" height="52">
+                </a>
+            
+                <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+                  <span aria-hidden="true"></span>
+                  <span aria-hidden="true"></span>
+                  <span aria-hidden="true"></span>
+                </a>
             </div>
-        </div> 
-    </div>
+
+            <div id="navbarBasicExample" class="navbar-menu">
+                <div class="navbar-start">
+                  <a class="navbar-item" href="./index.html">Home</a>
+                  <a class="navbar-item"href="./carrito/index.html">Catálogo</a>
+            
+                  <div class="navbar-item has-dropdown is-hoverable">
+                    <a class="navbar-link">Intranet</a>
+            
+                    <div class="navbar-dropdown">
+                      <a class="navbar-item" href="./personal.html">Recursos Humanos</a>
+                      <a class="navbar-item" href="./menu.html">Eventos</a>
+                      <a class="navbar-item" href="./entrada_salida.html">Registro</a>
+                      <hr class="navbar-divider">
+                      <a class="navbar-item" href="./documento.html">Documentos</a>
+                      <a class="navbar-item" href="./productos.html">productos</a>
+                      <a class="navbar-item" href="./ventas.html">Ventas</a>
+                    </div>
+                  </div>
+                </div>
+            
+                <div class="navbar-end">
+                  <div class="navbar-item">
+                    <div class="buttons">
+                      <a class="button is-primary"><strong>Sign up</strong></a>
+                      <a class="button is-light">Log in</a>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                
+                <div class="two columns u-pull-right">
+                    <ul>
+                        <li class="submenu">
+                            <img src="img/cart2.png" width="50" id="img-carrito">
+                            <div class="circulo-carrito"><span class="count-product">0</span></div>
+                            <div id="carrito">
+                                <table id="lista-carrito" class="u-full-width">
+                                    <thead class="titCarrito">
+                                        <tr >
+                                            <th></th>
+                                            <th>Imagen</th>
+                                            <th>Nombre</th>
+                                            <th>S/.</th>
+                                            <th>Cantidad</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                                <span class="u-full-width importe-total">S/.</span><a href="#" id="total-carrito" class="button importe-total"></a></br>
+                                <a href="#" id="vaciar-carrito" class="vaciar-carrito button">Vaciar Carrito</a>
+                                <a href="#" id="continuar-carrito" class="continuar-carrito button">Continuar</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+        </nav>
     </header>
 
     <div id="lista-cursos" class="container">
     </div>  
 
     <footer id="footer" class="footer">
-        <div class="container">
-            <div class="row">
-                    <div class="four columns">
-                            <nav id="principal" class="menu">
-                                <a class="enlace" href="#">Para tu Negocio</a>
-                                <a class="enlace" href="#">Soporte</a>
-                                <a class="enlace" href="#">Temas</a>
-                            </nav>
-                    </div>
-                    <div class="four columns">
-                            <nav id="secundaria" class="menu">
-                                <a class="enlace" href="#">¿Quienes Somos?</a>
-                                <a class="enlace" href="#">Empleo</a>
-                                <a class="enlace" href="#">Blog</a>
-                            </nav>
-                    </div>
-            </div>
-        </div>
+        <h1 class="whatsapp">WhatsApp +51 962833765</h1>
     </footer>
 
     <script type="module" src="./js/app.js"></script>
 
 </body>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+    // Get all "navbar-burger" elements
+    const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+    // Add a click event on each of them
+    $navbarBurgers.forEach( el => {
+      el.addEventListener('click', () => {
+    
+        // Get the target from the "data-target" attribute
+        const target = el.dataset.target;
+        const $target = document.getElementById(target);
+    
+        // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
+        el.classList.toggle('is-active');
+        $target.classList.toggle('is-active');
+    
+      });
+    });
+    
+    });
+  </script>
 </html>

@@ -1,4 +1,4 @@
-import {traeroneProduct,updateProduct,guardarCotizacion,traerUnSocio,traerUnNumeracion,updateNumeracion} from './firebase.js'
+import {traeroneProduct,updateProduct,guardarProduccion} from './firebase.js'
 
 
 const btn_ingresar      = document.getElementById('boton')
@@ -6,17 +6,11 @@ const form              = document.getElementById('formulario')
 const tabla             = document.getElementById('container');
 const btn_guardar       = document.getElementById('btn-guardar')
 const btn_imprimir      = document.getElementById('btn-imprimir')
-const celdaSubTotal     = document.getElementById('celdaSubTotal')
-const inpDescuento      = document.getElementById('descuento')
 const celda_total       = document.getElementById('celda_total')
-const inpCodigo         = document.getElementById('codigo')
-const inpCodigoCliente  = document.getElementById('ruc')
-const inpCliente        = document.getElementById('cliente')
-const fecha             = document.getElementById('fecha')
+const costoTotal       = document.getElementById('costoTotal')
 const btn_semaforo      = document.querySelector('.semaforo')
-const numeroCotizacion  = document.getElementById('cotizacion')
 
-let objetos=JSON.parse(localStorage.getItem('cotizacion'))
+let objetos=JSON.parse(localStorage.getItem('produccion'))
 //let objetos=[]
 let start=true
 
@@ -27,15 +21,12 @@ function cargarEventListeners(){
     pintarTabla(objetos)
 
     btn_ingresar.addEventListener('click',ingresarProducto)
-    inpCodigo.addEventListener('keypress',activarEnter)
-    inpCodigoCliente.addEventListener('keypress',activarEnter2)
-    btn_guardar.addEventListener('click',registrarVenta)
+    btn_guardar.addEventListener('click',crearVenta)
     btn_imprimir.addEventListener('click',generaPDF)
     tabla.addEventListener('click',operacionesEnTabla)
     tabla.addEventListener('keypress',actualizaImporte)
     //tabla.addEventListener('touchend',actualizaImporteTouch)        
 }
-
 
 function pintarTabla(objetos){
     console.log('Lo que hay en LS:',objetos)
@@ -49,51 +40,35 @@ function pintarTabla(objetos){
     }
 }
 
+function crearVenta(){
 
-function actualizarStock(objetos){//ACTUALIZA STOCK VARIOS ITEMS
-    let counter=0
-    objetos.forEach((obj)=>{
-        let id=obj.id
-        let nuevo_stock=obj.stock - obj.cantidad
-        updateProduct(id,{stock:nuevo_stock})
-        counter++
-    })
-    alert(`Se actualizó: ${counter} productos`)
+    registrarVenta()
+    
+    localStorage.removeItem('produccion');
+    objetos=[]
+    form.reset()
+    pintarTabla(objetos) //vueve a pintar el formulario vacio
 }
 
-function registrarVenta(){
-    console.log('dentro funcion registraVenta:')
+function registrarVenta(){//captura los datos del formulario para guardar en BD
+    console.log('dentro funcion registraReceta:')
     
     let tiempoTranscurrido  = Date.now()
-    let hoy                 = new Date(tiempoTranscurrido)
-
-    let cliente             = form['cliente'].value
-    let ruc                 = form['ruc'].value
-    let vendedor            = form['vendedor'].value
-    let detalleCotizacion   = JSON.stringify(objetos)
-    let estado              = 'pendiente'
-    let tipoPago            = form['tipoPago'].value
-    let metodoCobro         = form['metodoCobro'].value
-    let nuevoNumero         = Number(numeroCotizacion.value)
-    let fecha               = hoy.toLocaleDateString()
-    let subTotal            = celdaSubTotal.value
-    let descuento           = inpDescuento.value
-    let importeTotal        = subTotal-descuento
-
-    console.log('tipoPago:',subTotal)
-    console.log('metodoCobro:',descuento)
+    let hoy                 = new Date(tiempoTranscurrido)    
+    let fechaActualizado       = hoy.toLocaleDateString()
     
-    if (nuevoNumero){
-        console.log('numero:',nuevoNumero)
-
-        guardarCotizacion(nuevoNumero,fecha,vendedor,cliente,ruc,detalleCotizacion,estado,tipoPago,metodoCobro,subTotal,descuento,importeTotal)
-        actualizarStock(objetos)
-        updateNumeracion('Cotizacion',{ultimoNumero:nuevoNumero})
-
-        console.log('Registro de cotizacion es un exito:',hoy.toLocaleDateString())
-    } else {
-        alert('Poner numero de Venta')
-    }
+    let id             = form['usuario'].value
+    delete objetos.descripcion;
+    delete objetos.costo;
+    delete objetos.peso;
+    delete objetos.precio;
+    delete objetos.stock;
+    delete objetos.unidad;
+    let receta   = JSON.stringify(objetos)
+    
+    updateProduct(id,{receta:receta,actualizado:fechaActualizado})//actualiza el stock del insumo
+    
+    console.log('Registro de receta es un exito:',receta)
 }
 
 function actualizaImporte(e){
@@ -103,12 +78,11 @@ function actualizaImporte(e){
             
         for(let i =0;i<objetos.length;i++){
             objetos[i].cantidad = parseFloat(tabla.children[i].children[3].children[0].value) 
-            objetos[i].precio   = parseFloat(tabla.children[i].children[6].children[0].value)
-            objetos[i].importe  = parseFloat(objetos[i].cantidad*objetos[i].precio)
+            objetos[i].pesoConsumido   = parseFloat(objetos[i].cantidad*objetos[i].peso)
+            objetos[i].costoTotal = parseFloat(objetos[i].cantidad*objetos[i].costo)
         }
         limpiarTabla(e)
         pintarTabla(objetos)
-        actualizaImporteTotal()
         console.log('objeto actualizado:',objetos)
     }
 }
@@ -123,11 +97,11 @@ function limpiarTabla(){
 
 function actualizaImporteTotal(){
     
-    let total=objetos.reduce((tot,producto)=>tot+producto.importe,0)
+    let totalPeso=objetos.reduce((tot,producto)=>tot+producto.pesoConsumido,0)
+    let totalCosto=objetos.reduce((tot,producto)=>tot+producto.costoTotal,0)
     
-    celdaSubTotal.value=total.toFixed(2)
-    let desc=descuento.value
-    celda_total.value=celdaSubTotal.value-desc
+    celda_total.value=totalPeso
+    costoTotal.value=totalCosto
 
 }
 
@@ -181,11 +155,11 @@ function pintarFilasLlenas(objetos){
                         <td><button class ='btn-stock fa-solid fa-circle-plus' color='transparent'data-id=${producto.id}></button></td>
                         <td>${contador}</td>
                         <td>${producto.id}</td>
-                        <td><input type='number'  min="0" step="0.1" class='cantidad' id='${producto.id}' value=${producto.cantidad}></td>
+                        <td><input type='number'  min="0" step="0.01" class='cantidad' id='${producto.id}' value=${producto.cantidad} ></td>
                         <td>${producto.unidad}</td>
-                        <td>${producto.nombre}</td>
-                        <td><input type='number' min="0" step="0.1" class='precio' id='${producto.id}' value=${producto.precio}></td>
-                        <td><input type='number' class='importe' id='${producto.id}' value=${producto.importe.toFixed(2)}></td>
+                        <td>${producto.descripcion}</td>
+                        <td><input type='number' min="0" step="0.01" class='precio' id='${producto.id}' value=${producto.peso*producto.cantidad}></td>
+                        <td><input type='number' class='importe' id='${producto.id}' value=${producto.costo*producto.cantidad}></td>
                         <td><button class ='btn-delete fa fa-trash' id=''data-id=${producto.id}></button></td>                       
                         `
         contador++
@@ -216,27 +190,17 @@ function pintarFilasVacias(objetos){
 }
 
 function sincronizarLocalStorage(objetos){
-    localStorage.setItem('cotizacion',JSON.stringify(objetos))
-    objetos=JSON.parse(localStorage.getItem('cotizacion'))
+    localStorage.setItem('produccion',JSON.stringify(objetos))
+    objetos=JSON.parse(localStorage.getItem('produccion'))
 }
 
-/*
-JsBarcode(".barcode",'SB0070', {
-    lineColor: "#000",
-    width: 1.5,
-    height: 40,
-    displayValue: false
-  });
-*/
-async function generaPDF(){
+function generaPDF(){
     console.log('generando pdf...')//crear pdf a partir del lenguaje y no de html
-    const areaImpresion       = document.getElementById('documentoPDF'); // <-- Aquí puedes elegir cualquier elemento del DOM
-    let id_cotizacion      = document.getElementById('cotizacion').value
-
-        await html2pdf()
+    const elementoParaConvertir = document.body; // <-- Aquí puedes elegir cualquier elemento del DOM
+        html2pdf()
             .set({
-                margin: 5,
-                filename: `${id_cotizacion}`,
+                margin: 0.25,
+                filename: 'cotizacion',
                 //se borro image jpg, averiguar codigo origina en github del cdn html2pdf
                 html2canvas: {
                     scale: 5, // A mayor escala, mejores gráficos, pero más peso
@@ -248,7 +212,7 @@ async function generaPDF(){
                     orientation: 'landscape' // landscape o portrait
                 }
             })
-            .from(areaImpresion)
+            .from(elementoParaConvertir)
             .save()
             .catch(err => console.log(err));
         /*
@@ -258,31 +222,20 @@ async function generaPDF(){
             url:'./cotizacion.pdf'
         })
     */
-    localStorage.removeItem('cotizacion');
-    objetos=[]
-    numeroCotizacion.value='';
-    form.reset()
-    pintarTabla(objetos) //vueve a pintar el formulario vacio
 }
 
 function pintarFecha(){
-    
-    fecha.textContent       =new Date(Date.now()).toLocaleDateString()
+    let tiempoTranscurrido  =Date.now()
+    let hoy                 =new Date(tiempoTranscurrido)
+    fecha.textContent       =hoy.toLocaleDateString()
 }
 
-function activarEnter(e){
-    if(e.key==='Enter'){
-        ingresarProducto();
-    }
-}
 async function ingresarProducto(e){
-
-      //e.preventDefault()
-      btn_semaforo.classList.remove('semaforo-verde')
-      btn_semaforo.classList.remove('semaforo-ambar')
-      btn_semaforo.classList.remove('semaforo-rojo')
-      //console.log('dentro de funcion ingresarproducto',e.target)
-      let id=inpCodigo.value.toUpperCase();        //captura el codigo del formulario, puede ser tambien un barcode
+    e.preventDefault()
+    btn_semaforo.classList.remove('semaforo-verde')
+    btn_semaforo.classList.remove('semaforo-ambar')
+    btn_semaforo.classList.remove('semaforo-rojo')
+    var id=form['codigo'].value.toUpperCase()        //captura el codigo del formulario, puede ser tambien un barcode
     console.log('id ingresado:',id)
     if(id){   
         console.log('objeto a evaluar:',objetos)
@@ -292,7 +245,7 @@ async function ingresarProducto(e){
         let duplicado = objetos.some((elem)=>{return elem.id===id})     //verifica por ID si el nuevo elemento ya existe en el objeto
         
         if(!duplicado){
-            inpCodigo.select()                                     //selecciona el texto para ser borrado con el siguiente ingreso de lector barcode   
+            form['codigo'].select()                                     //selecciona el texto para ser borrado con el siguiente ingreso de lector barcode   
             btn_semaforo.classList.toggle('semaforo-verde')
             btn_semaforo.textContent='exito!'
             let traerDoc = await traeroneProduct(id);                   //trae un producto de la DB
@@ -300,7 +253,12 @@ async function ingresarProducto(e){
             let fila = traerDoc.data()                                  //.data() metodo para mostrar solo los datos del producto
             fila.id=traerDoc.id                                         // el id esta en otro campo, por eso se llama aparte y luego agregar
             fila.cantidad=1                                             //por defecto cantidad igual a 1
-            fila.importe=fila.precio*fila.cantidad                      //calculamos l importe
+            fila.importe=fila.peso*fila.cantidad
+            delete fila.activo;
+            delete fila.categoria;
+            delete fila.imagen;
+            delete fila.precio_anterior;
+            delete fila.nombre;
             
             objetos.push(fila)                                          //metemos los datos de fila en objetos
             limpiarTabla(e)                                             //limpir datos de la tabla
@@ -316,7 +274,6 @@ async function ingresarProducto(e){
         btn_semaforo.classList.toggle('semaforo-ambar')
         btn_semaforo.textContent='vacio'
     } 
-
 }
 
 function actualizaImporteTouch(e){
@@ -333,16 +290,11 @@ function actualizaImporteTouch(e){
     
 }
 
-async function activarEnter2(e){
-    if(e.key==='Enter'){
-            let id = inpCodigoCliente.value.trim();
-            let traerDoc = await traerUnSocio(id);                   //trae un producto de la DB
-            let fila = traerDoc.data()                                  //.data() metodo para mostrar solo los datos del producto
-            let razonSocial=fila.razonSocial;
-            inpCliente.value=razonSocial 
-            
-            let traerDoc2 = await traerUnNumeracion('Cotizacion')
-            let dato = traerDoc2.data()
-            numeroCotizacion.value=Number(dato.ultimoNumero)+1;
-    }
-}
+/*
+JsBarcode(".barcode",'SB0070', {
+    lineColor: "#000",
+    width: 1.5,
+    height: 40,
+    displayValue: false
+  });
+*/

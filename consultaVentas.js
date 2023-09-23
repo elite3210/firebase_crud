@@ -1,41 +1,47 @@
 import {onGetVentas} from './firebase.js'
+import {Datatable} from './dataTable.js'
 
 
 //traer los socios comerciales clientes de firebase
-const ventasContainer = document.getElementById('ventasContainer')
+
 
 const registroVentas = onGetVentas((ventasSnapShot) =>{
-    let objetoVentas=[]
+    let items =[]
     let ventasTotal=0
-    ventasContainer.innerHTML='';  //borra el contenido previo, hacer una funcion limpiar...
-
+    console.log('ventasSnapShot:',ventasSnapShot);
     if(ventasSnapShot){
         ventasSnapShot.forEach(doc =>{
+            let obj ={};
+            obj.values=doc.data()
+            console.log('obj.values:',obj.values);
+            obj.id=doc.id
             
-            let fila = document.createElement('tr')
-            const objeto  = doc.data()
-            objeto.id     = doc.id
-            
-            let detalle=JSON.parse(objeto.detalleCotizacion)
+            let detalle=JSON.parse(obj['values'].detalleCotizacion)
             let importeTotal = detalle.reduce((total,obj)=>{return total+obj.importe},0)
-            console.log('el detalle en JSON importe:',importeTotal)
             ventasTotal +=importeTotal
-            objeto.importe=importeTotal
-            objetoVentas.push(objeto)
 
-            fila.innerHTML = `
-                                <td><label class ='barcode fa-solid fa-barcode' data-id='${objeto.id}' value='${objeto.id}' id='${objeto.id}'></label>${objeto.id}</td>
-                                <td>${objeto.cliente}</td>
-                                <td>${objeto.ruc}</td>
-                                <td>${objeto.fecha}</td>
-                                <td>${objeto.estado}</td>
-                                <td>${objeto.vendedor}</td>
-                                <td>${objeto.importe.toFixed(2)}</td>
-                            `
-            ventasContainer.appendChild(fila);
-            
+            obj['values'].importe=Math.round(importeTotal)
+            //obj['values'].id=obj.values.numero
+            items.push(obj)
         })
-        let cldImporte = document.getElementById('cldImporte')
-        cldImporte.textContent=ventasTotal.toFixed(2)
     }
+    
+    let cldImporte = document.getElementById('cldImporte')
+    cldImporte.textContent=ventasTotal.toFixed(2)
+
+    
+    console.log('datos para dataTable:',items)
+    
+    
+    const titulo   = {' ':'',DOCUMENTO:'numero',CLIENTE:'cliente',RUC:'ruc',FECHA:'fecha',PAGO:'tipoPago',ESTADO:'estado',IMPORTE:'importe'}
+    
+    const dt = new Datatable('#dataTable',
+    [
+        {id:'bedit',text:'editar',icon:'edit',action:function(){const elemntos=dt.getSelected(); console.log('editar datos...',elemntos);  }},
+        {id:'bDelete',text:'eliminar',icon:'delete',action:function(){const elemntos=dt.getSelected(); console.log('eliminar datos...',elemntos);  }}
+    ]
+    );
+    
+    dt.setData(items,titulo);
+    dt.makeTable();
 });

@@ -20,6 +20,7 @@ let tarifaJornada=[
                     {tarifa:3.6164,'dni':'72091168','nombre':'Angela'},
                     {tarifa:3.6719,'dni':'71338629','nombre':'Alexandra'},
                     {tarifa:3.3594,'dni':'09551196','nombre':'Rocio'},
+                    {tarifa:3.3594,'dni':'09551196','nombre':'Rocío'},
                     {tarifa:3.0000,'dni':'70528292','nombre':'Heinz'},
                     {tarifa:3.3594,'dni':'10216274','nombre':'Mariela'},
                     {tarifa:4.9144,'dni':'42231772','nombre':'Elí'}
@@ -396,7 +397,7 @@ function procesarDatos(objetos){
         const {tarifa}          = tarifaJornada.filter(elemt => elemt.nombre == obj.description.trim())[0]//del objeto tarifaJornada buscar el objeto con el mismo nombre y sacar su tarifa
         obj['importe']          = horasDecimales(obj.title,obj.salida)*tarifa;
 
-        console.log('lo que devuelve el filter:',tarifaJornada.filter(elemt => elemt.nombre == obj.description.trim()))
+        console.log('lo que devuelve el filter:',tarifaJornada.filter(elemt => elemt.nombre == obj.description.trim())[0])
     })
 
     let objetoOrdenado=objetos.sort(function(a,b){return new Date(b.title).getTime()-new Date(a.title).getTime()})

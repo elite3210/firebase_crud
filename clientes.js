@@ -2,7 +2,16 @@ import {guardarSocios} from './firebase.js'
 
 //para guardar los registo en firebase
 const clientesForm = document.getElementById('formularioClientes')
+/*
+const date = new Date();
+let mes=date.getMonth()<9? `0${date.getMonth()+1}`:`${date.getMonth()+1}`;
+let dia = (date.getDate()<10)? `0${date.getDate()}`:`${date.getDate()}`
+const fechaRegistro = `${date.getFullYear()}/${mes}/${dia} : ${date}`;
+let entrada='Fri Sep 22 2023 10:45:48 GMT-0500'
 
+console.log('Fecha formato:',fechaRegistro)
+console.log('metodo date:',new Date('9/9/2023'),new Date('9/9/2023').getDate(),new Date('9/9/2023').getMonth(),new Date('9/9/2023').getFullYear())
+*/
 
 let editStatus=false;
 let id ='';

@@ -13,9 +13,9 @@ section{
 }
 
 #formulario{
-        height: auto;
+        /*height: auto;*/
         display: flex;
-        height: 95px;
+        height: 75px;
         margin-top: 15px;
 }
 
@@ -23,118 +23,134 @@ section{
     margin-top: 6px;
     width: 100%;
 }
-    .logo{/*caja logo*/
-        width:75%;
+.logo{/*caja logo*/
+        width:50%;
         vertical-align:top;
-    }
-    .cajita1{/*caja inputs*/
+}
+.contacto{
+    margin-top: 14px;
+    width: 25%;
+}
+.cajita1{/*caja inputs*/
         border-radius: 6px;
-    
         border: solid 1px rgb(209, 209, 209);
         width: 75%;
         display: flex;
         height: 100%;
-        
-    }
-    .cajita2{/*caja cotizacion*/
+}
+
+.cajita2{/*caja cotizacion*/
         text-align: center;
         background-color: rgb(238, 237, 237);
         border-radius: 6px;
         border: solid 1px rgb(168, 168, 151);
         width: 25%;
-    }
-    .cajita4{/*caja fecha*/
+}
+
+.cajita4{/*caja fecha*/
         padding: 4px;
-        display: flex;
+        
         height: 100%;
         width: 25%;
         margin-left: 10px;
         border: solid 1px rgb(209, 209, 209);
         border-radius: 6px;
-    }
+}
 
-    td{
+td {
         text-align: left;
-        padding: 0px;
+        padding-left: 4px;
         vertical-align:middle;
         white-space: nowrap;
-    }
-    .btn-stock {
+}
+
+.btn-stock {
         background-color: transparent;
         border-color: transparent;
-    }
-    .btn-stock:hover{
-        color: rgb(4, 228, 53);
-    }
+}
 
-        .btn-delete{
+.btn-stock:hover{
+        color: rgb(4, 228, 53);
+}
+
+.btn-delete{
             background-color: transparent;
             border-color: transparent;
-        }
-        .btn-delete:hover{
+}
+
+.btn-delete:hover{
             color: red;
-        }
-        .celda{
+}
+
+.celda{
             background-color: transparent;
             border-color: transparent; 
             padding-left: 10px;
-            width: 100%;
+            width: 90%;
             background-color: transparent;
-        }
+            font-size: 12px;
+}
 
-        .ventana{
-            background-color: rgb(254, 255, 241)
-        }
-        tr{
-            border: 0px;
-            padding: none;
-        }
-        tr:nth-child(even){background-color: rgb(228, 226, 226);}
+.ventana{
+    background-color: rgb(254, 255, 241)
+}
+
+tr{
+    border: 0px;
+    padding: none;
+}
+tr:nth-child(even){background-color: rgb(228, 226, 226);}
         /*tr:hover{
             background-color: rgb(228, 164, 253);
         }*/
         
-        .button-content{
-            border: solid 1px rgb(209, 209, 209);
-            border-radius: 6px;
-            text-align: right;
-            padding: 10px;
-        }
+.button-content{
+    border: solid 1px rgb(168, 168, 168);
+    border-radius: 20px;
+    margin: 10px;
+}
 
-        input{
-            width: 114px;
-            white-space: nowrap;/*elimina espacios en blanco contenid se ajusta celda*/
-            border-color: transparent;
-            background-color: transparent;
-        }
-    .semaforo-rojo{
-        background-color: red;
-    }
-        .semaforo-ambar{
-          background-color: gold;
-        }
-        .semaforo-verde{
-          background-color: chartreuse;
-        }
+input{
+    width: 60%;
+    white-space: nowrap;/*elimina espacios en blanco contenid se ajusta celda*/
+    border-color: transparent;
+    background-color: transparent;
+    padding: 0px;
+}
+.semaforo-rojo{
+    background-color: red;
+}
+.semaforo-ambar{
+    background-color: gold;
+}
+.semaforo-verde{
+    background-color: chartreuse;
+}
 
+H1{
+    text-align: center;
+}
+h3{
+    text-align:right;
+    margin-right: 16px;
+    font-size: 11px;
+}
 
-        H1{
-          text-align: center;
-        }
 .total{
-    font-weight: 600;
+    font-size: 12px;
+    font-weight: 500;
     font-family: 'Courier New', Courier, monospace;
+}
+thead{
+    background-color: rgb(168, 168, 168);
 }
 
 tfoot{
-    border-radius: 6px;
-    border: solid 2px rgb(97, 97, 97);
+    padding-top: 4px;
+    border-radius: 3px;
+    border: solid 2px rgb(0, 0, 0);
 }
-thead{
-    background-color: rgb(173, 173, 173);
-        border-radius: 6px;
-        
-}
+
 
 .cajita1_1{
     flex: 1.5;
@@ -142,12 +158,14 @@ thead{
 .cajita1_3{
     flex: 8;
 }
+
 p{
     margin-right: 10px;
     text-align: right;
 }
+
 label{
-    width: 100%;
+    width: 70px;
 }
 
 .celda-cotizacion{
@@ -156,5 +174,23 @@ label{
 
 #celda_total{
     font-size: 20px;
+}
+
+.entradaDato{
+    border: solid 1px;
+    padding: 4px;
+    margin: 6px;
+    display: flex;
+}
+
+.fecha{
+    display: flex;
+}
+
+.codigo{
+    width: 10%;
+}
+th{
+    margin-right: 8px;
 }
 

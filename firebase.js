@@ -21,6 +21,7 @@
   export const auth = getAuth(app);
   export const db   = getFirestore();
 
+  const numeracionRef =collection(db,'Numeracion')
   const productRef    =collection(db,'Productos')
   const ventasRef     =collection(db,'Ventas')
   const cotizacionRef =collection(db,'Cotizacion')
@@ -28,22 +29,25 @@
   const produccionRef =collection(db,'Produccion')
   const jornadaRef    =collection(db,'Micoleccion')
   const boletaPagoRef =collection(db,'BoletaPago')
+  const diario2023Ref =collection(db,'Diario2023')
+  const cta41110 =collection(db,'41110')
 
 
 
   /*Save a New registro in Firestore con metodo addDoc()*/ 
   export const guardarTask        = (title,description,salida,payStatus)=>{addDoc(collection(db,'Micoleccion'),{title,description,salida,payStatus})}
   export const guardarVenta       = (cliente,vendedor,productoVendido,cantidad)=>{addDoc(ventasRef,{cliente,vendedor,productoVendido,cantidad})}
-  export const guardarProduccion  = (fecha,usuario,almacen,detalleProduccion,estado,fechaRegistro)=>{addDoc(produccionRef,{fecha,usuario,almacen,detalleProduccion,estado,fechaRegistro})}
+  export const guardarProduccion  = (almacenProcesos,usuario,almacen,detalleProduccion,estado,fechaRegistro,tiempo)=>{addDoc(produccionRef,{almacenProcesos,usuario,almacen,detalleProduccion,estado,fechaRegistro,tiempo})}
   export const guardarBoletaPago  = (numBoleta,dniBoleta,nomBoleta,fechaBoleta,tiempoTotal,creado,detalle,payStatus,importe)=>{addDoc(boletaPagoRef,{numBoleta,dniBoleta,nomBoleta,fechaBoleta,tiempoTotal,creado,detalle,payStatus,importe})}
- 
+  export const guardarCotizacion  = (numero,fecha,vendedor,cliente,ruc,detalleCotizacion,estado,tipoPago,metodoCobro,subTotal,descuento,importeTotal)=>{addDoc(cotizacionRef,{numero,fecha,vendedor,cliente,ruc,detalleCotizacion,estado,tipoPago,metodoCobro,subTotal,descuento,importeTotal})}
+
   /*registrando un nuevo documento en firestore indicando el id de la DB personalizado setDoc() */
   export const guardarProduct     = async (codigo,categoria,nombre,costo,stock,unidad,precio_anterior,precio,activo,descripcion,imagen)=>{await setDoc(doc(productRef,codigo),{imagen,categoria,nombre,costo,stock,unidad,precio_anterior,precio,activo,descripcion})}
-  export const guardarCotizacion  = async (id,fecha,vendedor,cliente,ruc,detalleCotizacion,estado)=>{await setDoc(doc(cotizacionRef,id),{fecha,vendedor,cliente,ruc,detalleCotizacion,estado})}
+  export const guardarCotizacion2  = async (id,fecha,vendedor,cliente,ruc,detalleCotizacion,estado,tipoPago,metodoCobro,subTotal,descuento,importeTotal)=>{await setDoc(doc(cotizacionRef,id),{fecha,vendedor,cliente,ruc,detalleCotizacion,estado,tipoPago,metodoCobro,subTotal,descuento,importeTotal})}
   export const guardarSocios      = async (ruc,razonSocial,inicioActividad,nombresContacto,apellidosContacto,email,dni,cargo,telefono,calle,distrito,provincia,departamento,ubicacion,nota)=>{await setDoc(doc(sociosRef,ruc),{razonSocial,inicioActividad,nombresContacto,apellidosContacto,email,dni,cargo,telefono,calle,distrito,provincia,departamento,ubicacion,nota})}
 
   /*creando la suscripcion que se deseara escuchar cuando los datos cambian
-    crea un efecto inmediato sobre la tabla, como si se introduciera dorecto a la tabla cuando se guarda*/
+    crea un efecto inmediato sobre la tabla, como si se introduciera directo a la tabla cuando se guarda*/
 
   export const onGetTasks   = (callback)=> onSnapshot(collection(db,'Micoleccion'),callback)
   export const onGetProduct = (callback)=> onSnapshot(collection(db,'Productos'),callback)
@@ -57,16 +61,22 @@
   /*metodo getDoc 'en singular' para traer un documento de firestore */
   export const traerTask        = (id)=>getDoc(doc(db,'Micoleccion',id))
   export const traeroneProduct  = (id)=> getDoc(doc(db,'Productos',id))
+  export const traerUnSocio    = (id)=> getDoc(doc(db,'Socios',id))
+  export const traerUnNumeracion    = (id)=> getDoc(doc(db,'Numeracion',id))
 
   //updateDoc() actualiza una documento
   export const updateProduct    = (id,newFields)=>updateDoc(doc(db,'Productos',id),newFields)
   export const updateTask       = (id,newFields)=>updateDoc(doc(db,'Micoleccion',id),newFields)
+  export const updateNumeracion = (id,newFields)=>updateDoc(doc(db,'Numeracion',id),newFields)
+  export const updateMovimientoInventario = (id,newFields)=>updateDoc(doc(db,'Produccion',id),newFields)
   
 
    //consulta un documento con query y where, En construccion...
-  export const queryProduccion  = await getDocs(query(produccionRef,where("estado", "==", "pendiente"),orderBy('fecha','desc')));
+  export const queryProduccion  = await getDocs(query(produccionRef,where("estado", "==", "pendiente"),orderBy('fechaRegistro','desc')));
   export const queryJornada     = await getDocs(query(jornadaRef,where("payStatus", "==", false)));
   export const queryBoletaPago  = await getDocs(query(boletaPagoRef,where("payStatus", "==", false)));
+  export const queryDiario      = await getDocs(query(diario2023Ref));
+  export const query41110      = await getDocs(query(cta41110));
 
     /*realizar una consulta where con funcoion pasandole un valor */
   export const traerConsulta    = (nombre)=>{return getDocs(query(collection(db,'Micoleccion'), where("description", "==", nombre), where("payStatus", "==", false), orderBy('title','desc'),limit(60)))}

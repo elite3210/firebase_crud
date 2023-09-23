@@ -17,7 +17,7 @@ export class Datatable{
         this.items      = [];
         this.pagination = {total:0,noItemsPerPage:0,noPages:0,actual:0,pointer:0,diff:0,lastPageBeforeDots:0,noButtonsBeforeDots:4};
         this.selected   = [];
-        this.numberOfEntries    = 7;
+        this.numberOfEntries    = 50;
         this.headerButtons      = headerButtons;
     }
 
@@ -55,7 +55,7 @@ export class Datatable{
     };
 
     makeTable(){//renderiza la tabla
-        console.log('dentro de maketable...')
+        console.log('DataTable esta renderizando la tabla...')
         this.copyItems  = [...this.items];
         this.initPagination(this.items.length,this.numberOfEntries);
 
@@ -73,6 +73,24 @@ export class Datatable{
         this.renderSelectEntries();
     };
 
+    renderTable(){//renderiza la tabla sin herramientas
+        console.log('se esta renderizando la tabla sin herramientas...')
+        this.copyItems  = [...this.items];
+        this.initPagination(this.items.length,this.numberOfEntries);
+
+        const container = document.createElement('div');
+        container.id    = this.element.id;
+        this.element.innerHTML='';
+        this.element.replaceWith(container);//reemplaza tabla con esta capa
+        this.element    = container;
+        this.createHTML();
+        this.renderHeaders();
+        this.renderRows();
+        //this.renderPagesButtons();
+        //this.renderSearch();
+        //this.renderSelectEntries();
+    };
+
     createHTML(){//crea la estructura basica
         /*
         const div = document.createElement('div')
@@ -87,10 +105,6 @@ export class Datatable{
         const divTools = document.createElement('div')
         divTools.setAttribute('class','tools')
 
-        const inputSearch = document.createElement('input')
-        inputSearch.setAttribute('type','text')
-        inputSearch.setAttribute('class','search-input')
-        divSearch.appendChild(inputSearch)
 
         const ulHeadersButtonsContainer = document.createElement('ul')
         ulHeadersButtonsContainer.setAttribute('class','header-buttons-container')
@@ -112,7 +126,7 @@ export class Datatable{
         <div class="datatable-container">
         
         <div class="header-tools">
-            <div class="search"><input type="text" class="search-input"></div>
+            <div class="search"></div>
             <div class="tools">
                 <ul class="header-buttons-container">
                 </ul>
@@ -130,17 +144,8 @@ export class Datatable{
         </table>
         
         <div class="footer-tools">
-            <div class="list-items">
-                show
-                <select name="n-entries" id="n-entries" class="n-entries">
-                    <option value="15">5</option>
-                    <option value="10">10</option>
-                    <option value="12">15</option>
-                </select>
-                entries
-            </div>
-            <div class="pages">
-            </div>
+            
+            <div class="pages"></div>
         </div>
         
     </div>
@@ -277,21 +282,31 @@ export class Datatable{
     };
 
     renderHeaderButtons(){
-        let html='';
-        const buttonsContainer  = this.element.querySelector('.header-buttons-container');
-        const headerButtons     =this.headerButtons;
+        
 
+        let html='';
+        const headerButtons     =this.headerButtons;
+        const buttonsContainer  = this.element.querySelector('.header-buttons-container');
+        
         headerButtons.forEach(button=>{
             html    += `<li><button id = "${button.id}"><i class="material-icons">${button.icon}</i></button></li>`
         });
-
+        
         buttonsContainer.innerHTML=html;
         headerButtons.forEach(button=>{
             document.querySelector('#'+button.id).addEventListener('click',button.action)
         })
     };
-
+    
     renderSearch(){
+        //creando los elemtos html para search
+        const inputSearch = document.createElement('input')
+        inputSearch.setAttribute('type','text')
+        inputSearch.setAttribute('class','search-input')
+        const searchContainer  = this.element.querySelector('.search');
+        searchContainer.appendChild(inputSearch)
+
+        //agregando escucha de eventos
         this.element.querySelector('.search-input').addEventListener('input',(e)=>{
             const query = e.target.value.trim().toLowerCase();
             
@@ -342,6 +357,20 @@ export class Datatable{
     }
 
     renderSelectEntries(){//dibuja los elementos que haya seleccionado previamente, escrito por un seguidor del autor en youube
+        let htmlEntries = `
+        <div class="list-items">
+                show
+                <select name="n-entries" id="n-entries" class="n-entries">
+                    <option value="15">5</option>
+                    <option value="10">10</option>
+                    <option value="12">15</option>
+                </select>
+                entries
+        </div>
+        `
+        const footerTools = this.element.querySelector(".footer-tools");
+        footerTools.innerHTML=htmlEntries
+
         const select = this.element.querySelector("#n-entries");
 
         const html = [5, 10, 15].reduce((acc, item) => {

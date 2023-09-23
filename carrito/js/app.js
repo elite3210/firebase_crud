@@ -7,7 +7,7 @@ const contenedorCarrito = document.querySelector('#lista-carrito tbody')
 const listaCursos       = document.querySelector('#lista-cursos')
 let totalCarrito        = document.querySelector('#total-carrito')
 let contadorProductos   = document.querySelector('.count-product')
-let botonIncremento     = document.querySelector('button_inc')
+let botonIncremento     = document.querySelector('btnIncrementar')
 let articulosCarrito    = []
 
 
@@ -200,11 +200,12 @@ function pintarCarrito(){
                         <td><img src='${curso.imagen}' width='100'></td>
                         <td>${curso.titulo}</td>
                         <td>${curso.precio}</td>
-                        <td class='box'>
-                        <!--<label for='name'>Males:</label>-->
-                        <div class='dec button_dec' data-id='${curso.id}'>&#8722</div>
-                        <input type='text' class ='input-filed' name='qty' value='${curso.cantidad}' data-id='${curso.id}'>
-                        <div class ='inc button_inc' data-id='${curso.id}'>+</div></td>
+                        <td class='box2'>
+                            <!--<label for='name'>Males:</label>-->
+                            <div class='dec tnDecrementar' data-id='${curso.id}'>&#8722</div>
+                            <input type='text' class ='input-filed' name='qty' value='${curso.cantidad}' data-id='${curso.id}'>
+                            <div class ='inc bntIncrementar' data-id='${curso.id}'>+</div>
+                        </td>
                         `;
         //agregando al tbody
         contenedorCarrito.appendChild(fila);

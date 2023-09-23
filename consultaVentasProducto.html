@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    
     <title>Ventas::Consulta</title>
-    <link rel="stylesheet" href="estilos.css">
     <link rel="stylesheet" href="dataTable.css">
+    <link rel="stylesheet" href="consultaVentasProducto.css">
 
 </head>
 <body>
@@ -55,16 +56,30 @@
           </div>
         </nav>
     </header>
+    <div class="contenedor">
+        <div class="header">
+        <ul class="ul">
+          <li class="li activo"><h3>Doc</h3></li>
+          <li class="li">Tabla</li>
+          <li class="li">Tabla</li>
+          <li class="li">Producto</li>
+          <li class="li">Cliente</li>
+        </ul>
+        <div class="indicador"></div>
+        <div class="linea"></div>
+        </div>
+          
+      <div class="subContenedor">
+        <div class="bloque activo"><table id="dataTable3" class="datatable"></table></div>
+        <div class="bloque"><table id="dataTable" class="datatable"></table></div>
+        <div class="bloque"><table id="dataTable2" class="datatable"></table></div>
+        <div class="bloque"><canvas id="myChart2" class="grafico"></canvas></div>
+        <div class="bloque"><canvas id="myChart" class="grafico"></canvas></div>
+      </div>
+    </div>
 
-
-    <table>
-        <tfoot><th></th><th></th><th></th><th></th><th></th><th></th><th id="cldImporte"></th></tfoot>
-    </table>
-    <table id="dataTable" class="datatable"></table>
-    
-    
-    <a href="./consultaCliente.html" target="_blank">...</a>
-    <script type="module" src="./consultaVentas.js"></script>  
+    <script type="module" src="./consultaVentasProductos.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script> 
 </body>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
