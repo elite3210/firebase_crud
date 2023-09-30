@@ -4,124 +4,16 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css" rel="stylesheet"/>
     <script src="https://kit.fontawesome.com/434a77214b.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">-->
     <script src="https://parzibyte.github.io/ejemplos-javascript/html-a-pdf/html2pdf.bundle.min.js"></script>
-    <script src="JsBarcode.code128.min.js"></script>
+    <!--<script src="JsBarcode.code128.min.js"></script>-->
+    <link rel="stylesheet" href="./produccion.css">
 
     
 
     <title>Movimiento Stock</title>
-    <style>
-        
-        .contenedor{
-          background-color: rgb(201, 201, 182);
-          width: 100%;
-          border-radius: 10px;
-          margin: 2px;
-        }
-        .contenedor2{
-          width: 100%;
-          margin: 2px;
-        }
 
-        th{
-            background-color: rgb(168, 168, 151);
-        }
-        td{
-            text-align: left;
-            border-bottom: 2px  rgb(124, 124, 124);
-            padding: 0px;
-            vertical-align:middle;
-            align-content: center;
-        }
-
-
-        .btn-edit{
-            background-color: transparent;
-            border-color: transparent;
-        }
-        .btn-edit:hover{
-            color: rgb(51, 255, 0);
-            background-color: black;
-            
-        }
-        .btn-delete{
-            background-color: transparent;
-            border-color: transparent;
-        }
-        .btn-delete:hover{
-            color: red;
-        }
-        .celda{
-            background-color: transparent;
-            border-color: transparent; 
-            padding: 0%;
-            width: 150px;
-            background-color: beige;
-        }
-        .ventana{
-            background-color: rgb(254, 255, 241)
-        }
-        tr{
-            padding: none;
-        }
-        tr:nth-child(even){background-color: rgb(228, 226, 226);}
-        /*tr:hover{
-            background-color: rgb(228, 164, 253);
-        }*/
-        
-        .button-content{
-            background-color: rgb(170, 170, 167);
-            text-align: right;
-            padding: 10px;
-            border-radius: 10px;
-        }
-
-        input{
-            width: 60px;
-            border-color: transparent;
-            background-color: transparent;
-        }
-     
-        .semaforo-rojo{
-          background-color: red;
-        }
-        .semaforo-ambar{
-          background-color: gold;
-        }
-        .semaforo-verde{
-          background-color: chartreuse;
-        }
-        .ruc{
-          margin-left: 38px;
-        }
-        .cliente{
-          margin-left: 20px;
-        }
-        .codigo{
-          margin-left: 17px;
-        }
-        .tabla{
-          padding: 5px;
-          width: 100%;
-          
-        }
-        H1{
-          text-align: center;
-        }
-        h4{
-          text-align: right;
-          font-size: 12px;
-        }
-        .total{
-          font-size: large;
-          font-weight: 600;
-          font-family: 'Courier New', Courier, monospace;
-        }
-        
-    </style>
 </head>
 <body>
     <header>
@@ -170,22 +62,57 @@
         </nav>
       </header>
 
+  <section id="documentoPDF">
 
-  <div class="contenedor">
+    <div class="grupo1">
+      <div class="logo">
+        <img src="./imagenes/heinz_sport_sac_logo.png" width="250" >
+      </div>
+      <div class="contacto">
+        <h3 class="web">www.heinzsport.com <i class="fa-solid fa-globe"></i></h3>
+        <h3 class="web">info@heinzsport.com <i class="fa-regular fa-envelope"></i></h3>
+        <h3 class="web">+51 962833765<i class="fa-brands fa-whatsapp"></i></h3>
+      </div>
+      <div class="cajita2">
+        <h1 id="ruc2">RUC: 20605216715</h1>
+        <h1>MOVIMIENTO ALMACEN</h1>
+        <input  class='celda-cotizacion' type="number" id="inventario" placeholder="Numero">
+      </div>
+    </div>
+
     <form  id="formulario">
-      <h1>Movimiento Stock</h1><h4 id="fecha">Lima, 13 de Diciembre de 2022</h4>
-    
-      <label for="usuario">Usuario  :</label><input  class=' celda cliente' type="text" id="usuario"></br>
-      <label for="usuario">Origen  :</label><input  class=' celda origen' type="text" id="almacenProcesos" value="A.Proceso"></br>
-      <label for="almacen">Destino  :</label><input class='celda almacen' type="text" id="almacen" value="A.Terminado"></br>
-      <label class='boton' for="boton">Codigo :</label><input class='celda codigo'  type="text" id="codigo" size="6"><span class="validity"></span> 
-      
-      <button  id="boton" >Ingresar</button>
-      <button class="semaforo" id="semaforo">''</button>
-    </form>
-  </div>
+      <div class="cajita1">
+        <div class="cajita1_1">
+          <label for="usuario"><p>USUARIO:</p></label>
+          <label for="usuario"><h2><p>ORIGEN :</p></label>
+          <label for="almacen"><p>DESTINO :</p></label>
+        </div>
 
-  <div class="contenedor2">
+
+        <div class="cajita1_3">
+          <input  class='celda cliente' type="text" id="usuario" placeholder="Nombre del Usuario"> 
+          <input class='celda origen' type="text" id="almacenProcesos"  value="A.Proceso" required placeholder="Ingresar almacen orien">
+          <input  class='celda almacen' type="text" id="almacen" value="A.Terminado" required placeholder="Almacen destino">
+           
+        </div>
+      </div>
+      <div class="cajita4">
+        <datalist id="tipoPago">
+          <option value="Contado">
+          <option value="Credito">
+        </datalist>
+        <datalist id="metodoCobro">
+          <option value="Efectivo">
+          <option value="Transferencia">
+          <option value="Tarjeta">
+        </datalist>
+      
+        <div class="fecha"><label for="fecha">Fecha:</label><h4 id="fecha"></h4></div>
+        <div><label for="tipoPago">Pago:</label><input type="text" list="tipoPago" id="tipoPago"></div>
+        <div><label for="metodoCobro">Cobro:</label><input type="text" list="metodoCobro" id="metodoCobro"></div>
+      </div>
+    </form>
+    
     <table id='table' class="tabla">  
         <thead>
             <tr><th></th><th>Item</th><th>Codigo</th><th>Cantidad</th><th>Unidad</th><th>Descripcion</th><th>Peso</th><th>Importe</th><th></th></tr>
@@ -197,7 +124,20 @@
           <tr><th></th><th></th><th></th><th></th><th></th><th></th><th>Total (Kilos)</th><th><input id="celda_total"  class="total" type="text" value="0"></input></th><th></th><th></th></tr>
         </tfoot>
     </table>
+
+</section>
+<div class="cajaBotones">
+
+  <div class="entradaDato">
+    <label for="codigo" class='codigo'><p>Codigo :</p></label>
+    <input class='celda'  type="text" id="codigo" size="6" placeholder="Ingrese código de producto"><span class="validity"></span>
+    <button  id="boton" >Ingresar</button>
+    <button class="semaforo" id="semaforo">''</button>
   </div>
+  
+</div>
+
+
   <div class="contenedor">
     <button id="btn-guardar">Guardar</button>
     <button id="btn-imprimir">Imprimir</button>
@@ -230,6 +170,6 @@
   
   });
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/gridjs/dist/gridjs.umd.js"></script>
+
   
 </html>

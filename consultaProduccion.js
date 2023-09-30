@@ -1,5 +1,9 @@
-import {queryProduccion,updateMovimientoInventario} from './firebase.js'
+import {produccionRef} from './firebase.js'
+import {getDocs,query,where,orderBy,limit} from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js";
 import {Datatable} from './dataTable.js'
+
+
+const queryProduccion  = await getDocs(query(produccionRef,where("estado", "==", "pendiente"),orderBy('fechaRegistro','desc')));
 
 
 //traer los registros de produccion de firebase
@@ -10,18 +14,6 @@ let pesoTotal=0
 let cantidadTotal=0
 const items =[]
 
-function actualizarTodo(){
-
-    queryProduccion.forEach((doc) => {
-
-        const obj       ={}
-        let value       =doc.data()
-        obj.id          =doc.id
-        console.log('rechaRegistro:BD',value['fecha'])
-    
-        updateMovimientoInventario(doc.id,{fechaRegistro:value['fecha']})
-    });
-}
 //actualizarTodo()//no llamar a esta funcion...reemplaza fechas
 
 
@@ -154,3 +146,17 @@ const dt = new Datatable('#dataTable',
 
 dt.setData(items,titulo);
 dt.makeTable();
+
+
+function actualizarTodo(){//esta funcion debe borrarse , se utiliza para cambiar toda la fecha en base datos
+
+    queryProduccion.forEach((doc) => {
+
+        const obj       ={}
+        let value       =doc.data()
+        obj.id          =doc.id
+        console.log('rechaRegistro:BD',value['fecha'])
+    
+        updateMovimientoInventario(doc.id,{fechaRegistro:value['fecha']})
+    });
+}

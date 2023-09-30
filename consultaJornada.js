@@ -1,4 +1,7 @@
-import {queryJornada,deleteTask,updateTask,guardarBoletaPago} from './firebase.js'
+import {jornadaRef,deleteTask,updateTask,guardarBoletaPago} from './firebase.js'
+import {getDocs,query,where,orderBy,limit} from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js";
+
+const queryJornada     = await getDocs(query(jornadaRef,where("payStatus", "==", false)));
 
 
 //traer los registros de produccion de firebase

@@ -12,9 +12,9 @@ const registroVentas = onGetVentas((ventasSnapShot) =>{
     if(ventasSnapShot){
         ventasSnapShot.forEach(doc =>{
             let obj ={};
+            obj.id=doc.id
             obj.values=doc.data()
             console.log('obj.values:',obj.values);
-            obj.id=doc.id
             
             let detalle=JSON.parse(obj['values'].detalleCotizacion)
             let importeTotal = detalle.reduce((total,obj)=>{return total+obj.importe},0)
@@ -31,6 +31,8 @@ const registroVentas = onGetVentas((ventasSnapShot) =>{
 
     
     console.log('datos para dataTable:',items)
+
+    items.sort((a, b) => b.values.numero - a.values.numero);//metodo para ordenar array de objetos, seleccionar del objeto el atributo a ordenar, repetir en a y b
     
     
     const titulo   = {' ':'',DOCUMENTO:'numero',CLIENTE:'cliente',RUC:'ruc',FECHA:'fecha',PAGO:'tipoPago',ESTADO:'estado',IMPORTE:'importe'}

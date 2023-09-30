@@ -1,4 +1,4 @@
-import {traeroneProduct,updateProduct,guardarProduccion} from './firebase.js'
+import {traeroneProduct,updateProduct,guardarProduccion,traerUnNumeracion,updateNumeracion} from './firebase.js'//esto es el causante que demora mucho en cargar la tabla, investigue y se debe a los query en firebase
 
 
 const btn_ingresar      = document.getElementById('boton')
@@ -9,14 +9,18 @@ const btn_imprimir      = document.getElementById('btn-imprimir')
 const celda_total       = document.getElementById('celda_total')
 const fecha             = document.getElementById('fecha')
 const btn_semaforo      = document.querySelector('.semaforo')
+const inpCodigo         = document.getElementById('codigo')
+const numeroInventario  = document.getElementById('inventario')
 
 
 let objetos=JSON.parse(localStorage.getItem('produccion'))
 //let objetos=[]
 let start=true
+console.log('iniciando...: ')
 
 cargarEventListeners()
-console.log('La receta es: ',JSON.parse(objetos[0].receta))
+//console.log('La receta es: ',JSON.parse(objetos[0].receta))
+
 function cargarEventListeners(){
     pintarFecha()
     pintarTabla(objetos)
@@ -26,6 +30,7 @@ function cargarEventListeners(){
     btn_imprimir.addEventListener('click',generaPDF)
     tabla.addEventListener('click',operacionesEnTabla)
     tabla.addEventListener('keypress',actualizaImporte)
+    inpCodigo.addEventListener('keypress',activarEnter)
     //tabla.addEventListener('touchend',actualizaImporteTouch)        
 }
 
@@ -45,11 +50,12 @@ function pintarTabla(objetos){
 function crearVenta(){
 
     registrarVenta()
-    actualizarStock(objetos)
+    
     localStorage.removeItem('produccion');
     objetos=[]
     form.reset()
     pintarTabla(objetos) //vueve a pintar el formulario vacio
+    numeroInventario='';
 }
 
 async function actualizarStock(objetos){//actualiza incremento de produccion y disminuye cantidad de insumos
@@ -89,12 +95,22 @@ function registrarVenta(){//captura los datos del formulario para guardar en BD
     let almacen             = form['almacen'].value
     let detalleProduccion   = JSON.stringify(objetos)
     let estado              = 'pendiente'
-    let tiempo=Date.now()
+    let tiempo              = Date.now()
     let fechaRegistro       = hoy.toLocaleDateString()
-    
-    guardarProduccion(almacenProcesos,usuario,almacen,detalleProduccion,estado,fechaRegistro,tiempo)
-    
-    console.log('Registro de cotizacion es un exito:',hoy.toLocaleDateString())
+    let nuevoNumero         = Number(numeroInventario.value)
+
+    if (nuevoNumero){
+        console.log('numero:',nuevoNumero)
+
+        updateNumeracion('Inventario',{ultimoNumero:nuevoNumero})
+        guardarProduccion(almacenProcesos,usuario,almacen,detalleProduccion,estado,fechaRegistro,tiempo,nuevoNumero)
+        actualizarStock(objetos)
+
+        console.log('Registro de cotizacion es un exito:',hoy.toLocaleDateString())
+    } else {
+        alert('Poner numero de Venta')
+    }
+
 }
 
 function actualizaImporte(e){
@@ -239,13 +255,7 @@ function generaPDF(){
             .from(elementoParaConvertir)
             .save()
             .catch(err => console.log(err));
-        /*
-        navigator.share({
-            title:'probando esta nueva API',
-            text:'Desde Heinz Sport SAC',
-            url:'./cotizacion.pdf'
-        })
-    */
+
 }
 
 function pintarFecha(){
@@ -259,7 +269,7 @@ async function ingresarProducto(e){
     btn_semaforo.classList.remove('semaforo-verde')
     btn_semaforo.classList.remove('semaforo-ambar')
     btn_semaforo.classList.remove('semaforo-rojo')
-    var id=form['codigo'].value.toUpperCase()        //captura el codigo del formulario, puede ser tambien un barcode
+    var id=inpCodigo.value.toUpperCase()        //captura el codigo del formulario, puede ser tambien un barcode
     console.log('id ingresado:',id)
     if(id){   
         console.log('objeto a evaluar:',objetos)
@@ -267,9 +277,11 @@ async function ingresarProducto(e){
             objetos=[]                                                  //un atajo para que funcione el codigo por primera vez, corregir en futuro
         }
         let duplicado = objetos.some((elem)=>{return elem.id===id})     //verifica por ID si el nuevo elemento ya existe en el objeto
-        
+        let traerDoc = await traerUnNumeracion('Inventario');
+        numeroInventario.value=Number(traerDoc.data().ultimoNumero)+1;
+
         if(!duplicado){
-            form['codigo'].select()                                     //selecciona el texto para ser borrado con el siguiente ingreso de lector barcode   
+            inpCodigo.select()                                     //selecciona el texto para ser borrado con el siguiente ingreso de lector barcode   
             btn_semaforo.classList.toggle('semaforo-verde')
             btn_semaforo.textContent='exito!'
             let traerDoc = await traeroneProduct(id);                   //trae un producto de la DB
@@ -295,6 +307,12 @@ async function ingresarProducto(e){
     } 
 }
 
+async function activarEnter(e){
+    if(e.key==='Enter'){
+        ingresarProducto(e)
+    }
+}
+
 function actualizaImporteTouch(e){
         e.preventDefault()
         
@@ -308,12 +326,3 @@ function actualizaImporteTouch(e){
         console.log('objeto actualizado:',objetos)
     
 }
-
-/*
-JsBarcode(".barcode",'SB0070', {
-    lineColor: "#000",
-    width: 1.5,
-    height: 40,
-    displayValue: false
-  });
-*/

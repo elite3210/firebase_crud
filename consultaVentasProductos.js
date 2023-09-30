@@ -150,6 +150,7 @@ const registroVentas = onGetVentas((ventasSnapShot) =>{
         itemsAgrupado2.push(producto);
         contador2++;
     }
+    items2.sort((a, b) => b.values.numero - a.values.numero);//metodo para ordenar array de objetos, seleccionar del objeto el atributo a ordenar, repetir en a y b
     
     //const titulo   = {' ':'',FECHA:'fecha',DOCUMENTO:'numero',CODIGO:'codigo',NOMBRE:'nombre',CANTIDAD:'cantidad',IMPORTE:'importe',COSTO:'costo'}
     const titulo   = {' ':'',CLIENTE:'cliente',CANTIDAD:'cantidad',COSTO:'costo',IMPORTE:'importe',MARGEN:'margen'}
@@ -161,7 +162,6 @@ const registroVentas = onGetVentas((ventasSnapShot) =>{
     dt.setData(itemsAgrupado,titulo);
     dt.makeTable();
 
-    //const titulo   = {' ':'',FECHA:'fecha',DOCUMENTO:'numero',CODIGO:'codigo',NOMBRE:'nombre',CANTIDAD:'cantidad',IMPORTE:'importe',COSTO:'costo'}
     const titulo2   = {' ':'',CODIGO:'codigo',CANTIDAD:'cantidad',COSTO:'costo',IMPORTE:'importe',MARGEN:'margen'}
     const dt2 = new Datatable('#dataTable2',[
                                             {id:'bedit',text:'editar',icon:'edit',action:function(){const elemntos=dt.getSelected(); console.log('editar datos...',elemntos);  }},
@@ -171,7 +171,7 @@ const registroVentas = onGetVentas((ventasSnapShot) =>{
     dt2.setData(itemsAgrupado2,titulo2);
     dt2.makeTable();
 
-        const titulo3   = {' ':'',FECHA:'fecha',DOCUMENTO:'numero',RUC:'ruc',NOMBRE:'cliente',IMPORTE:'importeTotal',PAGO:'tipoPago'}
+        const titulo3   = {' ':'',FECHA:'fecha',DOCUMENTO:'numero',NOMBRE:'cliente',IMPORTE:'importeTotal',PAGO:'tipoPago'}
         //const titulo   = {' ':'',CLIENTE:'cliente',CANTIDAD:'cantidad',COSTO:'costo',IMPORTE:'importe',MARGEN:'margen'}
         const dt3 = new Datatable('#dataTable3',[
                                                 {id:'bedit',text:'editar',icon:'edit',action:function(){const elemntos=dt.getSelected(); console.log('editar datos...',elemntos);  }},

@@ -290,11 +290,3 @@ function actualizaImporteTouch(e){
     
 }
 
-/*
-JsBarcode(".barcode",'SB0070', {
-    lineColor: "#000",
-    width: 1.5,
-    height: 40,
-    displayValue: false
-  });
-*/

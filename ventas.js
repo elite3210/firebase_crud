@@ -220,14 +220,6 @@ function sincronizarLocalStorage(objetos){
     objetos=JSON.parse(localStorage.getItem('cotizacion'))
 }
 
-/*
-JsBarcode(".barcode",'SB0070', {
-    lineColor: "#000",
-    width: 1.5,
-    height: 40,
-    displayValue: false
-  });
-*/
 async function generaPDF(){
     console.log('generando pdf...')//crear pdf a partir del lenguaje y no de html
     const areaImpresion       = document.getElementById('documentoPDF'); // <-- Aquí puedes elegir cualquier elemento del DOM
@@ -270,11 +262,6 @@ function pintarFecha(){
     fecha.textContent       =new Date(Date.now()).toLocaleDateString()
 }
 
-function activarEnter(e){
-    if(e.key==='Enter'){
-        ingresarProducto();
-    }
-}
 async function ingresarProducto(e){
 
       //e.preventDefault()
@@ -319,24 +306,16 @@ async function ingresarProducto(e){
 
 }
 
-function actualizaImporteTouch(e){
-        e.preventDefault()
-        
-        for(let i =0;i<objetos.length;i++){
-            objetos[i].cantidad = parseInt(tabla.children[i].children[3].children[0].value) 
-            objetos[i].precio   = parseFloat(tabla.children[i].children[6].children[0].value)
-            objetos[i].importe  = parseFloat(objetos[i].cantidad*objetos[i].precio)
-        }
-        limpiarTabla(e)
-        pintarTabla(objetos)
-        console.log('objeto actualizado:',objetos)
-    
+function activarEnter(e){
+    if(e.key==='Enter'){
+        ingresarProducto();
+    }
 }
 
 async function activarEnter2(e){
     if(e.key==='Enter'){
             let id = inpCodigoCliente.value.trim();
-            let traerDoc = await traerUnSocio(id);                   //trae un producto de la DB
+            let traerDoc = await traerUnSocio(id);                   //trae un nombre de cliente de la DB
             let fila = traerDoc.data()                                  //.data() metodo para mostrar solo los datos del producto
             let razonSocial=fila.razonSocial;
             inpCliente.value=razonSocial 
@@ -346,3 +325,27 @@ async function activarEnter2(e){
             numeroCotizacion.value=Number(dato.ultimoNumero)+1;
     }
 }
+
+function actualizaImporteTouch(e){
+    e.preventDefault()
+    
+    for(let i =0;i<objetos.length;i++){
+        objetos[i].cantidad = parseInt(tabla.children[i].children[3].children[0].value) 
+        objetos[i].precio   = parseFloat(tabla.children[i].children[6].children[0].value)
+        objetos[i].importe  = parseFloat(objetos[i].cantidad*objetos[i].precio)
+    }
+    limpiarTabla(e)
+    pintarTabla(objetos)
+    console.log('objeto actualizado:',objetos)
+
+}
+
+
+/*
+JsBarcode(".barcode",'SB0070', {
+    lineColor: "#000",
+    width: 1.5,
+    height: 40,
+    displayValue: false
+  });
+*/

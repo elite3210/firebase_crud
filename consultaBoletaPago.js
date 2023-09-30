@@ -1,4 +1,8 @@
-import {queryBoletaPago} from './firebase.js'
+import {boletaPagoRef} from './firebase.js'
+import {getDocs,query,where,orderBy,limit} from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js";
+
+
+const queryBoletaPago  = await getDocs(query(boletaPagoRef,where("payStatus", "==", false)));
 
 
 //traer los registros de produccion de firebase
