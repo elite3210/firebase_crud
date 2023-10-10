@@ -1,11 +1,85 @@
-import {onGetVentas} from './firebase.js'
+import {onGetVentas,onGetProduct} from './firebase.js'
 import {Datatable} from './dataTable.js'
 
 const ctx=document.getElementById('myChart');
 const ctx2=document.getElementById('myChart2');
+const ctx3=document.getElementById('myChart3');
 const li        = document.querySelectorAll('.li')
 const bloque    = document.querySelectorAll('.bloque')
 const indicador    = document.querySelector('.indicador')
+const nombreMes=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Setiembre','Octubre','Noviembre','Diciembre']
+/*
+const productos=[];
+const registroProductos = onGetProduct((querySnapshot) =>{
+
+    querySnapshot.forEach(doc =>{
+    let producto ={};
+    producto.id         = doc.id
+    producto.value      = doc.data()
+    producto.value.id=doc.id
+    let producto4={codigo:producto.value.id,categoria:producto.value.categoria}
+    productos.push(producto4);
+    })
+})
+*/
+const claves={
+EB0010:'Embalaje',
+EB0011:'Embalaje',
+EB0020:'Embalaje',
+EB0021:'Embalaje',
+EB0022:'Embalaje',
+EB0030:'Embalaje',
+EB0050:'Embalaje',
+EB0051:'Embalaje',
+EB0052:'Embalaje',
+EB0053:'Embalaje',
+EB0060:'Embalaje',
+MB0010:'Aditivos',
+MB0011:'Aditivos',
+MB0012:'Aditivos',
+MB0013:'Aditivos',
+MB0014:'Aditivos',
+MB0015:'Aditivos',
+PB0070:'Piñateria',
+PC0050:'Especial',
+PD0070:'Paliglobos',
+PD0071:'Paliglobos',
+PD0072:'Paliglobos',
+PD0073:'Paliglobos',
+PD0074:'Paliglobos',
+PD0075:'Paliglobos',
+PD0076:'Paliglobos',
+PG0070:'Paliglobos',
+PG0071:'Paliglobos',
+PG0072:'Paliglobos',
+PG0073:'Paliglobos',
+PG0074:'Paliglobos',
+PG0075:'Paliglobos',
+PG0076:'Paliglobos',
+PI0010:'Aditivos',
+PI0011:'Aditivos',
+PI0012:'Aditivos',
+PI0013:'Aditivos',
+PP0010:'Material',
+PP0011:'Material',
+PV0010:'Material',
+SB0050:'Sorbetes',
+SB0051:'Sorbetes',
+SB0052:'Sorbetes',
+SB0070:'Sorbetes',
+SD0070:'Forrados',
+SF0010:'Flexibles',
+SF0011:'Flexibles',
+SF0012:'Flexibles',
+SF0013:'Flexibles',
+ST0070:'Sorbeton',
+ST0071:'Sorbeton',
+ST6000:'Sorbeton',
+ST7001:'Sorbeton',
+ST7003:'Sorbeton',
+SD7000:'Sorbeton'
+}
+//console.log('productos:',claves)
 
 //event click a 
     //todos los .li quitar la clase activo
@@ -27,46 +101,276 @@ li.forEach((cadaLi,i)=>{
     })
 })
 
+let items =[] //formato {id:123456, values{prop1:1, prop2:2, ...}}cada fila debe tener ese formato
+let xyz='mes'
 //traer los socios comerciales clientes de firebase
+function groupByMes(items){
+    
+    let grupos = []//meses repetidos
+    let elementosUnicos=[]//meses unicos
+    let itemsAgrupado=[]//meses e importes 
 
+    for (const fila of items) {//extraemos los valores de la categorias en toda las filas, objetivo por fila inclusive si se repite
+        grupos.push(fila['values'].mes)
+    }
+
+    for (let i = 0; i < grupos.length; i++) {//reducimos los meses a elementos unicos
+        let esDuplicado=false;
+        for (let j = 0; j < elementosUnicos.length; j++) {
+            if (grupos[i]== elementosUnicos[j]) {
+                esDuplicado=true;
+                break;
+            };
+        }
+
+        if(!esDuplicado){
+            elementosUnicos.push(grupos[i]);
+        }
+    }
+
+    let contador=1;
+    for (const valor of elementosUnicos) {
+        let producto={}
+        let importe=0;
+        //let costo=0;
+        let margen=0;
+        
+        for (const fila of items) {
+            if (fila['values'].mes==valor) {
+                importe     += fila['values'].importe;
+                //costo       += fila['values'].costo*fila['values'].cantidad;
+                margen      += fila['values'].importe - fila['values'].costo*fila['values'].cantidad;
+            }
+        }
+        producto.id=contador;
+        producto.values={};
+        producto.values.mes=valor;
+        producto.values.importe = Math.round(importe);
+        //producto.values.cantidad = cantidad;
+        //producto.values.costo = Math.round(costo);
+        producto.values.margen = Math.round(margen);
+        itemsAgrupado.push(producto);
+        contador++;
+        //queda asi ejemplo: {"id": 2,"values": {"mes": "Setiembre","importe": 30113}}
+    }
+    //console.log('dentro de la funcion groupBy:itemsAgrupado...final');
+    return itemsAgrupado;
+}
+
+function groupByCategoria(items){
+    
+    let grupos = []
+    let elementosUnicos=[]
+    let itemsAgrupado=[] 
+
+    for (const fila of items) {//extraemos los valores de la categorias en toda las filas, objetivo por fila inclusive si se repite
+        grupos.push(fila['values'].categoria)
+    }
+
+    for (let i = 0; i < grupos.length; i++) {//reducimos las categorias a elementos unicos
+        let esDuplicado=false;
+        for (let j = 0; j < elementosUnicos.length; j++) {
+            if (grupos[i]== elementosUnicos[j]) {
+                esDuplicado=true;
+                break;
+            };
+        }
+
+        if(!esDuplicado){
+            elementosUnicos.push(grupos[i]);
+        }
+    }
+    console.log('elementosunicos:',elementosUnicos)
+    let contador=1;
+    for (const valor of elementosUnicos) {
+        let producto={}
+        let importe=0;
+        let margen=0;
+        let costo=0;
+
+        for (const fila of items) {
+            if (fila['values'].categoria==valor) {
+                importe     += fila['values'].importe;
+                costo +=fila['values'].costo*fila['values'].cantidad;
+                margen      += fila['values'].importe - fila['values'].costo*fila['values'].cantidad;
+                //porcentaje      += margen/importe
+            }
+        }
+        producto.id=contador;
+        producto.values={};
+        producto.values.categoria=valor;
+        producto.values.importe = Math.round(importe);
+        //producto.values.cantidad = cantidad;
+        producto.values.margen = Math.round(margen);
+        producto.values.porcentaje = (1/(1+costo/margen)).toFixed(2);
+        itemsAgrupado.push(producto);
+        contador++;
+        //queda asi ejemplo: {"id": 2,"values": {"mes": "Setiembre","importe": 30113}}
+    }
+    console.log('dentro de la funcion groupBy:itemsAgrupado...final',itemsAgrupado);
+    return itemsAgrupado;
+}
+
+function groupByCliente(items){
+    
+    let grupoClientes = []
+    let gruposMes = []
+    let elementosUnicosCliente=[]
+    let elementosUnicosMes=[]
+    let clientesAgrupado=[]
+    let itemsAgrupadoMes=[] 
+
+    for (const fila of items) {//extraemos los nombres de cliente en toda las filas, objetivo por fila inclusive si se repite
+        grupoClientes.push(fila['values'].cliente)
+        gruposMes.push(fila['values'].mes)
+    }
+
+    for (let i = 0; i < grupoClientes.length; i++) {//reducimos los clientes a elementos unicos
+        let esDuplicado=false;
+        for (let j = 0; j < elementosUnicosCliente.length; j++) {
+            if (grupoClientes[i]== elementosUnicosCliente[j]) {
+                esDuplicado=true;
+                break;
+            };
+        }
+
+        if(!esDuplicado){
+            elementosUnicosCliente.push(grupoClientes[i]);
+        }
+    }
+
+
+    for (let i = 0; i < gruposMes.length; i++) {//reducimos los neses a elementos unicos
+        let esDuplicado=false;
+        for (let j = 0; j < elementosUnicosMes.length; j++) {
+            if (gruposMes[i]== elementosUnicosMes[j]) {
+                esDuplicado=true;
+                break;
+            };
+        }
+
+        if(!esDuplicado){
+            elementosUnicosMes.push(gruposMes[i]);
+        }
+    }
+
+    console.log('elementosunicosCliente:',elementosUnicosMes)
+
+
+
+    let contador=1;
+    let totalGeneral=0;
+    let totalAgosto=0;
+    let totalSetiembre=0;
+    let totalOctubre=0;
+
+    for (const valor of elementosUnicosCliente) {//por cada cliente de elementos unicos
+        let producto={}
+        let importe=0;
+        let importeAgosto=0;
+        let importeSetiembre=0;
+        let importeOctubre=0;
+        let margen=0;
+        let cantidad=0
+        let costo=0;
+        /*
+        //for (let j = 1; j < Object.values(this.headers).length; j++) {
+            let claves=Object.keys(values);
+            for (let i = 1; i < claves.length; i++) {
+                if (Object.values(this.headers)[j]==claves[i]) {
+                    console.log('values[key]:',values[claves[i]])
+                    //totals.claves[i]  +=values[claves[i]];
+                }
+                //const element = array[i];
+                
+            }
+        }
+        */
+        //elementosUnicosMes
+
+
+        for (const fila of items) {
+            if (fila['values'].cliente==valor) {//si cincide aculumar por cliente
+                cantidad+=fila['values'].cantidad;
+                costo               +=fila['values'].costo*fila['values'].cantidad;
+                margen              += fila['values'].importe - fila['values'].costo*fila['values'].cantidad;
+                importe             += fila['values'].importe;
+                if (fila['values'].mes=='Agosto') {
+                    importeAgosto       += fila['values'].importe;
+                }
+                if (fila['values'].mes=='Setiembre') {
+                    importeSetiembre    += fila['values'].importe;
+                }
+                if (fila['values'].mes=='Octubre') {
+                    importeOctubre      += fila['values'].importe;                    
+                }
+                
+            }
+        }
+        producto.id=contador;
+        producto.values={};
+        producto.values.cliente=valor;
+        producto.values.importe = Math.round(importe);
+        producto.values.cantidad = cantidad;
+        producto.values.margen = Math.round(margen);
+        producto.values.costo = Math.round(costo);
+        producto.values.agosto = Math.round(importeAgosto);
+        producto.values.setiembre = Math.round(importeSetiembre);
+        producto.values.octubre = Math.round(importeOctubre);
+        clientesAgrupado.push(producto);
+        contador++;
+        //queda asi ejemplo: {"id": 2,"values": {"mes": "Setiembre","importe": 30113}}
+        totalGeneral+=importe;
+        totalAgosto+=importeAgosto;
+        totalSetiembre+=importeSetiembre
+        totalOctubre+=importeOctubre;
+
+    }
+    console.log('dentro de la funcion groupBy:clientesAgrupado...final',totalGeneral,totalAgosto);
+    return clientesAgrupado;
+}
 
 const registroVentas = onGetVentas((ventasSnapShot) =>{
-    let items =[] //formato {id:123456, values{prop1:1, prop2:2, ...}}cada fila debe tener ese formato
     let items2 =[] //formato {id:123456, values{prop1:1, prop2:2, ...}}cada fila debe tener ese formato
     let itemsAgrupado=[]
     let itemsAgrupado2=[]
     let grupos=[]//de esto filtraremos para titulos
     let grupos2=[]//de esto filtraremos para titulos
 
-    console.log('ventasSnapShot:',ventasSnapShot);
+    //console.log('ventasSnapShot:',ventasSnapShot);
+
     if(ventasSnapShot){
         ventasSnapShot.forEach(doc =>{
             let documento=doc.data()
             let producto2={}
             producto2.id=doc.id
-            producto2.values=documento
+            producto2.values=doc.data()
             items2.push(producto2)
             let detalle=JSON.parse(documento.detalleCotizacion)
             
 
             for (const fila of detalle) {
                 let producto ={}
-                producto.id             =doc.id
-                producto.values         =fila
-                producto.values.fecha   =documento.fecha
-                producto.values.numero  =documento.numero
-                producto.values.cliente =documento.cliente
+                producto.id             = doc.id
+                producto.values         = fila
+                producto.values.fecha   = documento.fecha
+                producto.values.categoria=claves[producto.values.id];
+                
+                producto.values.numero  = documento.numero
+                producto.values.cliente = documento.cliente
+                producto.values.mes     = nombreMes[new Date(documento.tiempo).getMonth()];
                 items.push(producto)
                 grupos.push(documento.cliente)
                 grupos2.push(fila.id)
-                //console.log('Fila:',producto);  
             }
+            //console.log('grupos3:',grupos3);  
         })
     }
-    console.log('items2:',items2); 
+    //console.log('contenido items:',items); 
     
     let elementosUnicos=[];
     let elementosUnicos2=[];
+
     
     for (let i = 0; i < grupos.length; i++) {//reducimos a elemtos unicos
         let esDuplicado=false;
@@ -96,7 +400,6 @@ const registroVentas = onGetVentas((ventasSnapShot) =>{
         }
     }
 
-
     let contador=1;
     for (const cod of elementosUnicos) {
         let producto={}
@@ -108,8 +411,8 @@ const registroVentas = onGetVentas((ventasSnapShot) =>{
         for (const fila of items) {
             if (fila['values'].cliente==cod) {
                 cantidad    += fila['values'].cantidad;
-                costo       += fila['values'].costo*fila['values'].cantidad;
                 importe     += fila['values'].importe;
+                costo       += fila['values'].costo*fila['values'].cantidad;
                 margen      += fila['values'].importe - fila['values'].costo*fila['values'].cantidad;
             }
         }
@@ -117,7 +420,7 @@ const registroVentas = onGetVentas((ventasSnapShot) =>{
         producto.values={};
         producto.values.cliente=cod;
         producto.values.cantidad = cantidad;
-        producto.values.costo = costo;
+        producto.values.costo = Math.round(costo);
         producto.values.importe = Math.round(importe);
         producto.values.margen = Math.round(margen);
         itemsAgrupado.push(producto);
@@ -125,7 +428,7 @@ const registroVentas = onGetVentas((ventasSnapShot) =>{
     }
 
     let contador2=1;
-    for (const cod of elementosUnicos2) {
+    for (const cod of elementosUnicos2) {//despues de agrupar en elementos unicos los titulos, ahora hay que comparar cada fila con el titulo y agregar sus valores
         let producto={}
         let cantidad=0;
         let costo=0;
@@ -150,36 +453,39 @@ const registroVentas = onGetVentas((ventasSnapShot) =>{
         itemsAgrupado2.push(producto);
         contador2++;
     }
+
+
+    //console.log('llamanda funcion groupBy:',groupByMes(items))
+    
+    let valores2=groupByCategoria(items);
+    console.log('llamanda items:',items)
     items2.sort((a, b) => b.values.numero - a.values.numero);//metodo para ordenar array de objetos, seleccionar del objeto el atributo a ordenar, repetir en a y b
+
     
+    let ventaClientes = groupByCliente(items)
+    console.log('ventaClientes',ventaClientes)
+
+    //venta por cliente
     //const titulo   = {' ':'',FECHA:'fecha',DOCUMENTO:'numero',CODIGO:'codigo',NOMBRE:'nombre',CANTIDAD:'cantidad',IMPORTE:'importe',COSTO:'costo'}
-    const titulo   = {' ':'',CLIENTE:'cliente',CANTIDAD:'cantidad',COSTO:'costo',IMPORTE:'importe',MARGEN:'margen'}
-    const dt = new Datatable('#dataTable',[
-                                            {id:'bedit',text:'editar',icon:'edit',action:function(){const elemntos=dt.getSelected(); console.log('editar datos...',elemntos);  }},
-                                            {id:'bDelete',text:'eliminar',icon:'delete',action:function(){const elemntos=dt.getSelected(); console.log('eliminar datos...',elemntos);  }}
-                                        ]);
-    
-    dt.setData(itemsAgrupado,titulo);
-    dt.makeTable();
+    const titulo   = {CLIENTE:'cliente',AGOSTO:'agosto',SETIEMBRE:'setiembre', OCTUBRE:'octubre',IMPORTE:'importe'}
+    const dt = new Datatable('#dataTable',[]);
+    dt.setDatos(ventaClientes,titulo,{agosto:34000,setiembre:1000,octubre:2000});
+    dt.renderTable();
 
-    const titulo2   = {' ':'',CODIGO:'codigo',CANTIDAD:'cantidad',COSTO:'costo',IMPORTE:'importe',MARGEN:'margen'}
-    const dt2 = new Datatable('#dataTable2',[
-                                            {id:'bedit',text:'editar',icon:'edit',action:function(){const elemntos=dt.getSelected(); console.log('editar datos...',elemntos);  }},
-                                            {id:'bDelete',text:'eliminar',icon:'delete',action:function(){const elemntos=dt.getSelected(); console.log('eliminar datos...',elemntos);  }}
-                                        ]);
+    //venta por producto
+    const titulo2   = {CATEGORIA:'categoria',IMPORTE:'importe',MARGEN:'margen','%':'porcentaje'}
+    //const titulo2   = {' ':'',CODIGO:'codigo',CANTIDAD:'cantidad',COSTO:'costo',IMPORTE:'importe',MARGEN:'margen'}
+    const dt2 = new Datatable('#dataTable2',[]);
     
-    dt2.setData(itemsAgrupado2,titulo2);
-    dt2.makeTable();
+    dt2.setData(valores2,titulo2);
+    dt2.renderTable();
 
-        const titulo3   = {' ':'',FECHA:'fecha',DOCUMENTO:'numero',NOMBRE:'cliente',IMPORTE:'importeTotal',PAGO:'tipoPago'}
+    //venta por documento
+        const titulo3   = {FECHA:'fecha',DOCUMENTO:'numero',NOMBRE:'cliente',IMPORTE:'importeTotal',PAGO:'tipoPago'}
         //const titulo   = {' ':'',CLIENTE:'cliente',CANTIDAD:'cantidad',COSTO:'costo',IMPORTE:'importe',MARGEN:'margen'}
-        const dt3 = new Datatable('#dataTable3',[
-                                                {id:'bedit',text:'editar',icon:'edit',action:function(){const elemntos=dt.getSelected(); console.log('editar datos...',elemntos);  }},
-                                                {id:'bDelete',text:'eliminar',icon:'delete',action:function(){const elemntos=dt.getSelected(); console.log('eliminar datos...',elemntos);  }}
-                                            ]);
-        
+        const dt3 = new Datatable('#dataTable3',[]);
         dt3.setData(items2,titulo3);
-        dt3.makeTable();
+        dt3.renderTable();
 
 
 
@@ -188,10 +494,11 @@ const registroVentas = onGetVentas((ventasSnapShot) =>{
     const colorFondo    = ['rgba(255,99,132,0.2)','rgba(54,162,235,0.2)','rgba(255,206,86,0.2)','rgba(75,192,192,0.2)','rgba(153,102,255,0.2)','rgba(255,159,64,0.2)']
     const colorBorde    = ['rgba(255,99,132,1)','rgba(54,162,235,1)','rgba(255,206,86,1)','rgba(75,192,192,1)','rgba(153,102,255,1)','rgba(255,159,64,1)']
 
-    console.log('map:',itemsAgrupado.map(row => row.values.codigo));
-    console.log('map:',itemsAgrupado.map(row => row.values.importe));
-    console.log('map2:',itemsAgrupado2.map(row => row.values.codigo));
-    console.log('map2:',itemsAgrupado2.map(row => row.values.importe));
+    //console.log('map:',itemsAgrupado.map(row => row.values.codigo));
+    //console.log('map:',itemsAgrupado.map(row => row.values.importe));
+    //console.log('map2:',itemsAgrupado2.map(row => row.values.codigo));
+    //console.log('map2:',itemsAgrupado2.map(row => row.values.importe));
+    //console.log('map3:',itemsAgrupado3.map(row => row.values.importe));
     const myChart = new Chart(ctx,{
                                     type:'bar',
                                     data:{
@@ -201,7 +508,57 @@ const registroVentas = onGetVentas((ventasSnapShot) =>{
                                     plugins:{legend:{display:false}}
                                 }
                             )
-    const myChart2 = new Chart(ctx2,{type:'bar',data:{labels:itemsAgrupado2.map(row => row.values.codigo),datasets:[{label:'S/',data:itemsAgrupado2.map(row => row.values.importe),backgroundColor:colorFondo,borderColor:colorBorde,borderWidth:2}]}})
-});
 
-//itemsAgrupado.map(row => row.values.importe)
+    const myChart2 = new Chart(ctx2,{type:'pie',data:{labels:valores2.map(row => row.values.categoria),datasets:[{label:'S/',data:valores2.map(row => row.values.importe),backgroundColor:colorFondo,borderColor:colorBorde,borderWidth:2}]}})
+    
+    //ventas por mes grafico y tabla
+    let valores=groupByMes(items);
+    console.log('llamanda funcion groupBy mes:',valores)
+    const myChart3 = new Chart(ctx3,{type:'bar',data:{labels:valores.map(row => row.values.mes),datasets:[{label:'S/',data:valores.map(row => row.values.importe),backgroundColor:colorFondo,borderColor:colorBorde,borderWidth:2}]}})
+
+    const titulo4   = {MES:'mes',IMPORTE:'importe',MARGEN:'margen'}
+    const dt4 = new Datatable('#dataTable4',[]);
+    dt4.setData(valores,titulo4);
+    dt4.renderTable();
+
+
+   /*
+   var data = [{
+    data: [50, 55, 60, 33],
+    backgroundColor: [
+      "#4b77a9",
+      "#5f255f",
+      "#d21243",
+      "#B27200"
+    ],
+    borderColor: "#fff"
+  }];
+  
+  var options = {
+    tooltips: {enabled: true},
+    plugins: {
+        datalabels: {
+            formatter: (value, ctx3) => {
+                const datapoints = ctx3.chart.data.datasets[0].data
+                 const total = datapoints.reduce((total, datapoint) => total + datapoint, 0)
+                const percentage = value / total * 100
+                return percentage.toFixed(2) + "%";
+              },
+        color: '#fff',
+      }
+    }
+  };
+  
+  
+  //var ctx = document.getElementById("pie-chart").getContext('2d');
+  const myChart3 = new Chart(ctx3, {
+    type: 'pie',
+    data: {
+    labels: ['India', 'China', 'US', 'Canada'],
+    datasets: data
+    },
+    options: options
+  });
+
+*/
+});

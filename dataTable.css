@@ -1,5 +1,73 @@
-/*@import url('https://fonts.google.com/css2?family=Noto+Sans&display=swap');
+@import url('https://fonts.google.com/css2?family=Noto+Sans&display=swap');
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200");
+
+:root{
+    --color-primario:#242424;/*texto*/
+    --color-border:#adacac;/*lineas y borders*/
+    --color-secundario:#f1f1f1;/*fila alternada*/
+    --color-iluminado:#E1E1E1;/*hover*/
+    --color-button:#242424;
+
+    --dt-status-available-color:greenyellow;
+    --dt-status-away-color:lightsalmon;
+    --dt-status-offline-color:lightgray;
+
+    --dt-padding:12px;
+    --dt-padding-s:6px;
+    --dt-padding-xs:2px;
+
+    --dt-border-radius:6px;
+
+    --dt-background-color-container:#FFFFFF;/*fondo de tabla*/
+    --dt-border-color:var(--color-border);
+    --dt-bg-color:var(--color-iluminado);
+    --dt-text-color:var(--color-primario);
+    --dt-bg-active-button:var(--color-iluminado);
+    --dt-text-color-button:var(--color-primario);
+    --dt-text-color-active-button:var(--color-primario);
+    --dt-hover-cell-color:var(--color-iluminado);
+    --dt-even-row-color:var(--color-secundario);
+    --dt-focus-color:var(--color-iluminado);
+    --dt-input-backgound-color:var(--color-secundario);
+    --dt-input-color:var(--color-primario)
+}
+
+/*
+:root{
+    --color-primario:#260101;/*texto*/
+    --color-border:#8C1127;
+    --color-secundario:#F28F79;/*fila alternada*/
+    --color-iluminado:#F25C5C;/*hover*/
+    --color-button:#EAEAEA;
+
+    --dt-status-available-color:greenyellow;
+    --dt-status-away-color:lightsalmon;
+    --dt-status-offline-color:lightgray;
+
+    --dt-padding:12px;
+    --dt-padding-s:6px;
+    --dt-padding-xs:2px;
+
+    --dt-border-radius:6px;
+
+    --dt-background-color-container:#F2C6AC;/*fondo de tabla*/
+    --dt-border-color:var(--color-border);
+    --dt-bg-color:var(--color-iluminado);
+    --dt-text-color:var(--color-primario);
+    --dt-bg-active-button:var(--color-iluminado);
+    --dt-text-color-button:var(--color-primario);
+    --dt-text-color-active-button:var(--color-primario);
+    --dt-hover-cell-color:var(--color-iluminado);
+    --dt-even-row-color:var(--color-secundario);
+    --dt-focus-color:var(--color-iluminado);
+    --dt-input-backgound-color:var(--color-secundario);
+    --dt-input-color:var(--color-primario);
+}
 */
+
+/*
 :root{
     --color-primario:white;
     --color-secundario:rgb(61,68,73);
@@ -27,8 +95,9 @@
     --dt-focus-color:var(--color-iluminado);
     --dt-input-backgound-color:var(--color-secundario);
     --dt-input-color:var(--color-primario)
-
 }
+*/
+
 
 body{
     
@@ -48,6 +117,7 @@ body{
     width: 98%;
     margin: 0 auto;
     font-size: 12px;
+    box-shadow: 7px 7px 21px var(--color-border);
 }
 .datatable-container .header-tools{
     border-bottom: solid 1px var(--dt-border-color);
@@ -64,7 +134,7 @@ body{
     display: block;
     box-sizing: border-box;
     border-radius: var(--dt-border-radius);
-    border: solid ipx var(--dt-border-color);
+    border: solid 1px var(--dt-border-color);
     color: var(--dt-input-color);
 }
 .datatable-container .header-tools .tools{
@@ -110,10 +180,10 @@ body{
 }
 .datatable-container .header-tools .tools ul li button,
 .datatable-container .footer-tools .pages ul li button{
-    color: var(--dt-text-color-button);
+    color: var(--color-primario);
     width: 100%;
     box-sizing: border-box;
-    border: 0;
+    border: 0px;
     border-radius: var(--dt-border-radius);
     background: transparent;
     cursor: pointer;
@@ -121,12 +191,16 @@ body{
 
 .datatable-container .header-tools .tools ul li button:hover,
 .datatable-container .footer-tools .pages ul li button:hover{
-    background: var(--dt-bg-active-button);
+    background: var(--color-iluminado);
     color: var(--dt-text-color-active-button);
+    border: solid 1px var(--color-border);
+    
+    
 }
 .datatable-container .footer-tools .pages ul li span.active{
-    background-color: var(--dt-bg-color);
     border-radius: var(--dt-border-radius);
+    border: solid 1px var(--color-border);
+    
 }
 
 .datatable-container .header-tools .tools ul li button,
@@ -138,8 +212,14 @@ body{
 .datatable-container .datatable{
     border-collapse: collapse;
     width: 100%;
-
 }
+
+.datatable-container tfoot{
+    border-top: solid 2px var(--color-border);
+
+    font-weight: 400;
+}
+
 .datatable-container .datatable,
 .datatable-container .datatable th,
 .datatable-container .datatable td{
@@ -154,10 +234,18 @@ body{
 }
 .datatable-container .datatable td{
     border-bottom: solid 1px var(--dt-border-color);
+    padding: 0.1%;
+    border-bottom: 1px dotted rgb(87, 87, 87);
 }
+
 .datatable-container .datatable thead tr th{
     color: var(--dt-text-color);
 }
+
+.datatable-container .datatable thead tr th:hover{
+    background-color:var(--color-iluminado);
+}
+
 
 .datatable-container .datatable tbody tr:nth-child(even){
     background-color: var(--dt-even-row-color);
@@ -208,5 +296,11 @@ body{
 .datatable-container .datatable tbody tr .offline::before{
     background-color: var(--dt-status-offline-color);
 }
+td{
+    border-bottom: 1px dotted rgb(87, 87, 87);
+    
+    
+}
+
 
 

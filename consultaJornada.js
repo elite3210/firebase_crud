@@ -1,6 +1,8 @@
 import {jornadaRef,deleteTask,updateTask,guardarBoletaPago} from './firebase.js'
 import {getDocs,query,where,orderBy,limit} from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js";
 
+console.log('Modulo consultaJornada.js trabajando... Inicio:')
+
 const queryJornada     = await getDocs(query(jornadaRef,where("payStatus", "==", false)));
 
 
@@ -24,7 +26,8 @@ let tarifaJornada=[
                     {tarifa:3.6719,'dni':'71338629','nombre':'Alexandra'},
                     {tarifa:3.3594,'dni':'09551196','nombre':'Rocio'},
                     {tarifa:3.3594,'dni':'09551196','nombre':'Rocío'},
-                    {tarifa:3.0000,'dni':'70528292','nombre':'Heinz'},
+                    {tarifa:4.0000,'dni':'70528292','nombre':'Heinz'},
+                    
                     {tarifa:3.3594,'dni':'10216274','nombre':'Mariela'},
                     {tarifa:4.9144,'dni':'42231772','nombre':'Elí'}
                 ]
@@ -34,12 +37,12 @@ let tarifaJornada=[
 
 
 let tarifaJornadaAnterior=[
-                    {'tarifa':3.5738,'dni':'72091168','nombre':'Angela'},
-                    {'tarifa':3.6719,'dni':'71338629','nombre':'Alexandra'},
-                    {'tarifa':3.3594,'dni':'09551196','nombre':'Rocio'},
-                    {'tarifa':3.0000,'dni':'70528292','nombre':'Heinz'},
-                    {'tarifa':3.3594,'dni':'10216274','nombre':'Mariela'},
-                    {'tarifa':4.9144,'dni':'42231772','nombre':'Elí'}
+                    {'tarifa':3.5738,'dni':'72091168','nombre':'Angela','turno':'dia'},
+                    {'tarifa':3.6719,'dni':'71338629','nombre':'Alexandra','turno':'dia'},
+                    {'tarifa':3.3594,'dni':'09551196','nombre':'Rocio','turno':'dia'},
+                    {'tarifa':3.0000,'dni':'70528292','nombre':'Heinz','turno':'dia'},
+                    {'tarifa':3.3594,'dni':'10216274','nombre':'Mariela','turno':'dia'},
+                    {'tarifa':4.9144,'dni':'42231772','nombre':'Elí','turno':'dia'}
                 ]
 
 console.log('Datos traidos de Firestore:',queryJornada)

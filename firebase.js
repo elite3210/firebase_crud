@@ -26,25 +26,27 @@
   const productRef    =collection(db,'Productos')
   const ventasRef     =collection(db,'Ventas')
   const cotizacionRef =collection(db,'Cotizacion')
+  const comprasRef =collection(db,'Compras')
   const sociosRef     =collection(db,'Socios')
   export const produccionRef =collection(db,'Produccion')
   export const jornadaRef    =collection(db,'Micoleccion')
   export const boletaPagoRef =collection(db,'BoletaPago')
-  const diario2023Ref =collection(db,'Diario2023')
+  export const diario2023Ref =collection(db,'Diario2023')
   const cta41110      =collection(db,'41110')
-  console.log('Modulo Firebase.js trabajando...:')
+  console.log('Modulo Firebase.js trabajando... Inicio:')
 
 //sospecho que todo lo que sigue abajo los exportados deben implementarse en su respectivo modulo, ya que se ejecuta varias veces con cada pagina
 
   /*Save a New registro in Firestore con metodo addDoc()*/ 
   export const guardarTask        = (title,description,salida,payStatus)=>{addDoc(collection(db,'Micoleccion'),{title,description,salida,payStatus})}
   export const guardarVenta       = (cliente,vendedor,productoVendido,cantidad)=>{addDoc(ventasRef,{cliente,vendedor,productoVendido,cantidad})}
-  export const guardarProduccion  = (almacenProcesos,usuario,almacen,detalleProduccion,estado,fechaRegistro,tiempo,numero)=>{addDoc(produccionRef,{almacenProcesos,usuario,almacen,detalleProduccion,estado,fechaRegistro,tiempo,numero})}
+  export const guardarProduccion  = (almacenProcesos,usuario,almacen,detalleProduccion,estado,fechaRegistro,tiempo,numero,idProducto,cantidad)=>{addDoc(produccionRef,{almacenProcesos,usuario,almacen,detalleProduccion,estado,fechaRegistro,tiempo,numero,idProducto,cantidad})}
   export const guardarBoletaPago  = (numBoleta,dniBoleta,nomBoleta,fechaBoleta,tiempoTotal,creado,detalle,payStatus,importe)=>{addDoc(boletaPagoRef,{numBoleta,dniBoleta,nomBoleta,fechaBoleta,tiempoTotal,creado,detalle,payStatus,importe})}
-  export const guardarCotizacion  = (numero,fecha,vendedor,cliente,ruc,detalleCotizacion,estado,tipoPago,metodoCobro,subTotal,descuento,importeTotal)=>{addDoc(cotizacionRef,{numero,fecha,vendedor,cliente,ruc,detalleCotizacion,estado,tipoPago,metodoCobro,subTotal,descuento,importeTotal})}
+  export const guardarCotizacion  = (numero,fecha,vendedor,cliente,ruc,detalleCotizacion,estado,tipoPago,metodoCobro,subTotal,descuento,importeTotal,tiempo)=>{addDoc(cotizacionRef,{numero,fecha,vendedor,cliente,ruc,detalleCotizacion,estado,tipoPago,metodoCobro,subTotal,descuento,importeTotal,tiempo})}
+  export const guardarCompras  = (nuevoNumero,usuario,proveedor,ruc,detalleCompra,estado,tipoPago,subTotal,descuento,importeTotal,tiempo,documento)=>{addDoc(comprasRef,{nuevoNumero,usuario,proveedor,ruc,detalleCompra,estado,tipoPago,subTotal,descuento,importeTotal,tiempo,documento})}
 
   /*registrando un nuevo documento en firestore indicando el id de la DB personalizado setDoc() */
-  export const guardarProduct     = async (codigo,categoria,nombre,costo,stock,unidad,precio_anterior,precio,activo,descripcion,imagen)=>{await setDoc(doc(productRef,codigo),{imagen,categoria,nombre,costo,stock,unidad,precio_anterior,precio,activo,descripcion})}
+  export const guardarProduct     = async (codigo,categoria,nombre,costo,stock,unidad,peso,precio,activo,descripcion,imagen,medidas,pesoBruto)=>{await setDoc(doc(productRef,codigo),{imagen,categoria,nombre,costo,stock,unidad,peso,precio,activo,descripcion,medidas,pesoBruto})}
   export const guardarCotizacion2 = async (id,fecha,vendedor,cliente,ruc,detalleCotizacion,estado,tipoPago,metodoCobro,subTotal,descuento,importeTotal)=>{await setDoc(doc(cotizacionRef,id),{fecha,vendedor,cliente,ruc,detalleCotizacion,estado,tipoPago,metodoCobro,subTotal,descuento,importeTotal})}
   export const guardarSocios      = async (ruc,razonSocial,inicioActividad,nombresContacto,apellidosContacto,email,dni,cargo,telefono,calle,distrito,provincia,departamento,ubicacion,nota)=>{await setDoc(doc(sociosRef,ruc),{razonSocial,inicioActividad,nombresContacto,apellidosContacto,email,dni,cargo,telefono,calle,distrito,provincia,departamento,ubicacion,nota})}
 
@@ -64,6 +66,7 @@
   export const traerTask          = (id)=>getDoc(doc(db,'Micoleccion',id))
   export const traeroneProduct    = (id)=> getDoc(doc(db,'Productos',id))
   export const traerUnSocio       = (id)=> getDoc(doc(db,'Socios',id))
+  export const traerUnProveedor      = (id)=> getDoc(doc(db,'Proveedor',id))
   export const traerUnNumeracion  = (id)=> getDoc(doc(db,'Numeracion',id))
 
   //updateDoc() actualiza una documento
@@ -72,6 +75,13 @@
   export const updateNumeracion = (id,newFields)=>updateDoc(doc(db,'Numeracion',id),newFields)
   export const updateMovimientoInventario = (id,newFields)=>updateDoc(doc(db,'Produccion',id),newFields)
   
+  //realizar una consulta where con funcion pasandole un valor
+  
+  export const traerConsulta    = (nombre)=>{return getDocs(query(jornadaRef,where("description", "==", nombre), where("payStatus", "==", false), orderBy('title','desc'),limit(60)))}
+  console.log('Modulo Firebase.js trabajando... Final:')
+
+
+
 /*
   //consulta un documento con query y where, En construccion...
   export const queryProduccion  = await getDocs(query(produccionRef,where("estado", "==", "pendiente"),orderBy('fechaRegistro','desc')));
@@ -79,13 +89,4 @@
   export const queryBoletaPago  = await getDocs(query(boletaPagoRef,where("payStatus", "==", false)));
   export const queryDiario      = await getDocs(query(diario2023Ref));
   export const query41110      = await getDocs(query(cta41110));
-*/
-
-//realizar una consulta where con funcoion pasandole un valor
-//export const traerConsulta    = (nombre)=>{return getDocs(query(collection(db,'Micoleccion'), where("description", "==", nombre), where("payStatus", "==", false), orderBy('title','desc'),limit(60)))}
-
-/*
-[{"payStatus":false,"description":"Alexandra","salida":"2023-08-11T20:00","title":"2023-08-11T12:00","id":"CXHWbaafZmhPoT24VKZJ","nombreDia":"Viernes","hora":"8:0","tiempo":8},{"salida":"2023-08-10T19:00","title":"2023-08-10T13:00","description":"Alexandra","payStatus":false,"id":"FPWji4DRBrGGDN3ni2pm","nombreDia":"Jueves","hora":"6:0","tiempo":6},{"payStatus":false,"title":"2023-08-09T14:30","salida":"2023-08-09T17:00","description":"Alexandra","id":"TatBeDxNKr35KGUeq20P","nombreDia":"Miercoles","hora":"2:30","tiempo":2.5},{"salida":"2023-08-09T13:30","payStatus":false,"title":"2023-08-09T08:10","description":"Alexandra","id":"heGZBZ4kTGoSw47lM0Jz","nombreDia":"Miercoles","hora":"5:20","tiempo":5.33},{"description":"Alexandra","payStatus":false,"salida":"2023-08-08T21:00","title":"2023-08-08T12:30","id":"P9yAsex7Rn61EPQnIANz","nombreDia":"Martes","hora":"8:30","tiempo":8.5},{"title":"2023-08-07T13:00","salida":"2023-08-07T20:30","payStatus":false,"description":"Alexandra","id":"bN89KxaUy70cypnmtvlC","nombreDia":"Lunes","hora":"7:30","tiempo":7.5}]
-//,orderBy('fecha','desc')
-//q = query(citiesRef, where("state", "==", "CA"));
 */

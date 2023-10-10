@@ -9,10 +9,10 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
     <script src="https://parzibyte.github.io/ejemplos-javascript/html-a-pdf/html2pdf.bundle.min.js"></script>
     <script src="JsBarcode.code128.min.js"></script>
-    <link rel="stylesheet" href="./ventas.css">
+    <link rel="stylesheet" href="./compras.css">
     
 
-    <title>Ventas</title>
+    <title>Compras</title>
     
 </head>
 <body>
@@ -77,7 +77,7 @@
       </div>
       <div class="cajita2">
         <h1 id="ruc2">RUC: 20605216715</h1>
-        <h1>PEDIDO VENTA</h1>
+        <h1>ORDEN COMPRA</h1>
         <input  class='celda-cotizacion' type="number" id="cotizacion" placeholder="Numero">
       </div>
     </div>
@@ -85,15 +85,25 @@
     <form  id="formulario">
       <div class="cajita1">
         <div class="cajita1_1">
-          <label for="vendedor"><p>VENDEDOR:</p></label>
-          <label for="ruc"><h2><p>CODIGO :</p></label>
-          <label for="cliente"><p>CLIENTE :</p></label>
+          <label for="usuario"><p>USUARIO:</p></label>
+          <label for="usuario"><h2><p>PROVEEDOR :</p></label>
+          <label for="ruc"><p>RUC :</p></label>
+          <label for="almacen"><p>ALMACEN :</p></label>
         </div>
 
-        <div class="cajita1_3" id="cajaClientes">
-          <input  class='celda vendedor' type="text" id="vendedor" placeholder="Nombre del Vendedor"> 
-          <input class='celda ruc' type="text" id="ruc"  list="datoClientes" required placeholder="Ingresar RUC o DNI">
-          <input  class='celda cliente' type="text" id="cliente" placeholder="Razon Social o Nombre">
+        <datalist id="ubicacion">
+          <option value="P.Terminados">
+          <option value="P.Procesos">
+          <option value="Materiales">
+        </datalist>
+
+
+
+        <div class="cajita1_3">
+          <input  class='celda cliente' type="text" id="usuario" placeholder="Nombre del Usuario"> 
+          <input  class='celda proveedor' type="text" id="proveedor" placeholder="Nombre del Proveedor"> 
+          <input class='celda ruc' type="text" id="ruc"   required placeholder="RUC del Proveedor">
+          <input  class='celda almacen' type="text" id="almacen" list="ubicacion" required placeholder="Almacen destino">
            
         </div>
       </div>
@@ -107,10 +117,16 @@
           <option value="Transferencia">
           <option value="Tarjeta">
         </datalist>
+        <datalist id="moneda">
+          <option value="Soles">
+          <option value="Dolares">
+
+        </datalist>
       
         <div class="fecha"><label for="fecha">Fecha:</label><h4 id="fecha"></h4></div>
+        <div><label for="moneda">Moneda:</label><input type="text" list="moneda" id="moneda"></div>
         <div><label for="tipoPago">Pago:</label><input type="text" list="tipoPago" id="tipoPago"></div>
-        <div><label for="metodoCobro">Cobro:</label><input type="text" list="metodoCobro" id="metodoCobro"></div>
+        <div><label for="documento">Documento:</label><input type="text" list="metodoCobro" id="documento"></div>
       </div>
     </form>
 
@@ -125,13 +141,12 @@
           <tr><th>Sub </th><th>Total <th>(S/)</th></th><th><input id="celdaSubTotal"  class="total" type="text" value="0"></input></th><th>Descuento (S/)</th><th><input id="descuento"  class="total" type="text" value="0"></input></th><th>Total (S/)</th><th><input id="celda_total"  class="total" type="text" value="0"></input></th><th></th><th></th></tr>
         </tfoot>
     </table>
-    
-    <h1 class="web"><i class="fa-solid fa-sack-dollar"></i>BCP 191-91738956-0-09 :: Angela Mendoza </h1>
+
 </section>
 
 
-  <div class="cajaBotones" id="entradaDato">
-    <div class="entradaDato">
+  <div class="cajaBotones">
+    <div class="entradaDato" id="entradaDato">
       <label for="codigo" class='codigo'><p>Codigo :</p></label>
       <input class='celda '  type="text" id="codigo" list="productos" placeholder="Ingrese código de producto"><span class="validity"></span>
       <button  id="boton" >Ingresar</button>
@@ -145,7 +160,7 @@
 
   
   <a href="./consultaVentas.html">Consultar</a>
-  <script type="module" src="./ventas.js"></script>
+  <script type="module" src="./compras.js"></script>
 </body>
 <script>
   document.addEventListener('DOMContentLoaded', () => {

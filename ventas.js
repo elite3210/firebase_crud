@@ -15,6 +15,97 @@ const inpCliente        = document.getElementById('cliente')
 const fecha             = document.getElementById('fecha')
 const btn_semaforo      = document.querySelector('.semaforo')
 const numeroCotizacion  = document.getElementById('cotizacion')
+const cajaClientes  = document.getElementById('cajaClientes')
+
+//Inventario=[{Materiales:1000},{Procesos:700},{Terminados:0}]
+
+let datalist1 = document.createElement('datalist')
+datalist1.setAttribute('id','datoClientes')
+datalist1.innerHTML=`
+<option value='08604665'>OSORIO SIGUAS AMERICO REMIGIO</option>
+<option value='09462653'>HENRY MESA GARAY RUDY</option>
+<option value='10013031083'>Eulogio Huancco Ticona</option>
+<option value='10086833315'>LINGAN SEJURO OSCAR ANTONIO</option>
+<option value='10105176363'>ALVARADO ROMAN ISOLINA SILVIA</option>
+<option value='10400035801'>QUENAYA TORRES IOVANNA MARILU</option>
+<option value='10401249716'>ORE GUERRA NELCI</option>
+<option value='10421927788'>ALAYO CRUZ WILSON DAVID</option>
+<option value='10450270461'>LUNG ISIDRO BETSY NATALY</option>
+<option value='10473550151'>Wilfredo Mayta</option>
+<option value='20428756518'>PALAVA E.I.R.L.</option>
+<option value='20487391051'>CEMPLASTIC S.A.C.</option>
+<option value='20508679514'>DISTRIBUIDORA MURDOCK S.R.L.</option>
+<option value='20512048839'>FREDY PONCE & MARANATHA S. A. C. </option>
+<option value='20601632137'>JAL PERU INVERSIONES EIRL</option>
+<option value='20602683461'>RHENACER & CARMEN S.A.C.</option>
+<option value='20608956868'>BIOSELVA PACK S.A.C.</option>
+<option value='48348426'>MANUEL HUANUCO ALBINO</option>
+<option value='73675942'>DEINER CAMPOS</option>
+`
+cajaClientes.appendChild(datalist1)
+
+
+//datalist para productos
+let datalist = document.createElement('datalist')
+datalist.setAttribute('id','productos')
+datalist.innerHTML=`
+<option value='EB0010'>Funda Sorbetes S/M</option>
+<option value='EB0011'>Bolsa Plancha para Sorbetes</option>
+<option value='EB0020'>Funda Palo delgado</option>
+<option value='EB0021'>Funda Copitas paliglobos</option>
+<option value='EB0022'>Bolsa palos chicos millar</option>
+<option value='EB0030'>Funda Sorbeton 50U</option>
+<option value='EB0050'>Funda palo grueso 50U</option>
+<option value='EB0051'>Funda Copa Grande 50U</option>
+<option value='EB0052'>Bolsa Palos Grueso Milla</option>
+<option value='EB0053'>'Bolsa Copa Grande Millar</option>
+<option value='EB0060'>Manga Azul Baja 40x2.5</option>
+<option value='MB0010'>MB Blanco</option>
+<option value='MB0011'>MB Naranja Colortec</option>
+<option value='MB0012'>MB Rojo Escarlata</option>
+<option value='MB0013'>MB Verde Palta</option>
+<option value='MB0014'>MB Amarillo Electrico</option>
+<option value='MB0015'>MB Celeste Andino</option>
+<option value='PB0070'>Paliglobos desarmables base</option>
+<option value='PC0050'>Palito Chupetin Blanco (1.4MillxKg)</option>
+<option value='PD0070'>Paliglobos delgados</option>
+<option value='PD0071'>Paliglobos delgados palos transp.</option>
+<option value='PD0072'>Paliglobos delgados copas transp.</option>
+<option value='PD0073'>Paliglobos delgados palos blanco</option>
+<option value='PD0074'>Paliglobos delgados copas blanco</option>
+<option value='PD0075'>Paliglobos delgados palos rojo</option>
+<option value='PD0076'>Paliglobos delgados copas rojo</option>
+<option value='PG0070'>Paliglobos #40 Transp.</option>
+<option value='PG0071'>Palos #40 transparente</option>
+<option value='PG0072'>Copas #40 transparente</option>
+<option value='PG0073'>Palos #40 blanco</option>
+<option value='PG0074'>Copas #40 blanco</option>
+<option value='PG0075'>Palos #40 rojo</option>
+<option value='PG0076'>Copas #40 rojo</option>
+<option value='PI0010'>Pig. Flourecente Fucsia</option>
+<option value='PI0011'>Pig. Azul Ultramar</option>
+<option value='PI0012'>Pig. Dioxido Titanio </option>
+<option value='PI0013'>Col. Azul a la Grasa</option>
+<option value='PP0010'>PP peletizado cristal extrusion</option>
+<option value='PP0011'>PP peletizado negro rafia</option>
+<option value='PV0010'>Polipropileno Virgen Extrusión</option>
+<option value='SB0050'>Sorbete monocolor clasicos</option>
+<option value='SB0051'>Sorbetes Clásico Negro S/M</option>
+<option value='SB0052'>Sorbetes Clásico Blanco S/M</option>
+<option value='SB0070'>Sorbetes Rayados Surtido S/M </option>
+<option value='SD0070'>Sorbetes Forrados 50UNID. </option>
+<option value='SF0010'>Sorbetes flexibles rayados</option>
+<option value='SF0011'>Sorbetes Flexible Negro S/M</option>
+<option value='SF0012'>Sorbete Flexible Blanco S/M</option>
+<option value='SF0013'>Sorbetes Flexible Colores S/M</option>
+<option value='ST0070'>Sorbeton Forrado</option>
+<option value='ST0071'>Sorbeton Colores </option>
+<option value='ST6000'>Sorbeton Recto Colores S/M</option>
+<option value='ST7001'>Sorbeton Blanco S/M</option>
+<option value='ST7003'>Sorbeton Naranja S/M</option>
+<option value='SP7000'>Sorbete Papel Blanco S/M</option>
+`
+entradaDato.appendChild(datalist)
 
 let objetos=JSON.parse(localStorage.getItem('cotizacion'))
 //let objetos=[]
@@ -64,8 +155,8 @@ function actualizarStock(objetos){//ACTUALIZA STOCK VARIOS ITEMS
 function registrarVenta(){
     console.log('dentro funcion registraVenta:')
     
-    let tiempoTranscurrido  = Date.now()
-    let hoy                 = new Date(tiempoTranscurrido)
+    let tiempo              = Date.now()
+    let hoy                 = new Date(tiempo)
 
     let cliente             = form['cliente'].value
     let ruc                 = form['ruc'].value
@@ -82,11 +173,12 @@ function registrarVenta(){
 
     console.log('tipoPago:',subTotal)
     console.log('metodoCobro:',descuento)
+    console.log('tiempo:',tiempo)
     
     if (nuevoNumero){
         console.log('numero:',nuevoNumero)
 
-        guardarCotizacion(nuevoNumero,fecha,vendedor,cliente,ruc,detalleCotizacion,estado,tipoPago,metodoCobro,subTotal,descuento,importeTotal)
+        guardarCotizacion(nuevoNumero,fecha,vendedor,cliente,ruc,detalleCotizacion,estado,tipoPago,metodoCobro,subTotal,descuento,importeTotal,tiempo)
         actualizarStock(objetos)
         updateNumeracion('Cotizacion',{ultimoNumero:nuevoNumero})
 
@@ -197,7 +289,7 @@ function pintarFilasLlenas(objetos){
 function pintarFilasVacias(objetos){
     if(start){objetos=[];start=false}
     let filasLlenas=objetos.length
-    let filasVacias=10
+    let filasVacias=9
     for(let i =0;i<filasVacias-filasLlenas;i++){
         let fila = document.createElement('tr')
         fila.innerHTML= ` <td></td>
@@ -315,9 +407,11 @@ function activarEnter(e){
 async function activarEnter2(e){
     if(e.key==='Enter'){
             let id = inpCodigoCliente.value.trim();
-            let traerDoc = await traerUnSocio(id);                   //trae un nombre de cliente de la DB
+            console.log('presionaste enter...',id)                   //trae un nombre de cliente de la DB
+            let traerDoc = await traerUnSocio(id);
             let fila = traerDoc.data()                                  //.data() metodo para mostrar solo los datos del producto
             let razonSocial=fila.razonSocial;
+            console.log('presionaste enter...',razonSocial)
             inpCliente.value=razonSocial 
             
             let traerDoc2 = await traerUnNumeracion('Cotizacion')

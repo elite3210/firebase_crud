@@ -1,12 +1,10 @@
 var start = Date.now();
-
-
-
 import {guardarProduct,onGetProduct,deleteProduct,updateProduct} from './firebase.js'
+import {Datatable} from './dataTable.js'
+
 
 //para guaradr los registo en firebase
 
-let body                = document.getElementsByTagName('body')
 const tareaForm         = document.getElementById('tarea-form')
 const totalInventario2  = document.getElementById('totalInventario')
 const totalPeso2        = document.getElementById('totalPeso')
@@ -19,119 +17,107 @@ const cuadroBarcode     = document.getElementById('barcode')
 let editStatus=false;
 let activaBarCode=false
 let id ='';
+let totalInventario=0
+let totalPeso=0;
 
-btnNuevoProducto.addEventListener('click',pintarFormulario)
+
+btnNuevoProducto.addEventListener('click',pintarFormularioProductos)
 
 btnImprimir.addEventListener('click',imprimirBarcode)
 
 tareaForm.addEventListener('submit',enviarDB)
 
 
+function editarFila(elementos){
+    pintarFormularioProductos();//funcion que renderiza el formulario para crear y editar producto
+    id=elementos[0].id //se asigna el id para luegp usar en update product  
+    const producto = elementos[0].values
+    
+    console.log('objeto producto solicitado btnEdit:',producto)
+
+    tareaForm['imagen'].value           = producto.imagen 
+    tareaForm['categoria'].value        = producto.categoria
+    tareaForm['codigo'].value           = producto.idProducto
+    tareaForm['nombre'].value           = producto.nombre 
+    tareaForm['costo'].value            = producto.costo 
+    tareaForm['stock'].value            = producto.stock 
+    tareaForm['unidad'].value           = producto.unidad
+    tareaForm['peso'].value             = producto.peso
+    tareaForm['precio'].value           = producto.precio
+    tareaForm['activo'].value           = producto.activo 
+    tareaForm['description'].value      = producto.descripcion 
+    tareaForm['medidas'].value          = producto.medidas
+    tareaForm['pesoBruto'].value        = producto.pesoBruto 
+    
+    editStatus=true;
+    tareaForm['boton-task-save'].innerHTML='Actualizar'
+    //document.getElementById(id).disabled=false;
+}
+
+
+function pintarBarcode(elementos){
+    
+    //e.preventDefault()
+    activaBarCode=true
+    id=elementos[0].id   
+
+    console.log('barcode en lienzo creado para id:',id)
+
+    //genera codigo de barra en un elemento svg con id barcode
+    JsBarcode('#barcode',id, {
+        lineColor: "#000",
+        width: 1.3,
+        height: 30,
+        displayValue: true
+    });
+}
+
+function eliminarProducto(elementos){
+    alert(`desea eliminar este producto:${elementos[0].id}? se borrara y no podra recuperarlo`)
+    //deleteProduct(elementos[0].id)
+};
+
 //traer los productos de firebase toda la coleccion productos
 const registroProductos = onGetProduct((querySnapshot) =>{
-    
-    let objetoProducto=[]
-    let totalInventario=0
-    let totalPeso=0
+    const items=[];
     //tareasContainer.innerHTML='';                           //borra el contenido previo, hacer una funcion limpiar...
     if(querySnapshot){
-
         querySnapshot.forEach(doc =>{
-            
-            let fila = document.createElement('tr')
-            const objeto  = doc.data()
-            objeto.id     = doc.id
-            objetoProducto.push(objeto)
-            totalInventario += objeto.precio*objeto.stock
-            totalPeso       += objeto.peso*objeto.stock
-
-            fila.innerHTML = `
-                                <td><label class ='barcode fa-solid fa-barcode' data-id='${objeto.id}' value='${objeto.id}' id='${objeto.id}'></label></td>
-                                <td>${objeto.activo}</td>
-                                <td>${objeto.categoria}</td>
-                                <td>${objeto.id}</td>
-                                <td>${objeto.nombre}</td>
-                                <td>${objeto.stock}</td>
-                                <td>${objeto.unidad}</td>
-                                <td>${Math.round(objeto.peso*objeto.stock)}</td>
-                                <td>${objeto.precio}</td>
-                                <td>${Math.round(objeto.precio*objeto.stock)}</td>
-                                
-                                <td><button class ='btn-delete fa fa-trash' id='' data-id=${objeto.id}></button></td>
-                                <td><button class ='btn-edit fa-solid fa-pen-to-square' color='transparent' data-id=${objeto.id}></button></td>
-                            `
-
-            tareasContainer.appendChild(fila);
-            
+            let obj                 ={};
+            obj.id                  =doc.id;
+            obj.values              =doc.data();
+            obj.values.idProducto   =doc.id;
+            obj.values.pesoCalculado=Math.round(obj.values.peso*obj.values.stock);
+            obj.values.importe      =Math.round(obj.values.precio*obj.values.stock);
+    
+            totalInventario         += obj.values.precio*obj.values.stock;
+            totalPeso               += obj.values.peso*obj.values.stock;
+            items.push(obj);
         });
 
-        console.log('totalInventario:',totalInventario)
         totalInventario2.innerHTML= `${Math.round(totalInventario)}`
         totalPeso2.innerHTML= `${Math.round(totalPeso)}`
-        console.log('objetoProductos:',objetoProducto)
 
-        //funcionamiento boton eliminar
-        const btnDelete = tareasContainer.querySelectorAll('.btn-delete')
+    } else{tareasContainer.innerHTML='<p>No se trajo los datos de la BD Firebase</p>'}
 
-        btnDelete.forEach(btn=>{
-            btn.addEventListener('click',(e)=>{deleteProduct(e.target.dataset.id)})
-        })
+    //console.log('items:',items);
 
-        const btnEdit = tareasContainer.querySelectorAll('.btn-edit')
-        //funcionamiento boton eleditar
-        btnEdit.forEach((btn)=>{
-            btn.addEventListener('click', (e)=>{
-                pintarFormulario()
-                id=e.target.dataset.id   
-                console.log('id es:',id)                                   //se asigna el id para luegp usar en update product
-                const producto = objetoProducto.find((producto)=>{return producto.id ===id });
-                
-                
-                console.log('objeto producto solicitado btn edit:',producto)
-
-                tareaForm['imagen'].value           = producto.imagen 
-                tareaForm['categoria'].value        = producto.categoria
-                tareaForm['codigo'].value           = producto.id
-                tareaForm['nombre'].value           = producto.nombre 
-                tareaForm['costo'].value            = producto.costo 
-                tareaForm['stock'].value            = producto.stock 
-                tareaForm['unidad'].value           = producto.unidad
-                tareaForm['peso'].value             = producto.peso
-                tareaForm['precio'].value           = producto.precio
-                tareaForm['activo'].value           = producto.activo 
-                tareaForm['description'].value      = producto.descripcion 
-                
-                document.getElementById(e.target.dataset.id).disabled=false;
-                editStatus=true;
-                tareaForm['boton-task-save'].innerHTML='Actualizar'
-            })
-        });
-
-        //generador de barcode 128
-        const barcode = tareasContainer.querySelectorAll('.barcode')
-        //console.log('lo que devuelve el querySelectorAll(barcode)',barcode)
-        barcode.forEach(elem=>{
-            elem.addEventListener('click',(e)=>{
-                e.preventDefault()
-                activaBarCode=true
-                let id = e.target.dataset.id
-
-                console.log('barcode en lienzo creado para id:',id)
-
-                //genera codigo de barra en un elemento svg con id barcode
-                JsBarcode('#barcode',id, {
-                    lineColor: "#000",
-                    width: 1.3,
-                    height: 30,
-                    displayValue: true
-                });
-            })
-        })
-    } else{tareasContainer.innerHTML='<p>Para acceder a inventario necesitas estar autorizado</p>'}
+    const titulo   = {' ':'',CODIGO:'idProducto',NOMBRE:'nombre',STOCK:'stock',UND:'unidad',PESO:'pesoCalculado',PRECIO:'precio',VALOR:'importe'}
+    const dt = new Datatable('#dataTable',
+        [
+            {id:'btnEdit',text:'editar',icon:'edit',action:function(){const elementos=dt.getSelected();editarFila(elementos)}},
+            {id:'btnBarcode',text:'barcode',icon:'barcode',action:function(){const elementos=dt.getSelected();pintarBarcode(elementos);}},
+            {id:'dtnDelete',text:'delete',icon:'delete',action:function(){const elementos=dt.getSelected();eliminarProducto(elementos)}},
+            {id:'dtnCrear',text:'nuevo',icon:'post_add',action:function(){const elementos=dt.getSelected();pintarFormularioProductos()}}
+        ]
+    );
+    
+    dt.setData(items,titulo);
+    dt.makeTable();
 })
 
 
-function pintarFormulario(){
+function pintarFormularioProductos(){
     let formularioProducto = `
             <div class="cajita">
                 <label for="categoria" >Categoria:</label>
@@ -141,13 +127,13 @@ function pintarFormulario(){
                 <input class="nombre"  type="text" id='nombre'  required>
 
                 <label for="stock" >Stock :</label>
-                <input class="stock"  type="number" min = "0" step = "0.01" id='stock'>
+                <input class="stock"  type="number" min = "0" step = "0.001" id='stock'>
 
                 <label for="unidad" >Unidad :</label>
                 <input class="unidad"  type="text" id='unidad'>
 
                 <label for="peso" >Peso :</label>
-                <input class="codigo"  type="number" min = "0" step = "0.01"  id='peso'>
+                <input class="codigo"  type="number" min = "0" step = "0.001"  id='peso'>
 
                 <label for="precio" >Precio :</label>
                 <input class="precio"  type="number"  min = "0" step = "0.1" id='precio'>
@@ -166,6 +152,13 @@ function pintarFormulario(){
 
                 <label for="codigo" >codigo :</label>
                 <input class="codigo"  type="text"  id='codigo'>
+
+                <label for="medidas" >medidas :</label>
+                <input class="codigo"  type="text"  id='medidas'>
+
+                <label for="codigo" >pesoBruto:</label>
+                <input class="codigo"  type="text"  id='pesoBruto'>
+
               </div>
 
               <div id="container-btn" class="container-btn">
@@ -196,13 +189,6 @@ function generaPDF(elementoParaConvertir){
             .from(elementoParaConvertir)
             .save()
             .catch(err => console.log(err));
-        /*
-        navigator.share({
-            title:'probando esta nueva API',
-            text:'Desde Heinz Sport SAC',
-            url:'./cotizacion.pdf'
-        })
-    */
 }
 
 function borrarBarcode(){
@@ -223,7 +209,7 @@ function imprimirBarcode(e){
 }
 
 function enviarDB(e){
-    
+    console.log('dentro funcion :',editStatus);
         e.preventDefault()
         const imagen              = tareaForm['imagen'];
         const categoria           = tareaForm['categoria'];
@@ -236,10 +222,13 @@ function enviarDB(e){
         const precio              = tareaForm['precio'];
         const activo              = tareaForm['activo'];
         const descripcion         = tareaForm['description'];
+        const medidas             = tareaForm['medidas'];
+        const pesoBruto           = tareaForm['pesoBruto'];
         ;
         
         
         if(!editStatus){
+            console.log('!editStatus',editStatus);
             guardarProduct( codigo.value,
                             categoria.value,
                             nombre.value,
@@ -251,10 +240,13 @@ function enviarDB(e){
                             activo.value,
                             descripcion.value,
                             imagen.value,
+                            medidas.value,
+                            pesoBruto.value,
                             )
             
-        }else{console.log('entre a else de actualiza');
-        console.log('id en else:',id);
+        }else{
+            console.log('entre a else de actualiza');
+            console.log('id en else:',id);
             updateProduct(id,{  imagen:imagen.value,
                                 categoria:categoria.value,
                                 nombre:nombre.value,
@@ -264,7 +256,9 @@ function enviarDB(e){
                                 peso:peso.value,
                                 precio:precio.value,
                                 activo:activo.value,
-                                descripcion:descripcion.value
+                                descripcion:descripcion.value,
+                                medidas:medidas.value,
+                                pesoBruto:pesoBruto.value
                             })
             editStatus=false
             tareaForm['boton-task-save'].innerHTML='Crear'
@@ -272,9 +266,11 @@ function enviarDB(e){
         
         tareaForm.reset()
         tareaForm.innerHTML=''
-    
 }
 
+
+
+
 var end = Date.now();
- 
 console.log('demoro:',end - start);
+

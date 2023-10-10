@@ -8,97 +8,10 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
     <script src="https://parzibyte.github.io/ejemplos-javascript/html-a-pdf/html2pdf.bundle.min.js"></script>
     <script src="JsBarcode.code128.min.js"></script>
+    
     <title>::Productos::</title>
-    <style>
-        body{
-            background-color: #202020;
-            color:rgb(0, 0, 0);
-        }
-        tbody{
-            border-radius: 18px;
-            background-color: beige;
-            margin: 5px;
-            font-size: small;
-        }
-        table{
-            
-            border-collapse: collapse;
-            width: 100%;
-            margin: 5px solid red;
-            
-        }
-        th{
-            background-color: rgb(168, 168, 151);
-        }
-        th, td{
-            text-align: left;
-            border-bottom: 2px solid rgb(124, 124, 124);
-            color: black;
-        }
-        td{
-            border-bottom: 1px dotted rgb(87, 87, 87);
-            padding: 0%;
-            
-        }
-
-        .btn-edit{
-            background-color: transparent;
-            border-color: transparent;
-        }
-        .btn-edit:hover{
-            color: rgb(239, 5, 247);
-    
-        }
-
-        .btn-delete{
-            background-color: transparent;
-            border-color: transparent;
-        }
-
-        .barcode{
-            background-color: transparent;
-            border-color: transparent;
-            margin-left: 3px;
-            margin-right: 2px;
-        }
-
-        .barcode:hover{
-          background-color: white;
-          color: blue;
-          
-    
-        }
-
-        .btn-delete:hover{
-            color: red;
-
-        }
-        .celda{
-            background-color: transparent;
-            border-color: transparent; 
-            padding: 0%;
-        }
-        .ventana{
-            background-color: rgb(254, 255, 241)
-        }
-        tr{
-            padding: none;
-        }
-        tr:nth-child(even){background-color: rgb(228, 226, 226);}
-        tr:hover{
-            background-color: rgb(206, 207, 207);
-        }
-        
-        .button-content{
-            background-color: rgb(168, 168, 151);
-            text-align: right;
-            padding: 10px;
-        }
-        form{
-            background-color: rgb(201, 201, 182)
-        }
-    </style>
-
+   
+    <link rel="stylesheet" href="dataTable.css">
 </head>
 <body>
   <header>
@@ -148,30 +61,27 @@
   </header>
 
   <div class="ventana">
-    <button id="btnNuevoProducto">Nuevo Producto</button>
-
+    <!--<button id="btnNuevoProducto">Nuevo Producto</button>-->
     <form id="tarea-form" class="form1">
     <!--Aqui se insertara el formulario de producto-->
     </form><br>
   </div>
+
   <div>
-    <table>   
-      <tr><th></th><th><i class="fa-regular fa-bell-slash"></i></th><th>Categoria</th><th>Codigo</th><th>Nombre</th><th>Stock</th><th>Unidad</th><th>Peso</th><th>Precio</th><th><i class="fa-solid fa-hand-holding-dollar"></i></th><th></th><th></th></tr>
-      <tbody  class="caja" id="tablaContainer"></tbody>
-    
-    </table>
+    <table id="dataTable" class="datatable"></table>
+    <br>
     <div class="button-content">
       <button id="totalPeso">Peso</button><button id="totalInventario">Importe</button><button id="btnImprimir">Imprimir Barcode</button>
     </div>
   </div>
 
-  <div id="table"></div>
+  <div id="table"></div><br>
+  <svg id="barcode" class="barCode-container"></svg>
   
-  <svg id="barcode"></svg>
 
   <script type="module" src="./productos.js"></script>
 
-  <!--crip del menu de navegacion-->
+  <!--scrip del menu de navegacion-->
   <script>
         document.addEventListener('DOMContentLoaded', () => {
         // Get all "navbar-burger" elements

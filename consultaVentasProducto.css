@@ -13,7 +13,6 @@
     justify-content: flex-start;
     align-items: center;
     padding: 6px;
-    
 }
 .contenedor .li{
 
@@ -59,13 +58,16 @@
     margin: 0 0 0 0.2em;
 }
 .header{
-
-    border: solid 2px rgb(219, 219, 219) ;
+    border: solid 2px rgb(219, 219, 219);
     border-radius:6px;
 }
 .linea{
     background-color: rgb(179, 179, 179);
     height: 2px;
     margin: 0 0.2em 0.2em 0.2em;
+}
+datalist option{
+    margin: 0px;
+    padding: 0px;
 }
 
