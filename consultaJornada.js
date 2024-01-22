@@ -1,12 +1,12 @@
-import {jornadaRef,deleteTask,updateTask,guardarBoletaPago} from './firebase.js'
+import {jornadaRef,deleteTask,updateTask,guardarBoletaPago,traerUnNumeracion,updateNumeracion} from './firebase.js'
 import {getDocs,query,where,orderBy,limit} from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js";
 
 console.log('Modulo consultaJornada.js trabajando... Inicio:')
 
 const queryJornada     = await getDocs(query(jornadaRef,where("payStatus", "==", false)));
 
+let numeroTicket = await traerUnNumeracion('Ticket');
 
-//traer los registros de produccion de firebase
 const tabla                 = document.getElementById('tabla')
 const cajaOpciones          = document.getElementById('opciones')
 const listaSeleccion        = document.getElementById('colaborador')
@@ -21,17 +21,36 @@ let objetosLS =''
 let objetosLSFiltrado=''
 let objetosLSBoleta      =[]
 
-let tarifaJornada=[
-                    {tarifa:3.6164,'dni':'72091168','nombre':'Angela'},
-                    {tarifa:3.6719,'dni':'71338629','nombre':'Alexandra'},
-                    {tarifa:3.3594,'dni':'09551196','nombre':'Rocio'},
-                    {tarifa:3.3594,'dni':'09551196','nombre':'Rocío'},
-                    {tarifa:4.0000,'dni':'70528292','nombre':'Heinz'},
-                    
-                    {tarifa:3.3594,'dni':'10216274','nombre':'Mariela'},
-                    {tarifa:4.9144,'dni':'42231772','nombre':'Elí'}
-                ]
 
+
+
+let tarifaJornada=[
+                    {tarifa:3.6164,'dni':'72091168','nombre':'Angela','dia':'laborable'},
+                    {tarifa:3.6857,'dni':'71338629','nombre':'Alexandra','dia':'laborable'},
+                    {tarifa:3.700,'dni':'71338629','nombre':'Xiomara','dia':'laborable'},
+                    {tarifa:3.3594,'dni':'09551196','nombre':'Rocio','dia':'laborable'},
+                    {tarifa:3.3594,'dni':'09551196','nombre':'Rocío','dia':'laborable'},
+                    {tarifa:3.10,'dni':'70528292','nombre':'Heinz','dia':'laborable'},
+                    {tarifa:3.595,'dni':'10216274','nombre':'Mariela','dia':'laborable'},
+                    {tarifa:4.9144,'dni':'42231772','nombre':'Elí','dia':'laborable'},
+                    {tarifa:4.9144,'dni':'42231772','nombre':'Alison','dia':'laborable'}
+                ]
+                
+               // {tarifa:3.6719,'dni':'71338629','nombre':'Xiomara'},
+
+
+               let tarifaJornada_19_11_23=[
+                {tarifa:3.6164,'dni':'72091168','nombre':'Angela','dia':'laborable'},
+                {tarifa:3.6857,'dni':'71338629','nombre':'Alexandra','dia':'laborable'},
+                {tarifa:3.700,'dni':'71338629','nombre':'Xiomara','dia':'laborable'},
+                {tarifa:3.3594,'dni':'09551196','nombre':'Rocio','dia':'laborable'},
+                {tarifa:3.3594,'dni':'09551196','nombre':'Rocío','dia':'laborable'},
+                {tarifa:3.1000,'dni':'70528292','nombre':'Heinz','dia':'laborable'},
+                {tarifa:3.3594,'dni':'10216274','nombre':'Mariela','dia':'laborable'},
+                {tarifa:4.9144,'dni':'42231772','nombre':'Elí','dia':'laborable'}
+            ]
+            
+           // {tarifa:3.6719,'dni':'71338629','nombre':'Xiomara'},
 
 
 
@@ -110,20 +129,39 @@ function filtrarTabla(){//filtra datos de tabla en respuesta al datalist
     let seleccion   = listaSeleccion.value;
     console.log('evento:',seleccion )
     objetosLSFiltrado = objetosLS.filter(elemt => elemt.description == seleccion)
-    console.log('filtrado',objetosLSFiltrado)
+    //console.log('filtrado',objetosLSFiltrado)
     limpiarFormulario()
     limpiarTabla()
     pintarFilas(objetosLSFiltrado,tabla)
     eventoClickFila()
     
 }
-
 function eventoClickFila(){//pinta la fila si se hace check
-    const btnCheck = jornadaContainer.querySelectorAll('.check')
+    let filaSeleccionada=false;
+    //const btnCheck = jornadaContainer.querySelectorAll('.check')
     const btnFila = jornadaContainer.querySelectorAll('.fila')
     btnFila.forEach(fila=>{
         fila.addEventListener('click',(e)=>{
             console.log('hijo de fila:',fila.firstChild.checked)
+
+            /*
+            if(!filaSeleccionada){
+                fila.setAttribute('class','filaSeleccionada')
+                id = fila.getAttribute('data-id')
+                console.log('diste click en fila:',id)
+                pintarOpciones(id)
+                filaSeleccionada=true;
+            }else{
+                if(fila.getAttribute('class')=='filaSeleccionada'){
+                    
+                        console.log('fila.getAttribute:',fila.getAttribute('class'))
+                        fila.setAttribute('class','fila')
+                        filaSeleccionada=false;
+                    
+                }
+            }
+            */
+            
             if(fila.firstChild.checked){
                 fila.setAttribute('class','filaSeleccionada')
                 id = fila.getAttribute('data-id')
@@ -131,6 +169,43 @@ function eventoClickFila(){//pinta la fila si se hace check
                 pintarOpciones(id)
             }else{fila.setAttribute('class','fila')
             }
+            
+
+            /*//esta funcion pinta una unica fila yy se desactiva unicamente si se da click en la fila seleccionada
+            function eventoClickFila(){//pinta la fila si se hace check
+    let filaSeleccionada=false;
+    //const btnCheck = jornadaContainer.querySelectorAll('.check')
+    const btnFila = jornadaContainer.querySelectorAll('.fila')
+    btnFila.forEach(fila=>{
+        fila.addEventListener('click',(e)=>{
+            console.log('hijo de fila:',fila.firstChild.checked)
+            if(!filaSeleccionada){
+                fila.setAttribute('class','filaSeleccionada')
+                id = fila.getAttribute('data-id')
+                console.log('diste click en fila:',id)
+                pintarOpciones(id)
+                filaSeleccionada=true;
+            }else{
+                if(fila.getAttribute('class')=='filaSeleccionada'){
+                    
+                        console.log('fila.getAttribute:',fila.getAttribute('class'))
+                        fila.setAttribute('class','fila')
+                        filaSeleccionada=false;
+                    
+                }
+            }
+            /*
+            if(fila.firstChild.checked){
+                fila.setAttribute('class','filaSeleccionada')
+                id = fila.getAttribute('data-id')
+                console.log('diste click en fila:',id)
+                pintarOpciones(id)
+            }else{fila.setAttribute('class','fila')
+            }
+            */
+
+
+
         })
     })
 }
@@ -303,13 +378,12 @@ function limpiarElemento(elemento){
     }
 }
 
-function crearBoleta(){//comentario
-    const filasSeleccionadas = jornadaContainer.querySelectorAll('.filaSeleccionada')
+function crearBoleta(){//crea una ventana emergente de boleta
+    const filasSeleccionadas = jornadaContainer.querySelectorAll('.filaSeleccionada')//selecciona todas las filas seleccionadas
 
     filasSeleccionadas.forEach((fila)=>{
         let id = fila.getAttribute('data-id')
         objetosLSBoleta.push(objetosLS.filter(obj=>obj.id ==id)[0])
-        
     })
     pintarFormularioBoleta(objetosLSBoleta)
 }
@@ -320,7 +394,6 @@ function eventoClickBoleta(){
     btnBoleta.forEach(btn=>{
         btn.addEventListener('click',crearBoleta)
     })
-    
 }
 
 function limpiarFormulario(){
@@ -351,20 +424,24 @@ function pintarFormularioBoleta(objetosLSBoleta){
                                     <label for="nombre">Nombre:</label>
                                     <input type="text" class= "inpBoleta" list="colaborador" name="persona" id="nomBoleta" required><br>
                                     <label for="tarea-title" required>Numero Ticket :</label>
-                                    <input class="boleta inpBoleta" type="text" id='numBoleta'><br>
+                                    <input class="boleta inpBoleta" type="text" id='numeroTicket'><br>
                                     <label for="salida-title" required>Fecha :</label>
                                     <input class="fecha2 inpBoleta"  type="date" id='fechaBoleta'>
                                 </div>
                                 <div class="ctnBtnCerrar"><i class="fa-solid fa-circle-xmark" id="btnCerrar"></i></div>
-                                
                             </div>
+                            <h1>^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</h1>
                             `
 
-    formularioBoleta.innerHTML=entradasFormulario
+
+    formularioBoleta.innerHTML=entradasFormulario   
+
     const body = document.getElementById('body')
     body.style.display='none';
     pintarFilasBoleta(objetosLSBoleta,formularioBoleta)
+
     
+
     const btnGuardar = document.createElement('button')
     btnGuardar.textContent='Guardar'
     btnGuardar.addEventListener('click',guardarBoleta)
@@ -379,13 +456,17 @@ function pintarFormularioBoleta(objetosLSBoleta){
 
     const btnCerrar = document.getElementById('btnCerrar')
     btnCerrar.addEventListener('click',cerrarFrmBoleta)
-    
 
+    //rellenamos el input correspondiente a numeracion de ticket
+    const nuevoNumeroTicket = document.getElementById('numeroTicket')
+    nuevoNumeroTicket.value=Number(numeroTicket.data().ultimoNumero)+1;
+    console.log('Numero de ticket Anterior:',numeroTicket.data().ultimoNumero)
 
-    /*
-    datetime-local
-    */
 }
+
+function determinaTurno(){};
+
+function determinaFeriado(){};
 
 function procesarDatos(objetos){
     const nombreDia         = (entrada)=>{const nombreDia=['Domingo','Lunes','Martes','Miercoles','Jueves','Viernes','Sabado'];return nombreDia[new Date(entrada).getDay()]}
@@ -403,10 +484,10 @@ function procesarDatos(objetos){
         const {tarifa}          = tarifaJornada.filter(elemt => elemt.nombre == obj.description.trim())[0]//del objeto tarifaJornada buscar el objeto con el mismo nombre y sacar su tarifa
         obj['importe']          = horasDecimales(obj.title,obj.salida)*tarifa;
 
-        console.log('lo que devuelve el filter:',tarifaJornada.filter(elemt => elemt.nombre == obj.description.trim())[0])
+        //console.log('lo que devuelve el filter:',tarifaJornada.filter(elemt => elemt.nombre == obj.description.trim())[0])
     })
 
-    let objetoOrdenado=objetos.sort(function(a,b){return new Date(b.title).getTime()-new Date(a.title).getTime()})
+    let objetoOrdenado=objetos.sort(function(a,b){return b.numBoleta-a.numBoleta})
 
     return objetoOrdenado
 }
@@ -433,7 +514,7 @@ function sincronizarLocalStorage(objetos){//recibe nuevos datos lo guarda en LS 
 function guardarBoleta(){//escritura en collecion boleta de FB
     console.log('Tu boleta se guaradá en Firebase, con el detalle...')
     
-    let numBoleta   = document.getElementById('numBoleta').value;
+    let numBoleta   = document.getElementById('numeroTicket').value;
     let dniBoleta   = document.getElementById('dniBoleta').value;
     let nomBoleta   = document.getElementById('nomBoleta').value;
     let fechaBoleta = document.getElementById('fechaBoleta').value;
@@ -443,8 +524,11 @@ function guardarBoleta(){//escritura en collecion boleta de FB
     let payStatusBol= false;
     let importeTotal= Number(document.getElementById('importeTotal').textContent);
     console.log('importe extraido de th:',importeTotal)
+
     guardarBoletaPago(numBoleta,dniBoleta,nomBoleta,fechaBoleta,tiempoTotal,creado,detalle,payStatusBol,importeTotal)
     actualizarFirestore(objetosLSBoleta)
+    updateNumeracion('Ticket',{ultimoNumero:numBoleta})
+
     console.log('Documento creado el:',creado)    
     
     cerrarFrmBoleta()

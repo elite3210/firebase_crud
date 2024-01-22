@@ -10,7 +10,7 @@ const celda_total       = document.getElementById('celda_total')
 const fecha             = document.getElementById('fecha')
 const btn_semaforo      = document.querySelector('.semaforo')
 const inpCodigo         = document.getElementById('codigo')
-const numeroInventario  = document.getElementById('inventario')
+const numeroInventario  = document.getElementById('numeroInventario')
 const entradaDato       = document.getElementById('entradaDato')
 
 let datalist = document.createElement('datalist')
@@ -117,7 +117,7 @@ function crearVenta(){
     objetos=[]
     form.reset()
     pintarTabla(objetos) //vueve a pintar el formulario vacio
-    numeroInventario='';
+    numeroInventario.value='';
 }
 
 async function actualizarStock(objetos){//actualiza incremento de produccion y disminuye cantidad de insumos
@@ -209,7 +209,7 @@ function actualizaImporteTotal(){
 
 }
 
-function operacionesEnTabla(e){
+function operacionesEnTabla(e){//eliminar item o ver stock en cadafila
     
     if(e.target.classList.contains('btn-delete')){
         eliminarProducto(e)
@@ -304,7 +304,7 @@ function generaPDF(){
         html2pdf()
             .set({
                 margin: 0.25,
-                filename: 'cotizacion',
+                filename: 'Produccion',
                 //se borro image jpg, averiguar codigo origina en github del cdn html2pdf
                 html2canvas: {
                     scale: 5, // A mayor escala, mejores gráficos, pero más peso
@@ -319,6 +319,11 @@ function generaPDF(){
             .from(elementoParaConvertir)
             .save()
             .catch(err => console.log(err));
+    localStorage.removeItem('cotizacion');
+    //objetos=[]
+    //numeroInventario.value='';
+    //form.reset()
+    //pintarTabla(objetos) //vueve a pintar el formulario vacio
 
 }
 
@@ -343,6 +348,7 @@ async function ingresarProducto(e){
         let duplicado = objetos.some((elem)=>{return elem.id===id})     //verifica por ID si el nuevo elemento ya existe en el objeto
         let traerDoc = await traerUnNumeracion('Inventario');
         numeroInventario.value=Number(traerDoc.data().ultimoNumero)+1;
+        
 
         if(!duplicado){
             inpCodigo.select()                                     //selecciona el texto para ser borrado con el siguiente ingreso de lector barcode   

@@ -3,6 +3,7 @@ export class Datatable{
     element;
     headers;
     items;
+    footer
     copyItems;
     selected;
     pagination;
@@ -12,6 +13,7 @@ export class Datatable{
     constructor(selector,headerButtons){
         this.element    = document.querySelector(selector);
         this.headers    = '';
+        this.footer    = '';
         this.items      = [];
         this.pagination = {total:0,noItemsPerPage:0,noPages:0,actual:0,pointer:0,diff:0,lastPageBeforeDots:0,noButtonsBeforeDots:4};
         this.selected   = [];
@@ -84,6 +86,8 @@ export class Datatable{
         this.crearHTML();
         this.renderHeaders();
         this.renderFilas();
+        this.renderFooters();
+        
         //this.renderFooter();//implementar
         //this.renderPagesButtons();
         //this.renderSearch();
@@ -128,39 +132,38 @@ export class Datatable{
         this.element.innerHTML=`
         <div class="datatable-container">
         
-        <div class="header-tools">
-            <div class="search"><input type="text" class="search-input"></div>
-            <div class="tools">
-                <ul class="header-buttons-container">
-                </ul>
+            <div class="header-tools">
+                <div class="search"><input type="text" class="search-input"></div>
+                <div class="tools">
+                    <ul class="header-buttons-container">
+                    </ul>
+                </div>
             </div>
+        
+            <table id="dataTable" class="datatable">
+                
+                <thead>
+                    <tr><th></th><th>Status</th><th>Name</th><th>Positios</th><th>Office</th><th>Age</th><th>Date</th></tr>
+                </thead>
+                
+                <tbody>
+                </tbody>
+            </table>
+        
+            <div class="footer-tools">
+                <div class="list-items">
+                    show
+                    <select name="n-entries" id="n-entries" class="n-entries">
+                        <option value="15">5</option>
+                        <option value="10">10</option>
+                        <option value="12">15</option>
+                    </select>
+                    entries
+                </div>
+                <div class="pages">
+                </div>
+            </div>  
         </div>
-        
-        <table id="dataTable" class="datatable">
-            
-            <thead>
-                <tr><th></th><th>Status</th><th>Name</th><th>Positios</th><th>Office</th><th>Age</th><th>Date</th></tr>
-            </thead>
-            
-            <tbody>
-            </tbody>
-        </table>
-        
-        <div class="footer-tools">
-            <div class="list-items">
-                show
-                <select name="n-entries" id="n-entries" class="n-entries">
-                    <option value="15">5</option>
-                    <option value="10">10</option>
-                    <option value="12">15</option>
-                </select>
-                entries
-            </div>
-            <div class="pages">
-            </div>
-        </div>
-        
-    </div>
         `;
     };
     
@@ -169,55 +172,54 @@ export class Datatable{
         const div = document.createElement('div')
         div.setAttribute('class','datatable-container')
 
-        const divHeaderTools = document.createElement('div')
-        divHeaderTools.setAttribute('class','header-tools')
-
-        const divSearch = document.createElement('div')
-        divSearch.setAttribute('class','search')
-
-        const divTools = document.createElement('div')
-        divTools.setAttribute('class','tools')
-
-
-        const ulHeadersButtonsContainer = document.createElement('ul')
-        ulHeadersButtonsContainer.setAttribute('class','header-buttons-container')
-        divTools.appendChild(ulHeadersButtonsContainer)
-
-        divHeaderTools.appendChild(divSearch)
-        divHeaderTools.appendChild(divTools)
-
-
         const thead = document.createElement('thead')
         const tr    = document.createElement('tr')
         thead.appendChild(tr)
-        const tabla = document.querySelector('.dataTable')
-        tabla.appendChild(thead)
 
+        const tbody = document.createElement('tbody')
+        
+        const tfoot = document.createElement('tfoot')
+        const trfoot    = document.createElement('tr')
+        const th=document.createElement('th')
+        trfoot.appendChild(th)
+        tfoot.appendChild(trfoot)
+        
+
+
+
+        const tabla = document.createElement('table')
+        tabla.setAttribute('id','dataTable')
+        tabla.setAttribute('class','dataTable')
+        tabla.appendChild(thead)
+        tabla.appendChild(tbody)
+        tabla.appendChild(tfoot)
+        div.appendChild(tabla)
+
+        this.element.appendChild(div)
         */
 
         this.element.innerHTML=`
         <div class="datatable-container">
         
-        <table id="dataTable" class="datatable">
             
-            <thead>
-                <tr><th>Name</th><th>Positios</th><th>Office</th><th>Age</th><th>Date</th></tr>
-            </thead>
-            
-            <tbody>
-            </tbody>
-            <tfoot>
-            <tr><td>Total</td><td></td><td></td><td></td><td></td></tr>
-            </tfoot>
-        </table>
         
-        <div class="footer-tools">
-            
-            <div class="pages"></div>
+            <table id="dataTable" class="datatable">
+                
+                <thead>
+                    <tr><th></th><th>Status</th><th>Name</th><th>Positios</th><th>Office</th><th>Age</th><th>Date</th></tr>
+                </thead>
+                
+                <tbody>
+                </tbody>
+                <tfoot>
+                    <tr><th></th><th>Status</th><th>Name</th><th>Positios</th><th>Office</th><th>Age</th><th>Date</th></tr>
+                </tfoot>
+            </table>
+        
         </div>
-        
-    </div>
         `;
+
+
     };
     
     renderHeaders(){//renderiza los titulos del thead
@@ -229,10 +231,11 @@ export class Datatable{
         */
 
         this.element.querySelector('thead tr').innerHTML='';
-
+        
         Object.keys(this.headers).forEach(header=>{
             this.element.querySelector('thead tr').innerHTML += `<th>${header}</th>`
         })
+        
     };
 
     renderRows(){//dibuja las filas
@@ -261,34 +264,41 @@ export class Datatable{
             } else {//si los value vienen en un objeto hace esto
                 for (let j = 1; j < Object.values(this.headers).length; j++) {
                     
-                    for (const key in values) {
+                    for (const key in values) {//crea tantas comunas como titulo se tenga
                         if (Object.values(this.headers)[j]==key) {
                             data += `<td>${values[key]}</td>`;
                         }
                         
                     }
+                
                 }
-            }
 
-            this.element.querySelector('tbody').innerHTML+=`<tr>${data}</tr>`;
-            //listener para el checkbox
-            document.querySelectorAll('.table-checkbox').forEach(checkbox=>{
-                checkbox.addEventListener('click',e=>{
-                    const element   = e.target;
-                    const id    = element.getAttribute('data-id');
+                this.element.querySelector('tbody').innerHTML+=`<tr data-id=${i}>${data} </tr>`;
+                
+                //listener para el checkbox
+                document.querySelectorAll('.table-checkbox').forEach(checkbox=>{
+                    checkbox.addEventListener('click',e=>{
+                        const element   = e.target;
+                        const id    = element.getAttribute('data-id');
 
-                    if (element.checked) {
-                        this.renderHeaderButtons();
-                        const item  = this.getItem(id);
-                        this.selected.push(item)
-                    }else{
-                        this.removeSelected(id);
-                        //const buttonsContainer  = this.element.querySelector('.header-buttons-container');
-                        //buttonsContainer.innerHTML='', 
-                    }
-                    console.log('id-.',this.selected)
+                        if (element.checked) {
+                            this.renderHeaderButtons();
+                            const item  = this.getItem(id);
+                            this.selected.push(item)
+                        }else{
+                            this.removeSelected(id);
+                            const buttonsContainer  = this.element.querySelector('.header-buttons-container');
+                            buttonsContainer.innerHTML='';
+                        }
+                        console.log('id: ',this.selected)
+                    })
                 })
-            })
+
+                //listener para cada fila
+                this.eventoClickFila(id)
+
+            
+            }
         }
     };
     
@@ -297,7 +307,9 @@ export class Datatable{
 
         let icon= 0;
         const {pointer,total}   = this.pagination;//pointer pagina donde se queda
-        const limit = this.pagination.actual*this.pagination.noItemsPerPage;
+        //const limit = this.pagination.actual*this.pagination.noItemsPerPage;
+        const limit = this.copyItems.length;
+
 
         for (let i = pointer; i < limit; i++) {
             if (i==total) break;
@@ -328,6 +340,59 @@ export class Datatable{
             this.element.querySelector('tbody').innerHTML+=`<tr>${data}</tr>`;
         }
     };
+
+    eventoClickFila(id){//pinta la fila si se hace click
+        let filaSeleccionada=false;
+        let tbody = document.querySelector('tbody')
+        
+
+        document.querySelectorAll('tbody tr').forEach(fila=>{
+            
+            fila.addEventListener('click',e=>{
+                let position = Number(e.target.parentElement.getAttribute('data-id'))
+                console.log('position:',position+1)
+
+                //let ids = e.target.parentElement.firstChild
+
+                //console.log('firstChild:',ids)
+                
+
+                if(!filaSeleccionada){
+                    fila.setAttribute('class','filaSeleccionada')
+                    console.log('e.target:',e.target)
+                    let producto_encontado=this.items.find((elem)=>{return elem.id==id})  //encuentra el productos en el objeto con el ID anterior
+                    console.log('clik en (+), el stock es:',producto_encontado['values'].numero)//no todas las tablas tienen este campo
+                    let row =document.createElement('tr')
+                    let celda =document.createElement('td')
+                    celda.textContent=producto_encontado['values'].numero//se debe ingresar por parametro al instancia que dato quiere en detalle
+                    row.appendChild(celda)
+                    tbody.insertBefore(row,tbody.children[position+1])
+                    filaSeleccionada=true;
+                }else{
+                    if(fila.getAttribute('class')=='filaSeleccionada'){
+                        fila.removeAttribute('class','filaSeleccionada')
+                        //fila.removeAttribute('data-id',`${id}`)
+                        if(tbody.children[position+1]){
+                            tbody.removeChild(tbody.children[position+1])
+                        }
+                        //console.log('fila.getAttribute:',fila.getAttribute('class'))
+                        filaSeleccionada=false;
+                    }
+                }
+            })
+        })
+        //console.log('id:',id)
+    }
+
+    renderFooters(){//renderiza los titulos del tfoot
+        this.element.querySelector('tfoot tr').innerHTML='';
+        console.log('tfoot:',this.element.querySelector('tfoot tr'))
+        Object.values(this.footer).forEach(footer=>{
+            console.log('tfoot:',this.element.querySelector('footer',footer))
+            this.element.querySelector('tfoot tr').innerHTML += `<th>${footer}</th>`
+        })
+    
+    }
 
     isChecked(id){//valida si existe ese elemnto previamente
         const items = this.selected;
@@ -504,11 +569,17 @@ export class Datatable{
     }
 
     setData(data,titulo){
-
         this.headers=titulo;
         this.items = data;
     };
-}
+
+    setDatos(data,titulo,totals){
+
+        this.headers=titulo;
+        this.items = data;
+        this.footer = totals;
+    };
+};
 
 
 

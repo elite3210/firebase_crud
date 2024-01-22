@@ -1,17 +1,101 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clientes</title>
     <script src="https://kit.fontawesome.com/434a77214b.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
-    <script src="./html2Pdf.js"></script>
-    <script src="JsBarcode.code128.min.js"></script>
-    <title>Pago Jornal</title>
     <link rel="stylesheet" href="estilos.css">
-    <link rel="stylesheet" href="consultaJornada.css">
+    <style>
+        body{
+            background-image: linear-gradient(to left, #3ab5b0 0%, #3d99be 31%, #56317a 100%);
+        }
+        tbody{
+            border-radius: 18px;
+            background-color: beige;
+            margin: 5px;
+            font-size: small;
+        }
+        table{
+            
+            border-collapse: collapse;
+            width: 100%;
+            margin: 5px solid red;
+            
+        }
+        th{
+            background-color: rgb(168, 168, 151);
+        }
+        th, td{
+            text-align: left;
+            border-bottom: 2px solid rgb(124, 124, 124);
+            color: black;
+        }
+        td{
+            border-bottom: 1px dotted rgb(87, 87, 87);
+            padding: 0%;
+            
+        }
+
+        .btn-edit{
+            background-color: transparent;
+            border-color: transparent;
+        }
+        .btn-edit:hover{
+            color: rgb(239, 5, 247);
+    
+        }
+
+        .btn-delete{
+            background-color: transparent;
+            border-color: transparent;
+        }
+
+        .barcode{
+            background-color: transparent;
+            border-color: transparent;
+            margin-left: 3px;
+            margin-right: 2px;
+        }
+
+        .barcode:hover{
+          background-color: white;
+          color: blue;
+        }
+
+        .btn-delete:hover{
+            color: red;
+
+        }
+        .celda{
+            background-color: transparent;
+            border-color: transparent; 
+            padding: 0%;
+        }
+        .ventana{
+            background-color: rgb(254, 255, 241)
+        }
+        tr{
+            padding: none;
+        }
+        tr:nth-child(even){background-color: rgb(228, 226, 226);}
+        tr:hover{
+            background-color: rgb(206, 207, 207);
+        }
+        
+        .button-content{
+            background-color: rgb(168, 168, 151);
+            text-align: right;
+            padding: 10px;
+        }
+        form{
+            background-color: rgb(201, 201, 182)
+        }
+
+
+    </style>
 </head>
-<body >
+<body>
     <header>
         <nav class="navbar" role="navigation" aria-label="main navigation">
           <div class="navbar-brand">
@@ -57,33 +141,15 @@
           </div>
         </nav>
     </header>
-    <div id="cajaFormlarios">
-        <form id="tarea-form" class="form2">
-        </form><br>
-    </div>
-    <div id="body">
 
-    <div class="cajaMenu">
-      <div class="filtro">
-        <input type="text" list="colaboradorList" name="car" id="colaborador">
-        <datalist id="colaboradorList">
-          <option value="Angela">
-          <option value="Alexandra">
-          <option value="Rocio">
-          <option value="Mariela">
-          <option value="Xiomara">
-          <option value="Heinz">
-          <option value="Elí">
-        </datalist>
+    <table>   
+        <tr><th>Empresa</th><th>RUC</th><th>Contacto</th><th>Telefono</th><th></th><th></th></tr>
+        <tbody  class="caja" id="sociosContainer">
+        </tbody>
         
-      </div>
-      <div class="opciones" id="opciones">
-      </div>
-      <button class ='btn-pagar fa-solid fa-circle-chevron-left' color='transparent' data-id='${id}'></button>
-      <button class ='btn-pagar fa-solid fa-circle-chevron-right' color='transparent' data-id='${id}'></button>
-  </div>
-    <table id="tabla"></table>
-  </div>
+    </table>
+    <a href="./consultaCompras.html" target="_blank">atras</a>
+    <script type="module" src="./consultaProveedor.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
         // Get all "navbar-burger" elements
@@ -104,7 +170,7 @@
         });
         
         });
-        </script>
-    <script type="module" src="./consultaJornada.js"></script>
+    </script>
+    
 </body>
 </html>

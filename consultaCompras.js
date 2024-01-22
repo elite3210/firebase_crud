@@ -1,5 +1,9 @@
-import {onGetVentas} from './firebase.js'
+import {db} from './firebase.js'
+import {collection,onSnapshot} from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js";
 import {Datatable} from './dataTable.js'
+
+
+const onGetCompras  = (callback)=> onSnapshot(collection(db,'Compras'),callback)
 
 /*
 //const date = new Date("2000-01-17T16:45:30");
@@ -18,21 +22,25 @@ nuevaVariable=new Date (milisegundos)
 //traer los socios comerciales clientes de firebase
 
 const nombreMes=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Setiembre','Octubre','Noviembre','Diciembre']
-const registroVentas = onGetVentas((ventasSnapShot) =>{
+const registroCompras = onGetCompras((comprasSnapShot) =>{
     let items =[]
-    let ventasTotal=0
-    //console.log('ventasSnapShot:',ventasSnapShot);
-    if(ventasSnapShot){
-        ventasSnapShot.forEach(doc =>{
+    let comprasTotal=0
+    console.log('comprasSnapShot:',comprasSnapShot);
+    
+    if(comprasSnapShot){
+        comprasSnapShot.forEach(doc =>{
             let obj ={};
             obj.id=doc.id
             obj.values=doc.data()
             obj.values.mes=nombreMes[new Date(obj.values.tiempo).getMonth()];
+            let date = new Date(obj.values.tiempo);
+            obj.values.fechaRegistro=`${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`;
+            
             //console.log('obj.values:',obj.values);
             
-            let detalle=JSON.parse(obj['values'].detalleCotizacion)
+            let detalle=JSON.parse(obj['values'].detalleCompra)
             let importeTotal = detalle.reduce((total,obj)=>{return total+obj.importe},0)
-            ventasTotal +=importeTotal
+            comprasTotal +=importeTotal
 
             obj['values'].importe=Math.round(importeTotal)
             //obj['values'].id=obj.values.numero
@@ -42,10 +50,10 @@ const registroVentas = onGetVentas((ventasSnapShot) =>{
     
     console.log(' consulta venta :',items)
 
-    items.sort((a, b) => b.values.numero - a.values.numero);//metodo para ordenar array de objetos, seleccionar del objeto el atributo a ordenar, repetir en a y b
+    items.sort((a, b) => b.values.nuevoNumero - a.values.nuevoNumero);//metodo para ordenar array de objetos, seleccionar del objeto el atributo a ordenar, repetir en a y b
     
     
-    const titulo   = {' ':'',DOCUMENTO:'numero',CLIENTE:'cliente',RUC:'ruc',FECHA:'fecha',PAGO:'tipoPago',ESTADO:'estado',IMPORTE:'importe'}
+    const titulo   = {' ':'',DOCUMENTO:'nuevoNumero',PROVEEDOR:'proveedor',RUC:'ruc',FECHA:'fecha',REGISTRO:'fechaRegistro',PAGO:'tipoPago',ESTADO:'estado',IMPORTE:'importe'}
     
     const dt = new Datatable('#dataTable',
     [
@@ -60,5 +68,6 @@ const registroVentas = onGetVentas((ventasSnapShot) =>{
     
     dt.setData(items,titulo);
     dt.makeTable();
+    
 });
 

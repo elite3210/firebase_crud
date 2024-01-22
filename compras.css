@@ -44,7 +44,7 @@ section{
         background-color: rgb(238, 237, 237);
         border-radius: 6px;
         border: solid 1px rgb(168, 168, 151);
-        width: 20%;
+        width: 25%;
 }
 
 .cajita4{/*caja fecha*/
@@ -152,11 +152,11 @@ tfoot{
 
 
 .cajita1_1{
-    width:90px;
-    flex: 1.5;
+    width:25%;
+    
 }
 .cajita1_3{
-    flex: 8;
+   width: 75%;
 }
 
 p{

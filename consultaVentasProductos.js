@@ -23,61 +23,15 @@ const registroProductos = onGetProduct((querySnapshot) =>{
 })
 */
 const claves={
-EB0010:'Embalaje',
-EB0011:'Embalaje',
-EB0020:'Embalaje',
-EB0021:'Embalaje',
-EB0022:'Embalaje',
-EB0030:'Embalaje',
-EB0050:'Embalaje',
-EB0051:'Embalaje',
-EB0052:'Embalaje',
-EB0053:'Embalaje',
-EB0060:'Embalaje',
-MB0010:'Aditivos',
-MB0011:'Aditivos',
-MB0012:'Aditivos',
-MB0013:'Aditivos',
-MB0014:'Aditivos',
-MB0015:'Aditivos',
-PB0070:'Piñateria',
-PC0050:'Especial',
-PD0070:'Paliglobos',
-PD0071:'Paliglobos',
-PD0072:'Paliglobos',
-PD0073:'Paliglobos',
-PD0074:'Paliglobos',
-PD0075:'Paliglobos',
-PD0076:'Paliglobos',
-PG0070:'Paliglobos',
-PG0071:'Paliglobos',
-PG0072:'Paliglobos',
-PG0073:'Paliglobos',
-PG0074:'Paliglobos',
-PG0075:'Paliglobos',
-PG0076:'Paliglobos',
-PI0010:'Aditivos',
-PI0011:'Aditivos',
-PI0012:'Aditivos',
-PI0013:'Aditivos',
-PP0010:'Material',
-PP0011:'Material',
-PV0010:'Material',
-SB0050:'Sorbetes',
-SB0051:'Sorbetes',
-SB0052:'Sorbetes',
-SB0070:'Sorbetes',
-SD0070:'Forrados',
-SF0010:'Flexibles',
-SF0011:'Flexibles',
-SF0012:'Flexibles',
-SF0013:'Flexibles',
-ST0070:'Sorbeton',
-ST0071:'Sorbeton',
-ST6000:'Sorbeton',
-ST7001:'Sorbeton',
-ST7003:'Sorbeton',
-SD7000:'Sorbeton'
+EB0010:'Embalaje',EB0011:'Embalaje',EB0020:'Embalaje',EB0021:'Embalaje',EB0022:'Embalaje',EB0030:'Embalaje',EB0050:'Embalaje',
+EB0051:'Embalaje',EB0052:'Embalaje',EB0053:'Embalaje',EB0060:'Embalaje',MB0010:'Aditivos',MB0011:'Aditivos',MB0012:'Aditivos',
+MB0013:'Aditivos',MB0014:'Aditivos',MB0015:'Aditivos',PB0070:'Piñateria',PC0050:'Especial',PD0070:'Paliglobos',PD0071:'Paliglobos',
+PD0072:'Paliglobos',PD0073:'Paliglobos',PD0074:'Paliglobos',PD0075:'Paliglobos',PD0076:'Paliglobos',PG0070:'Paliglobos',PG0071:'Paliglobos',
+PG0072:'Paliglobos',PG0073:'Paliglobos',PG0074:'Paliglobos',PG0075:'Paliglobos',PG0076:'Paliglobos',PI0010:'Aditivos',
+PI0011:'Aditivos',PI0012:'Aditivos',PI0013:'Aditivos',PP0010:'Material',PP0011:'Material',PV0010:'Material',
+SB0050:'Sorbetes',SB0051:'Sorbetes',SB0052:'Sorbetes',SB0070:'Sorbetes',SD0070:'Forrados',SF0010:'Flexibles',
+SF0011:'Flexibles',SF0012:'Flexibles',SF0013:'Flexibles',ST0070:'Sorbeton',ST0071:'Sorbeton',ST6000:'Sorbeton',ST7001:'Sorbeton',
+ST7003:'Sorbeton',SD7000:'Sorbeton'
 }
 //console.log('productos:',claves)
 
@@ -103,83 +57,132 @@ li.forEach((cadaLi,i)=>{
 
 let items =[] //formato {id:123456, values{prop1:1, prop2:2, ...}}cada fila debe tener ese formato
 let xyz='mes'
-//traer los socios comerciales clientes de firebase
-function groupByMes(items){
-    
-    let grupos = []//meses repetidos
-    let elementosUnicos=[]//meses unicos
-    let itemsAgrupado=[]//meses e importes 
+let totalImporte=0;
+let totalGeneral=0;
+let totalAgosto=0;
+let totalSetiembre=0;
+let totalOctubre=0;
+let totalNoviembre=0;
+let totalDiciembre=0;
+let totalEnero=0;
 
-    for (const fila of items) {//extraemos los valores de la categorias en toda las filas, objetivo por fila inclusive si se repite
-        grupos.push(fila['values'].mes)
+function filtrarYEliminarDuplicadosPorClave(arrayDeObjetos,clave) {
+    // Array para almacenar elementos únicos
+    const elementosUnicos = [];
+
+    // Objeto auxiliar para realizar un seguimiento de las claves vistos
+    const clavesVistas = {};
+
+    // Iteramos sobre el array de objetos
+    arrayDeObjetos.forEach(objeto => {
+        // Verificamos si el objeto tiene la clave proporcionada
+        if (objeto.hasOwnProperty(clave) && objeto[clave] !== undefined) {
+            const valor = objeto[clave];
+
+            // Si no hemos visto esta clave antes, la agregamos al array y al objeto de seguimiento
+            if (!clavesVistas.hasOwnProperty(valor)) {
+                clavesVistas[valor] = true;
+                elementosUnicos.push(objeto);
+            }
+        }
+    });
+
+    return elementosUnicos;
+}
+
+
+function eliminarDuplicados(arrayObjetos,clave){//recibe una lista de categoria duplicadas y reduce a unicos
+    let grupos = []//para separar el atributo a reducir meses repetidos
+    let elementosUnicos=[]//elementos unicos o meses unicos
+
+    for (const fila of arrayObjetos) {//extraemos los valores de la categoria mes en toda las filas, objetivo por fila inclusive si se repite
+        grupos.push(fila['values'][clave])
     }
 
     for (let i = 0; i < grupos.length; i++) {//reducimos los meses a elementos unicos
         let esDuplicado=false;
-        for (let j = 0; j < elementosUnicos.length; j++) {
+        for (let j = 0; j < elementosUnicos.length; j++) {//recorre toda la lista de elemntos unicos por cada fila de grupos
             if (grupos[i]== elementosUnicos[j]) {
                 esDuplicado=true;
                 break;
             };
         }
 
-        if(!esDuplicado){
+        if(!esDuplicado){//solo agrega los que no aparecen en elemento unicos
             elementosUnicos.push(grupos[i]);
         }
     }
+    return elementosUnicos;
+}
+
+//traer los socios comerciales clientes de firebase
+function groupByMes(items,clave,concepto,concepto2){
+    let itemsAgrupado=[]//mes(clave) e importe(concepto) 
+    let elementosUnicos = eliminarDuplicados(items,clave);
 
     let contador=1;
     for (const valor of elementosUnicos) {
-        let producto={}
-        let importe=0;
-        //let costo=0;
-        let margen=0;
+        let objeto={}
+        objeto.id=contador;
+        objeto.values={};
+        objeto.values[clave]=valor;
+
+        objeto['values'][concepto]      = 0;
+        objeto['values'][concepto2]     = 0;
         
         for (const fila of items) {
-            if (fila['values'].mes==valor) {
-                importe     += fila['values'].importe;
-                //costo       += fila['values'].costo*fila['values'].cantidad;
-                margen      += fila['values'].importe - fila['values'].costo*fila['values'].cantidad;
+            if (fila['values'][clave]==valor) {
+                objeto['values'][concepto]     += fila['values'][concepto];
+                objeto['values'][concepto2]    += fila['values'][concepto2];
             }
         }
-        producto.id=contador;
-        producto.values={};
-        producto.values.mes=valor;
-        producto.values.importe = Math.round(importe);
-        //producto.values.cantidad = cantidad;
-        //producto.values.costo = Math.round(costo);
-        producto.values.margen = Math.round(margen);
-        itemsAgrupado.push(producto);
+        
+        //objeto.values[concepto] = Math.round(acumulador);
+        //objeto.values[concepto2] = Math.round(acumulador2);
+        itemsAgrupado.push(objeto);
         contador++;
-        //queda asi ejemplo: {"id": 2,"values": {"mes": "Setiembre","importe": 30113}}
+        //queda asi ejemplo: {"id": 2,"values": {"mes": "Setiembre","acumulador": 30113}}
     }
     //console.log('dentro de la funcion groupBy:itemsAgrupado...final');
     return itemsAgrupado;
 }
 
-function groupByCategoria(items){
+function groupBy(items,clave,concepto){
+    let itemsAgrupado=[]//meses e importes 
+    let elementosUnicos = eliminarDuplicados(items,clave);
+
+    let contador=1;
+    for (const valor of elementosUnicos) {
+        let objeto={}
+        let acumulador=0;
+        
+        for (const fila of items) {
+            if (fila['values'][clave]==valor) {
+                acumulador     += fila['values'][concepto];
+            }
+        }
+        objeto.id=contador;
+        objeto.values={};
+        objeto.values[clave]=valor;
+        objeto.values[concepto] = Math.round(acumulador);
+        itemsAgrupado.push(objeto);
+        contador++;
+        //queda asi ejemplo: {"id": 2,"values": {"mes": "Setiembre","acumulador": 30113}}
+        //queda asi ejemplo: {"id": 2,"values": {"mes": "Setiembre","acumulador2": 30113}}
+        //queda asi ejemplo: {"id": 2,"values": {"mes": "Setiembre","acumulador3": 30113}}
+        //queda asi ejemplo: {"id": 2,"values": {"mes": "Setiembre","acumulador4": 30113}}
+    }
+    //console.log('dentro de la funcion groupBy:itemsAgrupado...final');
+    return itemsAgrupado;
+}
+
+
+
+function groupByCategoria(items,clave){
     
-    let grupos = []
-    let elementosUnicos=[]
+    let elementosUnicos = eliminarDuplicados(items,clave);
     let itemsAgrupado=[] 
 
-    for (const fila of items) {//extraemos los valores de la categorias en toda las filas, objetivo por fila inclusive si se repite
-        grupos.push(fila['values'].categoria)
-    }
-
-    for (let i = 0; i < grupos.length; i++) {//reducimos las categorias a elementos unicos
-        let esDuplicado=false;
-        for (let j = 0; j < elementosUnicos.length; j++) {
-            if (grupos[i]== elementosUnicos[j]) {
-                esDuplicado=true;
-                break;
-            };
-        }
-
-        if(!esDuplicado){
-            elementosUnicos.push(grupos[i]);
-        }
-    }
     console.log('elementosunicos:',elementosUnicos)
     let contador=1;
     for (const valor of elementosUnicos) {
@@ -211,58 +214,15 @@ function groupByCategoria(items){
     return itemsAgrupado;
 }
 
-function groupByCliente(items){
+function groupByCliente(items,clave){
     
-    let grupoClientes = []
-    let gruposMes = []
-    let elementosUnicosCliente=[]
-    let elementosUnicosMes=[]
+    let elementosUnicosCliente = eliminarDuplicados(items,clave);
     let clientesAgrupado=[]
-    let itemsAgrupadoMes=[] 
 
-    for (const fila of items) {//extraemos los nombres de cliente en toda las filas, objetivo por fila inclusive si se repite
-        grupoClientes.push(fila['values'].cliente)
-        gruposMes.push(fila['values'].mes)
-    }
-
-    for (let i = 0; i < grupoClientes.length; i++) {//reducimos los clientes a elementos unicos
-        let esDuplicado=false;
-        for (let j = 0; j < elementosUnicosCliente.length; j++) {
-            if (grupoClientes[i]== elementosUnicosCliente[j]) {
-                esDuplicado=true;
-                break;
-            };
-        }
-
-        if(!esDuplicado){
-            elementosUnicosCliente.push(grupoClientes[i]);
-        }
-    }
-
-
-    for (let i = 0; i < gruposMes.length; i++) {//reducimos los neses a elementos unicos
-        let esDuplicado=false;
-        for (let j = 0; j < elementosUnicosMes.length; j++) {
-            if (gruposMes[i]== elementosUnicosMes[j]) {
-                esDuplicado=true;
-                break;
-            };
-        }
-
-        if(!esDuplicado){
-            elementosUnicosMes.push(gruposMes[i]);
-        }
-    }
-
-    console.log('elementosunicosCliente:',elementosUnicosMes)
-
-
+    //console.log('elementosunicosCliente:',elementosUnicosCliente)
 
     let contador=1;
-    let totalGeneral=0;
-    let totalAgosto=0;
-    let totalSetiembre=0;
-    let totalOctubre=0;
+
 
     for (const valor of elementosUnicosCliente) {//por cada cliente de elementos unicos
         let producto={}
@@ -270,6 +230,9 @@ function groupByCliente(items){
         let importeAgosto=0;
         let importeSetiembre=0;
         let importeOctubre=0;
+        let importeNoviembre=0;
+        let importeDiciembre=0;
+        let importeEnero=0;
         let margen=0;
         let cantidad=0
         let costo=0;
@@ -290,7 +253,7 @@ function groupByCliente(items){
 
 
         for (const fila of items) {
-            if (fila['values'].cliente==valor) {//si cincide aculumar por cliente
+            if (fila['values'].cliente==valor) {//si coincide acumular por cliente
                 cantidad+=fila['values'].cantidad;
                 costo               +=fila['values'].costo*fila['values'].cantidad;
                 margen              += fila['values'].importe - fila['values'].costo*fila['values'].cantidad;
@@ -304,7 +267,15 @@ function groupByCliente(items){
                 if (fila['values'].mes=='Octubre') {
                     importeOctubre      += fila['values'].importe;                    
                 }
-                
+                if (fila['values'].mes=='Noviembre') {
+                    importeNoviembre      += fila['values'].importe;                    
+                }
+                if (fila['values'].mes=='Diciembre') {
+                    importeDiciembre      += fila['values'].importe;                    
+                }
+                if (fila['values'].mes=='Enero') {
+                    importeEnero      += fila['values'].importe;                    
+                }
             }
         }
         producto.id=contador;
@@ -317,6 +288,9 @@ function groupByCliente(items){
         producto.values.agosto = Math.round(importeAgosto);
         producto.values.setiembre = Math.round(importeSetiembre);
         producto.values.octubre = Math.round(importeOctubre);
+        producto.values.noviembre = Math.round(importeNoviembre);
+        producto.values.diciembre = Math.round(importeDiciembre);
+        producto.values.enero = Math.round(importeEnero);
         clientesAgrupado.push(producto);
         contador++;
         //queda asi ejemplo: {"id": 2,"values": {"mes": "Setiembre","importe": 30113}}
@@ -324,9 +298,12 @@ function groupByCliente(items){
         totalAgosto+=importeAgosto;
         totalSetiembre+=importeSetiembre
         totalOctubre+=importeOctubre;
+        totalNoviembre+=importeNoviembre;
+        totalDiciembre+=importeDiciembre;
+        totalEnero+=importeEnero;
 
     }
-    console.log('dentro de la funcion groupBy:clientesAgrupado...final',totalGeneral,totalAgosto);
+    console.log('dentro de la funcion groupBy:clientesAgrupado...final',totalGeneral,totalDiciembre);
     return clientesAgrupado;
 }
 
@@ -334,8 +311,8 @@ const registroVentas = onGetVentas((ventasSnapShot) =>{
     let items2 =[] //formato {id:123456, values{prop1:1, prop2:2, ...}}cada fila debe tener ese formato
     let itemsAgrupado=[]
     let itemsAgrupado2=[]
-    let grupos=[]//de esto filtraremos para titulos
-    let grupos2=[]//de esto filtraremos para titulos
+    let grupos=[]//de esto filtraremos para titulos clientes
+    let grupos2=[]//de esto filtraremos para titulos productos codigo
 
     //console.log('ventasSnapShot:',ventasSnapShot);
 
@@ -348,6 +325,7 @@ const registroVentas = onGetVentas((ventasSnapShot) =>{
             items2.push(producto2)
             let detalle=JSON.parse(documento.detalleCotizacion)
             
+            
 
             for (const fila of detalle) {
                 let producto ={}
@@ -359,6 +337,8 @@ const registroVentas = onGetVentas((ventasSnapShot) =>{
                 producto.values.numero  = documento.numero
                 producto.values.cliente = documento.cliente
                 producto.values.mes     = nombreMes[new Date(documento.tiempo).getMonth()];
+                producto.values.margen     = producto.values.importe-producto['values'].costo*producto['values'].cantidad;
+                totalImporte+=Math.round(producto['values'].importe);
                 items.push(producto)
                 grupos.push(documento.cliente)
                 grupos2.push(fila.id)
@@ -454,22 +434,28 @@ const registroVentas = onGetVentas((ventasSnapShot) =>{
         contador2++;
     }
 
+    //pruebas
+    console.log('Dentro de la funcion groupBy:importe',groupBy(items,'cliente','importe'));
+    console.log('Dentro de la funcion groupBy:margen',groupBy(items,'mes','margen'));
+
 
     //console.log('llamanda funcion groupBy:',groupByMes(items))
     
-    let valores2=groupByCategoria(items);
+    let valores2=groupByCategoria(items,'categoria');
     console.log('llamanda items:',items)
+    console.log('totalImporte:',totalImporte)
     items2.sort((a, b) => b.values.numero - a.values.numero);//metodo para ordenar array de objetos, seleccionar del objeto el atributo a ordenar, repetir en a y b
 
     
-    let ventaClientes = groupByCliente(items)
+    let ventaClientes = groupByCliente(items,'cliente')
     console.log('ventaClientes',ventaClientes)
 
     //venta por cliente
     //const titulo   = {' ':'',FECHA:'fecha',DOCUMENTO:'numero',CODIGO:'codigo',NOMBRE:'nombre',CANTIDAD:'cantidad',IMPORTE:'importe',COSTO:'costo'}
-    const titulo   = {CLIENTE:'cliente',AGOSTO:'agosto',SETIEMBRE:'setiembre', OCTUBRE:'octubre',IMPORTE:'importe'}
+    const titulo   = {CLIENTE:'cliente',AGOSTO:'agosto',SETIEMBRE:'setiembre', OCTUBRE:'octubre', NOVIEMBRE:'noviembre',DICIEMBRE:'diciembre',ENERO:'enero',IMPORTE:'importe'}
+    const tituloFoot   = {CLIENTE:'TOTAL',AGOSTO:Math.round(totalAgosto),SETIEMBRE:Math.round(totalSetiembre),OCTUBRE:Math.round(totalOctubre),NOVIEMBRE:Math.round(totalNoviembre),DICIEMBRE:Math.round(totalDiciembre),ENERO:Math.round(totalEnero),IMPORTE:Math.round(totalGeneral)}
     const dt = new Datatable('#dataTable',[]);
-    dt.setDatos(ventaClientes,titulo,{agosto:34000,setiembre:1000,octubre:2000});
+    dt.setDatos(ventaClientes,titulo,tituloFoot);
     dt.renderTable();
 
     //venta por producto
@@ -481,10 +467,11 @@ const registroVentas = onGetVentas((ventasSnapShot) =>{
     dt2.renderTable();
 
     //venta por documento
-        const titulo3   = {FECHA:'fecha',DOCUMENTO:'numero',NOMBRE:'cliente',IMPORTE:'importeTotal',PAGO:'tipoPago'}
+        const titulo3   = {DOCUMENTO:'numero',FECHA:'fecha',NOMBRE:'cliente',PAGO:'tipoPago',IMPORTE:'importeTotal'}
+        const titulo3Foot   = {FECHA:'TOTAL',DOCUMENTO:'',NOMBRE:'',PAGO:'',IMPORTE:totalImporte}
         //const titulo   = {' ':'',CLIENTE:'cliente',CANTIDAD:'cantidad',COSTO:'costo',IMPORTE:'importe',MARGEN:'margen'}
         const dt3 = new Datatable('#dataTable3',[]);
-        dt3.setData(items2,titulo3);
+        dt3.setDatos(items2,titulo3,titulo3Foot);
         dt3.renderTable();
 
 
@@ -512,7 +499,7 @@ const registroVentas = onGetVentas((ventasSnapShot) =>{
     const myChart2 = new Chart(ctx2,{type:'pie',data:{labels:valores2.map(row => row.values.categoria),datasets:[{label:'S/',data:valores2.map(row => row.values.importe),backgroundColor:colorFondo,borderColor:colorBorde,borderWidth:2}]}})
     
     //ventas por mes grafico y tabla
-    let valores=groupByMes(items);
+    let valores=groupByMes(items,'mes','importe','margen');
     console.log('llamanda funcion groupBy mes:',valores)
     const myChart3 = new Chart(ctx3,{type:'bar',data:{labels:valores.map(row => row.values.mes),datasets:[{label:'S/',data:valores.map(row => row.values.importe),backgroundColor:colorFondo,borderColor:colorBorde,borderWidth:2}]}})
 

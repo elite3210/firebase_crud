@@ -15,7 +15,7 @@ const inpCliente        = document.getElementById('cliente')
 const fecha             = document.getElementById('fecha')
 const btn_semaforo      = document.querySelector('.semaforo')
 const numeroCotizacion  = document.getElementById('cotizacion')
-const cajaClientes  = document.getElementById('cajaClientes')
+const cajaClientes      = document.getElementById('cajaClientes')
 
 //Inventario=[{Materiales:1000},{Procesos:700},{Terminados:0}]
 
@@ -33,7 +33,7 @@ datalist1.innerHTML=`
 <option value='10450270461'>LUNG ISIDRO BETSY NATALY</option>
 <option value='10473550151'>Wilfredo Mayta</option>
 <option value='20428756518'>PALAVA E.I.R.L.</option>
-<option value='20487391051'>CEMPLASTIC S.A.C.</option>
+<option value='20520870581'>CEMPLASTIC S.A.C.</option>
 <option value='20508679514'>DISTRIBUIDORA MURDOCK S.R.L.</option>
 <option value='20512048839'>FREDY PONCE & MARANATHA S. A. C. </option>
 <option value='20601632137'>JAL PERU INVERSIONES EIRL</option>
@@ -41,6 +41,7 @@ datalist1.innerHTML=`
 <option value='20608956868'>BIOSELVA PACK S.A.C.</option>
 <option value='48348426'>MANUEL HUANUCO ALBINO</option>
 <option value='73675942'>DEINER CAMPOS</option>
+<option value='77269606'>PAOLA ELIZABETH GARCIA VILCHEZ</option>
 `
 cajaClientes.appendChild(datalist1)
 
@@ -156,7 +157,7 @@ function registrarVenta(){
     console.log('dentro funcion registraVenta:')
     
     let tiempo              = Date.now()
-    let hoy                 = new Date(tiempo)
+    //let hoy                 = new Date(tiempo)
 
     let cliente             = form['cliente'].value
     let ruc                 = form['ruc'].value
@@ -166,7 +167,7 @@ function registrarVenta(){
     let tipoPago            = form['tipoPago'].value
     let metodoCobro         = form['metodoCobro'].value
     let nuevoNumero         = Number(numeroCotizacion.value)
-    let fecha               = hoy.toLocaleDateString()
+    let fecha               = form['fecha'].value
     let subTotal            = celdaSubTotal.value
     let descuento           = inpDescuento.value
     let importeTotal        = subTotal-descuento
@@ -245,17 +246,19 @@ function eliminarProducto(e){
 let alternador = true
 
 function filaMuestraStock(e){
+    let filasTabla = document.querySelectorAll('tbody tr');
+    console.log('filasTabla:',filasTabla);
     let id_producto=e.target.getAttribute('data-id')                            //captura el ID producto de la fila
     let ubicacion = objetos.findIndex((elem)=>{return elem.id==id_producto})    //captura el indice o poscion del objeto producto de la fila
     
-    if(alternador){
+    if(alternador){//para expandir o contraer fila
         let producto_encontado=objetos.find((elem)=>{return elem.id==id_producto})  //encuentra el productos en el objeto con el ID anterior
         console.log('clik en (+), el stock es:',producto_encontado.stock)
         let fila =document.createElement('tr')
         let celda =document.createElement('td')
         celda.textContent=producto_encontado.stock
         fila.appendChild(celda)
-        console.log('findIndex:',ubicacion)
+        console.log('Filas Ubicacion:',ubicacion)
         tabla.insertBefore(fila,tabla.children[ubicacion+1]) 
         alternador=false
     }else{
@@ -289,7 +292,7 @@ function pintarFilasLlenas(objetos){
 function pintarFilasVacias(objetos){
     if(start){objetos=[];start=false}
     let filasLlenas=objetos.length
-    let filasVacias=9
+    let filasVacias=8
     for(let i =0;i<filasVacias-filasLlenas;i++){
         let fila = document.createElement('tr')
         fila.innerHTML= ` <td></td>
@@ -320,7 +323,7 @@ async function generaPDF(){
         await html2pdf()
             .set({
                 margin: 5,
-                filename: `${id_cotizacion}`,
+                filename: `PV${id_cotizacion}_S${celda_total.value}`,
                 //se borro image jpg, averiguar codigo origina en github del cdn html2pdf
                 html2canvas: {
                     scale: 5, // A mayor escala, mejores gráficos, pero más peso
@@ -345,13 +348,17 @@ async function generaPDF(){
     localStorage.removeItem('cotizacion');
     objetos=[]
     numeroCotizacion.value='';
+    celdaSubTotal.value='';
+    inpDescuento.value='';
+    celda_total.value='';
     form.reset()
     pintarTabla(objetos) //vueve a pintar el formulario vacio
 }
 
 function pintarFecha(){
-    
-    fecha.textContent       =new Date(Date.now()).toLocaleDateString()
+    let date =new Date(Date.now())
+    fecha.value = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
+    //console.log('fecha:...',fecha.value)
 }
 
 async function ingresarProducto(e){

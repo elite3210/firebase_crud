@@ -299,7 +299,9 @@ body{
 td{
     border-bottom: 1px dotted rgb(87, 87, 87);
     
-    
+}
+.filaSeleccionada{
+    border-bottom: solid 2px coral;
 }
 
 

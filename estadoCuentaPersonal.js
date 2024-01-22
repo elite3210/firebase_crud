@@ -116,35 +116,27 @@ dt.setData(detalleTransacciones,titulo);
 dt.makeTable();
 
 const libroMayor41110 = detalleTransacciones.filter((linea)=>{return (linea.values.cuenta=='41110')})
-const titulo0   = {' ':'',ASIENTO:'numero',FECHA:'fecha',GLOSA:'glosa',DEBE:'debe',HABER:'haber'}
+const titulo0   = {ASIENTO:'numero',FECHA:'fecha',GLOSA:'glosa',DEBE:'debe',HABER:'haber'}
 const dt0 = new Datatable('#dataTable0',[]);
+
 dt0.setData(libroMayor41110,titulo0);
-dt0.makeTable();
+dt0.renderTable();
 
 //balance de comprobacion
-const titulo2   = {' ':'',CUENTA:'cuenta',DEBE:'debe',HABER:'haber'}
+const titulo2   = {CUENTA:'cuenta',DEBE:'debe',HABER:'haber'}
 
-const dt2 = new Datatable('#dataTable2',
-[
-    {id:'bedit',text:'editar',icon:'edit',action:function(){const elemntos=dt.getSelected(); console.log('editar datos...',elemntos);  }},
-    {id:'bDelete',text:'eliminar',icon:'delete',action:function(){const elemntos=dt.getSelected(); console.log('eliminar datos...',elemntos);  }}
-]
-);
+const dt2 = new Datatable('#dataTable2',[]);
 
 dt2.setData(libroMayor,titulo2);
-dt2.makeTable();
+dt2.renderTable();
 
 //detallarTransaccion(items), ccuenta corriente persona
 
-const titulo3   = {' ':'',FECHA:'fecha',GLOSA:'glosa',CUENTA:'cuenta',DEBE:'debe',HABER:'haber'}
+const titulo3   = {FECHA:'fecha',GLOSA:'glosa',CUENTA:'cuenta',DEBE:'debe',HABER:'haber'}
+const titulofoot   = {FECHA:'TOTAL',GLOSA:'',CUENTA:'',DEBE:250,HABER:250}
 
-const dt3 = new Datatable('#dataTable3',
-[
-    {id:'bedit',text:'editar',icon:'edit',action:function(){const elemntos=dt.getSelected(); console.log('editar datos...',elemntos);  }},
-    {id:'bDelete',text:'eliminar',icon:'delete',action:function(){const elemntos=dt.getSelected(); console.log('eliminar datos...',elemntos);  }}
-]
-);
+const dt3 = new Datatable('#dataTable3',[]);
 
-dt3.setData(cuentaAngela,titulo3);
-dt3.makeTable();
+dt3.setDatos(cuentaAngela,titulo3,titulofoot);
+dt3.renderTable();
 

@@ -121,7 +121,7 @@ function actualizarStock(objetos){//ACTUALIZA STOCK VARIOS ITEMS
         updateProduct(id,{stock:nuevo_stock})
         counter++
     })
-    alert(`Se actualizó: ${counter} productos`)
+    alert(`Se actualizó la compra: ${counter} productos`)
 }
 
 function registrarVenta(){
@@ -138,7 +138,7 @@ function registrarVenta(){
     let tipoPago            = form['tipoPago'].value
     let documento         = form['documento'].value
     let nuevoNumero         = Number(numeroCotizacion.value)
-    //let fecha               = hoy.toLocaleDateString()
+    let fecha               = form['fecha'].value
     let subTotal            = celdaSubTotal.value
     let descuento           = inpDescuento.value
     let importeTotal        = subTotal-descuento
@@ -146,11 +146,12 @@ function registrarVenta(){
     console.log('tipoPago:',subTotal)
     console.log('metodoCobro:',descuento)
     console.log('tiempo:',tiempo)
+    console.log('fecha:',fecha)
     
     if (nuevoNumero){
         console.log('numero:',nuevoNumero)
 
-        guardarCompras(nuevoNumero,usuario,proveedor,ruc,detalleCompra,estado,tipoPago,subTotal,descuento,importeTotal,tiempo,documento)
+        guardarCompras(nuevoNumero,usuario,proveedor,ruc,detalleCompra,estado,tipoPago,subTotal,descuento,importeTotal,tiempo,documento,fecha)
         actualizarStock(objetos)
         updateNumeracion('Compras',{ultimoNumero:nuevoNumero})
 
@@ -260,7 +261,7 @@ function pintarFilasLlenas(objetos){
 function pintarFilasVacias(objetos){
     if(start){objetos=[];start=false}
     let filasLlenas=objetos.length
-    let filasVacias=9
+    let filasVacias=7
     for(let i =0;i<filasVacias-filasLlenas;i++){
         let fila = document.createElement('tr')
         fila.innerHTML= ` <td></td>
@@ -291,7 +292,7 @@ async function generaPDF(){
         await html2pdf()
             .set({
                 margin: 5,
-                filename: `${id_cotizacion}`,
+                filename: `"PC"${id_cotizacion}_${celda_total.value}`,
                 //se borro image jpg, averiguar codigo origina en github del cdn html2pdf
                 html2canvas: {
                     scale: 5, // A mayor escala, mejores gráficos, pero más peso
@@ -315,8 +316,12 @@ async function generaPDF(){
 }
 
 function pintarFecha(){
+    let date =new Date(Date.now())
+    fecha.value = `${date.getFullYear()}-0${date.getMonth()+1}-${date.getDate()}`;//solucionar el hecho de poner un cero cuando el dia es entreel 1 y el 9 y lo mismo en el mes 1 al 9
     
-    fecha.textContent       =new Date(Date.now()).toLocaleDateString()
+
+    console.log('FECHA A MOSTRAR:',fecha.value)    
+    //fecha.textContent       =new Date(Date.now()).toLocaleDateString()
 }
 
 async function ingresarProducto(e){
@@ -397,12 +402,3 @@ function actualizaImporteTouch(e){
 
 }
 
-
-/*
-JsBarcode(".barcode",'SB0070', {
-    lineColor: "#000",
-    width: 1.5,
-    height: 40,
-    displayValue: false
-  });
-*/

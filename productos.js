@@ -10,7 +10,6 @@ const totalInventario2  = document.getElementById('totalInventario')
 const totalPeso2        = document.getElementById('totalPeso')
 const btnImprimir       = document.getElementById('btnImprimir')
 const tareasContainer   = document.getElementById('tablaContainer')
-const btnNuevoProducto  = document.getElementById('btnNuevoProducto')
 const cuadroBarcode     = document.getElementById('barcode')
 
 
@@ -19,9 +18,6 @@ let activaBarCode=false
 let id ='';
 let totalInventario=0
 let totalPeso=0;
-
-
-btnNuevoProducto.addEventListener('click',pintarFormularioProductos)
 
 btnImprimir.addEventListener('click',imprimirBarcode)
 
@@ -159,6 +155,9 @@ function pintarFormularioProductos(){
                 <label for="codigo" >pesoBruto:</label>
                 <input class="codigo"  type="text"  id='pesoBruto'>
 
+                <label for="nota" >Nota:</label>
+                <input class="nota"  type="text"  id='nota'>
+
               </div>
 
               <div id="container-btn" class="container-btn">
@@ -224,6 +223,7 @@ function enviarDB(e){
         const descripcion         = tareaForm['description'];
         const medidas             = tareaForm['medidas'];
         const pesoBruto           = tareaForm['pesoBruto'];
+        //const pesoBruto           = tareaForm['pesoBruto'];
         ;
         
         

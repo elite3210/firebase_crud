@@ -43,7 +43,7 @@
   export const guardarProduccion  = (almacenProcesos,usuario,almacen,detalleProduccion,estado,fechaRegistro,tiempo,numero,idProducto,cantidad)=>{addDoc(produccionRef,{almacenProcesos,usuario,almacen,detalleProduccion,estado,fechaRegistro,tiempo,numero,idProducto,cantidad})}
   export const guardarBoletaPago  = (numBoleta,dniBoleta,nomBoleta,fechaBoleta,tiempoTotal,creado,detalle,payStatus,importe)=>{addDoc(boletaPagoRef,{numBoleta,dniBoleta,nomBoleta,fechaBoleta,tiempoTotal,creado,detalle,payStatus,importe})}
   export const guardarCotizacion  = (numero,fecha,vendedor,cliente,ruc,detalleCotizacion,estado,tipoPago,metodoCobro,subTotal,descuento,importeTotal,tiempo)=>{addDoc(cotizacionRef,{numero,fecha,vendedor,cliente,ruc,detalleCotizacion,estado,tipoPago,metodoCobro,subTotal,descuento,importeTotal,tiempo})}
-  export const guardarCompras  = (nuevoNumero,usuario,proveedor,ruc,detalleCompra,estado,tipoPago,subTotal,descuento,importeTotal,tiempo,documento)=>{addDoc(comprasRef,{nuevoNumero,usuario,proveedor,ruc,detalleCompra,estado,tipoPago,subTotal,descuento,importeTotal,tiempo,documento})}
+  export const guardarCompras  = (nuevoNumero,usuario,proveedor,ruc,detalleCompra,estado,tipoPago,subTotal,descuento,importeTotal,tiempo,documento,fecha)=>{addDoc(comprasRef,{nuevoNumero,usuario,proveedor,ruc,detalleCompra,estado,tipoPago,subTotal,descuento,importeTotal,tiempo,documento,fecha})}
 
   /*registrando un nuevo documento en firestore indicando el id de la DB personalizado setDoc() */
   export const guardarProduct     = async (codigo,categoria,nombre,costo,stock,unidad,peso,precio,activo,descripcion,imagen,medidas,pesoBruto)=>{await setDoc(doc(productRef,codigo),{imagen,categoria,nombre,costo,stock,unidad,peso,precio,activo,descripcion,medidas,pesoBruto})}
@@ -56,6 +56,7 @@
   export const onGetTasks   = (callback)=> onSnapshot(collection(db,'Micoleccion'),callback)
   export const onGetProduct = (callback)=> onSnapshot(collection(db,'Productos'),callback)
   export const onGetSocios  = (callback)=> onSnapshot(collection(db,'Socios'),callback)
+  export const onGetProveedor  = (callback)=> onSnapshot(collection(db,'Proveedor'),callback)
   export const onGetVentas  = (callback)=> onSnapshot(collection(db,'Cotizacion'),callback)
 
   /*metodo de firestore para eliminar un registro de db */
