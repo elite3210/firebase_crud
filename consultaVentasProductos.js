@@ -31,7 +31,7 @@ PG0072:'Paliglobos',PG0073:'Paliglobos',PG0074:'Paliglobos',PG0075:'Paliglobos',
 PI0011:'Aditivos',PI0012:'Aditivos',PI0013:'Aditivos',PP0010:'Material',PP0011:'Material',PV0010:'Material',
 SB0050:'Sorbetes',SB0051:'Sorbetes',SB0052:'Sorbetes',SB0070:'Sorbetes',SD0070:'Forrados',SF0010:'Flexibles',
 SF0011:'Flexibles',SF0012:'Flexibles',SF0013:'Flexibles',ST0070:'Sorbeton',ST0071:'Sorbeton',ST6000:'Sorbeton',ST7001:'Sorbeton',
-ST7003:'Sorbeton',SD7000:'Sorbeton'
+ST7003:'Sorbeton',SD7000:'Sorbeton',SD7001:'Sorbeton',SD7003:'Sorbeton',SU1000:'Cubiertos',PR1000:'Cubiertos'
 }
 //console.log('productos:',claves)
 
@@ -132,8 +132,8 @@ function groupByMes(items,clave,concepto,concepto2){
         
         for (const fila of items) {
             if (fila['values'][clave]==valor) {
-                objeto['values'][concepto]     += fila['values'][concepto];
-                objeto['values'][concepto2]    += fila['values'][concepto2];
+                objeto['values'][concepto]     += Math.round(fila['values'][concepto]);
+                objeto['values'][concepto2]    += Math.round(fila['values'][concepto2]);
             }
         }
         
@@ -147,12 +147,12 @@ function groupByMes(items,clave,concepto,concepto2){
     return itemsAgrupado;
 }
 
-function groupBy(items,clave,concepto){
-    let itemsAgrupado=[]//meses e importes 
-    let elementosUnicos = eliminarDuplicados(items,clave);
+function groupBy(items,clave,concepto){//funcion que recibe un lista de objetos y agrupa segun clave,porejemplo el mesy porvariuable importe iguala concepto en estecaso
+    let itemsAgrupado=[]//agrupa en cada mes = clave  e importes=concepto
+    let elementosUnicos = eliminarDuplicados(items,clave);//de los items elimina los meses duplicados=clave
 
     let contador=1;
-    for (const valor of elementosUnicos) {
+    for (const valor of elementosUnicos) {//coge cada mes=valor y compara para extraer el valor
         let objeto={}
         let acumulador=0;
         
@@ -185,20 +185,25 @@ function groupByCategoria(items,clave){
 
     console.log('elementosunicos:',elementosUnicos)
     let contador=1;
+    let importeTotal=188557;
     for (const valor of elementosUnicos) {
+        
         let producto={}
         let importe=0;
         let margen=0;
         let costo=0;
+        
 
         for (const fila of items) {
             if (fila['values'].categoria==valor) {
-                importe     += fila['values'].importe;
-                costo +=fila['values'].costo*fila['values'].cantidad;
-                margen      += fila['values'].importe - fila['values'].costo*fila['values'].cantidad;
+                importe     +=  fila['values'].importe;
+                costo       +=  fila['values'].costo*fila['values'].cantidad;
+                margen      +=  fila['values'].importe - fila['values'].costo*fila['values'].cantidad;
                 //porcentaje      += margen/importe
             }
         }
+        
+        //importeTotal+=importe;
         producto.id=contador;
         producto.values={};
         producto.values.categoria=valor;
@@ -206,8 +211,10 @@ function groupByCategoria(items,clave){
         //producto.values.cantidad = cantidad;
         producto.values.margen = Math.round(margen);
         producto.values.porcentaje = (1/(1+costo/margen)).toFixed(2);
+        producto.values.porcentajeTotal = (importe/importeTotal*100).toFixed(2);
         itemsAgrupado.push(producto);
         contador++;
+        
         //queda asi ejemplo: {"id": 2,"values": {"mes": "Setiembre","importe": 30113}}
     }
     console.log('dentro de la funcion groupBy:itemsAgrupado...final',itemsAgrupado);
@@ -458,8 +465,8 @@ const registroVentas = onGetVentas((ventasSnapShot) =>{
     dt.setDatos(ventaClientes,titulo,tituloFoot);
     dt.renderTable();
 
-    //venta por producto
-    const titulo2   = {CATEGORIA:'categoria',IMPORTE:'importe',MARGEN:'margen','%':'porcentaje'}
+    //venta por categoria
+    const titulo2   = {CATEGORIA:'categoria',IMPORTE:'importe',MARGEN:'margen','%':'porcentaje','%Total':'porcentajeTotal'}
     //const titulo2   = {' ':'',CODIGO:'codigo',CANTIDAD:'cantidad',COSTO:'costo',IMPORTE:'importe',MARGEN:'margen'}
     const dt2 = new Datatable('#dataTable2',[]);
     

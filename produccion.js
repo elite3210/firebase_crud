@@ -81,7 +81,6 @@ let start=true
 console.log('iniciando...: ')
 
 cargarEventListeners()
-//console.log('La receta es: ',JSON.parse(objetos[0].receta))
 
 function cargarEventListeners(){
     pintarFecha()
@@ -120,28 +119,29 @@ function crearVenta(){
     numeroInventario.value='';
 }
 
-async function actualizarStock(objetos){//actualiza incremento de produccion y disminuye cantidad de insumos
+async function actualizarStockInsumos(objetos){//actualiza incremento de produccion y disminuye cantidad de insumos
     let id=objetos[0].id;
-    let receta =JSON.parse(objetos[0].receta)
+    console.log('dentro de la funcion actualizar stock de insumos de receta:...')
     let cantidadProduccion=objetos[0].cantidad;//cantidad de produccion a registrar
     let nuevoStockProducto=Number(objetos[0].stock) + cantidadProduccion // calculo para nuevo stock
 
-    if (receta) {//si tiene receta
+    if (objetos[0].receta) {//si tiene receta
+        let receta = JSON.parse(objetos[0].receta)
+        console.log('el preducto tiene una receta de produccion:',receta)
         let contadorInsumo=0
-        for (const insumo of receta) {//recorre la receta y realiza en calculo del nuevo stock y los actualiza
+        for (const insumo of receta) {//recorre la receta y realiza el calculo del nuevo stock y los actualizara
             let productoIntermedio = await traeroneProduct(insumo.id); //trae un producto de la DB
             let nuevoStockInsumo    = productoIntermedio.data()['stock']-cantidadProduccion*insumo.cantidad; //calcula la cantidad que quedaria despues del registro
             console.log(`Cantidad:${cantidadProduccion} Planchas Material:${insumo.id}  Stock: ${productoIntermedio.data()['stock']} Consumo: ${cantidadProduccion*insumo.cantidad} nuevo Stock: ${nuevoStockInsumo}`)
             updateProduct(insumo.id,{stock:nuevoStockInsumo})//actualiza el stock del insumo
             contadorInsumo++;
         }
-    
-        updateProduct(id,{stock:nuevoStockProducto});//actualiza el stock de producto
-
+        await updateProduct(id,{stock:nuevoStockProducto});//actualiza el stock del producto
         alert(`Se registró: ${cantidadProduccion} ${objetos[0].unidad} ${objetos[0].nombre} Fabricado con ${contadorInsumo} Isumos`);
+
     } else {
-        alert('registrando otros productos sin receta...');
-        updateProduct(id,{stock:nuevoStockProducto});//actualiza el stock de producto
+        alert('registrando otros productos sin receta la cantidad de:',nuevoStockProducto,id);
+        await updateProduct(id,{stock:nuevoStockProducto});//actualiza el stock de la mercaderia
     }
     
     
@@ -149,26 +149,25 @@ async function actualizarStock(objetos){//actualiza incremento de produccion y d
 
 function registrarVenta(){//captura los datos del formulario para guardar en BD
     console.log('dentro funcion registraVenta:')
-    let tiempoTranscurrido  = Date.now()
-    let hoy                 = new Date(tiempoTranscurrido)    
-    
+    let tiempo              = Date.now()
+    let hoy                 = new Date(tiempo)
+    let fechaRegistro       = hoy.toLocaleDateString()
+
     let usuario             = form['usuario'].value
     let almacenProcesos     = form['almacenProcesos'].value
     let almacen             = form['almacen'].value
     let detalleProduccion   = JSON.stringify(objetos)
     let idProducto          = objetos[0].id
     let cantidad            = objetos[0].cantidad
-    let estado              = 'pendiente'
-    let tiempo              = Date.now()
-    let fechaRegistro       = hoy.toLocaleDateString()
+    let estado              = 'pendiente';
     let nuevoNumero         = Number(numeroInventario.value)
 
     if (nuevoNumero){
         console.log('numero:',nuevoNumero)
 
+        actualizarStockInsumos(objetos)
         guardarProduccion(almacenProcesos,usuario,almacen,detalleProduccion,estado,fechaRegistro,tiempo,nuevoNumero,idProducto,cantidad)
-        actualizarStock(objetos)
-        updateNumeracion('Inventario',{ultimoNumero:nuevoNumero})
+        updateNumeracion('Inventario',{ultimoNumero:nuevoNumero,creado:hoy})
 
         console.log('Registro de cotizacion es un exito:',hoy.toLocaleDateString())
     } else {
@@ -345,7 +344,7 @@ async function ingresarProducto(e){
         if(objetos==null){
             objetos=[]                                                  //un atajo para que funcione el codigo por primera vez, corregir en futuro
         }
-        let duplicado = objetos.some((elem)=>{return elem.id===id})     //verifica por ID si el nuevo elemento ya existe en el objeto
+        let duplicado = objetos.some((elem)=>{return elem.id===id})     //verifica por ID si el nuevo elemento ya existe en el objeto o en el documento que se muestraen pantalla
         let traerDoc = await traerUnNumeracion('Inventario');
         numeroInventario.value=Number(traerDoc.data().ultimoNumero)+1;
         
@@ -360,7 +359,9 @@ async function ingresarProducto(e){
             fila.id=traerDoc.id                                         // el id esta en otro campo, por eso se llama aparte y luego agregar
             fila.cantidad=1                                             //por defecto cantidad igual a 1
             fila.importe=fila.peso*fila.cantidad                      //calculamos l importe
-            
+if (!fila.receta) {
+alert('producto sin receta, desea continuar?...')
+}
             objetos.push(fila)                                          //metemos los datos de fila en objetos
             limpiarTabla(e)                                             //limpir datos de la tabla
             pintarTabla(objetos)

@@ -323,7 +323,7 @@ async function generaPDF(){
         await html2pdf()
             .set({
                 margin: 5,
-                filename: `PV${id_cotizacion}_S${celda_total.value}`,
+                filename: `PV${id_cotizacion}_S${Math.round(celda_total.value)}`,
                 //se borro image jpg, averiguar codigo origina en github del cdn html2pdf
                 html2canvas: {
                     scale: 5, // A mayor escala, mejores gráficos, pero más peso
