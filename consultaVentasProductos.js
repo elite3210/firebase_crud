@@ -460,7 +460,7 @@ const registroVentas = onGetVentas((ventasSnapShot) =>{
     //venta por cliente
     //const titulo   = {' ':'',FECHA:'fecha',DOCUMENTO:'numero',CODIGO:'codigo',NOMBRE:'nombre',CANTIDAD:'cantidad',IMPORTE:'importe',COSTO:'costo'}
     const titulo   = {CLIENTE:'cliente',AGOSTO:'agosto',SETIEMBRE:'setiembre', OCTUBRE:'octubre', NOVIEMBRE:'noviembre',DICIEMBRE:'diciembre',ENERO:'enero',IMPORTE:'importe'}
-    const tituloFoot   = {CLIENTE:'TOTAL',AGOSTO:Math.round(totalAgosto),SETIEMBRE:Math.round(totalSetiembre),OCTUBRE:Math.round(totalOctubre),NOVIEMBRE:Math.round(totalNoviembre),DICIEMBRE:Math.round(totalDiciembre),ENERO:Math.round(totalEnero),IMPORTE:Math.round(totalGeneral)}
+    const tituloFoot   = {CLIENTE:'TOTAL',AGOSTO:Math.round(totalAgosto),SETIEMBRE:Math.round(totalSetiembre),OCTUBRE:Math.round(totalOctubre),NOVIEMBRE:Math.round(totalNoviembre),DICIEMBRE:Math.round(totalDiciembre),ENERO:Math.round(totalEnero),TOTAL:Math.round(totalGeneral)}
     const dt = new Datatable('#dataTable',[]);
     dt.setDatos(ventaClientes,titulo,tituloFoot);
     dt.renderTable();

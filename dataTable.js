@@ -17,7 +17,7 @@ export class Datatable{
         this.items      = [];
         this.pagination = {total:0,noItemsPerPage:0,noPages:0,actual:0,pointer:0,diff:0,lastPageBeforeDots:0,noButtonsBeforeDots:4};
         this.selected   = [];
-        this.numberOfEntries    = 10;
+        this.numberOfEntries    = 25;
         this.headerButtons      = headerButtons;
     }
 
@@ -54,7 +54,7 @@ export class Datatable{
         return (Date.now()*Math.floor(Math.random()*10000)).toString();
     };
 
-    makeTable(){//renderiza la tabla
+    makeTable(){//renderiza la tabla original
         console.log('dentro de maketable...')
         this.copyItems  = [...this.items];
         this.initPagination(this.items.length,this.numberOfEntries);
@@ -68,7 +68,7 @@ export class Datatable{
         this.renderHeaders();
         this.renderRows();
         this.renderPagesButtons();
-        //this.renderHeaderButtons();
+        this.renderHeaderButtons();
         this.renderSearch();
         this.renderSelectEntries();
     };
@@ -222,7 +222,7 @@ export class Datatable{
 
     };
     
-    renderHeaders(){//renderiza los titulos del thead
+    renderHeaders(){//renderiza los titulos del thead o la tabla
         
         /*
         this.headers.forEach(header=>{
@@ -261,16 +261,14 @@ export class Datatable{
                     data    += `<td>${cell}</td>`
                 })
 
-            } else {//si los value vienen en un objeto hace esto
+            } else {//si los values vienen en un objeto hace esto
                 for (let j = 1; j < Object.values(this.headers).length; j++) {
                     
-                    for (const key in values) {//crea tantas comunas como titulo se tenga
+                    for (const key in values) {//crea tantas columnas como titulo se tenga
                         if (Object.values(this.headers)[j]==key) {
                             data += `<td>${values[key]}</td>`;
                         }
-                        
                     }
-                
                 }
 
                 this.element.querySelector('tbody').innerHTML+=`<tr data-id=${i}>${data} </tr>`;
@@ -288,7 +286,7 @@ export class Datatable{
                         }else{
                             this.removeSelected(id);
                             const buttonsContainer  = this.element.querySelector('.header-buttons-container');
-                            buttonsContainer.innerHTML='';
+                            //buttonsContainer.innerHTML=''; //esto borra los headerButtons cuando se des-selecciona la fila.
                         }
                         console.log('id: ',this.selected)
                     })
@@ -296,8 +294,6 @@ export class Datatable{
 
                 //listener para cada fila
                 this.eventoClickFila(id)
-
-            
             }
         }
     };
@@ -343,7 +339,7 @@ export class Datatable{
 
     eventoClickFila(id){//pinta la fila si se hace click
         let filaSeleccionada=false;
-        let tbody = document.querySelector('tbody')
+        //let tbody = document.querySelector('tbody')
         
 
         document.querySelectorAll('tbody tr').forEach(fila=>{
@@ -351,34 +347,38 @@ export class Datatable{
             fila.addEventListener('click',e=>{
                 let position = Number(e.target.parentElement.getAttribute('data-id'))
                 console.log('position:',position+1)
-
+                
                 //let ids = e.target.parentElement.firstChild
-
                 //console.log('firstChild:',ids)
+
                 
 
                 if(!filaSeleccionada){
+
                     fila.setAttribute('class','filaSeleccionada')
-                    console.log('e.target:',e.target)
-                    let producto_encontado=this.items.find((elem)=>{return elem.id==id})  //encuentra el productos en el objeto con el ID anterior
-                    console.log('clik en (+), el stock es:',producto_encontado['values'].numero)//no todas las tablas tienen este campo
-                    let row =document.createElement('tr')
-                    let celda =document.createElement('td')
-                    celda.textContent=producto_encontado['values'].numero//se debe ingresar por parametro al instancia que dato quiere en detalle
-                    row.appendChild(celda)
-                    tbody.insertBefore(row,tbody.children[position+1])
+                    //TODO LO COMENTADO TIENE POR OBJETIVO AÑADIR INFO EN UNA FILA ADICIONAL A LA SELECIOANDA (+)
+                    //console.log('e.target:',e.target)
+                    //let producto_encontado=this.items.find((elem)=>{return elem.id==id})  //encuentra el productos en el objeto con el ID anterior
+                    //console.log('clik en (+), el stock es:',producto_encontado['values'].numero)//no todas las tablas tienen este campo
+                    //let row =document.createElement('tr')
+                    //let celda =document.createElement('td')
+                    //celda.textContent=producto_encontado['values'].numero//se debe ingresar por parametro al instancia que dato quiere en detalle
+                    //row.appendChild(celda)
+                    //tbody.insertBefore(row,tbody.children[position+1])
                     filaSeleccionada=true;
                 }else{
                     if(fila.getAttribute('class')=='filaSeleccionada'){
                         fila.removeAttribute('class','filaSeleccionada')
                         //fila.removeAttribute('data-id',`${id}`)
-                        if(tbody.children[position+1]){
-                            tbody.removeChild(tbody.children[position+1])
-                        }
+                        //if(tbody.children[position+1]){
+                            //tbody.removeChild(tbody.children[position+1])
+                        //}
                         //console.log('fila.getAttribute:',fila.getAttribute('class'))
                         filaSeleccionada=false;
                     }
                 }
+
+                
             })
         })
         //console.log('id:',id)
@@ -573,7 +573,7 @@ export class Datatable{
         this.items = data;
     };
 
-    setDatos(data,titulo,totals){
+    setDatos(data,titulo,totals){//pone los titulos en la cabecera y en pie de la tabla, con items en tbody
 
         this.headers=titulo;
         this.items = data;

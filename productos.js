@@ -102,6 +102,17 @@ const registroProductos = onGetProduct((querySnapshot) =>{
     const dt = new Datatable('#dataTable',
         [
             {id:'btnEdit',text:'editar',icon:'edit',action:function(){const elementos=dt.getSelected();editarFila(elementos)}},
+
+
+
+
+
+
+
+
+
+
+            
             {id:'btnBarcode',text:'barcode',icon:'barcode',action:function(){const elementos=dt.getSelected();pintarBarcode(elementos);}},
             {id:'dtnDelete',text:'delete',icon:'delete',action:function(){const elementos=dt.getSelected();eliminarProducto(elementos)}},
             {id:'dtnCrear',text:'nuevo',icon:'post_add',action:function(){const elementos=dt.getSelected();pintarFormularioProductos()}}

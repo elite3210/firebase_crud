@@ -1,5 +1,5 @@
 import {jornadaRef,deleteTask,updateTask,guardarBoletaPago,traerUnNumeracion,updateNumeracion} from './firebase.js'
-import {getDocs,query,where,orderBy,limit} from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js";
+import {getDocs,query,where} from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js";
 
 console.log('Modulo consultaJornada.js trabajando... Inicio:')
 
@@ -496,10 +496,10 @@ function cerrarFrmBoleta(){//error: despues de hacer la segunda boleta no se pue
     console.log('in fun cerrando la vtnEmergente...')
     const vtnEmergente = document.querySelector('.vtnEmergente')
     console.log(vtnEmergente)
-    vtnEmergente.style.display="none"
+    vtnEmergente.style.display="none";
     body.style.display='block';
     limpiarElemento(vtnEmergente)
-    objetosLSBoleta      =[]
+    objetosLSBoleta      =[];
 
 }
 

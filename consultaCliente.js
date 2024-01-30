@@ -5,6 +5,7 @@ console.log('inicio de la carga de pagina..')
 const sociosContainer = document.getElementById('sociosContainer')
 
 let objetoSocios=[]
+let objetos=[]
 let objetoSocios2=[]
 const registroSocios = onGetSocios((sociosSnapShot) =>{
     //console.log('traido de firebase:',registroSocios)
@@ -13,31 +14,43 @@ const registroSocios = onGetSocios((sociosSnapShot) =>{
     if(sociosSnapShot){
         sociosSnapShot.forEach(doc =>{
             let borrador={}
-            let fila = document.createElement('tr')
-            const objeto  = doc.data()
+            let fila = document.createElement('div')
+            fila.setAttribute('class','fila')
+            let objeto  = doc.data()
             objeto.id     = doc.id
             objetoSocios.push(objeto)
+            objetos.push(objeto)
             borrador.ruc=objeto.id;
             borrador.razonSocial=objeto.razonSocial;
             objetoSocios2.push(borrador)
 
-            fila.innerHTML = `
-                                <td>${objeto.razonSocial}</td>
-                                <td>${objeto.id}</td>
-                                <td>${objeto.inicioActividad}</td>
-                                <td>${objeto.nombresContacto}</td>
-                                <td>${objeto.telefono}</td>
-                                
-                                <td>${objeto.distrito}</td>
-                                <td>${objeto.provincia}</td>
-                                <td>${objeto.departamento}</td>
-                                
-                                <td><button class ='btn-delete fa fa-trash' id='' data-id=${objeto.id}></button></td>
-                                <td><button class ='btn-edit fa-solid fa-pen-to-square' color='transparent' data-id=${objeto.id}></button></td>
-                            `
+            fila.innerHTML = `  <div class="filaIzquierda">
+                                    <div>
+                                        <h1>${objeto.razonSocial}</h1>
+                                    </div>
+                                    <div class="rucTexto">
+                                        <h4>${objeto.id}</h4>
+                                    </div>
+                                    <div  class="rucTexto">
+                                        <h4>${objeto.telefono}</h4>
+                                    </div>
+                                </div>
+
+                                <div class ="filaDerecha">
+                                    <div>
+                                        <h3><button class ='btn-edit fa-solid fa-pen-to-square' color='transparent' data-id=${objeto.id}></button></h3>
+                                    </div>
+                                    <div>
+                                        <h3><span>S/</span>${objeto.saldo}</h3>
+                                    </div>
+                                    <div>
+                                        <h3>${objeto.departamento}</h3>
+                                    </div>
+                                </div>
+                                `
             sociosContainer.appendChild(fila);
             
         })
-        console.log('traido de firebase convertido:',objetoSocios2)
+        console.log('traido de firebase convertido:',objetos)
     }
 });

@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clientes</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
     <script src="https://kit.fontawesome.com/434a77214b.js" crossorigin="anonymous"></script>
+    <title>Compras::Consulta</title>
     <link rel="stylesheet" href="estilos.css">
-    <link rel="stylesheet" href="consultaCliente.css">
+    <link rel="stylesheet" href="dataTable.css">
 
 </head>
 <body>
@@ -55,50 +56,31 @@
           </div>
         </nav>
     </header>
-    
     <br>
-    <div>
+    <table id="dataTable" class="datatable"></table>
     
-    <div class="barraHerramientas">
-      <div class="herramienta">CLIENTES</div><div class="herramienta">ARCHIVO</div><div class="herramienta">EDICION</div><div class="herramienta">Eliminar</div>
-    </div>
-    <div>
-      <div class="containerEmail">
-        <div class="ladoIzquierdo">
-          <table>   
-            <tbody  class="caja" id="sociosContainer">
-            </tbody>
-          </table>
-        </div>
-          <div class="detalle">
-          </div>
-        </div>
-    </div>
-    
-  
-</div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
+    <a href="./consultaProveedor.html" target="_blank">...</a>
+    <a href="./index.html" target="_blank">atras</a>
+    <script type="module" src="./activosFijos.js"></script>  
+</body>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
         // Get all "navbar-burger" elements
         const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
         // Add a click event on each of them
         $navbarBurgers.forEach( el => {
-          el.addEventListener('click', () => {
-        
-            // Get the target from the "data-target" attribute
-            const target = el.dataset.target;
-            const $target = document.getElementById(target);
-        
-            // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
-            el.classList.toggle('is-active');
-            $target.classList.toggle('is-active');
-        
-          });
+            el.addEventListener('click', () => {
+    
+                // Get the target from the "data-target" attribute
+                const target = el.dataset.target;
+                const $target = document.getElementById(target);
+    
+                // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
+                el.classList.toggle('is-active');
+                $target.classList.toggle('is-active');
+            });
         });
-        
-        });
+    });
     </script>
-    <script type="module" src="./consultaCliente.js"></script>
-</body>
+
 </html>

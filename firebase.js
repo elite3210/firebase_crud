@@ -75,6 +75,7 @@
   export const updateTask       = (id,newFields)=>updateDoc(doc(db,'Micoleccion',id),newFields)
   export const updateNumeracion = (id,newFields)=>updateDoc(doc(db,'Numeracion',id),newFields)
   export const updateMovimientoInventario = (id,newFields)=>updateDoc(doc(db,'Produccion',id),newFields)
+  export const updateClientes = (id,newFields)=>updateDoc(doc(db,'Socios',id),newFields)
   
   //realizar una consulta where con funcion pasandole un valor
   

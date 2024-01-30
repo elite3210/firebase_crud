@@ -8,6 +8,21 @@
     <title>Ventas::Consulta</title>
     <link rel="stylesheet" href="estilos.css">
     <link rel="stylesheet" href="dataTable.css">
+    <link rel="stylesheet" href="./ventas.css">
+    <style>
+      #flotante{
+        border: solid 2px;
+        
+      }
+      .modal-container{
+        position: fixed;
+        background-color: rgb(234, 252, 246);
+        border-radius: 10px;
+        top: 200;
+        left: 10%;
+        width: 80%;
+      }
+    </style>
 
 </head>
 <body>
@@ -57,6 +72,9 @@
         </nav>
     </header>
     <br>
+    
+      <div class="modal-container" id="flotante"></div>
+    
     <table id="dataTable" class="datatable"></table>
     
     <a href="./consultaCliente.html" target="_blank">...</a>

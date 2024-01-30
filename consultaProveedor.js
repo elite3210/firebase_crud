@@ -26,8 +26,8 @@ const registroSocios = onGetProveedor((sociosSnapShot) =>{
                                 <td>${objeto.id}</td>
                                 <td>${objeto.contacto}</td>
                                 <td>${objeto.telefono}</td>
-
-                                <td><button class ='btn-delete fa fa-trash' id='' data-id=${objeto.id}></button></td>
+                                <td>${objeto.saldo}</td>
+                                
                                 <td><button class ='btn-edit fa-solid fa-pen-to-square' color='transparent' data-id=${objeto.id}></button></td>
                             `
             sociosContainer.appendChild(fila);

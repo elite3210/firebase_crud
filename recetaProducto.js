@@ -9,6 +9,7 @@ const btn_imprimir      = document.getElementById('btn-imprimir')
 const celda_total       = document.getElementById('celda_total')
 const costoTotal       = document.getElementById('costoTotal')
 const btn_semaforo      = document.querySelector('.semaforo')
+const descripcion      = document.getElementById('descripcion')
 
 let objetos=JSON.parse(localStorage.getItem('produccion'))
 //let objetos=[]
@@ -64,6 +65,9 @@ function registrarVenta(){//captura los datos del formulario para guardar en BD
     delete objetos.precio;
     delete objetos.stock;
     delete objetos.unidad;
+    delete objetos.pesoBruto;
+    delete objetos.medidas;
+
     let receta   = JSON.stringify(objetos)
     
     updateProduct(id,{receta:receta,actualizado:fechaActualizado})//actualiza el stock del insumo
@@ -254,6 +258,7 @@ async function ingresarProducto(e){
             fila.id=traerDoc.id                                         // el id esta en otro campo, por eso se llama aparte y luego agregar
             fila.cantidad=1                                             //por defecto cantidad igual a 1
             fila.importe=fila.peso*fila.cantidad
+            
             delete fila.activo;
             delete fila.categoria;
             delete fila.imagen;

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heinz Sport SAC</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+
+    <style>
+          /*Barra de navegacion
+          @import "https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css";
+          @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;700&display=swap');
+          /*Tablas*/
+          #productos{ 
+            background-image: linear-gradient(to top, #d9afd9 0%, #97d9e1 100%);
+          }
+          
+          tbody{
+            border: 1px solid black;
+          }
+          .amarillo{
+              background-color: yellow;
+          }
+          .rojo{
+              background-color: red;
+          }
+          .rosado{
+              background-color: magenta;
+          }
+          .azul{
+              background-color: rgb(89, 59, 255);
+          }
+          .naranja{
+              background-color: orange;
+          }
+          .verde{
+              background-color: rgb(24, 255, 120);
+          }
+          .blanco{
+              background-color: rgb(196, 223, 255);
+          }
+          .morado{
+            background-color: rgb(207, 86, 255);
+          }
+          th{
+              color: black;
+              border: 1px solid rgb(255, 255, 255);
+          }
+          td{
+              
+              color: black;
+          }
+    </style>
+    
+</head>
+<body>
+  <header>
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+      <div class="navbar-brand">
+        <a class="navbar-item" href="http://www.heinzsport.com">
+          <img src="./imagenes/heinz_sport_sac_logo.png" width="112" height="28">
+        </a>
+    
+        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
+      </div>
+    
+      <div id="navbarBasicExample" class="navbar-menu">
+        <div class="navbar-start">
+          <a class="navbar-item" href="./index.html">Home</a>
+          <a class="navbar-item"href="./carrito/index.html">Catálogo</a>
+    
+          <div class="navbar-item has-dropdown is-hoverable">
+            <a class="navbar-link">Intranet</a>
+    
+            <div class="navbar-dropdown">
+              <a class="navbar-item" href="./jornada.html">Jornada</a>
+              <a class="navbar-item" href="./produccion.html">Ingreso Produccion</a>
+              <a class="navbar-item" href="./eventos.html">Eventos</a>
+              <a class="navbar-item" href="./consultaJornada.html">Ticket</a>
+              <a class="navbar-item" href="./consultaBoletaPago.html">Boletas</a>
+              <hr class="navbar-divider">
+              
+              <a class="navbar-item" href="./clientes.html">Clientes</a>
+              <a class="navbar-item" href="./productos.html">Productos</a>
+              <a class="navbar-item" href="./recetaProducto.html">Receta</a>
+              <a class="navbar-item" href="./ventas.html">Ventas</a>
+              <a class="navbar-item" href="./compras.html">compras</a>
+              <a class="navbar-item" href="./consultaVentasProducto.html">Panel</a>
+              <a class="navbar-item" href="./estadoCuentaPersonal.html">Contabilidad</a>
+            </div>
+          </div>
+        </div>
+    
+        <div class="navbar-end">
+          <div class="navbar-item">
+            <div class="buttons">
+              <a class="button is-primary"><strong>Sign up</strong></a>
+              <a class="button is-light">Log in</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <button id="btnCrearPdf">Click aquí</button>
+  
+  <script><!--Script de la barra de menu-->
+  //const closeHomeMenu = document.querySelector('.menu-home')
+  //closeHomeMenu.addEventListener('click', (e).style.width=0)
+  function openNav() {
+    document.getElementById("mySidenav").style.width = "250px";
+  }
+  function openNavRight() {
+    document.getElementById("mySidenavRight").style.width = "250px";
+  }
+  
+  function closeNav() {
+    document.getElementById("mySidenav").style.width = "0";
+  }
+  function closeNavRight() {
+    document.getElementById("mySidenavRight").style.width = "0";
+  }
+  </script>
+    <script><!--Script de la barra de menu-->
+
+        document.addEventListener('DOMContentLoaded', () => {
+        
+        // Get all "navbar-burger" elements
+        const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+        
+        // Add a click event on each of them
+        $navbarBurgers.forEach( el => {
+          el.addEventListener('click', () => {
+        
+            // Get the target from the "data-target" attribute
+            const target = el.dataset.target;
+            const $target = document.getElementById(target);
+        
+            // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
+            el.classList.toggle('is-active');
+            $target.classList.toggle('is-active');
+        
+          });
+        });
+        
+        });
+               
+        
+    </script>
+
+</body>
+</html>

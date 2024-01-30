@@ -1,4 +1,4 @@
-import {traeroneProduct,updateProduct,guardarCotizacion,traerUnSocio,traerUnNumeracion,updateNumeracion} from './firebase.js'
+import {traeroneProduct,updateProduct,guardarCotizacion,traerUnSocio,traerUnNumeracion,updateNumeracion,updateClientes} from './firebase.js'
 
 
 const btn_ingresar      = document.getElementById('boton')
@@ -16,11 +16,18 @@ const fecha             = document.getElementById('fecha')
 const btn_semaforo      = document.querySelector('.semaforo')
 const numeroCotizacion  = document.getElementById('cotizacion')
 const cajaClientes      = document.getElementById('cajaClientes')
+const saldoAnterior     = document.getElementById('saldoAnterior')
 
+
+let alternador = true
+//let objetos=[]
+let start=true
 //Inventario=[{Materiales:1000},{Procesos:700},{Terminados:0}]
+let saldo=0; //espacio para guardar el saldo anterior del cliente
 
 let datalist1 = document.createElement('datalist')
 datalist1.setAttribute('id','datoClientes')
+//datalist para clientes
 datalist1.innerHTML=`
 <option value='08604665'>OSORIO SIGUAS AMERICO REMIGIO</option>
 <option value='09462653'>HENRY MESA GARAY RUDY</option>
@@ -33,9 +40,9 @@ datalist1.innerHTML=`
 <option value='10450270461'>LUNG ISIDRO BETSY NATALY</option>
 <option value='10473550151'>Wilfredo Mayta</option>
 <option value='20428756518'>PALAVA E.I.R.L.</option>
-<option value='20520870581'>CEMPLASTIC S.A.C.</option>
+<option value='20518248147'>CEMPLASTIC S.A.C.</option>
 <option value='20508679514'>DISTRIBUIDORA MURDOCK S.R.L.</option>
-<option value='20512048839'>FREDY PONCE & MARANATHA S. A. C. </option>
+<option value='20512048839'>FREDY PONCE & MARANATHA S.A.C.</option>
 <option value='20601632137'>JAL PERU INVERSIONES EIRL</option>
 <option value='20602683461'>RHENACER & CARMEN S.A.C.</option>
 <option value='20608956868'>BIOSELVA PACK S.A.C.</option>
@@ -109,8 +116,7 @@ datalist.innerHTML=`
 entradaDato.appendChild(datalist)
 
 let objetos=JSON.parse(localStorage.getItem('cotizacion'))
-//let objetos=[]
-let start=true
+
 
 cargarEventListeners()
 
@@ -128,7 +134,6 @@ function cargarEventListeners(){
     //tabla.addEventListener('touchend',actualizaImporteTouch)        
 }
 
-
 function pintarTabla(objetos){
     console.log('Lo que hay en LS:',objetos)
     if(objetos==null){
@@ -140,7 +145,6 @@ function pintarTabla(objetos){
         actualizaImporteTotal()   
     }
 }
-
 
 function actualizarStock(objetos){//ACTUALIZA STOCK VARIOS ITEMS
     let counter=0
@@ -157,8 +161,6 @@ function registrarVenta(){
     console.log('dentro funcion registraVenta:')
     
     let tiempo              = Date.now()
-    //let hoy                 = new Date(tiempo)
-
     let cliente             = form['cliente'].value
     let ruc                 = form['ruc'].value
     let vendedor            = form['vendedor'].value
@@ -171,6 +173,7 @@ function registrarVenta(){
     let subTotal            = celdaSubTotal.value
     let descuento           = inpDescuento.value
     let importeTotal        = subTotal-descuento
+    let nuevoSaldo=saldo+importeTotal;
 
     console.log('tipoPago:',subTotal)
     console.log('metodoCobro:',descuento)
@@ -182,6 +185,7 @@ function registrarVenta(){
         guardarCotizacion(nuevoNumero,fecha,vendedor,cliente,ruc,detalleCotizacion,estado,tipoPago,metodoCobro,subTotal,descuento,importeTotal,tiempo)
         actualizarStock(objetos)
         updateNumeracion('Cotizacion',{ultimoNumero:nuevoNumero})
+        updateClientes(ruc,{saldo:nuevoSaldo})
 
         console.log('Registro de cotizacion es un exito:',hoy.toLocaleDateString())
     } else {
@@ -242,8 +246,6 @@ function eliminarProducto(e){
         console.log('diste clik en boton delete... nuevo objeto',objetos)
         pintarTabla(objetos)
 }
-
-let alternador = true
 
 function filaMuestraStock(e){
     let filasTabla = document.querySelectorAll('tbody tr');
@@ -418,8 +420,10 @@ async function activarEnter2(e){
             let traerDoc = await traerUnSocio(id);
             let fila = traerDoc.data()                                  //.data() metodo para mostrar solo los datos del producto
             let razonSocial=fila.razonSocial;
+            saldo=fila.saldo;
             console.log('presionaste enter...',razonSocial)
-            inpCliente.value=razonSocial 
+            inpCliente.value=razonSocial
+            saldoAnterior.textContent=saldo; 
             
             let traerDoc2 = await traerUnNumeracion('Cotizacion')
             let dato = traerDoc2.data()
@@ -440,13 +444,3 @@ function actualizaImporteTouch(e){
     console.log('objeto actualizado:',objetos)
 
 }
-
-
-/*
-JsBarcode(".barcode",'SB0070', {
-    lineColor: "#000",
-    width: 1.5,
-    height: 40,
-    displayValue: false
-  });
-*/
