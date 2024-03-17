@@ -14,7 +14,7 @@
     align-items: center;
     padding: 6px;
 }
-.contenedor .li{
+.contenedor .tabs-item{
 
     justify-content: center;
     align-items: center;
@@ -23,7 +23,7 @@
     margin: 0 0.5em 0 0;
     cursor: pointer;
 }
-.contenedor .li.activo{
+.contenedor .tabs-item.activo{
 
     margin: 0 0.5em 0 0;
 }
@@ -33,7 +33,7 @@
     width: 100%;
     position: relative;
 }
-.contenedor .bloque{
+.contenedor .panels-item{
     padding: 1em 0 0 0;
     position: absolute;
     top: 0;
@@ -42,7 +42,7 @@
     transition: all 0.4s ease;
 }
 
-.contenedor .bloque.activo{
+.contenedor .panels-item.activo{
     height: 10vh;
     width: 100%;
     opacity: 1;  

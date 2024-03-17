@@ -23,6 +23,46 @@ btnImprimir.addEventListener('click',imprimirBarcode)
 
 tareaForm.addEventListener('submit',enviarDB)
 
+//traer los productos de firebase toda la coleccion productos
+const registroProductos = onGetProduct((querySnapshot) =>{
+    totalInventario=0
+    totalPeso=0;
+    const items=[];
+    //tareasContainer.innerHTML='';                           //borra el contenido previo, hacer una funcion limpiar...
+    if(querySnapshot){
+        querySnapshot.forEach(doc =>{
+            let obj                 ={};
+            obj.id                  =doc.id;
+            obj.values              =doc.data();
+            obj.values.idProducto   =doc.id;
+            obj.values.pesoCalculado=Math.round(obj.values.peso*obj.values.stock);
+            obj.values.importe      =Math.round(obj.values.precio*obj.values.stock);
+    
+            totalInventario         += obj.values.precio*obj.values.stock;
+            totalPeso               += obj.values.peso*obj.values.stock;
+            items.push(obj);
+        });
+        
+        totalInventario2.innerHTML= `${Math.round(totalInventario)}`
+        totalPeso2.innerHTML= `${Math.round(totalPeso)}`
+
+    } else{tareasContainer.innerHTML='<p>No se trajo los datos de la BD Firebase</p>'}
+
+    //console.log('items:',items);
+
+    const titulo   = {' ':'',CODIGO:'idProducto',NOMBRE:'nombre',STOCK:'stock',UND:'unidad',PESO:'pesoCalculado',PRECIO:'precio',VALOR:'importe'}
+    const dt = new Datatable('#dataTable',
+        [
+            {id:'btnEdit',text:'editar',icon:'edit',action:function(){const elementos=dt.getSelected();editarFila(elementos)}},
+            {id:'btnBarcode',text:'barcode',icon:'barcode',action:function(){const elementos=dt.getSelected();pintarBarcode(elementos);}},
+            {id:'dtnDelete',text:'delete',icon:'delete',action:function(){const elementos=dt.getSelected();eliminarProducto(elementos)}},
+            {id:'dtnCrear',text:'nuevo',icon:'post_add',action:function(){const elementos=dt.getSelected();pintarFormularioProductos()}}
+        ]
+    );
+    
+    dt.setData(items,titulo);
+    dt.makeTable();
+})
 
 function editarFila(elementos){
     pintarFormularioProductos();//funcion que renderiza el formulario para crear y editar producto
@@ -50,7 +90,6 @@ function editarFila(elementos){
     //document.getElementById(id).disabled=false;
 }
 
-
 function pintarBarcode(elementos){
     
     //e.preventDefault()
@@ -72,56 +111,6 @@ function eliminarProducto(elementos){
     alert(`desea eliminar este producto:${elementos[0].id}? se borrara y no podra recuperarlo`)
     //deleteProduct(elementos[0].id)
 };
-
-//traer los productos de firebase toda la coleccion productos
-const registroProductos = onGetProduct((querySnapshot) =>{
-    const items=[];
-    //tareasContainer.innerHTML='';                           //borra el contenido previo, hacer una funcion limpiar...
-    if(querySnapshot){
-        querySnapshot.forEach(doc =>{
-            let obj                 ={};
-            obj.id                  =doc.id;
-            obj.values              =doc.data();
-            obj.values.idProducto   =doc.id;
-            obj.values.pesoCalculado=Math.round(obj.values.peso*obj.values.stock);
-            obj.values.importe      =Math.round(obj.values.precio*obj.values.stock);
-    
-            totalInventario         += obj.values.precio*obj.values.stock;
-            totalPeso               += obj.values.peso*obj.values.stock;
-            items.push(obj);
-        });
-
-        totalInventario2.innerHTML= `${Math.round(totalInventario)}`
-        totalPeso2.innerHTML= `${Math.round(totalPeso)}`
-
-    } else{tareasContainer.innerHTML='<p>No se trajo los datos de la BD Firebase</p>'}
-
-    //console.log('items:',items);
-
-    const titulo   = {' ':'',CODIGO:'idProducto',NOMBRE:'nombre',STOCK:'stock',UND:'unidad',PESO:'pesoCalculado',PRECIO:'precio',VALOR:'importe'}
-    const dt = new Datatable('#dataTable',
-        [
-            {id:'btnEdit',text:'editar',icon:'edit',action:function(){const elementos=dt.getSelected();editarFila(elementos)}},
-
-
-
-
-
-
-
-
-
-
-            
-            {id:'btnBarcode',text:'barcode',icon:'barcode',action:function(){const elementos=dt.getSelected();pintarBarcode(elementos);}},
-            {id:'dtnDelete',text:'delete',icon:'delete',action:function(){const elementos=dt.getSelected();eliminarProducto(elementos)}},
-            {id:'dtnCrear',text:'nuevo',icon:'post_add',action:function(){const elementos=dt.getSelected();pintarFormularioProductos()}}
-        ]
-    );
-    
-    dt.setData(items,titulo);
-    dt.makeTable();
-})
 
 
 function pintarFormularioProductos(){
@@ -278,8 +267,6 @@ function enviarDB(e){
         tareaForm.reset()
         tareaForm.innerHTML=''
 }
-
-
 
 
 var end = Date.now();

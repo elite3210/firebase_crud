@@ -1,19 +1,23 @@
 import {traeroneProduct,updateProduct,guardarProduccion,traerUnNumeracion,updateNumeracion} from './firebase.js'//esto es el causante que demora mucho en cargar la tabla, investigue y se debe a los query en firebase
 
 
-const btn_ingresar      = document.getElementById('boton')
-const form              = document.getElementById('formulario')
+const btn_ingresar      = document.getElementById('boton');
+const form              = document.getElementById('formulario');
 const tabla             = document.getElementById('container');
-const btn_guardar       = document.getElementById('btn-guardar')
-const btn_imprimir      = document.getElementById('btn-imprimir')
-const celda_total       = document.getElementById('celda_total')
-const fecha             = document.getElementById('fecha')
-const btn_semaforo      = document.querySelector('.semaforo')
-const inpCodigo         = document.getElementById('codigo')
-const numeroInventario  = document.getElementById('numeroInventario')
-const entradaDato       = document.getElementById('entradaDato')
+const btn_guardar       = document.getElementById('btn-guardar');
+const btn_imprimir      = document.getElementById('btn-imprimir');
+const celda_total       = document.getElementById('celda_total');
+const fecha             = document.getElementById('fecha');
+const btn_semaforo      = document.querySelector('.semaforo');
+const inpCodigo         = document.getElementById('codigo');
+const numeroInventario  = document.getElementById('numeroInventario');
+const entradaDato       = document.getElementById('entradaDato');
 
-let datalist = document.createElement('datalist')
+let datalist = document.createElement('datalist');
+let objetos=JSON.parse(localStorage.getItem('produccion'));
+let start=true;
+
+
 datalist.setAttribute('id','productos')
 datalist.innerHTML=`
 <option value='EB0010'>Funda Sorbetes S/M</option>
@@ -75,9 +79,7 @@ datalist.innerHTML=`
 entradaDato.appendChild(datalist)
 
 
-let objetos=JSON.parse(localStorage.getItem('produccion'))
-//let objetos=[]
-let start=true
+
 console.log('iniciando...: ')
 
 cargarEventListeners()
@@ -94,7 +96,6 @@ function cargarEventListeners(){
     inpCodigo.addEventListener('keypress',activarEnter)
     //tabla.addEventListener('touchend',actualizaImporteTouch)        
 }
-
 
 function pintarTabla(objetos){
     console.log('Lo que hay en LS:',objetos)
@@ -119,18 +120,19 @@ function crearVenta(){
     numeroInventario.value='';
 }
 
-async function actualizarStockInsumos(objetos){//actualiza incremento de produccion y disminuye cantidad de insumos
-    let id=objetos[0].id;
+async function actualizarStockInsumos(objetos){//actualiza incrementa stock de productos y disminuye cantidad de insumos
     console.log('dentro de la funcion actualizar stock de insumos de receta:...')
-    let cantidadProduccion=objetos[0].cantidad;//cantidad de produccion a registrar
-    let nuevoStockProducto=Number(objetos[0].stock) + cantidadProduccion // calculo para nuevo stock
+    let id                  =objetos[0].id;
+    let cantidadProduccion  =objetos[0].cantidad;//cantidad de produccion a registrar
+    let nuevoStockProducto  =Number(objetos[0].stock) + cantidadProduccion // calculo para nuevo stock
 
     if (objetos[0].receta) {//si tiene receta
-        let receta = JSON.parse(objetos[0].receta)
+        let receta          = JSON.parse(objetos[0].receta)
+        let contadorInsumo  =0
         console.log('el preducto tiene una receta de produccion:',receta)
-        let contadorInsumo=0
+
         for (const insumo of receta) {//recorre la receta y realiza el calculo del nuevo stock y los actualizara
-            let productoIntermedio = await traeroneProduct(insumo.id); //trae un producto de la DB
+            let productoIntermedio  = await traeroneProduct(insumo.id); //trae un producto de la DB
             let nuevoStockInsumo    = productoIntermedio.data()['stock']-cantidadProduccion*insumo.cantidad; //calcula la cantidad que quedaria despues del registro
             console.log(`Cantidad:${cantidadProduccion} Planchas Material:${insumo.id}  Stock: ${productoIntermedio.data()['stock']} Consumo: ${cantidadProduccion*insumo.cantidad} nuevo Stock: ${nuevoStockInsumo}`)
             updateProduct(insumo.id,{stock:nuevoStockInsumo})//actualiza el stock del insumo
@@ -143,24 +145,22 @@ async function actualizarStockInsumos(objetos){//actualiza incremento de producc
         alert('registrando otros productos sin receta la cantidad de:',nuevoStockProducto,id);
         await updateProduct(id,{stock:nuevoStockProducto});//actualiza el stock de la mercaderia
     }
-    
-    
 }
 
 function registrarVenta(){//captura los datos del formulario para guardar en BD
-    console.log('dentro funcion registraVenta:')
+    console.log('dentro funcion registraVenta:');
     let tiempo              = Date.now()
     let hoy                 = new Date(tiempo)
     let fechaRegistro       = hoy.toLocaleDateString()
 
-    let usuario             = form['usuario'].value
-    let almacenProcesos     = form['almacenProcesos'].value
-    let almacen             = form['almacen'].value
-    let detalleProduccion   = JSON.stringify(objetos)
-    let idProducto          = objetos[0].id
-    let cantidad            = objetos[0].cantidad
+    let usuario             = form['usuario'].value;
+    let almacenProcesos     = form['almacenProcesos'].value;
+    let almacen             = form['almacen'].value;
+    let detalleProduccion   = JSON.stringify(objetos);
+    let idProducto          = objetos[0].id;
+    let cantidad            = objetos[0].cantidad;
     let estado              = 'pendiente';
-    let nuevoNumero         = Number(numeroInventario.value)
+    let nuevoNumero         = Number(numeroInventario.value);
 
     if (nuevoNumero){
         console.log('numero:',nuevoNumero)
@@ -193,59 +193,53 @@ function actualizaImporte(e){
 }
 
 function limpiarTabla(){
-    //forma lenta de limpiar
-    //contenedorCarrito.innerHTML=''
     while(tabla.firstChild){
         tabla.removeChild(tabla.firstChild)
-    }
-}
+    };
+};
 
-function actualizaImporteTotal(){
-    
+function actualizaImporteTotal(){  
     let total=objetos.reduce((tot,producto)=>tot+producto.importe,0)
-    
     celda_total.value=total
-
 }
 
 function operacionesEnTabla(e){//eliminar item o ver stock en cadafila
     
     if(e.target.classList.contains('btn-delete')){
         eliminarProducto(e)
-    }
+    };
     if(e.target.classList.contains('btn-stock')){
         filaMuestraStock(e)
-    }
+    };
 }
 
 function eliminarProducto(e){
-    let id_producto=e.target.getAttribute('data-id')
-        
-    objetos=objetos.filter((producto)=>producto.id!==id_producto)
-    limpiarTabla()
-        console.log('diste clik en boton delete... nuevo objeto',objetos)
-        pintarTabla(objetos)
+    let idProducto=e.target.getAttribute('data-id');
+
+    objetos=objetos.filter((producto)=>producto.id!==idProducto);
+    limpiarTabla();
+    console.log('diste clik en boton delete... nuevo objeto',objetos);
+    pintarTabla(objetos);
 }
 
-let alternador = true
-
+let alternador = true;//indica si esta abierto o cerrado la fila de stock
 function filaMuestraStock(e){
-    let id_producto=e.target.getAttribute('data-id')                            //captura el ID producto de la fila
-    let ubicacion = objetos.findIndex((elem)=>{return elem.id==id_producto})    //captura el indice o poscion del objeto producto de la fila
+    let idProducto=e.target.getAttribute('data-id');                            //captura el ID producto de la fila
+    let ubicacion = objetos.findIndex((elem)=>{return elem.id==idProducto});    //captura el indice o poscion del objeto producto de la fila
     
     if(alternador){
-        let producto_encontado=objetos.find((elem)=>{return elem.id==id_producto})  //encuentra el productos en el objeto con el ID anterior
-        console.log('clik en (+), el stock es:',producto_encontado.stock)
-        let fila =document.createElement('tr')
-        let celda =document.createElement('td')
-        celda.textContent=producto_encontado.stock
-        fila.appendChild(celda)
-        console.log('findIndex:',ubicacion)
-        tabla.insertBefore(fila,tabla.children[ubicacion+1]) 
-        alternador=false
+        let indiceProductoEncontrado=objetos.find((elem)=>{return elem.id==idProducto});  //encuentra el productos en el objeto con el ID anterior
+        console.log('clik en (+), el stock es:',indiceProductoEncontrado.stock);
+        let fila            =document.createElement('tr');
+        let celda           =document.createElement('td');
+        celda.textContent   =indiceProductoEncontrado.stock;
+        fila.appendChild(celda);
+        console.log('findIndex:',ubicacion);
+        tabla.insertBefore(fila,tabla.children[ubicacion+1]); 
+        alternador          =false;
     }else{
-        tabla.removeChild(tabla.children[ubicacion+1])
-        alternador=true
+        tabla.removeChild(tabla.children[ubicacion+1]);
+        alternador=true;
     }
 }
 
@@ -382,7 +376,7 @@ async function activarEnter(e){
     if(e.key==='Enter'){
         ingresarProducto(e)
     }
-}
+};
 
 function actualizaImporteTouch(e){
         e.preventDefault()

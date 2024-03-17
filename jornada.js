@@ -20,7 +20,7 @@ boton.addEventListener('click',async(e)=>{
   const minutosEnteros= (entrada,salida)=>{return (lapsoHoras(entrada,salida)*(60))%(60)}         //la hora lo convertimos a minutos x60 y sacamos su modulo o residuo de minutos
   const horasEnteras  = (entrada,salida)=>{return lapsoHoras(entrada,salida)-minutosEnteros(entrada,salida)/60}
   const horasDecimales = (entrada,salida)=>{return horasEnteras(entrada,salida) + (Math.round((minutosEnteros(entrada,salida)/60)*100))/100}
-  const horasMinutos= (entrada,salida)=>{return horasEnteras(entrada,salida) +':'+Math.trunc(minutosEnteros(entrada,salida))}
+  const horasMinutos= (entrada,salida)=>{return `${Math.round(Number(horasEnteras(entrada,salida)))}:${minutosEnteros(entrada,salida).toFixed(0)}`}
   
   let index           =0
   let horasAcumuladas =0

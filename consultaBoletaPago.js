@@ -196,8 +196,8 @@ function pintarFilasDetalle(array){
     
     fila.innerHTML  = `
                     <td>${obj.nombreDia}</td>
-                    <td>${obj.title.slice(11,16)}</td>
-                    <td>${obj.salida.slice(11,16)}</td>
+                    <td>${obj.title.slice(5,16)}</td>
+                    <td>${obj.salida.slice(5,16)}</td>
                     <td>${obj.hora}</td>
                     ` 
     tbody.appendChild(fila);

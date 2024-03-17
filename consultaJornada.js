@@ -1,45 +1,47 @@
-import {jornadaRef,deleteTask,updateTask,guardarBoletaPago,traerUnNumeracion,updateNumeracion} from './firebase.js'
-import {getDocs,query,where} from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js";
+import {jornadaRef,deleteTask,updateTask,guardarBoletaPago,traerUnNumeracion,updateNumeracion,guardarTransaccionesLaboral} from './firebase.js'
+import {getDocs,query,where,orderBy} from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js";
 
 console.log('Modulo consultaJornada.js trabajando... Inicio:')
 
-const queryJornada     = await getDocs(query(jornadaRef,where("payStatus", "==", false)));
-
-let numeroTicket = await traerUnNumeracion('Ticket');
-
-const tabla                 = document.getElementById('tabla')
-const cajaOpciones          = document.getElementById('opciones')
-const listaSeleccion        = document.getElementById('colaborador')
-const cajaFormularios       = document.getElementById('cajaFormlarios')
-const tareaForm             = document.getElementById('tarea-form')
-
-let editStatus=false;
-let personaFiltrada=''
-let tiempoTotBoleta=0
-let id =''          //por comodidad se volvio el id una variable global, hay que corregir que sea local y pasarlo por e.target.dataset
-let objetosLS =''
-let objetosLSFiltrado=''
-let objetosLSBoleta      =[]
+const numeroTicket      = await traerUnNumeracion('Ticket');
+const queryJornada      = await getDocs(query(jornadaRef,where("payStatus", "==", false)),orderBy("title", "desc"));
+//const queryJornada      = await getDocs(query(jornadaRef,where("payStatus", "==", false)),orderBy("title", "desc"));
 
 
+const tabla             = document.getElementById('tabla')
+const cajaOpciones      = document.getElementById('opciones')
+const listaSeleccion    = document.getElementById('colaborador')
+const cajaFormularios   = document.getElementById('cajaFormlarios')
+const tareaForm         = document.getElementById('tarea-form')
+
+let  editStatus         =false;
+const personaFiltrada   ='';
+let  id                 ='';          //por comodidad se volvio el id una variable global, hay que corregir que sea local y pasarlo por e.target.dataset
+let objetosLS           ='';
+let objetosLSFiltrado   ='';
+let objetosLSBoleta     =[];
+let tiempoTotBoleta     =0;
 
 
-let tarifaJornada=[
-                    {tarifa:3.6164,'dni':'72091168','nombre':'Angela','dia':'laborable'},
-                    {tarifa:3.6857,'dni':'71338629','nombre':'Alexandra','dia':'laborable'},
-                    {tarifa:3.700,'dni':'71338629','nombre':'Xiomara','dia':'laborable'},
-                    {tarifa:3.3594,'dni':'09551196','nombre':'Rocio','dia':'laborable'},
-                    {tarifa:3.3594,'dni':'09551196','nombre':'Rocío','dia':'laborable'},
-                    {tarifa:3.10,'dni':'70528292','nombre':'Heinz','dia':'laborable'},
-                    {tarifa:3.595,'dni':'10216274','nombre':'Mariela','dia':'laborable'},
-                    {tarifa:4.9144,'dni':'42231772','nombre':'Elí','dia':'laborable'},
-                    {tarifa:4.9144,'dni':'42231772','nombre':'Alison','dia':'laborable'}
-                ]
-                
-               // {tarifa:3.6719,'dni':'71338629','nombre':'Xiomara'},
 
+const tarifaJornada     =[
+    {tarifa:3.6164,'dni':'72091168','nombre':'Angela',horario:'regular'},
+    {tarifa:3.6857,'dni':'71338629','nombre':'Alexandra',horario:'regular'},
+    {tarifa:3.6857,'dni':'71338629','nombre':'Alexandra',horario:'noche'},
+    {tarifa:3.700,'dni':'71338629','nombre':'Xiomara',horario:'regular'},
+    {tarifa:3.3594,'dni':'09551196','nombre':'Rocio',horario:'regular'},
+    {tarifa:3.3594,'dni':'09551196','nombre':'Rocío',horario:'noche'},
+    {tarifa:3.10,'dni':'70528292','nombre':'Heinz',horario:'regular'},
+    {tarifa:3.595,'dni':'10216274','nombre':'Mariela',horario:'regular'},
+    {tarifa:3.595,'dni':'10216274','nombre':'Mariela',horario:'noche'},
+    {tarifa:4.9144,'dni':'42231772','nombre':'Elí',horario:'regular'},
+    {tarifa:4.9144,'dni':'42231772','nombre':'Alison',horario:'regular'},
+    {tarifa:4.5455,'dni':'80400965','nombre':'Oswaldo',horario:'noche'},
+    {tarifa:4.0909,'dni':'77269606','nombre':'Paola',horario:'noche'}
+    ]
 
-               let tarifaJornada_19_11_23=[
+    
+const tarifaJornada_19_11_23=[
                 {tarifa:3.6164,'dni':'72091168','nombre':'Angela','dia':'laborable'},
                 {tarifa:3.6857,'dni':'71338629','nombre':'Alexandra','dia':'laborable'},
                 {tarifa:3.700,'dni':'71338629','nombre':'Xiomara','dia':'laborable'},
@@ -49,13 +51,8 @@ let tarifaJornada=[
                 {tarifa:3.3594,'dni':'10216274','nombre':'Mariela','dia':'laborable'},
                 {tarifa:4.9144,'dni':'42231772','nombre':'Elí','dia':'laborable'}
             ]
-            
-           // {tarifa:3.6719,'dni':'71338629','nombre':'Xiomara'},
 
-
-
-
-let tarifaJornadaAnterior=[
+const tarifaJornadaAnterior=[
                     {'tarifa':3.5738,'dni':'72091168','nombre':'Angela','turno':'dia'},
                     {'tarifa':3.6719,'dni':'71338629','nombre':'Alexandra','turno':'dia'},
                     {'tarifa':3.3594,'dni':'09551196','nombre':'Rocio','turno':'dia'},
@@ -65,37 +62,40 @@ let tarifaJornadaAnterior=[
                 ]
 
 console.log('Datos traidos de Firestore:',queryJornada)
-
+                
 datosFirebase()
 pintarTabla(objetosLS,tabla)
 listaSeleccion.addEventListener('blur',filtrarTabla)
-
+                
 function datosFirebase(){//trae los datos de firebase
     let objetoJornada =[]
-
+                    
     queryJornada.forEach((doc) => {
-        // doc.data() is never undefined for query doc snapshots
-        //console.log(doc.id, " => ", doc.data());
-        const objeto        = doc.data()
-        objeto.id           = doc.id 
-        objetoJornada.push(objeto)
+                        
+    const objeto        = doc.data()
+    objeto.id           = doc.id 
+    objetoJornada.push(objeto)
     })
     console.log('objJornada:',objetoJornada)
     let objetosProcesados = procesarDatos(objetoJornada)
     sincronizarLocalStorage(objetosProcesados)
 }
 
+//guardarTransaccionesLaboral = (fechaBoleta,dniBoleta,numBoleta,creado,descripcion,tipoTransaccion,importe)
+
 function pintarTabla(objetos,contenedor){//crea tablas
     pintarFilas(objetos,contenedor)
     eventoClickFila()
 }
 
-function pintarFilas(objetos,contenedor){//crea filas de tabla y coloca datos de local Sorage
+function pintarFilas(objetos,contenedor){//crea filas de tabla y coloca datos de local Storege
+    objetos.sort((a, b) => b.title - a.title);//metodo para ordenar array de objetos
     let tiempoTotal = objetos.reduce((total,obj)=>total+obj.tiempo,0)
     let importeTotal = objetos.reduce((total,obj)=>total+obj.importe,0)//buscar la forma de hacer ambas operaciones en uno
+    console.log('ordenado??:',objetos)
     console.log('tiempototal:',tiempoTotal)
     const thead     = document.createElement('thead')
-    thead.innerHTML =`<tr><th></th><th>Nombre</th><th>Dia</th><th>Entrada</th><th>Salida</th><th>Hora</th></tr>`
+    thead.innerHTML =`<tr><th></th><th>Horario</th><th>Nombre</th><th>Dia</th><th>Entrada</th><th>Salida</th><th>Hora</th></tr>`
     
     const tfoot     = document.createElement('tfoot')
     
@@ -110,6 +110,7 @@ function pintarFilas(objetos,contenedor){//crea filas de tabla y coloca datos de
         fila.setAttribute('data-id',obj.id);
 
         fila.innerHTML  = `<input type="checkbox" class="check">
+                        <td>${obj.horario}</td>
                         <td>${obj.description}</td>
                         <td>${obj.nombreDia}</td>
                         <td>${obj.title}</td>
@@ -127,7 +128,7 @@ function filtrarTabla(){//filtra datos de tabla en respuesta al datalist
     console.log('se ejecuto blur...')
     //console.log('evento:',e)
     let seleccion   = listaSeleccion.value;
-    console.log('evento:',seleccion )
+    console.log('persona:',seleccion )
     objetosLSFiltrado = objetosLS.filter(elemt => elemt.description == seleccion)
     //console.log('filtrado',objetosLSFiltrado)
     limpiarFormulario()
@@ -136,6 +137,7 @@ function filtrarTabla(){//filtra datos de tabla en respuesta al datalist
     eventoClickFila()
     
 }
+
 function eventoClickFila(){//pinta la fila si se hace check
     let filaSeleccionada=false;
     //const btnCheck = jornadaContainer.querySelectorAll('.check')
@@ -221,7 +223,6 @@ function pintarOpciones(id){//crea la cinta de opciones para la fila seleccionad
     eventoClickPagar()
     eventoClickEliminar()
     eventoClickEditar()
-    
     eventoClickBoleta()
 }
 
@@ -280,9 +281,6 @@ function eventoClickEditar(){//error: despues de eliminar no se puede hace bolet
                 tareaForm['tarea-title'].value          =objetoEncontradoLS[0].title;
                 tareaForm['tarea-description'].value    =objetoEncontradoLS[0].description;
                 tareaForm['salida-title'].value         =objetoEncontradoLS[0].salida;
-                //tareaForm['nombreDia'].value            =objetoEncontradoLS[0].nombreDia
-                //tareaForm['hora'].value                 =objetoEncontradoLS[0].hora
-                //['tiempo'].value               =objetoEncontradoLS[0].tiempo
                 //tareaForm['payStatus'].value            =tarea.payStatus;
 
                 editStatus=true;
@@ -444,13 +442,13 @@ function pintarFormularioBoleta(objetosLSBoleta){
 
     const btnGuardar = document.createElement('button')
     btnGuardar.textContent='Guardar'
-    btnGuardar.addEventListener('click',guardarBoleta)
     formularioBoleta.appendChild(btnGuardar)
+    btnGuardar.addEventListener('click',guardarBoleta)
 
     const btnImprimir = document.createElement('button')
     btnImprimir.textContent='Imprimir'
-    btnImprimir.addEventListener('click',generaPDF)
     formularioBoleta.appendChild(btnImprimir)
+    btnImprimir.addEventListener('click',generaPDF)
     
     cajaFormularios.appendChild(formularioBoleta)
 
@@ -468,29 +466,39 @@ function determinaTurno(){};
 
 function determinaFeriado(){};
 
-function procesarDatos(objetos){
-    const nombreDia         = (entrada)=>{const nombreDia=['Domingo','Lunes','Martes','Miercoles','Jueves','Viernes','Sabado'];return nombreDia[new Date(entrada).getDay()]}
-    const lapsoMiliseg      = (entrada,salida)=>{return (new Date(salida).getTime())-(new Date(entrada).getTime())}    //calculamos los milisegundos transcurridos 1970 por diferencia
-    const lapsoHoras        = (entrada,salida)=>{return lapsoMiliseg(entrada,salida)/(1000*60*60)}                  //los milisegundos lo convertimos a horas
-    const minutosEnteros    = (entrada,salida)=>{return (Math.round(lapsoHoras(entrada,salida)*(60))%(60))}        //la hora lo convertimos a minutos x60 y sacamos su modulo o residuo de minutos
-    const horasEnteras      = (entrada,salida)=>{return (lapsoMiliseg(entrada,salida)-lapsoMiliseg(entrada,salida)%(1000*60*60))/(1000*60*60)}
-    const horasDecimales    = (entrada,salida)=>{return horasEnteras(entrada,salida) + Number((((lapsoMiliseg(entrada,salida)%(1000*60*60))/(1000*60*60)*100)/100).toFixed(2))}
-    const horasMinutos      = (entrada,salida)=>{return horasEnteras(entrada,salida) +':'+minutosEnteros(entrada,salida).toFixed(0)}
+function tiempoTranscurrido(entrada,salida){//recibe horas de entra y salida en texto y devuelve un objeto con las horas enteras y minutos separados y en decimales
+    const horas={}
+    const lapsoMiliseg=(new Date(salida).getTime())-(new Date(entrada).getTime());//calculamos los milisegundos transcurridos por diferencia
+    
+    horas.horasEnteras=Math.trunc(lapsoMiliseg/(1000*60*60));//los milisegundos pasamos a horas y que extraemos la parte entrea con math.trunc
+    horas.minutosEnteros=Math.trunc(lapsoMiliseg/(1000*60)%60);//los milisegundos pasamos a minutos y que extraemos el modulo de 60 con % 60 y extraemos parte entera con math.trunc
+    horas.horasDecimal=lapsoMiliseg/(1000*60*60).toFixed(2);
+    horas.horasMinutos=`${horas.horasEnteras}:${horas.minutosEnteros}`;
+    return horas;//return objeto horas={horasEnteras:valor,minutosEnteros:valor,horasDecimal:valor,horasMinutos:valor}
+};
+
+function nombreDia(entrada){
+    const nombreDia=['Domingo','Lunes','Martes','Miercoles','Jueves','Viernes','Sabado'];
+    return nombreDia[new Date(entrada).getDay()]
+};
+
+function procesarDatos(objetos){//realiza los calculos de hora y asigna el precio por hora trabajada    
     
     objetos.forEach((obj)=>{
-        obj['nombreDia']        = nombreDia(obj.title)
-        obj['hora']             = horasMinutos(obj.title,obj.salida)
-        obj['tiempo']           = horasDecimales(obj.title,obj.salida)
-        const {tarifa}          = tarifaJornada.filter(elemt => elemt.nombre == obj.description.trim())[0]//del objeto tarifaJornada buscar el objeto con el mismo nombre y sacar su tarifa
-        obj['importe']          = horasDecimales(obj.title,obj.salida)*tarifa;
+        const {tarifa}          = tarifaJornada.filter(elemt => elemt.nombre == obj.description.trim())[0];//del objeto tarifaJornada buscar el objeto con el mismo nombre y sacar su tarifa
+        obj['nombreDia']        = nombreDia(obj.title);
+        obj['hora']             = tiempoTranscurrido(obj.title,obj.salida).horasMinutos;
+        obj['tiempo']           = tiempoTranscurrido(obj.title,obj.salida).horasDecimal;
+        obj['importe']          = obj['tiempo']*tarifa;
 
         //console.log('lo que devuelve el filter:',tarifaJornada.filter(elemt => elemt.nombre == obj.description.trim())[0])
     })
 
-    let objetoOrdenado=objetos.sort(function(a,b){return b.numBoleta-a.numBoleta})
-
+    console.log('lo que se va ordenar:',objetos)
+    let objetoOrdenado=objetos.sort((a, b) => a.title - b.title);//metodo para ordenar por numero de documento, en array de objetos, seleccionar del objeto el atributo a ordenar, repetir en a y b
+    console.log('lo que esta ordenado:',objetoOrdenado)
     return objetoOrdenado
-}
+};
 
 function cerrarFrmBoleta(){//error: despues de hacer la segunda boleta no se puede cerrar form boleta
     console.log('in fun cerrando la vtnEmergente...')
@@ -501,18 +509,15 @@ function cerrarFrmBoleta(){//error: despues de hacer la segunda boleta no se pue
     limpiarElemento(vtnEmergente)
     objetosLSBoleta      =[];
 
-}
+};
 
 function sincronizarLocalStorage(objetos){//recibe nuevos datos lo guarda en LS y lo trae en memoria
-    
-
     localStorage.removeItem('jornadaDatos');
     localStorage.setItem('jornadaDatos',JSON.stringify(objetos))
     objetosLS=JSON.parse(localStorage.getItem('jornadaDatos'))
-}
+};
 
-function guardarBoleta(){//escritura en collecion boleta de FB
-    console.log('Tu boleta se guaradá en Firebase, con el detalle...')
+function guardarBoleta(){//escritura en collecion boleta y transaccionesLaboral de FB 
     
     let numBoleta   = document.getElementById('numeroTicket').value;
     let dniBoleta   = document.getElementById('dniBoleta').value;
@@ -523,14 +528,17 @@ function guardarBoleta(){//escritura en collecion boleta de FB
     let detalle     = JSON.stringify(objetosLSBoleta);
     let payStatusBol= false;
     let importeTotal= Number(document.getElementById('importeTotal').textContent);
+    let descripcion =`Ticket N°${numBoleta} por ${tiempoTotal.toFixed(2)} horas laboradas`;
+    let tipoTransaccion='debe';
+    let importeHaber='';
     console.log('importe extraido de th:',importeTotal)
 
-    guardarBoletaPago(numBoleta,dniBoleta,nomBoleta,fechaBoleta,tiempoTotal,creado,detalle,payStatusBol,importeTotal)
-    actualizarFirestore(objetosLSBoleta)
+    guardarTransaccionesLaboral(fechaBoleta,dniBoleta,numBoleta,creado,descripcion,tipoTransaccion,importeTotal,importeHaber);
+    guardarBoletaPago(numBoleta,dniBoleta,nomBoleta,fechaBoleta,tiempoTotal,creado,detalle,payStatusBol,importeTotal);
+    actualizaEstadoPago(objetosLSBoleta);
     updateNumeracion('Ticket',{ultimoNumero:numBoleta})
 
-    console.log('Documento creado el:',creado)    
-    
+    console.log('Documento creado el:',creado) 
     cerrarFrmBoleta()
 }
 
@@ -565,7 +573,7 @@ function generaPDF(){//crea pdf error:no funciona libreria
     */
 }
 
-function actualizarFirestore(objeto){
+function actualizaEstadoPago(objeto){
 
     objeto.forEach(obj=>{
         let idJor =obj.id;

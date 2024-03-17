@@ -1,4 +1,4 @@
-import {traeroneProduct,updateProduct,guardarCompras,traerUnProveedor,traerUnNumeracion,updateNumeracion} from './firebase.js'
+import {traeroneProduct,updateProduct,guardarCompras,traerUnSocio,traerUnNumeracion,updateNumeracion,updateClientes} from './firebase.js'
 
 
 const btn_ingresar      = document.getElementById('boton')
@@ -82,6 +82,9 @@ entradaDato.appendChild(datalist)
 let objetos=JSON.parse(localStorage.getItem('compras'))
 //let objetos=[]
 let start=true
+let proveedorRank=0;
+let saldoAnterior=0;
+
 
 cargarEventListeners()
 
@@ -117,6 +120,7 @@ function actualizarStock(objetos){//ACTUALIZA STOCK VARIOS ITEMS
     let counter=0
     objetos.forEach((obj)=>{
         let id=obj.id
+        
         let nuevo_stock=Number(obj.stock) + Number(obj.cantidad)
         updateProduct(id,{stock:nuevo_stock})
         counter++
@@ -154,12 +158,15 @@ function registrarVenta(){
         guardarCompras(nuevoNumero,usuario,proveedor,ruc,detalleCompra,estado,tipoPago,subTotal,descuento,importeTotal,tiempo,documento,fecha)
         actualizarStock(objetos)
         updateNumeracion('Compras',{ultimoNumero:nuevoNumero})
+        updateClientes(ruc,{proveedorRank:proveedorRank+1,saldo:saldoAnterior+importeTotal})
 
         //console.log('Registro de Compra es un exito:',hoy.toLocaleDateString())
     } else {
         alert('Poner numero de compra')
     }
 }
+
+
 
 function actualizaImporte(e){
         
@@ -377,11 +384,14 @@ function activarEnter(e){
 async function activarEnter2(e){
     if(e.key==='Enter'){
             let id = inpCodigoCliente.value.trim();
-            let traerDoc = await traerUnProveedor(id);                   //trae un nombre de cliente de la DB
-            let fila = traerDoc.data()                                  //.data() metodo para mostrar solo los datos del producto
+            let traerDoc = await traerUnSocio(id);                   //trae un nombre de cliente de la DB
+            let fila = traerDoc.data()
+            console.log('CONTACTO',traerDoc)                                  //.data() metodo para mostrar solo los datos del producto
             let razonSocial=fila.razonSocial;
             inpCliente.value=razonSocial 
-            
+            proveedorRank=fila.proveedorRank;
+            saldoAnterior=Number(fila.saldo);
+
             let traerDoc2 = await traerUnNumeracion('Compras')
             let dato = traerDoc2.data()
             numeroCotizacion.value=Number(dato.ultimoNumero)+1;

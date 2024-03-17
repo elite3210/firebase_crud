@@ -18,45 +18,52 @@ let id ='';
 
 clientesForm.addEventListener('submit',(e)=>{
 e.preventDefault()
-    const razonSocial               = clientesForm['razonSocial'];          //1
-    const ruc                       = clientesForm['ruc'];                  //2
-    const inicioActividad           = clientesForm['inicioActividad'];      //3
-    const nombresContacto           = clientesForm['nombresContacto'];      //4
-    const apellidosContacto         = clientesForm['apellidosContacto'];    //5
-    const email                     = clientesForm['email'];                //6
-    const dni                       = clientesForm['dni'];                  //7
-    const cargo                     = clientesForm['cargo'];                //8
-    const telefono                  = clientesForm['telefono'];             //9
-    const calle                     = clientesForm['calle'];                //10
-    const distrito                  = clientesForm['distrito'];             //11
-    const provincia                 = clientesForm['provincia'];            //12
-    const departamento              = clientesForm['departamento'];         //13
-    const ubicacion                 = clientesForm['ubicacion'];            //14
-    const nota                      = clientesForm['nota'];                 //15
+    const razonSocial               = clientesForm['razonSocial'].value;          //1
+    const ruc                       = clientesForm['ruc'].value;                  //2
+    const inicioActividad           = clientesForm['inicioActividad'].value;      //3
+    const nombresContacto           = clientesForm['nombresContacto'].value;      //4
+    const apellidosContacto         = clientesForm['apellidosContacto'].value;    //5
+    const email                     = clientesForm['email'].value;                //6
+    const dni                       = clientesForm['dni'].value;                  //7
+    const cargo                     = clientesForm['cargo'].value;                //8
+    const telefono                  = clientesForm['telefono'].value;             //9
+    const direccion                 = clientesForm['direccion'].value;                //10
+    const distrito                  = clientesForm['distrito'].value;             //11
+    const provincia                 = clientesForm['provincia'].value;            //12
+    const departamento              = clientesForm['departamento'].value;         //13
+    const ubicacion                 = clientesForm['ubicacion'].value;            //14
+    const nota                      = clientesForm['nota'].value;                 //15
+    const idImpuesto                = clientesForm['ruc'].value;                  //16
+    const clienteRank               = 0;                                          //17
+    const proveedorRank             = 0;                                          //18
+    const saldo                     = 0;                                          //19
     ;
     
     
-    
         guardarSocios(
-            ruc.value,
-            razonSocial.value,
-            inicioActividad.value,
-            nombresContacto.value,
-            apellidosContacto.value,
-            email.value,
-            dni.value,
-            cargo.value,
-            telefono.value,
-            calle.value,
-            distrito.value,
-            provincia.value,
-            departamento.value,
-            ubicacion.value,
-            nota.value,
+            ruc,
+            razonSocial,
+            inicioActividad,
+            nombresContacto,
+            apellidosContacto,
+            email,
+            dni,
+            cargo,
+            telefono,
+            direccion,
+            distrito,
+            provincia,
+            departamento,
+            ubicacion,
+            nota,
+            idImpuesto,
+            clienteRank,
+            proveedorRank,
+            saldo
             )
     
 
     clientesForm['boton'].innerHTML='Crear'
-    
+    alert('SOCIO guarado',razonSocial)
     clientesForm.reset()
 })

@@ -1,11 +1,11 @@
 tbody{
     border-radius: 18px;
-    background-color: rgb(59, 59, 59);
+    
     margin: 5px;
     font-size: small;
 }
 
-th{
+.tituloTabla{
     background-color: rgb(168, 168, 151);
 }
 th, td{
@@ -89,7 +89,10 @@ tr{
     width: 75%;
 }
 .ladoIzquierdo{
+    overflow: auto;
     width: 25%;
+    height: 50%;
+    background-color: rgb(59, 59, 59);
 }
 .barraHerramientas{
     display: flex;

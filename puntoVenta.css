@@ -1,0 +1,34 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-transform: capitalize;
+    letter-spacing: 0.5px;
+}
+
+.card-container{
+    width: 80%;
+    margin: 4rem auto;
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 1rem;
+}
+
+.card{
+    padding: 2rem;
+    box-shadow: 0 0 .25rem .3rem rgba(0,0,0,0.2);
+    transition: .4s ease-in;
+}
+
+.card:hover{
+    background: rgb(226,226,226);
+}
+
+.card-heading{
+    color: tomato;
+    margin-bottom: 0.5rem;
+}
+
+.card-body{
+    color: navy;
+}

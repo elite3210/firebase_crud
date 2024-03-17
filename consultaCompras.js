@@ -53,7 +53,7 @@ const registroCompras = onGetCompras((comprasSnapShot) =>{
     items.sort((a, b) => b.values.nuevoNumero - a.values.nuevoNumero);//metodo para ordenar array de objetos, seleccionar del objeto el atributo a ordenar, repetir en a y b
     
     
-    const titulo   = {' ':'',DOCUMENTO:'nuevoNumero',PROVEEDOR:'proveedor',RUC:'ruc',FECHA:'fecha',REGISTRO:'fechaRegistro',PAGO:'tipoPago',ESTADO:'estado',IMPORTE:'importe'}
+    const titulo   = {' ':'',DOCUMENTO:'nuevoNumero',PROVEEDOR:'proveedor',RUC:'ruc',FECHA:'fecha',REGISTRO:'fechaRegistro',FACTURA:'documento',IMPORTE:'importe'}
     
     const dt = new Datatable('#dataTable',
     [

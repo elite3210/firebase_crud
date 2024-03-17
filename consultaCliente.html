@@ -1,104 +1,72 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clientes</title>
-    <script src="https://kit.fontawesome.com/434a77214b.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="estilos.css">
-    <link rel="stylesheet" href="consultaCliente.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clientes</title>
 
+  <script src="https://kit.fontawesome.com/434a77214b.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="./dataTable.css"/>
+
+  <!--Bootstrap bs-->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <style>
+    .row{
+      margin-top: 60px;
+    }
+  </style>
 </head>
-<body>
-    <header>
-        <nav class="navbar" role="navigation" aria-label="main navigation">
-          <div class="navbar-brand">
-            <a class="navbar-item" href="http://www.heinzsport.com">
-              <img src="./imagenes/heinz_sport_sac_logo.png" width="112" height="28">
-            </a>
-        
-            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-              <span aria-hidden="true"></span>
-              <span aria-hidden="true"></span>
-              <span aria-hidden="true"></span>
-            </a>
-          </div>
-        
-          <div id="navbarBasicExample" class="navbar-menu">
-            <div class="navbar-start">
-              <a class="navbar-item" href="./index.html">Home</a>
-              <a class="navbar-item"href="./carrito/index.html">Catálogo</a>
-        
-              <div class="navbar-item has-dropdown is-hoverable">
-                <a class="navbar-link">Intranet</a>
-        
-                <div class="navbar-dropdown">
-                  <a class="navbar-item" href="./jornada.html">Recursos Humanos</a>
-                  <a class="navbar-item" href="./index.html">Eventos</a>
-                  <a class="navbar-item" href="./index.html">Registro</a>
-                  <hr class="navbar-divider">
-                  <a class="navbar-item" href="./documento.html">Documentos</a>
-                  <a class="navbar-item" href="./index.html">productos</a>
-                  <a class="navbar-item" href="./index.html">Ventas</a>
-                </div>
-              </div>
-            </div>
-        
-            <div class="navbar-end">
-              <div class="navbar-item">
-                <div class="buttons">
-                  <a class="button is-primary"><strong>Sign up</strong></a>
-                  <a class="button is-light">Log in</a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </nav>
-    </header>
-    
-    <br>
-    <div>
-    
-    <div class="barraHerramientas">
-      <div class="herramienta">CLIENTES</div><div class="herramienta">ARCHIVO</div><div class="herramienta">EDICION</div><div class="herramienta">Eliminar</div>
-    </div>
-    <div>
-      <div class="containerEmail">
-        <div class="ladoIzquierdo">
-          <table>   
-            <tbody  class="caja" id="sociosContainer">
-            </tbody>
-          </table>
-        </div>
-          <div class="detalle">
-          </div>
-        </div>
-    </div>
-    
-  
-</div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-        // Get all "navbar-burger" elements
-        const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
-        // Add a click event on each of them
-        $navbarBurgers.forEach( el => {
-          el.addEventListener('click', () => {
-        
-            // Get the target from the "data-target" attribute
-            const target = el.dataset.target;
-            const $target = document.getElementById(target);
-        
-            // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
-            el.classList.toggle('is-active');
-            $target.classList.toggle('is-active');
-        
-          });
-        });
-        
-        });
-    </script>
-    <script type="module" src="./consultaCliente.js"></script>
+<body>
+  <header >
+    <nav class="navbar navbar-expand-lg fixed-top" style="background-color: #4b0147;" style="color: #ffffff;" >
+      <div class="container-fluid" style="color: #ffffff;" >
+        <a class="nav-link" href="#" aria-expanded="false" role="button" data-bs-toggle="dropdown">
+          <img src="imagenes/logo_skieks_morado_claro.svg" alt="Logo" width="30" height="24"  class="d-inline-block align-text-top">
+            Contactos
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="./clientes.html">Nuevo</a></li>
+            <li><a class="dropdown-item" href="#">Reporte</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="./producto.html">Productos</a></li>
+          </ul>
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link " aria-current="page" href="#">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Link</a>
+            </li>
+            
+            <li class="nav-item">
+              <a class="nav-link disabled" aria-disabled="true">Disabled</a>
+            </li>
+          </ul>
+          <form class="d-flex" role="search">
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+            <div class="btn btn-outline-warning" id="btnTable">Tabla</div>
+            <button class="btn btn-outline-success" type="submit">Administrador</button>
+          </form>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+    <div class="row row-cols-1 row-cols-md-4 g-2" id="sociosContainer">
+    </div>
+
+
+  <script type="module" src="./consultaCliente.js"></script>
+  <!--Script Bootstrap-->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
+
 </html>

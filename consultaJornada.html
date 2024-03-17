@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="consultaJornada.css">
 </head>
 <body >
-    <header>
+  <header>
         <nav class="navbar" role="navigation" aria-label="main navigation">
           <div class="navbar-brand">
             <a class="navbar-item" href="http://www.heinzsport.com">
@@ -56,16 +56,17 @@
             </div>
           </div>
         </nav>
-    </header>
-    <div id="cajaFormlarios">
-        <form id="tarea-form" class="form2">
-        </form><br>
-    </div>
-    <div id="body">
-
+  </header>
+  <!--aca se inyectara el formulario para editar el registro-->
+  <div id="cajaFormlarios">
+    <form id="tarea-form" class="form2">
+    </form><br>
+  </div>
+  <!--aca se mostrara la tabla con opciones-->
+  <div id="body">
+    <!--menu con opciones-->
     <div class="cajaMenu">
       <div class="filtro">
-        <input type="text" list="colaboradorList" name="car" id="colaborador">
         <datalist id="colaboradorList">
           <option value="Angela">
           <option value="Alexandra">
@@ -75,16 +76,17 @@
           <option value="Heinz">
           <option value="Elí">
         </datalist>
-        
+        <input type="text" list="colaboradorList" name="car" id="colaborador">
       </div>
       <div class="opciones" id="opciones">
       </div>
       <button class ='btn-pagar fa-solid fa-circle-chevron-left' color='transparent' data-id='${id}'></button>
       <button class ='btn-pagar fa-solid fa-circle-chevron-right' color='transparent' data-id='${id}'></button>
-  </div>
+    </div>
     <table id="tabla"></table>
   </div>
-    <script>
+
+  <script>
         document.addEventListener('DOMContentLoaded', () => {
         // Get all "navbar-burger" elements
         const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
@@ -104,7 +106,7 @@
         });
         
         });
-        </script>
-    <script type="module" src="./consultaJornada.js"></script>
+  </script>
+  <script type="module" src="./consultaJornada.js"></script>
 </body>
 </html>

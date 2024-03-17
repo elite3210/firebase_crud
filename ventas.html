@@ -6,61 +6,54 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <script src="https://kit.fontawesome.com/434a77214b.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    
     <script src="https://parzibyte.github.io/ejemplos-javascript/html-a-pdf/html2pdf.bundle.min.js"></script>
     <script src="JsBarcode.code128.min.js"></script>
+    <!--Bootstrap bs-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="./ventas.css">
-    
 
     <title>Ventas</title>
     
 </head>
 <body>
-    <header>
-        <nav class="navbar" role="navigation" aria-label="main navigation">
-          <div class="navbar-brand">
-            <a class="navbar-item" href="http://www.heinzsport.com">
-              <img src="./imagenes/logo_heinz_sport.svg" width="168" height="52">
-            </a>
-        
-            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-              <span aria-hidden="true"></span>
-              <span aria-hidden="true"></span>
-              <span aria-hidden="true"></span>
-            </a>
-          </div>
-        
-          <div id="navbarBasicExample" class="navbar-menu">
-            <div class="navbar-start">
-              <a class="navbar-item" href="./index.html">Home</a>
-              <a class="navbar-item"href="./carrito/index.html">Catálogo</a>
-        
-              <div class="navbar-item has-dropdown is-hoverable">
-                <a class="navbar-link">Intranet</a>
-        
-                <div class="navbar-dropdown">
-                  <a class="navbar-item" href="./personal.html">Recursos Humanos</a>
-                  <a class="navbar-item" href="./menu.html">Eventos</a>
-                  <a class="navbar-item" href="./entrada_salida.html">Registro</a>
-                  <hr class="navbar-divider">
-                  <a class="navbar-item" href="./documento.html">Documentos</a>
-                  <a class="navbar-item" href="./productos.html">productos</a>
-                  <a class="navbar-item" href="./ventas.html">Ventas</a>
-                </div>
-              </div>
-            </div>
-        
-            <div class="navbar-end">
-              <div class="navbar-item">
-                <div class="buttons">
-                  <a class="button is-primary"><strong>Sign up</strong></a>
-                  <a class="button is-light">Log in</a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </nav>
-    </header>
+  <header >
+    <nav class="navbar navbar-expand-lg fixed-top" style="background-color: #4b0147;">
+      <div class="container-fluid" style="color: #ffffff;" >
+        <a class="nav-link" href="#" aria-expanded="false" role="button" data-bs-toggle="dropdown"><img src="imagenes/logo_skieks_morado_claro.svg" alt="Logo" width="30" height="24"  class="d-inline-block align-text-top">
+          Ventas
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="./consultaCliente.html">Clientes</a></li>
+              <li><a class="dropdown-item" href="./consultaVentas.html">Reporte</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#">Configuracion</a></li>
+            </ul>
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link " aria-current="page" href="#">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Link</a>
+            </li>
+            
+            <li class="nav-item">
+              <a class="nav-link disabled" aria-disabled="true">Disabled</a>
+            </li>
+          </ul>
+          <form class="d-flex" role="search">
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+          </form>
+        </div>
+      </div>
+    </nav>
+  </header>
 
 
       
@@ -73,11 +66,11 @@
       <div class="contacto">
         <h3 class="web">www.heinzsport.com <i class="fa-solid fa-globe"></i></h3>
         <h3 class="web">info@heinzsport.com <i class="fa-regular fa-envelope"></i></h3>
-        <h3 class="web">+51 962833765<i class="fa-brands fa-whatsapp"></i></h3>
+        <h3 class="web">+51 971273793 <i class="fa-brands fa-whatsapp"></i></h3>
       </div>
       <div class="cajita2">
         <h1 id="ruc2">RUC: 20605216715</h1>
-        <h1>PEDIDO VENTA</h1>
+        <h1 >PEDIDO VENTA</h1>
         <input  class='celda-cotizacion' type="number" id="cotizacion" placeholder="Numero">
       </div>
     </div>
@@ -126,7 +119,7 @@
         </tfoot>
     </table>
     
-    <h1 class="web"><i class="fa-solid fa-sack-dollar" id="saldoAnterior"></i>BCP 191-91738956-0-09 :: Angela Mendoza </h1>
+    
 </section>
 
 
@@ -146,28 +139,7 @@
   
   <a href="./consultaVentas.html">Consultar</a>
   <script type="module" src="./ventas.js"></script>
+  <!--Script Bootstrap-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-  // Get all "navbar-burger" elements
-  const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
-  // Add a click event on each of them
-  $navbarBurgers.forEach( el => {
-    el.addEventListener('click', () => {
-  
-      // Get the target from the "data-target" attribute
-      const target = el.dataset.target;
-      const $target = document.getElementById(target);
-  
-      // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
-      el.classList.toggle('is-active');
-      $target.classList.toggle('is-active');
-  
-    });
-  });
-  
-  });
-</script>
-  
-  
 </html>
