@@ -36,39 +36,6 @@
 
 /*
 :root{
-    --color-primario:#260101;/*texto*/
-    --color-border:#8C1127;
-    --color-secundario:#F28F79;/*fila alternada*/
-    --color-iluminado:#F25C5C;/*hover*/
-    --color-button:#EAEAEA;
-
-    --dt-status-available-color:greenyellow;
-    --dt-status-away-color:lightsalmon;
-    --dt-status-offline-color:lightgray;
-
-    --dt-padding:12px;
-    --dt-padding-s:6px;
-    --dt-padding-xs:2px;
-
-    --dt-border-radius:6px;
-
-    --dt-background-color-container:#F2C6AC;/*fondo de tabla*/
-    --dt-border-color:var(--color-border);
-    --dt-bg-color:var(--color-iluminado);
-    --dt-text-color:var(--color-primario);
-    --dt-bg-active-button:var(--color-iluminado);
-    --dt-text-color-button:var(--color-primario);
-    --dt-text-color-active-button:var(--color-primario);
-    --dt-hover-cell-color:var(--color-iluminado);
-    --dt-even-row-color:var(--color-secundario);
-    --dt-focus-color:var(--color-iluminado);
-    --dt-input-backgound-color:var(--color-secundario);
-    --dt-input-color:var(--color-primario);
-}
-*/
-
-/*
-:root{
     --color-primario:white;
     --color-secundario:rgb(61,68,73);
     --color-iluminado:#3282b8;
