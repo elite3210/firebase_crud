@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* Estilos para la ventana flotante */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            padding: 20px;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Estilos para los botones flotantes */
+        .button {
+            opacity: 0;
+            position: absolute;
+            top: 10;
+            right:0;
+            transition: opacity 0.5s ease;
+            z-index: 10;
+        }
+
+        tr:hover .button {
+            opacity: 1;
+            background-color: aquamarine;
+        }
+    </style>
+</head>
+<body>
+    <table>
+        <tr>
+            <td>Elemento 1</td>
+            <td>Elemento 2</td>
+            <td>Elemento 3</td>
+            <td>Elemento 4</td>
+            <td>Elemento 5</td>
+            <td>Elemento 6</td>
+            <td>Elemento 7</td>
+            <td>Elemento 8</td>
+            <td>Elemento 9</td>
+            <td><button class="button">Eliminar</button></td>
+        </tr>
+        <tr>
+            <td>Elemento 2</td>
+            <td><button class="button">Eliminar</button></td>
+        </tr>
+        <!-- Agrega más filas según tus necesidades -->
+    </table>
+
+    <!-- Ventana flotante para eliminar o editar -->
+    <div id="myModal" class="modal">
+        <p>¿Deseas eliminar este elemento?</p>
+        <button onclick="deleteItem()">Eliminar</button>
+        <button onclick="closeModal()">Cancelar</button>
+    </div>
+
+    <script>
+        function showModal(action, itemId) {
+            const modal = document.getElementById('myModal');
+            modal.style.display = 'block';
+            // Puedes personalizar el contenido de la ventana flotante según la acción (eliminar o editar)
+        }
+
+        function deleteItem() {
+            // Lógica para eliminar el elemento (puedes usar AJAX para comunicarte con el servidor)
+            closeModal();
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('myModal');
+            modal.style.display = 'none';
+        }
+    </script>
+</body>
+</html>

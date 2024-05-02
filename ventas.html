@@ -1,36 +1,45 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <script src="https://kit.fontawesome.com/434a77214b.js" crossorigin="anonymous"></script>
-    
-    <script src="https://parzibyte.github.io/ejemplos-javascript/html-a-pdf/html2pdf.bundle.min.js"></script>
-    <script src="JsBarcode.code128.min.js"></script>
-    <!--Bootstrap bs-->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="./ventas.css">
 
-    <title>Ventas</title>
-    
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <script src="https://kit.fontawesome.com/434a77214b.js" crossorigin="anonymous"></script>
+
+  <script src="https://parzibyte.github.io/ejemplos-javascript/html-a-pdf/html2pdf.bundle.min.js"></script>
+  <script src="JsBarcode.code128.min.js"></script>
+  <script src="https://hammerjs.github.io/dist/hammer.min.js"></script>
+  <!--Bootstrap bs-->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="./ventas.css">
+
+  <title>Ventas</title>
+
 </head>
+
 <body>
-  <header >
+  <header>
     <nav class="navbar navbar-expand-lg fixed-top" style="background-color: #4b0147;">
-      <div class="container-fluid" style="color: #ffffff;" >
-        <a class="nav-link" href="#" aria-expanded="false" role="button" data-bs-toggle="dropdown"><img src="imagenes/logo_skieks_morado_claro.svg" alt="Logo" width="30" height="24"  class="d-inline-block align-text-top">
+      <div class="container-fluid" style="color: #ffffff;">
+        <a class="nav-link" href="#" aria-expanded="false" role="button" data-bs-toggle="dropdown"><img
+            src="imagenes/logo_skieks_morado_claro.svg" alt="Logo" width="30" height="24"
+            class="d-inline-block align-text-top">
           Ventas
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="./consultaCliente.html">Clientes</a></li>
-              <li><a class="dropdown-item" href="./consultaVentas.html">Reporte</a></li>
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" href="#">Configuracion</a></li>
-            </ul>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="./consultaCliente.html">Clientes</a></li>
+            <li><a class="dropdown-item" href="./consultaVentas.html">Reporte</a></li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li><a class="dropdown-item" href="#">Configuracion</a></li>
+          </ul>
         </a>
 
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -41,7 +50,7 @@
             <li class="nav-item">
               <a class="nav-link" href="#">Link</a>
             </li>
-            
+
             <li class="nav-item">
               <a class="nav-link disabled" aria-disabled="true">Disabled</a>
             </li>
@@ -56,90 +65,103 @@
   </header>
 
 
-      
+
   <section id="documentoPDF">
 
-    <div class="grupo1">
-      <div class="logo">
-        <img src="./imagenes/heinz_sport_sac_logo.png" width="250" >
+
+    <div>
+      <form class="form" id="formulario">
+        <div class="grupo1 container">
+          <div class="cajita4">
+            <datalist id="tipoPago">
+              <option value="Contado">
+              <option value="Credito">
+            </datalist>
+            <datalist id="metodoCobro">
+              <option value="Efectivo">
+              <option value="Transferencia">
+              <option value="Tarjeta">
+            </datalist>
+
+            <div class="fecha"><label for="fecha">Fecha:</label><input type="date" id="fecha"></div>
+            <div><label for="tipoPago">Pago:</label><input type="text" list="tipoPago" id="tipoPago"></div>
+            <div><label for="metodoCobro">Cobro:</label><input type="text" list="metodoCobro" id="metodoCobro"></div>
+          </div>
+
+          <div class="cajita2">
+            <h1>PEDIDO N°<input class='celda-cotizacion' type="number" id="cotizacion" placeholder="Numero"></h1>
+          </div>
+        </div>
+
+        <div class="cajita1_1">
+          <div class="input-group">
+            <label for="ruc">CODIGO :</label>
+            <input type="text" id="ruc" list="datoClientes" required placeholder="Ingresar RUC o DNI">
+          </div>
+          <div class="input-group">
+            <label for="cliente">CLIENTE :</label>
+            <input type="text" id="cliente" placeholder="Razon Social o Nombre">
+          </div>
+          <div class="input-group">
+            <label for="vendedor">VENDEDOR :</label>
+            <input type="text" id="vendedor" placeholder="Razon Social o Nombre">
+          </div>
+        </div>
+      </form>
+      <div class="table-responsive">
+      <table id='table' class="table table-striped table-hover">
+        <thead>
+          <tr>
+            
+            <th>N°</th>
+            <th>Cod</th>
+            <th class='cantidad'>Cant</th>
+            <th>Uni</th>
+            <th>Descripcion</th>
+            <th class='cantidad'>Precio</th>
+            <th class='cantidad'>Importe</th>
+          </tr>
+        </thead>
+        <tbody class="container" id="container"></tbody>
+      </table>
+    </div>
+      <div class="row">
+        <div class="input-group"><label>Total (S/)</label><input id="celdaSubTotal" class="col" type="text" value="0">
+        </div>
+        <div class="input-group"><label>Descuento (S/)</label><input id="descuento" class="col" type="text" value="0">
+        </div>
+        <div class="input-group"><label>Total (S/)</label><input id="celda_total" class="col" type="text" value="0">
+        </div>
       </div>
-      <div class="contacto">
-        <h3 class="web">www.heinzsport.com <i class="fa-solid fa-globe"></i></h3>
-        <h3 class="web">info@heinzsport.com <i class="fa-regular fa-envelope"></i></h3>
-        <h3 class="web">+51 971273793 <i class="fa-brands fa-whatsapp"></i></h3>
-      </div>
-      <div class="cajita2">
-        <h1 id="ruc2">RUC: 20605216715</h1>
-        <h1 >PEDIDO VENTA</h1>
-        <input  class='celda-cotizacion' type="number" id="cotizacion" placeholder="Numero">
-      </div>
+
     </div>
 
-    <form  id="formulario">
-      <div class="cajita1">
-        <div class="cajita1_1">
-          <label for="vendedor"><p>VENDEDOR:</p></label>
-          <label for="ruc"><h2><p>CODIGO :</p></label>
-          <label for="cliente"><p>CLIENTE :</p></label>
-        </div>
-
-        <div class="cajita1_3" id="cajaClientes">
-          <input  class='celda vendedor' type="text" id="vendedor" placeholder="Nombre del Vendedor"> 
-          <input class='celda ruc' type="text" id="ruc"  list="datoClientes" required placeholder="Ingresar RUC o DNI">
-          <input  class='celda cliente' type="text" id="cliente" placeholder="Razon Social o Nombre">
-           
-        </div>
-      </div>
-      <div class="cajita4">
-        <datalist id="tipoPago">
-          <option value="Contado">
-          <option value="Credito">
-        </datalist>
-        <datalist id="metodoCobro">
-          <option value="Efectivo">
-          <option value="Transferencia">
-          <option value="Tarjeta">
-        </datalist>
-      
-        <div class="fecha"><label for="fecha">Fecha:</label><input type="date" id="fecha"></div>
-        <div><label for="tipoPago">Pago:</label><input type="text" list="tipoPago" id="tipoPago"></div>
-        <div><label for="metodoCobro">Cobro:</label><input type="text" list="metodoCobro" id="metodoCobro"></div>
-      </div>
-    </form>
-
-    <table id='table' class="tabla">  
-        <thead>
-            <tr><th></th><th>Item</th><th>Codigo</th><th>Cantidad</th><th>Unidad</th><th>Descripcion</th><th>Precio</th><th>Importe</th><th></th></tr>
-        </thead>
-
-        <tbody id="container"></tbody>
-        
-        <tfoot class="button-content">
-          <tr><th>Sub </th><th>Total <th>(S/)</th></th><th><input id="celdaSubTotal"  class="total" type="text" value="0"></input></th><th>Descuento (S/)</th><th><input id="descuento"  class="total" type="text" value="0"></input></th><th>Total (S/)</th><th><input id="celda_total"  class="total" type="text" value="0"></input></th><th></th><th></th></tr>
-        </tfoot>
-    </table>
-    
-    
-</section>
+  </section>
 
 
   <div class="cajaBotones" id="entradaDato">
     <div class="entradaDato">
-      <label for="codigo" class='codigo'><p>Codigo :</p></label>
-      <input class='celda '  type="text" id="codigo" list="productos" placeholder="Ingrese código de producto"><span class="validity"></span>
-      <button  id="boton" >Ingresar</button>
+      <label for="codigo" class='codigo'>Codigo:</label>
+      <input class='celda ' type="text" id="codigo" list="productos" placeholder="Ingrese código de producto"><span
+        class="validity"></span>
+      <button id="boton">Ingresar</button>
       <button class="semaforo" id="semaforo">''</button>
     </div>
+
     <div>
-     l <button id="btn-guardar" class="btnGuardar">Guardar</button>
-      <button id="btn-imprimir" class="btnImprimir">Imprimir</button> 
+      <button id="btn-guardar" class="btnGuardar">Guardar</button>
+      <button id="btn-imprimir" class="btnImprimir">Imprimir</button>
     </div>
+
   </div>
 
-  
+
   <a href="./consultaVentas.html">Consultar</a>
   <script type="module" src="./ventas.js"></script>
   <!--Script Bootstrap-->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
 </body>
+
 </html>

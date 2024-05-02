@@ -1,0 +1,118 @@
+@import url("https://fonts.googleapis.com/css2?family=Varela+Round&display=swap");
+@import url("https://use.fontawesome.com/releases/v6.5.1/css/all.css");
+
+
+p{
+    font-size:9px;
+}
+
+h3,h4{
+    margin: flex;
+}
+
+.container{
+    display: flex;
+    gap: 1px;
+    align-items: center;
+    justify-content: center;
+
+    font-family: "Varela Round",sans-serif;
+    line-height: 1.5em;
+
+}
+
+.item{
+    --color:#eb904b;
+    width: 185px;
+    background-color: var(--color);
+    border-radius: 10px;
+    padding: 10px 5px;
+    box-shadow: #3c40434d 0px 1px 2px 0px,#3c404326 0px 1px 3px 1px;
+    position: relative;
+    cursor: pointer;
+}
+
+.item::after{
+    content: "";
+    position: absolute;
+    top: 8px;
+    left: 0;
+    z-index: 2;
+    height: 80%;
+    box-sizing: border-box;
+    border-style: solid;
+    border-color: transparent transparent transparent var(--color);
+    border-width: 40px 40px 40px 40px;
+    filter: drop-shadow(5px 0 4px #00000094);
+    
+    transition: filter 0.5s;
+}
+
+.item:nth-child(2){
+    --color:#813085;
+}
+
+.item:nth-child(3){
+    --color:#119630;
+}
+
+.layer{
+    background-color: #fffeed;
+    width: 73%;
+    border: 1px solid #fff;
+    border-radius: inherit;
+    padding: 20px;
+    box-shadow: 
+    #00000012 0px 1px 2px,
+    #00000012 0px 2px 4px,
+    #00000012 0px 4px 8px,
+    #00000012 0px 8px 16px,
+    #00000012 0px 16px 32px,
+    #00000012 0px 32px 64px;
+    position: relative;
+    left: 10px;
+    transition: left 1s;
+}
+h3{
+    font-weight: 700;
+    text-align: center;
+    color: var(--color);
+}
+h4{
+    color: #fff;
+    text-align: center;
+    font-size: 14px;
+    padding-top: 10px;
+}
+
+p{
+    color: #555;
+}
+
+span{
+    width: 40px;
+    height: 40px;
+    color: #fff;
+    background-color: var(--color);
+    border-radius: 50%;
+    display: grid;
+    place-content:center;
+    box-shadow: 
+    #00000012 0px 1px 2px,
+    #00000012 0px 2px 4px,
+    #00000012 0px 4px 8px,
+    #00000012 0px 8px 16px,
+    #00000012 0px 16px 32px,
+    #00000012 0px 32px 64px;
+    font-size: 14px;
+    position: absolute;
+    right: 5px;
+    bottom: 5px;
+}
+
+.item:hover .layer{
+    left: 50px;
+}
+
+
+

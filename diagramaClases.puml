@@ -1,0 +1,32 @@
+@startuml Transacciones
+
+abstract class Transacciones{
+    - fechaOperacion:string
+    - socio:string
+    - numero: string
+    - importeOrden: decimal
+    - detallaOrden: object
+    - detallePagos: object
+    - fechaEnvio: string
+
+    + createTransaccion()
+    + readTransaccion()
+    + updateTransaccion()
+    + deleteTransaccion()
+}
+
+class Venta{
+    - estadoOrden: string
+    + crearOrdenVenta()
+}
+
+class Compra{
+    - estadoOrden: string
+    + crearOrdenCompra()
+}
+
+Transacciones <|-- Venta
+Transacciones <|-- Compra
+
+@enduml
+

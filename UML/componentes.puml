@@ -1,0 +1,23 @@
+@startuml
+package "Modelo" {
+    [Inventario]
+    [Articulo]
+}
+
+package "Vista" {
+    [VistaInventario]
+    [VistaVenta]
+}
+
+package "Controlador" {
+    [ControladorInventario]
+    [ControladorVenta]
+}
+
+[Inventario] ..> [Articulo] : contiene
+[ControladorInventario] ..> [Inventario] : utiliza
+[ControladorInventario] ..> [VistaInventario] : actualiza
+[ControladorVenta] ..> [Inventario] : utiliza
+[ControladorVenta] ..> [VistaVenta] : actualiza
+
+@enduml

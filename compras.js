@@ -158,7 +158,7 @@ function registrarVenta(){
         guardarCompras(nuevoNumero,usuario,proveedor,ruc,detalleCompra,estado,tipoPago,subTotal,descuento,importeTotal,tiempo,documento,fecha)
         actualizarStock(objetos)
         updateNumeracion('Compras',{ultimoNumero:nuevoNumero})
-        updateClientes(ruc,{proveedorRank:proveedorRank+1,saldo:saldoAnterior+importeTotal})
+        updateClientes(ruc,{proveedorRank:proveedorRank+1,saldoProveedor:saldoAnterior+importeTotal})
 
         //console.log('Registro de Compra es un exito:',hoy.toLocaleDateString())
     } else {
@@ -389,8 +389,8 @@ async function activarEnter2(e){
             console.log('CONTACTO',traerDoc)                                  //.data() metodo para mostrar solo los datos del producto
             let razonSocial=fila.razonSocial;
             inpCliente.value=razonSocial 
-            proveedorRank=fila.proveedorRank;
-            saldoAnterior=Number(fila.saldo);
+            proveedorRank=Number(fila.proveedorRank);
+            saldoAnterior=Number(fila.saldoProveedor);
 
             let traerDoc2 = await traerUnNumeracion('Compras')
             let dato = traerDoc2.data()

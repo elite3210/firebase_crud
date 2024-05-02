@@ -28,9 +28,9 @@
           </a>
           <ul class="dropdown-menu">
             <li><a class="dropdown-item" href="./clientes.html">Nuevo</a></li>
-            <li><a class="dropdown-item" href="#">Reporte</a></li>
+            <li><a class="dropdown-item" href="./consultaVentas.html">Pedidos</a></li>
             <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="./producto.html">Productos</a></li>
+            <li><a class="dropdown-item" href="./inventario.html">Inventario</a></li>
           </ul>
         </a>
 
@@ -49,16 +49,23 @@
             <li class="nav-item">
               <a class="nav-link disabled" aria-disabled="true">Disabled</a>
             </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="btnSincronizarDB" data-bs-toggle="tab" data-bs-target="#disabled-tab-pane"
+                type="button" role="tab" aria-controls="disabled-tab-pane" aria-selected="false" title="Trae datos actualizados de la Firebase">Sincronizar</button>
+            </li>
           </ul>
           <form class="d-flex" role="search">
             <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-            <div class="btn btn-outline-warning" id="btnTable">Tabla</div>
+            <div class="btn btn-outline-warning" id="btnTable" data-estado="activo">Tabla</div>
             <button class="btn btn-outline-success" type="submit">Administrador</button>
           </form>
         </div>
       </div>
     </nav>
   </header>
+<br>
+<br>
+  <h1 id="saldoTotal">Saldo</h1>
 
     <div class="row row-cols-1 row-cols-md-4 g-2" id="sociosContainer">
     </div>

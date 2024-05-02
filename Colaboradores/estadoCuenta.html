@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Ingresos y Egresos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Registro de Ingresos y Egresos</h1>
+
+    <form id="transaccionForm">
+        <label for="tipoTransaccion">Tipo de Transacción:</label>
+        <select id="tipoTransaccion" name="tipoTransaccion">
+            <option value="Ingreso">Ingreso</option>
+            <option value="Egreso">Egreso</option>
+        </select><br><br>
+
+        <label for="montoTransaccion">Monto:</label>
+        <input type="number" id="montoTransaccion" name="montoTransaccion" required><br><br>
+
+        <input type="submit" value="Registrar Transacción">
+    </form>
+
+    <button id="btnGenerarReporte">Generar Reporte</button>
+
+    <div id="reporteContainer">
+        <h2>Reporte de Estado de Cuenta:</h2>
+        <p id="saldoInicial">Saldo Inicial: <span id="saldoInicialValor"></span></p>
+        <p id="saldoFinal">Saldo Final: <span id="saldoFinalValor"></span></p>
+    </div>
+
+    <script src="./estadoCuenta.js">
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,81 @@
+@startuml
+scale 800 width
+
+package "Modelo" {
+    class Inventario {
+        +int idInventario
+        +String nombre
+        +int cantidad
+        +double precio
+    }
+
+    class Articulo {
+        +int idArticulo
+        +String nombre
+        +String descripcion
+        +double precio
+    }
+
+    class Venta {
+        +int idVenta
+        +List<Articulo> articulos
+        +double total
+    }
+
+    class Compra {
+        +int idCompra
+        +List<Articulo> articulos
+        +double total
+    }
+}
+
+package "Controlador" {
+    class ControladorInventario {
+        +listarArticulos()
+        +agregarArticulo()
+        +eliminarArticulo()
+        +actualizarArticulo()
+    }
+
+    class ControladorVenta {
+        +realizarVenta()
+        +calcularTotalVenta()
+    }
+
+    class ControladorCompra {
+        +realizarCompra()
+        +calcularTotalCompra()
+    }
+}
+
+package "Vista" {
+    class VistaInventario {
+        +mostrarInventario()
+        +mostrarFormularioAgregarArticulo()
+        +mostrarFormularioEliminarArticulo()
+        +mostrarFormularioActualizarArticulo()
+    }
+
+    class VistaVenta {
+        +mostrarFormularioRealizarVenta()
+        +mostrarTotalVenta()
+    }
+
+    class VistaCompra {
+        +mostrarFormularioRealizarCompra()
+        +mostrarTotalCompra()
+    }
+}
+
+ControladorVenta --> VistaVenta
+ControladorVenta --> Modelo: Inventario
+ControladorVenta --> Modelo: Venta
+
+ControladorCompra --> VistaCompra
+ControladorCompra --> Modelo: Inventario
+ControladorCompra --> Modelo: Compra
+
+ControladorInventario --> VistaInventario
+ControladorInventario --> Modelo: Inventario
+
+@enduml

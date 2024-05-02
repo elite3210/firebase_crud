@@ -1,0 +1,24 @@
+ /* Estilos básicos para la barra de progreso */
+ .progress-bar {
+     font-size: 10px;
+     width: 0%;
+     height: 10px;
+     background-color: #4CAF50;
+     text-align: center;
+     line-height: 20px;
+     color: white;
+     border-radius: 5px;
+ }
+
+ table {
+     width: 100%;
+     border-collapse: collapse;
+     background-color: aqua;
+ }
+
+ th,
+ td {
+
+     border: 1px solid #ddd;
+     padding: 4px;
+ }

@@ -10,7 +10,7 @@
     --color-iluminado:#E1E1E1;/*hover*/
     --color-button:#242424;
 
-    --dt-status-available-color:greenyellow;
+    --dt-status-available-color:rgb(4, 219, 22);
     --dt-status-away-color:lightsalmon;
     --dt-status-offline-color:lightgray;
 
@@ -120,6 +120,7 @@ body{
     box-shadow: 7px 7px 21px var(--color-border);
 }
 .datatable-container .header-tools{
+    justify-content: flex-end;
     border-bottom: solid 1px var(--dt-border-color);
     padding: var(--dt-padding);
     display: flex;
@@ -138,6 +139,7 @@ body{
     color: var(--dt-input-color);
 }
 .datatable-container .header-tools .tools{
+    
     width: 70%;
 }
 .datatable-container .header-tools .tools ul{
@@ -203,7 +205,12 @@ body{
     
 }
 
-.datatable-container .header-tools .tools ul li button,
+.datatable-container .header-tools .tools ul li button{
+    padding: var(--dt-padding-xs) var(--dt-padding-s);
+
+}
+
+
 .datatable-container .footer-tools .pages ul li button,
 .datatable-container .footer-tools .pages ul li span{
     padding: var(--dt-padding-s) var(--dt-padding);
@@ -256,16 +263,33 @@ body{
 }
 
 .datatable-container .datatable tbody tr .available::after,
+.datatable-container .datatable tbody tr .enviado::after,
 .datatable-container .datatable tbody tr .away::after,
+.datatable-container .datatable tbody tr .cancelado::after
 .datatable-container .datatable tbody tr .offline::after{
     display: inline-block;
     vertical-align: middle;
 }
-
+/*crea el exto etiqueta*/
 .datatable-container .datatable tbody tr .available::after{
     content: 'available';
     color: var(--dt-status-available-color);
 }
+.datatable-container .datatable tbody tr .enviado::after{
+    content: 'enviado';
+    color: var(--dt-status-away-color);
+}
+
+.datatable-container .datatable tbody tr .offline::after{
+    content: 'offline';
+    color: var(--dt-status-offline-color);
+}
+
+.datatable-container .datatable tbody tr .cancelado::after{
+    content: 'cancelado';
+    color: var(--dt-status-offline-color);
+}
+
 .datatable-container .datatable tbody tr .away::after{
     content: 'away';
     color: var(--dt-status-away-color);
@@ -274,7 +298,18 @@ body{
     content: 'offline';
     color: var(--dt-status-offline-color);
 }
-
+.datatable-container .datatable tbody tr .nuevo::after{
+    content: 'nuevo';
+    color: var(--dt-status-available-color);
+}
+.datatable-container .datatable tbody tr .enviado::after{
+    content: 'enviado';
+    color: var(--dt-status-away-color);
+}
+/* crea el circulo al costado
+.datatable-container .datatable tbody tr .nuevo::before,
+.datatable-container .datatable tbody tr .enviado::before,
+.datatable-container .datatable tbody tr .cancelado::before,
 .datatable-container .datatable tbody tr .available::before,
 .datatable-container .datatable tbody tr .away::before,
 .datatable-container .datatable tbody tr .offline::before{
@@ -282,18 +317,28 @@ body{
     display: inline-block;
     width: 10px;
     height: 10px;
-    margin-right: 10px;
+    margin-right: 2px;
     border-radius: 50%;
     vertical-align: middle;
 }
+*/
 
 .datatable-container .datatable tbody tr .available::before{
     background-color: var(--dt-status-available-color);
+}
+.datatable-container .datatable tbody tr .nuevo::before{
+    background-color: var(--dt-status-available-color);
+}
+.datatable-container .datatable tbody tr .enviado::before{
+    background-color: var(--dt-status-away-color);
 }
 .datatable-container .datatable tbody tr .away::before{
     background-color: var(--dt-status-away-color);
 }
 .datatable-container .datatable tbody tr .offline::before{
+    background-color: var(--dt-status-offline-color);
+}
+.datatable-container .datatable tbody tr .cancelado::before{
     background-color: var(--dt-status-offline-color);
 }
 td{
@@ -302,6 +347,10 @@ td{
 }
 .filaSeleccionada{
     border-bottom: solid 2px coral;
+}
+.datatable-checkbox{
+
+    vertical-align: middle;
 }
 
 

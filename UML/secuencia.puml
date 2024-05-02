@@ -1,0 +1,16 @@
+@startuml
+actor Cliente
+participant "VistaVenta" as VV
+participant "ControladorVenta" as CV
+participant "Inventario" as I
+
+Cliente -> VV : solicitarDatosVenta()
+VV -> CV : realizarVenta(id, cantidad)
+CV -> I : buscarArticulo(id)
+I -> CV : return Articulo
+CV -> I : actualizarStock(cantidad)
+I -> CV : return status
+CV -> VV : mostrarResultadoVenta(status)
+VV -> Cliente : display
+
+@enduml

@@ -169,9 +169,9 @@ function registrarVenta(){//captura los datos del formulario para guardar en BD
         guardarProduccion(almacenProcesos,usuario,almacen,detalleProduccion,estado,fechaRegistro,tiempo,nuevoNumero,idProducto,cantidad)
         updateNumeracion('Inventario',{ultimoNumero:nuevoNumero,creado:hoy})
 
-        console.log('Registro de cotizacion es un exito:',hoy.toLocaleDateString())
+        console.log('Registro de PRODUCCION es un exito:',hoy.toLocaleDateString())
     } else {
-        alert('Poner numero de Venta')
+        alert('Poner numero de PRODUCCION')
     }
 
 }
@@ -182,7 +182,7 @@ function actualizaImporte(e){
         e.preventDefault()
             
         for(let i =0;i<objetos.length;i++){
-            objetos[i].cantidad = parseInt(tabla.children[i].children[3].children[0].value) 
+            objetos[i].cantidad = parseFloat(tabla.children[i].children[3].children[0].value) 
             objetos[i].costo   = parseFloat(tabla.children[i].children[6].children[0].value)
             objetos[i].importe  = parseFloat(objetos[i].cantidad*objetos[i].peso)
         }
@@ -377,17 +377,3 @@ async function activarEnter(e){
         ingresarProducto(e)
     }
 };
-
-function actualizaImporteTouch(e){
-        e.preventDefault()
-        
-        for(let i =0;i<objetos.length;i++){
-            objetos[i].cantidad = parseInt(tabla.children[i].children[3].children[0].value) 
-            objetos[i].precio   = parseFloat(tabla.children[i].children[6].children[0].value)
-            objetos[i].importe  = parseFloat(objetos[i].cantidad*objetos[i].precio)
-        }
-        limpiarTabla(e)
-        pintarTabla(objetos)
-        console.log('objeto actualizado:',objetos)
-    
-}

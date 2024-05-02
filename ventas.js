@@ -1,4 +1,4 @@
-import { traeroneProduct, updateProduct, guardarCotizacion, traerUnSocio, traerUnNumeracion, updateNumeracion, updateClientes } from './firebase.js'
+import { traeroneProduct, guardarCotizacion, traerUnSocio, traerUnNumeracion, updateNumeracion, traerUnColaborador} from './firebase.js'
 
 
 //const url = window.location.href;
@@ -24,7 +24,11 @@ const inpCliente = document.getElementById('cliente')
 const fecha = document.getElementById('fecha')
 const btn_semaforo = document.querySelector('.semaforo')
 const numeroCotizacion = document.getElementById('cotizacion')
-const cajaClientes = document.getElementById('cajaClientes')
+const cajaClientes = document.getElementById('ruc')
+
+let f=new Hammer(inpCodigoCliente)
+f.on('panright',activarEnter2)
+
 
 
 
@@ -157,52 +161,43 @@ function pintarTabla(objetos) {
     }
 }
 
-function actualizarStock(objetos) {//ACTUALIZA STOCK VARIOS ITEMS
-    let counter = 0
-    objetos.forEach((obj) => {
-        let id = obj.id
-        let nuevo_stock = obj.stock - obj.cantidad
-        updateProduct(id, { stock: nuevo_stock })
-        counter++
-    })
-    alert(`Se actualizó: ${counter} productos`)
-}
-
 function registrarVenta() {
     console.log('dentro funcion registraVenta:')
 
-    let tiempo = Date.now()
-    let cliente = form['cliente'].value
-    let ruc = form['ruc'].value
-    let vendedor = form['vendedor'].value
+    let tiempo          = Date.now()
+    let cliente         = form['cliente'].value
+    let ruc             = form['ruc'].value
+    let vendedor        = form['vendedor'].value
     let detalleCotizacion = JSON.stringify(objetos)
-    let estado = 'pendiente'
-    let tipoPago = form['tipoPago'].value
-    let metodoCobro = form['metodoCobro'].value
-    let nuevoNumero = Number(numeroCotizacion.value)
-    let fecha = form['fecha'].value
-    let subTotal = Number(celdaSubTotal.value)
-    let descuento = Number(inpDescuento.value)
-    let importeTotal = subTotal - descuento
-    let nuevoSaldo = saldo + importeTotal;
+    let estado          = 'nuevo'
+    let tipoPago        = form['tipoPago'].value
 
-    console.log('tipoPago:', subTotal)
-    console.log('metodoCobro:', descuento)
+    console.log('tipoPago :',tipoPago )
+    let metodoCobro     = form['metodoCobro'].value
+    let nuevoNumero     = Number(numeroCotizacion.value)
+    let fecha           = form['fecha'].value
+    let subTotal        = Number(celdaSubTotal.value)
+    let descuento       = Number(inpDescuento.value)
+    let importeTotal    = subTotal - descuento
+    let transportedBy      = 'sin enviar';
+
+    console.log('importeTotal:', importeTotal)
+    console.log('descuento:', descuento)
     console.log('tiempo:', tiempo)
 
     if (nuevoNumero && !sentinelaGuardar) {
 
         console.log('numero:', nuevoNumero)
-        actualizarStock(objetos)
-        guardarCotizacion(nuevoNumero, fecha, vendedor, cliente, ruc, detalleCotizacion, estado, tipoPago, metodoCobro, subTotal, descuento, importeTotal, tiempo)
+        //actualizarStock(objetos)
+        guardarCotizacion(nuevoNumero, fecha, vendedor, cliente, ruc, detalleCotizacion, estado, tipoPago, metodoCobro, subTotal, descuento, importeTotal, tiempo,transportedBy)
         updateNumeracion('Cotizacion', { ultimoNumero: nuevoNumero })
-        updateClientes(ruc, { saldo: nuevoSaldo })
+        //updateClientes(ruc, { saldo: nuevoSaldo,clienteRank: 2 })
 
-        console.log('Registro de cotizacion es un exito:', hoy.toLocaleDateString())
+        console.log('Se registro un nuevo pedido sin cambiar el stock y saldo:')
         sentinelaGuardar = true;
     } else {
 
-        alert('Poner numero de Venta o ya se guarado el pedido.')
+        alert('Poner numero de Venta o ya se guardado el pedido.')
     }
 }
 
@@ -212,8 +207,8 @@ function actualizaImporte(e) {
         e.preventDefault()
 
         for (let i = 0; i < objetos.length; i++) {
-            objetos[i].cantidad = parseFloat(tabla.children[i].children[3].children[0].value)
-            objetos[i].precio = parseFloat(tabla.children[i].children[6].children[0].value)
+            objetos[i].cantidad = parseFloat(tabla.children[i].children[2].children[0].value)
+            objetos[i].precio = parseFloat(tabla.children[i].children[5].children[0].value)
             objetos[i].importe = parseFloat(objetos[i].cantidad * objetos[i].precio)
         }
         limpiarTabla(e)
@@ -234,7 +229,7 @@ function actualizaImporteTotal() {
     let total = objetos.reduce((tot, producto) => tot + producto.importe, 0)
 
     celdaSubTotal.value = total.toFixed(2)
-    let desc = descuento.value
+    let desc = inpDescuento.value
     celda_total.value = Intl.NumberFormat('es-419').format(celdaSubTotal.value - desc)
     //Intl.NumberFormat('es-419',{ maximumSignificantDigits:7}).format(obj.values.importeTotal);
 }
@@ -286,15 +281,15 @@ function pintarFilasLlenas(objetos) {
         let fila = document.createElement('tr')
 
         fila.innerHTML = `
-                        <td><button class ='btn-stock fa-solid fa-circle-plus' color='transparent'data-id=${producto.id}></button></td>
-                        <td>${contador}</td>
-                        <td>${producto.id}</td>
-                        <td><input type='number'  min="0" step="0.1" class='cantidad' id='${producto.id}' value=${producto.cantidad}></td>
+                        <td><button class ='btn-stock fa-solid fa-circle-plus' color='transparent'data-id=${producto.id}></button>${contador}</td>
+                        <td><button class ='btn-delete fa fa-trash' id=''data-id=${producto.id}></button>${producto.id}</td> 
+
+                        <td class='cantidad'><input type='number'  min="0" step="0.1" class='cantidad2' id='${producto.id}' value=${producto.cantidad}></td>
                         <td>${producto.unidad}</td>
                         <td>${producto.nombre}</td>
-                        <td><input type='number' min="0" step="0.1" class='precio' id='${producto.id}' value=${producto.precio}></td>
-                        <td><input type='number' class='importe' id='${producto.id}' value=${producto.importe.toFixed(2)}></td>
-                        <td><button class ='btn-delete fa fa-trash' id=''data-id=${producto.id}></button></td>                       
+                        <td class='cantidad'><input type='number' min="0" step="0.1" class='cantidad2'  id='${producto.id}' value=${producto.precio}></td>
+                        <td class='cantidad'><input type='number'  id='${producto.id}' class='cantidad2'  value=${producto.importe.toFixed(2)}></td>
+                                              
                         `
         contador++
         tabla.appendChild(fila)
@@ -308,7 +303,7 @@ function pintarFilasVacias(objetos) {
     let filasVacias = 8
     for (let i = 0; i < filasVacias - filasLlenas; i++) {
         let fila = document.createElement('tr')
-        fila.innerHTML = ` <td></td>
+        fila.innerHTML = ` 
                             <td></td>
                             <td></td>
                             <td></td>
@@ -316,7 +311,7 @@ function pintarFilasVacias(objetos) {
                             <td></td>
                             <td><input></td>
                             <td></td>
-                            <td></td> 
+ 
                             `
         //al borrar el tag input del td no funcionara la funcion presente, averiguar
         tabla.appendChild(fila)
@@ -336,7 +331,7 @@ async function generaPDF() {
     await html2pdf()
         .set({
             margin: 5,
-            filename: `PV${id_cotizacion}_${form['cliente'].value}`,
+            filename: `PV${id_cotizacion}_${form['cliente'].value}S/${Math.round(celda_total.value)}`,
             //se borro image jpg, averiguar codigo origina en github del cdn html2pdf form['cliente'].value
             html2canvas: {
                 scale: 5, // A mayor escala, mejores gráficos, pero más peso
@@ -358,20 +353,17 @@ async function generaPDF() {
         url:'./cotizacion.pdf'
     })
 */
-    localStorage.removeItem('cotizacion');
-    objetos = []
-    numeroCotizacion.value = '';
-    celdaSubTotal.value = '';
-    inpDescuento.value = '';
-    celda_total.value = '';
-    form.reset()
-    pintarTabla(objetos) //vueve a pintar el formulario vacio
+limpiarDocumento()
 }
 
 function pintarFecha() {
     let date = new Date(Date.now())
-    fecha.value = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
-    //console.log('fecha:...',fecha.value)
+    if (date.getMonth()<10 && date.getDate()<10) {
+        return fecha.value = `${date.getFullYear()}-0${date.getMonth() +1}-0${date.getDate()}`;
+    } else {
+        return fecha.value = `${date.getFullYear()}-${date.getMonth() +1}-${date.getDate()}`;
+    }
+    console.log('fecha:...',fecha.value)
 }
 
 async function ingresarProducto(e) {
@@ -405,17 +397,16 @@ async function ingresarProducto(e) {
             limpiarTabla(e)                                             //limpir datos de la tabla
             pintarTabla(objetos)
         } else {
-            btn_semaforo.classList.toggle('semaforo-rojo')
-            btn_semaforo.textContent = 'duplicado'
+            btn_semaforo.classList.toggle('semaforo-rojo');
+            btn_semaforo.textContent = 'duplicado';
         }
 
         console.log('contenido del objeto:', objetos)
 
     } else {
-        btn_semaforo.classList.toggle('semaforo-ambar')
-        btn_semaforo.textContent = 'vacio'
+        btn_semaforo.classList.toggle('semaforo-ambar');
+        btn_semaforo.textContent = 'vacio';
     }
-
 }
 
 function activarEnter(e) {
@@ -425,7 +416,7 @@ function activarEnter(e) {
 }
 
 async function activarEnter2(e) {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' || e.type =='panright') {
         let id = inpCodigoCliente.value.trim();
         console.log('presionaste enter...', id)                   //trae un nombre de cliente de la DB
         let traerDoc = await traerUnSocio(id);
@@ -435,6 +426,9 @@ async function activarEnter2(e) {
         console.log('presionaste enter...', razonSocial, saldo)
         inpCliente.value = razonSocial
 
+        let traerDoc3 = await traerUnColaborador(fila.vendidoPor)
+        let dato3 = traerDoc3.data()
+        form['vendedor'].value = `${dato3.nombres} ${dato3.apellidos}`;
 
         let traerDoc2 = await traerUnNumeracion('Cotizacion')
         let dato = traerDoc2.data()
@@ -442,16 +436,13 @@ async function activarEnter2(e) {
     }
 }
 
-function actualizaImporteTouch(e) {
-    e.preventDefault()
-
-    for (let i = 0; i < objetos.length; i++) {
-        objetos[i].cantidad = parseInt(tabla.children[i].children[3].children[0].value)
-        objetos[i].precio = parseFloat(tabla.children[i].children[6].children[0].value)
-        objetos[i].importe = parseFloat(objetos[i].cantidad * objetos[i].precio)
-    }
-    limpiarTabla(e)
-    pintarTabla(objetos)
-    console.log('objeto actualizado:', objetos)
-
+function limpiarDocumento() {
+    localStorage.removeItem('cotizacion');
+    objetos = []
+    numeroCotizacion.value = '';
+    celdaSubTotal.value = '';
+    inpDescuento.value = '';
+    celda_total.value = '';
+    form.reset()
+    pintarTabla(objetos) //vueve a pintar el formulario vacio
 }

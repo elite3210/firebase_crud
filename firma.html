@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firma</title>
+    <script src="https://printjs-4de6.kxcdn.com/print.min.js"></script>
+
+    <link rel="stylesheet" href="firma.css">
+</head>
+
+<body id="body">
+    <p id="texto">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ducimus minus, temporibus illo praesentium
+        quos quisquam aperiam officiis optio nihil! Id voluptate in libero dolore corporis et minus suscipit dolorem
+        ullam.</p>
+    <input type="color" id="favColor" name="favColor" value="#ff0000">
+    <input type="number" id="favNumber" value="2">
+    <button id="save">Guardar</button>
+    <button id="btnClear">Limpiar</button>
+    <button id="print">Imprimir</button>
+    <button id="printJS" onclick=printForm()>PrintJS</button>
+    <main class="main-container" id="main-container">
+
+
+        <canvas id="main-canvas" width="500" height="500"></canvas>
+
+    </main>
+    <script src="firma.js"></script>
+    <script>
+        function printForm() {
+            printJS({
+                printable: 'main-canvas',
+                type: 'html',
+                targetStyles: ['*'],
+                header: 'PrintJS - Print Form With Customized Header'
+            })
+        }
+    </script>
+</body>
+
+</html>

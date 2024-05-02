@@ -6,141 +6,169 @@ import { Datatable } from './dataTable.js'
 console.log('inicio de la carga de pagina..')
 //traer los socios comerciales clientes de firebase
 const sociosContainer = document.getElementById('sociosContainer')
+const btnSincronizarDB = document.getElementById('btnSincronizarDB')
+
+
+let numeroClientes = 0;
+let alternadorVista = false;
 const btnTable = document.getElementById('btnTable');
-let objContact = '';
-let objVentas = '';
 
-getContactTolS(objContact)
-console.log('objContact', objContact)
-
-//renderCardsContact(objContact, sociosContainer);
+let objContact;
+let objVentas;
 
 
+if (JSON.parse(localStorage.getItem('Contactos')) != null) {
+    console.log('en if Datos traidos la memoria del navegador...');
+    objContact = JSON.parse(localStorage.getItem('Contactos'));
+    objVentas = JSON.parse(localStorage.getItem('Ventas'));
+    renderCardsContact(objContact);
+    saldoTotalClientes(objContact);
+} else {
+    console.log('en else Memoria del navegador sin datos, trayendo de Firestore...');
+    await getContactTolS();
+    getSalesTolS();
+    renderCardsContact(objContact);
+    saldoTotalClientes(objContact);
+}
 
-getSalesTolS(objVentas)
+btnTable.addEventListener('click', () => {
+    if (!alternadorVista) {
+        console.log('entrando al if Card clientes...');
+        renderCardsContact(objContact);
+    } else {
+        console.log('entando a else para renderizar table...');
+        renderTableContact();
+    }
+});
 
-async function getContactTolS(objContact) {
+btnSincronizarDB.addEventListener('click', () => {
+    getContactTolS();
+    getSalesTolS()
+    renderCardsContact(objContact);
+    saldoTotalClientes(objContact)
+});
+
+
+async function getContactTolS() {
     const registroSocios = await onGetSocios((sociosSnapShot) => {
         let items = [];
-
         if (sociosSnapShot) {
             sociosSnapShot.forEach(doc => {
                 let obj = {};
                 obj.id = doc.id;
                 obj['values'] = doc.data();
                 obj['values'].ruc = obj.id;
-                items.push(obj);
+                if (obj['values'].clienteRank >= 1) {
+                    obj['values'].contador = numeroClientes + 1;
+                    items.push(obj);
+                    numeroClientes++;
+                }
             });
         }
-
-        //console.log('clientes traidos de firebase convertido:', items)
-        sincronizarLocalStorage(items, objContact, 'Contactos')
-
-        renderCardsContact(items,sociosContainer);
+        sincronizarLocalStorage(items, 'Contactos')
     });
-    
-
 }
 
-//let element='#sociosContainer'
-function renderTableContact() {
-    sociosContainer.innerHTML = '';
-    if (btnTable.textContent == 'Cards') {
-        renderCardsContact(items, sociosContainer);
-    } else {
-        let itemsCliente = items.filter((obj) => { return obj['values'].clienteRank > 0 })
-        console.log('itemsClientes en tabla:', itemsCliente)
-
-        const titulo = { ' ': '', NOMBRE: 'razonSocial', RANK: 'clienteRank', CONTACTO: 'nombresContacto', SALDO: 'saldo' }
-        const dt = new Datatable('#sociosContainer',
-            [
-                {
-                    id: 'btnEdit', text: 'editar', icon: 'contract',
-                    action: function () {
-                        const elementos = dt.getSelected();
-                        console.log('mostrando documento formato PC...', elementos);
-                        pintarDocumento(elementos)
-                    }
-                },
-                {
-                    id: 'btnDocument', text: 'doc', icon: 'document_scanner',
-                    action: function () {
-                        const elementos = dt.getSelected();
-                        pintarDocumento(elementos);
-                        console.log('mostrando documento Formato Ticket...', elementos);
-                    }
-                }
-            ]
-        );
-
-        dt.setData(itemsCliente, titulo);
-        dt.makeTable();
-        btnTable.textContent = 'Cards';
-    }
-
-
-};
-
-function getSalesTolS(objVentas) {
+function getSalesTolS() {
     const registroVentas = onGetVentas((ventasSnapShot) => {
         let itemsVentas = [];
         if (ventasSnapShot) {
             ventasSnapShot.forEach(doc => {
                 //Dando formato a los datos traidos de firebase para acomodar a <Datatable>
+                let date = new Date(Date.now())
                 let obj = {};
                 obj.id = doc.id
                 obj.values = doc.data()
+                obj.values.importeTotalVista = Intl.NumberFormat('es-419', { maximumSignificantDigits: 7 }).format(obj.values.importeTotal);
+                obj.values.status = `<span class="${obj.values.estado}"></span>`;
+                //console.log('obj.values:',obj.values)
+                if (obj.values.estado == 'nuevo') {
+                    obj.values.retrasoEnvio = Math.round((date.getTime() - new Date(`${obj.values.fecha}T12:00:00Z`).getTime()) / 86400000);
+                    obj.values.retrasoPago = 0;
+                } else if (obj.values.estado == 'cancelado') {
+                    obj.values.retrasoEnvio = Math.round((new Date(`${obj.values.fechaEnvio}T12:00:00Z`) - new Date(`${obj.values.fecha}T12:00:00Z`).getTime()) / 86400000);
+                    obj.values.retrasoPago = Math.round((new Date(`${obj.values.fechaPago}T12:00:00Z`).getTime() - new Date(`${obj.values.fechaEnvio}T12:00:00Z`).getTime()) / 86400000);
+                } else {
+                    obj.values.retrasoEnvio = Math.round((new Date(`${obj.values.fechaEnvio}T12:00:00Z`) - new Date(`${obj.values.fecha}T12:00:00Z`).getTime()) / 86400000);
+                    obj.values.retrasoPago = Math.round((date.getTime() - new Date(`${obj.values.fechaEnvio}T12:00:00Z`).getTime()) / 86400000);
+                }
                 itemsVentas.push(obj)
             })
         }
-        console.log('total de ventas traido :', itemsVentas)
-        sincronizarLocalStorage(itemsVentas, objVentas, 'Ventas')
+        sincronizarLocalStorage(itemsVentas, 'Ventas');
     });
 }
 
-function renderCardsContact(items, element) {
-    sociosContainer.innerHTML = '';
-    let itemsCliente = items.filter((obj) => { return obj['values'].clienteRank > 0 })
-    console.log('itemsClientes en cards:', itemsCliente)
-    itemsCliente.forEach((obj) => {
+function renderTableContact() {
+    console.log('entrando a render table clientes...')
+    limpiarTabla(sociosContainer);
 
-        let fila = document.createElement('div')
-        fila.setAttribute('class', 'col')
-        fila.setAttribute('id', obj.id)
+    const titulo = { ' ': '', '#': 'contador', RANK: 'clienteRank', NOMBRE: 'razonSocial', CONTACTO: 'nombresContacto', TELEFONO: 'telefono', SALDO: 'saldo' }
+    const dt = new Datatable('#sociosContainer',
+        [
+            {
+                id: 'btnEdit', text: 'editar', icon: 'contract',
+                action: function () {
+                    const elementos = dt.getSelected();
+                    console.log('mostrando documento formato PC...', elementos);
+                    pintarDocumento(elementos)
+                }
+            },
+            {
+                id: 'btnDocument', text: 'doc', icon: 'document_scanner',
+                action: function () {
+                    const elementos = dt.getSelected();
+                    pintarDocumento(elementos);
+                    console.log('mostrando documento Formato Ticket...', elementos);
+                }
+            }
+        ]
+    );
 
-        fila.innerHTML = `<div class="card">
+    dt.setData(objContact, titulo);
+    dt.makeTable();
+    alternadorVista = false;
+};
+
+function renderCardsContact(items) {
+    console.log('entrando function renderCardsContact...', items);
+    limpiarTabla(sociosContainer);
+
+    items.forEach((obj) => {
+        let card = document.createElement('div')
+        card.setAttribute('class', 'col');
+        card.setAttribute('data-id', obj.id);
+
+        card.innerHTML = `<div class="card">
                             <!--<img class="img-fluid" src="imagenes/contact.png" style="width:18rem;" alt="Card image cap">-->
                             <div class="card-body">
-                                    
                                     <h1 class= "h4">${obj['values'].razonSocial}</h1>
                                     <h4 class="h6 rucTexto">${obj.id}</h4>
                                     <h4 class="h6 rucTexto">${obj['values'].telefono}</h4>
                                     <h3 class="h6" ></h3>
-                                    
                                     <h3 class="h6"><span>S/</span>${obj['values'].saldo}</h3>
                                     <h3 class="h6">${obj['values'].departamento}</h3>
-                                    
                             </div>
                             </div>
                                 `
-        sociosContainer.appendChild(fila);
+        sociosContainer.appendChild(card);
     });
 
+    let cardCliente = document.querySelectorAll('.col');
 
-    console.log('itemsCliente.forEach:', element)
-    console.log('despues de cards...:....')
-
-    btnTable.addEventListener('click', renderTableContact)
-
-let filas = document.querySelectorAll('.col');
-
-filas.forEach((fila) => {
-    fila.addEventListener('click', () => {
-        console.log('seras redirigido....')
-        let id = fila.getAttribute('id');
-        window.location = `./detalleContacto.html?id=${id}`;
+    cardCliente.forEach((card) => {
+        card.addEventListener('click', () => {
+            const boton = document.createElement("button");
+            boton.innerHTML = "Click aquí";
+            boton.style = "bottom:10px;right:10px;position:fixed;z-index:9999;background-color:transparent;"
+            card.appendChild(boton);
+            console.log('seras redirigido....');
+            let id = card.getAttribute('data-id');
+            window.location = `./detalleContacto.html?id=${id}`;
+        })
     })
-})
+    alternadorVista = true;
+    console.log('saliendo a 2 renderCardsContact...');
 };
 
 function pintarDocumento(arrayObjeto) {//crea una ventana modal con los datos de la venta el detalle
@@ -246,7 +274,28 @@ function pintarDocumento(arrayObjeto) {//crea una ventana modal con los datos de
 
 };
 
-function sincronizarLocalStorage(objInput, objOutput, nameString) {
+function sincronizarLocalStorage(objInput, nameString) {
+    console.log('sincronizando...', objInput)
     localStorage.setItem(nameString, JSON.stringify(objInput));
-    objOutput = JSON.parse(localStorage.getItem(nameString));
-}
+    if (nameString == 'Contactos') {
+        objContact = JSON.parse(localStorage.getItem(nameString));
+    } else {
+        objVentas = JSON.parse(localStorage.getItem(nameString));
+    }
+    console.log('objContact:', objContact, objVentas);
+};
+
+function saldoTotalClientes(objContact) {
+    const saldoTotal = document.getElementById('saldoTotal')
+    let saldoTotalClientes = objContact.reduce((tot, cliente) => { return tot += Number(cliente['values'].saldo) }, 0)
+    saldoTotal.textContent = saldoTotalClientes;
+    console.log('saldoTotal', saldoTotalClientes);
+};
+
+function limpiarTabla(element) {
+    //console.log('limpiando elemnto inicio...', element);
+    while (element.firstChild) {
+        element.removeChild(element.firstChild);
+    }
+    //console.log('limpiando elemnto final...', element);
+};

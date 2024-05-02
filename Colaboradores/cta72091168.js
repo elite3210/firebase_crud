@@ -9,25 +9,36 @@ console.log('dniUsuario:',dniColaborador)
 const transaccionesLaboral  = (callback)=> onSnapshot(collection(db,'TransaccionesLaboral'),callback)//trae los registro de la base de la collecion transaccioneslaborales
 
 //Datos a personalizar por pagina
-let tarifaJornada=[
-  {tarifa:3.6164,'dni':'72091168','nombre':'Angela',horario:'regular'},
-  {tarifa:3.6857,'dni':'71338629','nombre':'Alexandra',horario:'regular'},
-  {tarifa:3.6857,'dni':'71338629','nombre':'Alexandra',horario:'noche'},
-  {tarifa:3.700,'dni':'71338629','nombre':'Xiomara',horario:'regular'},
-  {tarifa:3.3594,'dni':'09551196','nombre':'Rocio',horario:'regular'},
-  {tarifa:3.3594,'dni':'09551196','nombre':'Rocío',horario:'noche'},
-  {tarifa:3.10,'dni':'70528292','nombre':'Heinz',horario:'regular'},
-  {tarifa:3.595,'dni':'10216274','nombre':'Mariela',horario:'regular'},
-  {tarifa:3.595,'dni':'10216274','nombre':'Mariela',horario:'noche'},
-  {tarifa:4.9144,'dni':'42231772','nombre':'Elí',horario:'regular'},
-  {tarifa:4.9144,'dni':'42231772','nombre':'Alison',horario:'regular'},
-  {tarifa:4.5455,'dni':'80400965','nombre':'Oswaldo',horario:'noche'},
-  {tarifa:4.0909,'dni':'77269606','nombre':'Paola',horario:'noche'}
+const tarifaJornada = [
+  { tarifa: 3.6164, 'dni': '72091168', 'nombre': 'Angela', horario: 'regular' },
+  { tarifa: 3.6857, 'dni': '71338629', 'nombre': 'Alexandra', horario: 'regular' },
+  { tarifa: 3.700, 'dni': '71338629', 'nombre': 'Xiomara', horario: 'regular' },
+  { tarifa: 3.3594, 'dni': '09551196', 'nombre': 'Rocio', horario: 'regular' },
+  { tarifa: 3.10, 'dni': '70528292', 'nombre': 'Heinz', horario: 'regular' },
+  { tarifa: 3.595, 'dni': '10216274', 'nombre': 'Mariela', horario: 'regular' },
+  { tarifa: 4.9144, 'dni': '42231772', 'nombre': 'Elí', horario: 'regular' },
+  { tarifa: 4.9144, 'dni': '42231772', 'nombre': 'Alison', horario: 'regular' },
+  { tarifa: 3.6857, 'dni': '48256517', 'nombre': 'Madeleine', horario: 'regular' },
+  { tarifa: 4.063, 'dni': '80400965', 'nombre': 'Oswaldo', horario: 'regular' },
+  { tarifa: 1, 'dni': '42934967', 'nombre': 'Giovanna', horario: 'regular' }
+]
+
+const tarifaJornadaFeriado = [
+  { tarifa: 4.5455, 'dni': '72091168', 'nombre': 'Angela', horario: 'noche' },
+  { tarifa: 4.5455, 'dni': '71338629', 'nombre': 'Alexandra', horario: 'noche' },
+  { tarifa: 4.5455, 'dni': '71338629', 'nombre': 'Xiomara', horario: 'noche' },
+  { tarifa: 4.091, 'dni': '09551196', 'nombre': 'Rocio', horario: 'noche' },
+  { tarifa: 4.091, 'dni': '70528292', 'nombre': 'Heinz', horario: 'noche' },
+  { tarifa: 4.5455, 'dni': '10216274', 'nombre': 'Mariela', horario: 'noche' },
+  { tarifa: 4.5455, 'dni': '42231772', 'nombre': 'Elí', horario: 'noche' },
+  { tarifa: 4.5455, 'dni': '42231772', 'nombre': 'Alison', horario: 'noche' },
+  { tarifa: 4.5455, 'dni': '80400965', 'nombre': 'Oswaldo', horario: 'noche' },
+  { tarifa: 4.5455, 'dni': '48256517', 'nombre': 'Madeleine', horario: 'noche' }
 ]
 
 //itemsFiltradoDni=items.filter((obj)=>{return obj['values'].dniColaborador===dniColaborador})
 let nombreColaborador =tarifaJornada.filter((obj)=>{return obj.dni===dniColaborador})[0].nombre
-let tarifaHora        =tarifaJornada.filter((obj)=>{return obj.dni===dniColaborador})[0].tarifa//sobre la base de S/1100 mensual
+//let tarifaHora        =tarifaJornada.filter((obj)=>{return obj.dni===dniColaborador})[0].tarifa//sobre la base de S/1100 mensual
 //console.log('array Filter:',nombreColaborador,tarifaHora);
 
 //las transacciones traidas filtra por persona para elaborar su estado de cuenta
@@ -79,19 +90,23 @@ const querySnapshot = await traerConsulta(nombreColaborador);
 const objetos       =[];
 let indice          =0;
 let horasAcumuladas =0;
+let importeAcumuladas =0;
   
 querySnapshot.forEach((doc,index) => {
     let obj={};
     obj.id=indice;
-    obj.values={};
+    obj.values=doc.data();
     
     obj['values'].dia     =nombreDia(doc.data().title);//PEDIMOS A LA FUNCION QUE NOS DE EL NOMBRE DEL DIA SEMANA
     obj['values'].entrada =doc.data().title
     obj['values'].salida  =doc.data().salida
     obj['values'].horas   =tiempoTranscurrido(doc.data().title,doc.data().salida).horasMinutos;
+    obj['values'].importe  =(tiempoTranscurrido(doc.data().title,doc.data().salida).horasDecimal*getTarifaJornada(doc.data(),tarifaJornada,tarifaJornadaFeriado)).toFixed(2);;
+    console.log('docData:',doc.data())
     objetos.push(obj);
 
     horasAcumuladas       +=tiempoTranscurrido(doc.data().title,doc.data().salida).horasDecimal;
+    importeAcumuladas       +=Number(obj['values'].importe);
     indice+=1;
   })
 
@@ -107,6 +122,48 @@ querySnapshot.forEach((doc,index) => {
     horas.horasMinutos=`${horas.horasEnteras}:${horas.minutosEnteros}`;
     return horas;//return objeto horas={horasEnteras:valor,minutosEnteros:valor,horasDecimal:valor,horasMinutos:valor}
   };
+
+  function getTarifaJornada(objeto,arrayObj,arrayObj2) {
+
+    switch (objeto.horario) {
+        case 'Regular': {
+            let nombre = objeto.description
+            console.log('obj dentro funcion tarifa:', objeto.horario)
+            const { tarifa } = arrayObj.filter(elemt => elemt.nombre == nombre.trim())[0];//del objeto tarifaJornada buscar el objeto con el mismo nombre y sacar su tarifa
+            return tarifa
+        }
+
+            break;
+
+        case 'Noche': {
+            let nombre = objeto.description
+            console.log('obj dentro funcion tarifa:', objeto.horario)
+            const { tarifa } = arrayObj2.filter(elemt => elemt.nombre == nombre.trim())[0];//del objeto tarifaJornada buscar el objeto con el mismo nombre y sacar su tarifa
+            return tarifa
+        }
+
+            break;
+
+        case 'Feriado': { 
+            let nombre = objeto.description
+            console.log('obj dentro funcion tarifa:', objeto.horario)
+            const { tarifa } = arrayObj2.filter(elemt => elemt.nombre == nombre.trim())[0];//del objeto tarifaJornada buscar el objeto con el mismo nombre y sacar su tarifa
+            return tarifa
+         }
+
+            break;
+
+        default: {
+            let nombre = objeto.description
+            console.log('obj dentro funcion tarifa:', objeto.horario)
+            const { tarifa } = arrayObj.filter(elemt => elemt.nombre == nombre.trim())[0];//del objeto tarifaJornada buscar el objeto con el mismo nombre y sacar su tarifa
+            return tarifa
+        }
+
+            break;
+    }
+
+}
   
   function limpiarTabla(){
     console.log('dentro de la funcion limpiar tabla');
@@ -117,8 +174,8 @@ querySnapshot.forEach((doc,index) => {
   };
 
   //renderizando datatable
-  const titulo      = {DIA:'dia',ENTRADA:'entrada',SALIDA:'salida',HORAS:'horas'}
-  const tituloFoot  = {H:'IMPORTE S/',B:`${Number(horasAcumuladas*tarifaHora).toFixed(2)}`,'':'HORAS',HORAS:horasAcumuladas.toFixed(2)};
+  const titulo      = {HORARIO:'horario',DIA:'dia',ENTRADA:'entrada',SALIDA:'salida',HORAS:'horas','S/':'importe'}
+  const tituloFoot  = {H:'IMPORTE S/',B:`${Number(importeAcumuladas).toFixed(2)}`,'':'HORAS',HORAS:horasAcumuladas.toFixed(2)};
   const dt          = new Datatable('#table',[]);
     
     dt.setDatos(objetos,titulo,tituloFoot);
@@ -163,7 +220,7 @@ tareaForm.addEventListener('submit',(e)=>{
 
   //renderizando datatable
   const titulo      = {DIA:'dia',ENTRADA:'entrada',SALIDA:'salida',HORAS:'horas'}
-  const tituloFoot  = {H:'IMPORTE S/',B:`${Number(horasAcumuladas*tarifaHora).toFixed(2)}`,'':'HORAS',HORAS:horasAcumuladas.toFixed(2)};
+  const tituloFoot  = {H:'IMPORTE S/',B:`${Number(importeAcumuladas).toFixed(2)}`,'':'HORAS',HORAS:horasAcumuladas.toFixed(2)};
   const dt          = new Datatable('#table',[]);
   dt.setDatos(objetos,titulo,tituloFoot);
   dt.renderTable();

@@ -1,0 +1,15 @@
+@startuml
+left to right direction
+actor Cliente
+actor Administrador
+
+package "Sistema de Inventario" {
+    usecase "Consultar Artículos" as UC1
+    usecase "Comprar Artículos" as UC2
+    usecase "Administrar Inventario" as UC3
+
+    Cliente --> UC1
+    Cliente --> UC2
+    Administrador --> UC3
+}
+@enduml

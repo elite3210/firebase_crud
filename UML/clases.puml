@@ -1,0 +1,48 @@
+@startuml
+package "Modelo" {
+    class Articulo {
+        +String id
+        +String nombre
+        +double precio
+        +int cantidad
+        +getInfo(): String
+        +actualizarStock(int)
+    }
+
+    class Inventario {
+        +List<Articulo> articulos
+        +añadirArticulo(Articulo)
+        +eliminarArticulo(String)
+        +buscarArticulo(String): Articulo
+    }
+}
+
+package "Vista" {
+    class VistaInventario {
+        +mostrarArticulos()
+        +mostrarDetalleArticulo(Articulo)
+    }
+
+    class VistaVenta {
+        +solicitarDatosVenta()
+        +mostrarResultadoVenta(String)
+    }
+}
+
+package "Controlador" {
+    class ControladorInventario {
+        +Modelo.Inventario model
+        +Vista.VistaInventario view
+        +inicializar()
+        +gestionarIngresoArticulo()
+        +gestionarEliminacionArticulo()
+    }
+
+    class ControladorVenta {
+        +Modelo.Inventario model
+        +Vista.VistaVenta view
+        +realizarVenta(String idArticulo, int cantidad)
+    }
+}
+
+@enduml

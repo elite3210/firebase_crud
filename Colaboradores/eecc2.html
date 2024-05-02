@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Movimientos Financieros</title>
+</head>
+
+<body>
+    <h1>Registro de Movimientos Financieros</h1>
+
+    <label for="tipoMovimiento">Tipo de Movimiento:</label>
+    <select id="tipoMovimiento">
+        <option value="ingreso">Ingreso</option>
+        <option value="egreso">Egreso</option>
+    </select>
+
+    <label for="monto">Monto:</label>
+    <input type="number" id="monto">
+
+    <button onclick="estadoCuenta.agregarTransaccion()">Registrar Movimiento</button>
+
+    <h2>Reporte de Estado de Cuenta</h2>
+    <div id="estadoCuenta"></div>
+
+    <script src="app3.js"></script>
+</body>
+
+</html>

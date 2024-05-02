@@ -34,7 +34,8 @@ e.preventDefault()
     const ubicacion                 = clientesForm['ubicacion'].value;            //14
     const nota                      = clientesForm['nota'].value;                 //15
     const idImpuesto                = clientesForm['ruc'].value;                  //16
-    const clienteRank               = 0;                                          //17
+    const licenciaMTC                = clientesForm['licenciaMTC'].value;                  //16
+    const clienteRank               = 1;                                          //17
     const proveedorRank             = 0;                                          //18
     const saldo                     = 0;                                          //19
     ;
@@ -59,7 +60,8 @@ e.preventDefault()
             idImpuesto,
             clienteRank,
             proveedorRank,
-            saldo
+            saldo,
+            licenciaMTC
             )
     
 

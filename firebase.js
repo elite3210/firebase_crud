@@ -32,6 +32,7 @@
   export const jornadaRef     =collection(db,'Micoleccion')
   export const boletaPagoRef  =collection(db,'BoletaPago')
   export const TransaccionesLaboral  =collection(db,'TransaccionesLaboral')
+  export const colaboradorRef  =collection(db,'Colaboradores')
   export const diario2023Ref  =collection(db,'Diario2023')
   const cta41110              =collection(db,'41110')
   console.log('Modulo Firebase.js trabajando... Inicio:')
@@ -43,14 +44,14 @@
   export const guardarVenta       = (cliente,vendedor,productoVendido,cantidad)=>{addDoc(ventasRef,{cliente,vendedor,productoVendido,cantidad})}
   export const guardarProduccion  = (almacenProcesos,usuario,almacen,detalleProduccion,estado,fechaRegistro,tiempo,numero,idProducto,cantidad)=>{addDoc(produccionRef,{almacenProcesos,usuario,almacen,detalleProduccion,estado,fechaRegistro,tiempo,numero,idProducto,cantidad})}
   export const guardarBoletaPago  = (numBoleta,dniBoleta,nomBoleta,fechaBoleta,tiempoTotal,creado,detalle,payStatus,importe)=>{addDoc(boletaPagoRef,{numBoleta,dniBoleta,nomBoleta,fechaBoleta,tiempoTotal,creado,detalle,payStatus,importe})}
-  export const guardarCotizacion  = (numero,fecha,vendedor,cliente,ruc,detalleCotizacion,estado,tipoPago,metodoCobro,subTotal,descuento,importeTotal,tiempo)=>{addDoc(cotizacionRef,{numero,fecha,vendedor,cliente,ruc,detalleCotizacion,estado,tipoPago,metodoCobro,subTotal,descuento,importeTotal,tiempo})}
+  export const guardarCotizacion  = (numero,fecha,vendedor,cliente,ruc,detalleCotizacion,estado,tipoPago,subTotal,descuento,importeTotal,tiempo,transportedBy)=>{addDoc(cotizacionRef,{numero,fecha,vendedor,cliente,ruc,detalleCotizacion,estado,tipoPago,subTotal,descuento,importeTotal,tiempo,transportedBy})}
   export const guardarCompras     = (nuevoNumero,usuario,proveedor,ruc,detalleCompra,estado,tipoPago,subTotal,descuento,importeTotal,tiempo,documento,fecha)=>{addDoc(comprasRef,{nuevoNumero,usuario,proveedor,ruc,detalleCompra,estado,tipoPago,subTotal,descuento,importeTotal,tiempo,documento,fecha})}
   export const guardarTransaccionesLaboral = (fechaTransaccion,dniColaborador,numeroDocumento,creado,descripcion,tipoTransaccion,importeDebe,importeHaber)=>{addDoc(TransaccionesLaboral,{fechaTransaccion,dniColaborador,numeroDocumento,creado,descripcion,tipoTransaccion,importeDebe,importeHaber})}
 
   /*registrando un nuevo documento en firestore indicando el id de la DB personalizado setDoc() . ACA UNO MISMO DEBE PONER EL ID DEL DOCUMENTO DE LA BASE DE DATOS EN FIRBASE*/
-  export const guardarProduct     = async (codigo,categoria,nombre,costo,stock,unidad,peso,precio,activo,descripcion,imagen,medidas,pesoBruto)=>{await setDoc(doc(productRef,codigo),{imagen,categoria,nombre,costo,stock,unidad,peso,precio,activo,descripcion,medidas,pesoBruto})}
+  export const guardarProduct     = async (codigo,categoriaPadre,categoria,nombre,costo,stock,unidad,peso,precio,activo,descripcion,imagen,medidas,pesoBruto,assignedStock,targetStock)=>{await setDoc(doc(productRef,codigo),{imagen,categoriaPadre,categoria,nombre,costo,stock,unidad,peso,precio,activo,descripcion,medidas,pesoBruto,assignedStock,targetStock})}
   export const guardarCotizacion2 = async (id,fecha,vendedor,cliente,ruc,detalleCotizacion,estado,tipoPago,metodoCobro,subTotal,descuento,importeTotal)=>{await setDoc(doc(cotizacionRef,id),{fecha,vendedor,cliente,ruc,detalleCotizacion,estado,tipoPago,metodoCobro,subTotal,descuento,importeTotal})}
-  export const guardarSocios      = async (ruc,razonSocial,inicioActividad,nombresContacto,apellidosContacto,email,dni,cargo,telefono,direccion,distrito,provincia,departamento,ubicacion,nota,idImpuesto,clienteRank,proveedorRank,saldo)=>{await setDoc(doc(sociosRef,ruc),{razonSocial,inicioActividad,nombresContacto,apellidosContacto,email,dni,cargo,telefono,direccion,distrito,provincia,departamento,ubicacion,nota,idImpuesto,clienteRank,proveedorRank,saldo})}
+  export const guardarSocios      = async (ruc,razonSocial,inicioActividad,nombresContacto,apellidosContacto,email,dni,cargo,telefono,direccion,distrito,provincia,departamento,ubicacion,nota,idImpuesto,clienteRank,proveedorRank,saldo,licenciaMTC)=>{await setDoc(doc(sociosRef,ruc),{razonSocial,inicioActividad,nombresContacto,apellidosContacto,email,dni,cargo,telefono,direccion,distrito,provincia,departamento,ubicacion,nota,idImpuesto,clienteRank,proveedorRank,saldo,licenciaMTC})}
 
   /*creando la suscripcion que se deseara escuchar cuando los datos cambian
     crea un efecto inmediato sobre la tabla, como si se introduciera directo a la tabla cuando se guarda*/
@@ -71,6 +72,7 @@
   export const traerUnSocio       = (id)=> getDoc(doc(db,'Socios',id))
   export const traerUnProveedor   = (id)=> getDoc(doc(db,'Proveedor',id))
   export const traerUnNumeracion  = (id)=> getDoc(doc(db,'Numeracion',id))
+  export const traerUnColaborador  = (id)=> getDoc(doc(db,'Colaboradores',id))
 
   //updateDoc() actualiza una documento:
   export const updatePedido     = (id,newFields)=>updateDoc(doc(db,'Cotizacion',id),newFields)

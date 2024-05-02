@@ -15,8 +15,19 @@ async function getNumeroEgreso() {
     let numeroEgresoDB  = await traerUnNumeracion('Egreso');
     let dato            = numeroEgresoDB.data();
     numeroEgreso.value  =Number(dato.ultimoNumero)+1;
-    fecha.value  =new Date().toLocaleDateString('en-US');
-    console.log('fecha',fecha)
+    fecha.value  =getFechaActual();
+    console.log('fecha',getFechaActual())
+}
+
+function getFechaActual() {
+    const date = new Date();
+    const [month, day, year] = [date.getMonth(),date.getDate(),date.getFullYear()];
+    if (month<10) {
+        return `${year}-0${month+1}-${day}`;
+    } else {
+        return `${year}-${month+1}-${day}`;
+    }
+    
 }
 
 class Producto{
@@ -76,7 +87,7 @@ class IProducto{
         const container = document.querySelector('.container');
         const app = document.querySelector('#App');
         container.insertBefore(div,app)
-        setTimeout(()=>{document.querySelector('.alert').remove()},1500)
+        setTimeout(()=>{document.querySelector('.alert').remove()},2500)
     };
 }
 
@@ -85,10 +96,11 @@ class IProducto{
 
 
 document.getElementById('product-form').addEventListener('submit',function(e) {
+    e.preventDefault()
     const numeroEgreso  = document.getElementById('numero').value;
     const fecha         = document.getElementById('fecha').value;
     const name          = `EG N°${numeroEgreso} ${document.getElementById('name').value}`;
-    const importe         = Number(document.getElementById('importe').value);
+    const importe         = Number(document.getElementById('price').value);
     const dniColaborador= document.getElementById('dniColaborador').value;
     
     
@@ -104,31 +116,13 @@ document.getElementById('product-form').addEventListener('submit',function(e) {
     let celdaNumero=document.getElementById('numero')
     celdaNumero.value=Number(numeroEgreso)+1;
     console.log(producto)
-    e.preventDefault()
+    
 })
 
 document.getElementById('product-list').addEventListener('click',function(e){
+    e.preventDefault()
     const ui = new IProducto;
     ui.deleteProduct(e.target)
-    e.preventDefault()
+    
 })
 
-//clase o funcion de js para dar formato a los numero, obs los conviewrte a texto
-/*var numero = 13263.49;
-var texto = Intl.NumberFormat('es-419').format(numero);
-console.log(texto);
-
-const amount = 654321.987;
-
-const options1 = { style: 'currency', currency: 'RUB' };
-const numberFormat1 = new Intl.NumberFormat('ru-RU', options1);
-
-console.log(numberFormat1.format(amount));
-// Expected output: "654 321,99 ₽"
-
-const options2 = { style: 'currency', currency: 'USD' };
-const numberFormat2 = new Intl.NumberFormat('en-US', options2);
-
-console.log(numberFormat2.format(amount));
-// Expected output: "$654,321.99"
-*/

@@ -1,82 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Heinz Sport SAC</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
 
-    <style>
-          /*Barra de navegacion
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Heinz Sport SAC</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+
+  <style>
+    /*Barra de navegacion
           @import "https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css";
           @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;700&display=swap');
           /*Tablas*/
-          #productos{ 
-            background-image: linear-gradient(to top, #d9afd9 0%, #97d9e1 100%);
-          }
-          
-          tbody{
-            border: 1px solid black;
-          }
-          .amarillo{
-              background-color: yellow;
-          }
-          .rojo{
-              background-color: red;
-          }
-          .rosado{
-              background-color: magenta;
-          }
-          .azul{
-              background-color: rgb(89, 59, 255);
-          }
-          .naranja{
-              background-color: orange;
-          }
-          .verde{
-              background-color: rgb(24, 255, 120);
-          }
-          .blanco{
-              background-color: rgb(196, 223, 255);
-          }
-          .morado{
-            background-color: rgb(207, 86, 255);
-          }
-          th{
-              color: black;
-              border: 1px solid rgb(255, 255, 255);
-          }
-          td{
-              
-              color: black;
-          }
-    </style>
-    
+    #productos {
+      background-image: linear-gradient(to top, #d9afd9 0%, #97d9e1 100%);
+    }
+
+    tbody {
+      border: 1px solid black;
+    }
+
+    .amarillo {
+      background-color: yellow;
+    }
+
+    .rojo {
+      background-color: red;
+    }
+
+    .rosado {
+      background-color: magenta;
+    }
+
+    .azul {
+      background-color: rgb(89, 59, 255);
+    }
+
+    .naranja {
+      background-color: orange;
+    }
+
+    .verde {
+      background-color: rgb(24, 255, 120);
+    }
+
+    .blanco {
+      background-color: rgb(196, 223, 255);
+    }
+
+    .morado {
+      background-color: rgb(207, 86, 255);
+    }
+
+    th {
+      color: black;
+      border: 1px solid rgb(255, 255, 255);
+    }
+
+    td {
+
+      color: black;
+    }
+  </style>
+
 </head>
-<body>
+
+<body id="body">
   <header>
     <nav class="navbar" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
         <a class="navbar-item" href="http://www.heinzsport.com">
           <img src="./imagenes/heinz_sport_sac_logo.png" width="112" height="28">
         </a>
-    
+
         <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
         </a>
       </div>
-    
+
       <div id="navbarBasicExample" class="navbar-menu">
         <div class="navbar-start">
           <a class="navbar-item" href="./index.html">Home</a>
-          <a class="navbar-item"href="./carrito/index.html">Catálogo</a>
-    
+          <a class="navbar-item" href="./carrito/index.html">Catálogo</a>
+
           <div class="navbar-item has-dropdown is-hoverable">
             <a class="navbar-link">Intranet</a>
-    
+
             <div class="navbar-dropdown">
               <a class="navbar-item" href="./jornada.html">Jornada</a>
               <a class="navbar-item" href="./produccion.html">Ingreso Produccion</a>
@@ -84,21 +96,24 @@
               <a class="navbar-item" href="./consultaJornada.html">Ticket</a>
               <a class="navbar-item" href="./consultaBoletaPago.html">Boletas</a>
               <hr class="navbar-divider">
-              
+
               <a class="navbar-item" href="./clientes.html">Clientes</a>
               <a class="navbar-item" href="./productos.html">Productos</a>
               <a class="navbar-item" href="./recetaProducto.html">Receta</a>
               <a class="navbar-item" href="./ventas.html">Ventas</a>
-              <a class="navbar-item" href="./Compras.html">Compras</a>
+              <a class="navbar-item" href="./compras.html">Compras</a>
               <a class="navbar-item" href="./activosFijos.html">Activos</a>
               <a class="navbar-item" href="./consultaVentasProducto.html">Panel</a>
               <a class="navbar-item" href="./registrarPagos.html">Egresos</a>
+              <a class="navbar-item" href="./registrarIngresos.html">Ingresos</a>
               <a class="navbar-item" href="./Colaboradores/cta72091168.html">Angela</a>
+              <a class="navbar-item" href="./Colaboradores/cta09551196.html">Rocio</a>
+              <a class="navbar-item" href="./Colaboradores/cta10216274.html">Mariela</a>
               <a class="navbar-item" href="./producto.html">Categoria</a>
             </div>
           </div>
         </div>
-    
+
         <div class="navbar-end">
           <div class="navbar-item">
             <div class="buttons">
@@ -110,293 +125,592 @@
       </div>
     </nav>
   </header>
-
-  <h1>Actualizado al 08/02/2024</h1>
+  <div id="imprimible">
+    <h1>Actualizado al 08/04/2024</h1>
     <div>
-        <table id="productos">
-            <thead class="verde">
-                <tr><th>Descripcion</th><th>Cantidad 12.5</th><th>Cantidad100</th><th>Balanza</th></tr>
-            </thead>
-            <tbody> 
-                <tr><td>Amarillo felipe</td><td class="c">4 gr.</td><td class="c2">32 gr.</td><td>32 gr.</td></tr>
-                <tr><td>Pigmento Azul</td><td class="c">0.8 gr.</td><td class="c2">6.4 gr.</td><td>38.4 gr.</td></tr>
-                <tr><td>Dioxido de Titanio</td><td class="c">7 gr.</td><td class="c2">56 gr.</td><td>94.4 gr.</td></tr>
-                <tr><td>Masterbach Blanco</td><td class="c">15 gr.</td><td class="c2">120 gr.</td><td>214.4 gr</td></tr>
-            </tbody>
-            <tfoot id="pie_tabla"></tfoot>
-        </table>
-    </div></br>  
-    <div>
-      <table id="productos">
-          <thead class="amarillo">
-              <tr><th>Descripcion</th><th>Cantidad 12.5</th><th>Cantidad100</th><th>Balanza</th></tr>
-          </thead>
-          <tbody> 
-              <tr><td>Amarillo conte</td><td>7 gr.</td><td>56 gr.</td><td>56 gr.</td></tr>
-              <tr><td>Amarillo felipe</td><td>2 gr.</td><td>16 gr.</td><td>72 gr.</td></tr>
-              <tr><td>Dioxido de Titanio</td><td>7 gr.</td><td>56 gr.</td><td>128 gr.</td></tr>
-              <tr><td>Masterbach Blanco</td><td>15 gr.</td><td>120 gr.</td><td>248 gr.</td>tr>
-          </tbody>
-          <tfoot id="pie_tabla2"></tfoot>
-      </table>
-    </div></br>
-  <div>
-    <table id="productos">
-          <thead class="rosado">
-              <tr><th>Descripcion</th><th>Cantidad 12.5</th><th>Cantidad100</th><th>Balanza</th></tr>
-          </thead>
-          <tbody> 
-              <tr><td>Magenta Flourecente</td><td>20 gr.</td><td>160 gr.</td><td>160 gr.</td></tr>
-              <tr><td>Pigmento rojo</td><td>0.25 gr.</td><td>2.0 gr.</td><td>162 gr.</td></tr>
-              <tr><td>Dioxido de Titanio</td><td>15 gr.</td><td>120 gr.</td><td>282 gr.</td></tr>
-              <tr><td>Masterbach Blanco</td><td>25 gr.</td><td>200 gr.</td><td>482 gr.</td></tr>
-          </tbody>
-    </table>
-  </div></br>
-  <div>
-      <table id="productos">
-          <thead class="naranja">
-              <tr><th>Descripcion</th><th>Cantidad 12.5</th><th>Cantidad100</th><th>Balanza</th></tr>
-          </thead>
-          <tbody> 
-              <tr><td>Pigmento Naranja</td><td>6 gr.</td><td>48 gr.</td><td>48 gr.</td></tr>
-              <tr><td>Pigmento Rojo Felipe</td><td>1.0 gr.</td><td>8.0 gr.</td><td>56 gr.</td></tr>
-              <tr><td>Dioxido de Titanio</td><td>7.0 gr.</td><td>56 gr.</td><td>112 gr.</td></tr>
-              <tr><td>Masterbach Blanco</td><td>15 gr.</td><td>120 gr.</td><td>232 gr.</td></tr>
-          </tbody>
-      </table>
-  </div></br>
-  <div>
-      <table id="productos">
-          <thead class="azul">
-              <tr><th>Descripcion</th><th>Cantidad 12.5</th><th>Cantidad100</th><th>Balanza</th></tr>
-          </thead>
-          <tbody> 
-              <tr><td>Pigmento azul</td><td>6 gr.</td><td>48 gr.</td><td>48 gr.</td></tr>
-              <tr><td>Dioxido de Titanio</td><td>7 gr.</td><td>56 gr.</td><td>104 gr.</td></tr>
-              <tr><td>Masterbach Blanco</td><td>15 gr.</td><td>120 gr.</td><td>224 gr.</td></tr>
-          </tbody>
-      </table>
-  </div></br>
-  <div>
-      <table  id="productos">
-          <thead class="rojo">
-              <tr><th>Descripcion</th><th>Cantidad 12.5</th><th>Cantidad100</th><th>Balanza</th></tr>
-          </thead>
-          <tbody> 
-              <tr><td>Pigmento R187 Rojo Claro</td><td>5 gr.</td><td>40 gr.</td><td>40 gr.</td></tr>
-              <tr><td>Pigmento Rojo Felipe</td><td>2 gr.</td><td>16 gr.</td><td>56 gr</td></tr>
-              <tr><td>Dioxido de Titanio</td><td>7 gr.</td><td>56 gr.</td><td>112 gr.</td></tr>
-              <tr><td>Masterbach Blanco</td><td>15 gr.</td><td>120 gr.</td><td>232 gr.</td></tr>
-          </tbody>
-      </table>
-  </div></br>
-  <div>
-    <table  id="productos">
-      <h3>Blanco con Peletizado:</h3>
-        <thead class="Blanco con Peletizado">
-            <tr><th>Descripcion</th><th>Cantidad 12</th><th>Cantidad 100</th></tr>
-        </thead>
-        <tbody> 
-            <tr><td>Azul ultramar</td><td>0.5 gr.</td><td>4 gr.</td></tr>
-            <tr><td>Blanqueador optico</td><td>2.5 gr.</td><td>20 gr.</td></tr>
-            <tr><td>Masterbach Blanco</td><td>40 gr.</td><td>320 gr.</td></tr>
-            <tr><td>Blanco óptico</td><td>30 gr.</td><td>240 gr.</td></tr>
-        </tbody>
-    </table>
-  </div></br>
-  <div>
-    <table  id="productos">
-      <h3>Blanco con Virgen:</h3>
-        <thead class="Blanco con Virgen">
-            <tr><th>Descripcion</th><th>Cantidad 12.5</th><th>Cantidad 100</th></tr>
-        </thead>
-        <tbody> 
-            <tr><td>Masterbach Blanco</td><td>50 gr.</td><td>400 gr.</td></tr>
-            <tr><td>Blanco óptico</td><td>30 gr.</td><td>240 gr.</td></tr>
-        </tbody>
-    </table>
-  </div></br>
-
-
-  <h1>Formulario Sorbeton Actualizado al 11/09/2023</h1><br>
-  <div>
-    <table  id="productos">
-      <h3>Sorbeton Blanco:</h3>
-        <thead class="blanco">
-            <tr><th>Descripcion</th><th>Cantidad 12.5</th><th>Cantidad 50</th></tr>
+      <table id="productos" class="verde_">
+        <thead class="verde">
+          <tr>
+            <th>Descripcion</th>
+            <th>Cantidad 12.5</th>
+            <th>Cantidad100</th>
+            <th>Balanza</th>
+          </tr>
         </thead>
         <tbody>
-            <tr><td>Masterbach Blanco</td><td>120 gr.</td><td>480 gr.</td></tr>
+          <tr>
+            <td>Amarillo felipe</td>
+            <td class="c">4 gr.</td>
+            <td class="c2">32 gr.</td>
+            <td>32 gr.</td>
+          </tr>
+          <tr>
+            <td>Pigmento Azul</td>
+            <td class="c">0.8 gr.</td>
+            <td class="c2">6.4 gr.</td>
+            <td>38.4 gr.</td>
+          </tr>
+          <tr>
+            <td>Dioxido de Titanio</td>
+            <td class="c">7 gr.</td>
+            <td class="c2">56 gr.</td>
+            <td>94.4 gr.</td>
+          </tr>
+          <tr>
+            <td>Masterbach Blanco</td>
+            <td class="c">15 gr.</td>
+            <td class="c2">120 gr.</td>
+            <td>214.4 gr</td>
+          </tr>
         </tbody>
-    </table>
-  </div></br>
-
-
-  <div>
-    <table id="productos">
-        <thead class="naranja">
-            <h3>Sorbeton Naranja:</h3>
-            <tr><th>Descripcion</th><th>Cantidad 12.5</th><th>Cantidad 100</th></tr>
-        </thead>
-        <tbody> 
-            <tr><td>Masterbach Naranja Colortec</td><td>110 gr.</td><td>880 gr.</td></tr>
-        </tbody>
-    </table>
-  </div></br>
-  <div>
-    <table id="productos">
+        <tfoot id="pie_tabla"></tfoot>
+      </table>
+    </div></br>
+    <div>
+      <table id="productos" class="amarillo_">
         <thead class="amarillo">
-            <h3>Sorbeton Amarillo:</h3>
-            <tr><th>Descripcion</th><th>Cantidad 12.5</th><th>Cantidad 100</th></tr>
+          <tr>
+            <th>Descripcion</th>
+            <th>Cantidad 12.5</th>
+            <th>Cantidad100</th>
+            <th>Balanza</th>
+          </tr>
         </thead>
-        <tbody> 
-            <tr><td>Masterbach Amarillo Patito</td><td>110 gr.</td><td>880 gr.</td></tr>
+        <tbody>
+          <tr>
+            <td>Amarillo conte</td>
+            <td>7 gr.</td>
+            <td>56 gr.</td>
+            <td>56 gr.</td>
+          </tr>
+          <tr>
+            <td>Amarillo felipe</td>
+            <td>2 gr.</td>
+            <td>16 gr.</td>
+            <td>72 gr.</td>
+          </tr>
+          <tr>
+            <td>Dioxido de Titanio</td>
+            <td>7 gr.</td>
+            <td>56 gr.</td>
+            <td>128 gr.</td>
+          </tr>
+          <tr>
+            <td>Masterbach Blanco</td>
+            <td>15 gr.</td>
+            <td>120 gr.</td>
+            <td>248 gr.</td>tr>
         </tbody>
-    </table>
-  </div></br>
-
-  <div>
-    <table id="productos">
-        <thead class="morado">
-            <h3>Sorbeton Morado:</h3>
-            <tr><th>Descripcion</th><th>Cantidad 12.5</th><th>Cantidad 100</th></tr>
-        </thead>
-        <tbody> 
-          <tr><td>Pig. Magenta Flourecente</td><td>35 gr.</td><td>280 gr.</td></tr>
-          <tr><td>Dioxido de Titanio</td><td>20 gr.</td><td>160 gr.</td></tr>
-          <tr><td>Pigmento Azul felipe</td><td>0.6 gr.</td><td>4.8 gr.</td></tr>
-        </tbody>
-    </table>
-  </div></br>
-
-  <div>
-    <table id="productos">
+        <tfoot id="pie_tabla2"></tfoot>
+      </table>
+    </div></br>
+    <div>
+      <table id="productos" class="rosado_">
         <thead class="rosado">
-            <h3>Sorbeton Rosado:</h3>
-            <tr><th>Descripcion</th><th>Cantidad 12.5</th><th>Cantidad 100</th></tr>
+          <tr>
+            <th>Descripcion</th>
+            <th>Cantidad 12.5</th>
+            <th>Cantidad100</th>
+            <th>Balanza</th>
+          </tr>
         </thead>
-        <tbody> 
-            <tr><td>Pig. Magenta Flourecente</td><td>35 gr.</td><td>280 gr.</td></tr>
-            <tr><td>Dioxido de Titanio</td><td>20 gr.</td><td>160 gr.</td></tr>
+        <tbody>
+          <tr>
+            <td>Magenta Flourecente</td>
+            <td>20 gr.</td>
+            <td>160 gr.</td>
+            <td>160 gr.</td>
+          </tr>
+          <tr>
+            <td>Pigmento rojo</td>
+            <td>0.25 gr.</td>
+            <td>2.0 gr.</td>
+            <td>162 gr.</td>
+          </tr>
+          <tr>
+            <td>Dioxido de Titanio</td>
+            <td>15 gr.</td>
+            <td>120 gr.</td>
+            <td>282 gr.</td>
+          </tr>
+          <tr>
+            <td>Masterbach Blanco</td>
+            <td>25 gr.</td>
+            <td>200 gr.</td>
+            <td>482 gr.</td>
+          </tr>
         </tbody>
-    </table>
-  </div></br>
-
-  <div>
-    <table id="productos">
-        <thead class="blanco">
-            <h3>Sorbeton Celeste:</h3>
-            <tr><th>Descripcion</th><th>Cantidad 12.5</th><th>Cantidad 100</th></tr>
+      </table>
+    </div></br>
+    <div>
+      <table id="productos" class="naranja_">
+        <thead class="naranja">
+          <tr>
+            <th>Descripcion</th>
+            <th>Cantidad 12.5</th>
+            <th>Cantidad100</th>
+            <th>Balanza</th>
+          </tr>
         </thead>
-        <tbody> 
-            <tr><td>Masterbach Celeste Andino</td><td>100 gr.</td><td>800 gr.</td></tr>
-            
+        <tbody>
+          <tr>
+            <td>Pigmento Naranja</td>
+            <td>6 gr.</td>
+            <td>48 gr.</td>
+            <td>48 gr.</td>
+          </tr>
+          <tr>
+            <td>Pigmento Rojo Felipe</td>
+            <td>1.0 gr.</td>
+            <td>8.0 gr.</td>
+            <td>56 gr.</td>
+          </tr>
+          <tr>
+            <td>Dioxido de Titanio</td>
+            <td>7.0 gr.</td>
+            <td>56 gr.</td>
+            <td>112 gr.</td>
+          </tr>
+          <tr>
+            <td>Masterbach Blanco</td>
+            <td>15 gr.</td>
+            <td>120 gr.</td>
+            <td>232 gr.</td>
+          </tr>
         </tbody>
-    </table>
-  </div></br>
-
-  <div>
-    <table id="productos">
+      </table>
+    </div></br>
+    <div>
+      <table id="productos" class="azul_">
+        <thead class="azul">
+          <tr>
+            <th>Descripcion</th>
+            <th>Cantidad 12.5</th>
+            <th>Cantidad100</th>
+            <th>Balanza</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Pigmento azul</td>
+            <td>6 gr.</td>
+            <td>48 gr.</td>
+            <td>48 gr.</td>
+          </tr>
+          <tr>
+            <td>Dioxido de Titanio</td>
+            <td>7 gr.</td>
+            <td>56 gr.</td>
+            <td>104 gr.</td>
+          </tr>
+          <tr>
+            <td>Masterbach Blanco</td>
+            <td>15 gr.</td>
+            <td>120 gr.</td>
+            <td>224 gr.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div></br>
+    <div>
+      <table id="productos" class="rojo2">
         <thead class="rojo">
-            <h3>Sorbeton Rojo:</h3>
-            <tr><th>Descripcion</th><th>Cantidad 12.5</th><th>Cantidad 100</th></tr>
+          <tr>
+            <th>Descripcion</th>
+            <th>Cantidad 12.5</th>
+            <th>Cantidad100</th>
+            <th>Balanza</th>
+          </tr>
         </thead>
-        <tbody> 
-            <tr><td>Masterbach Rojo Escarlata</td><td>100 gr.</td><td>800 gr.</td></tr>
-        </tbody>
-    </table>
-  </div></br>
+        <tbody>
 
-  <div>
-    <table id="productos">
+          <tr>
+            <td>Rojo Felipe(R150)</td>
+            <td>6 gr.</td>
+            <td>48 gr.</td>
+            <td>48 gr</td>
+          </tr>
+          <tr>
+            <td>Dioxido de Titanio</td>
+            <td>7 gr.</td>
+            <td>56 gr.</td>
+            <td>104 gr.</td>
+          </tr>
+          <tr>
+            <td>Masterbach Blanco</td>
+            <td>15 gr.</td>
+            <td>120 gr.</td>
+            <td>224 gr.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    </br>
+
+    <div>
+      <table id="productos" class="rojo_">
+        <thead class="rojo">
+          <tr>
+            <th>Descripcion</th>
+            <th>Cantidad 12.5</th>
+            <th>Cantidad100</th>
+            <th>Balanza</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Pigmento R187 Rojo Claro</td>
+            <td>5 gr.</td>
+            <td>40 gr.</td>
+            <td>40 gr.</td>
+          </tr>
+          <tr>
+            <td>Pigmento Rojo Felipe</td>
+            <td>2 gr.</td>
+            <td>16 gr.</td>
+            <td>56 gr</td>
+          </tr>
+          <tr>
+            <td>Dioxido de Titanio</td>
+            <td>7 gr.</td>
+            <td>56 gr.</td>
+            <td>112 gr.</td>
+          </tr>
+          <tr>
+            <td>Masterbach Blanco</td>
+            <td>15 gr.</td>
+            <td>120 gr.</td>
+            <td>232 gr.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    </br>
+    <div>
+      <table id="productos">
+        <h3>Blanco con Peletizado:</h3>
+        <thead class="Blanco con Peletizado">
+          <tr>
+            <th>Descripcion</th>
+            <th>Cantidad 12</th>
+            <th>Cantidad 100</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Azul ultramar</td>
+            <td>0.5 gr.</td>
+            <td>4 gr.</td>
+          </tr>
+          <tr>
+            <td>Blanqueador optico</td>
+            <td>2.5 gr.</td>
+            <td>20 gr.</td>
+          </tr>
+          <tr>
+            <td>Masterbach Blanco</td>
+            <td>40 gr.</td>
+            <td>320 gr.</td>
+          </tr>
+          <tr>
+            <td>Blanco óptico</td>
+            <td>30 gr.</td>
+            <td>240 gr.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div></br>
+    <div>
+      <table id="productos">
+        <h3>Blanco con Virgen:</h3>
+        <thead class="Blanco con Virgen">
+          <tr>
+            <th>Descripcion</th>
+            <th>Cantidad 12.5</th>
+            <th>Cantidad 100</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Masterbach Blanco</td>
+            <td>50 gr.</td>
+            <td>400 gr.</td>
+          </tr>
+          <tr>
+            <td>Blanco óptico</td>
+            <td>30 gr.</td>
+            <td>240 gr.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div></br>
+
+
+    <h1>Formulario Sorbeton Actualizado al 11/09/2023</h1><br>
+    <div>
+      <table id="productos">
+        <h3>Sorbeton Blanco:</h3>
+        <thead class="blanco">
+          <tr>
+            <th>Descripcion</th>
+            <th>Cantidad 12.5</th>
+            <th>Cantidad 50</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Masterbach Blanco</td>
+            <td>120 gr.</td>
+            <td>480 gr.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div></br>
+
+
+    <div>
+      <table id="productos">
+        <thead class="naranja">
+          <h3>Sorbeton Naranja:</h3>
+          <tr>
+            <th>Descripcion</th>
+            <th>Cantidad 12.5</th>
+            <th>Cantidad 100</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Masterbach Naranja Colortec</td>
+            <td>110 gr.</td>
+            <td>880 gr.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div></br>
+    <div>
+      <table id="productos">
+        <thead class="amarillo">
+          <h3>Sorbeton Amarillo:</h3>
+          <tr>
+            <th>Descripcion</th>
+            <th>Cantidad 12.5</th>
+            <th>Cantidad 100</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Masterbach Amarillo Patito</td>
+            <td>110 gr.</td>
+            <td>880 gr.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div></br>
+
+    <div>
+      <table id="productos">
+        <thead class="morado">
+          <h3>Sorbeton Morado:</h3>
+          <tr>
+            <th>Descripcion</th>
+            <th>Cantidad 12.5</th>
+            <th>Cantidad 100</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Pig. Magenta Flourecente</td>
+            <td>35 gr.</td>
+            <td>280 gr.</td>
+          </tr>
+          <tr>
+            <td>Dioxido de Titanio</td>
+            <td>20 gr.</td>
+            <td>160 gr.</td>
+          </tr>
+          <tr>
+            <td>Pigmento Azul felipe</td>
+            <td>0.6 gr.</td>
+            <td>4.8 gr.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div></br>
+
+    <div>
+      <table id="productos">
+        <thead class="rosado">
+          <h3>Sorbeton Rosado:</h3>
+          <tr>
+            <th>Descripcion</th>
+            <th>Cantidad 12.5</th>
+            <th>Cantidad 100</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Pig. Magenta Flourecente</td>
+            <td>35 gr.</td>
+            <td>280 gr.</td>
+          </tr>
+          <tr>
+            <td>Dioxido de Titanio</td>
+            <td>20 gr.</td>
+            <td>160 gr.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div></br>
+
+    <div>
+      <table id="productos">
+        <thead class="blanco">
+          <h3>Sorbeton Celeste:</h3>
+          <tr>
+            <th>Descripcion</th>
+            <th>Cantidad 12.5</th>
+            <th>Cantidad 100</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Masterbach Celeste Andino</td>
+            <td>100 gr.</td>
+            <td>800 gr.</td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div></br>
+
+    <div>
+      <table id="productos">
+        <thead class="rojo">
+          <h3>Sorbeton Rojo:</h3>
+          <tr>
+            <th>Descripcion</th>
+            <th>Cantidad 12.5</th>
+            <th>Cantidad 100</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Masterbach Rojo Escarlata</td>
+            <td>100 gr.</td>
+            <td>800 gr.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div></br>
+
+    <div>
+      <table id="productos">
         <thead class="verde">
-            <h3>Sorbeton Verde:</h3>
-            <tr><th>Descripcion</th><th>Cantidad 12.5</th><th>Cantidad 100</th></tr>
+          <h3>Sorbeton Verde:</h3>
+          <tr>
+            <th>Descripcion</th>
+            <th>Cantidad 12.5</th>
+            <th>Cantidad 100</th>
+          </tr>
         </thead>
-        <tbody> 
-            <tr><td>Masterbach Verde Palta</td><td>110 gr.</td><td>880gr.</td></tr>
+        <tbody>
+          <tr>
+            <td>Masterbach Verde Palta</td>
+            <td>110 gr.</td>
+            <td>880gr.</td>
+          </tr>
         </tbody>
-    </table>
-  </div></br>
-  <button id="btnCrearPdf">Click aquí</button>
-  
-  <script><!--Script de la barra de menu-->
-  //const closeHomeMenu = document.querySelector('.menu-home')
-  //closeHomeMenu.addEventListener('click', (e).style.width=0)
-  function openNav() {
-    document.getElementById("mySidenav").style.width = "250px";
-  }
-  function openNavRight() {
-    document.getElementById("mySidenavRight").style.width = "250px";
-  }
-  
-  function closeNav() {
-    document.getElementById("mySidenav").style.width = "0";
-  }
-  function closeNavRight() {
-    document.getElementById("mySidenavRight").style.width = "0";
-  }
+      </table>
+    </div></br>
+
+  </div>
+  <button id="btnCrearPDF">Click aquí</button>
+
+  <script>
+    const btnPrint = document.getElementById('btnCrearPDF')
+    btnPrint.addEventListener('click', imprimirImagen)
+    function imprimirImagen() {
+      console.log('dentrod de imprimir...')
+      const printFrame = document.createElement('iframe');
+      printFrame.style.display = 'none';
+      printFrame.src = '/documento.html';
+      document.body.appendChild(printFrame)
+      printFrame.contentWindow.focus();
+      printFrame.contentWindow.print();
+
+      //let body = document.querySelector('body').innerHTML;
+      //let data = document.getElementById('imprimible').innerHTML;
+      //document.getElementById('body').innerHTML = data;
+      //alert(data);
+      //window.print();
+      //document.getElementById('body').innerHTML = body;
+    }
   </script>
-    <script><!--Script de la barra de menu-->
 
-        document.addEventListener('DOMContentLoaded', () => {
-        
-        // Get all "navbar-burger" elements
-        const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
-        
-        // Add a click event on each of them
-        $navbarBurgers.forEach( el => {
-          el.addEventListener('click', () => {
-        
-            // Get the target from the "data-target" attribute
-            const target = el.dataset.target;
-            const $target = document.getElementById(target);
-        
-            // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
-            el.classList.toggle('is-active');
-            $target.classList.toggle('is-active');
-        
-          });
+  <script><!--Script de la barra de menu-->
+    //const closeHomeMenu = document.querySelector('.menu-home')
+    //closeHomeMenu.addEventListener('click', (e).style.width=0)
+    function openNav() {
+      document.getElementById("mySidenav").style.width = "250px";
+    }
+    function openNavRight() {
+      document.getElementById("mySidenavRight").style.width = "250px";
+    }
+
+    function closeNav() {
+      document.getElementById("mySidenav").style.width = "0";
+    }
+    function closeNavRight() {
+      document.getElementById("mySidenavRight").style.width = "0";
+    }
+  </script>
+  <script><!--Script de la barra de menu-->
+
+    document.addEventListener('DOMContentLoaded', () => {
+
+      // Get all "navbar-burger" elements
+      const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+
+      // Add a click event on each of them
+      $navbarBurgers.forEach(el => {
+        el.addEventListener('click', () => {
+
+          // Get the target from the "data-target" attribute
+          const target = el.dataset.target;
+          const $target = document.getElementById(target);
+
+          // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
+          el.classList.toggle('is-active');
+          $target.classList.toggle('is-active');
+
         });
-        
-        });
-               
-        
-    </script>
-    <script><!--Calcula los totales de cada columna de tabla-->
-        let total = 0;
-        let total2 =0;
-        /*seleccionamos todos los nodos 'td' en una lista ojeto*/
-        let celdasPrecio = document.querySelectorAll('.c');
-        let celdasPrecio2 = document.querySelectorAll('.c2');
-        /*recorremos lista ojeto*/
-        for(let i = 0;i<celdasPrecio.length;++i){
-            total += parseFloat(celdasPrecio[i].firstChild.data); /*accedemos a cada primer hijo del nodo 'td' y obtenemos su dato*/
-        }
-        for(let j = 0;j<celdasPrecio2.length;++j){
-            total2 += parseFloat(celdasPrecio2[j].firstChild.data); /*accedemos a cada primer hijo del nodo 'td' y obtenemos su dato*/
-        }
-        let nuevaFila = document.createElement('tr');/*creamos un nodo en el arbol html de tipo 'tr'*/
+      });
 
-        let celdaEtiquetaTotal = document.createElement('td')
-        let textoEtiqueta=document.createTextNode('Total:')/*creamos un nodo en el arbol html de tipo 'tr'*/
-        celdaEtiquetaTotal.appendChild(textoEtiqueta)
-        nuevaFila.appendChild(celdaEtiquetaTotal)
-    
-        let celdaValorTotal = document.createElement('td');
-        let textoCeldaValorTotal=document.createTextNode(total);
-        celdaValorTotal.appendChild(textoCeldaValorTotal);
-        nuevaFila.appendChild(celdaValorTotal);
-        
-        let celdaValorTotal2 = document.createElement('td');
-        let textoCeldaValorTotal2=document.createTextNode(total2);
-        celdaValorTotal2.appendChild(textoCeldaValorTotal2);
-        nuevaFila.appendChild(celdaValorTotal2);
+    });
 
-        document.getElementById('pie_tabla').appendChild(nuevaFila)
-        
 
-    </script>
+  </script>
+  <script><!--Calcula los totales de cada columna de tabla-->
+    let total = 0;
+    let total2 = 0;
+    /*seleccionamos todos los nodos 'td' en una lista ojeto*/
+    let celdasPrecio = document.querySelectorAll('.c');
+    let celdasPrecio2 = document.querySelectorAll('.c2');
+    /*recorremos lista ojeto*/
+    for (let i = 0; i < celdasPrecio.length; ++i) {
+      total += parseFloat(celdasPrecio[i].firstChild.data); /*accedemos a
+    cada primer hijo del nodo 'td' y obtenemos su dato*/ } for (let j = 0; j < celdasPrecio2.length; ++j) {
+      total2
+      += parseFloat(celdasPrecio2[j].firstChild.data); /*accedemos a cada primer hijo del nodo 'td' y obtenemos su dato*/
+    }
+    let nuevaFila = document.createElement('tr');/*creamos un nodo en el arbol html de tipo 'tr' */ let
+      celdaEtiquetaTotal = document.createElement('td'); let textoEtiqueta = document.createTextNode('Total:')/*creamos un
+    nodo en el arbol html de tipo 'tr' */ celdaEtiquetaTotal.appendChild(textoEtiqueta)
+    nuevaFila.appendChild(celdaEtiquetaTotal) let celdaValorTotal = document.createElement('td'); let
+      textoCeldaValorTotal = document.createTextNode(total); celdaValorTotal.appendChild(textoCeldaValorTotal);
+    nuevaFila.appendChild(celdaValorTotal); let celdaValorTotal2 = document.createElement('td'); let
+      textoCeldaValorTotal2 = document.createTextNode(total2); celdaValorTotal2.appendChild(textoCeldaValorTotal2);
+    nuevaFila.appendChild(celdaValorTotal2); document.getElementById('pie_tabla').appendChild(nuevaFila) </script>
 </body>
+
 </html>

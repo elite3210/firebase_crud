@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .keyCalculator {
+            width: 60px;
+            height: 60px;
+            color: rgb(14, 14, 104);
+            margin: 3px 0px 0px 2px;
+            border: none;
+            border-radius: 4px;
+            font-size: large;
+            padding: 0px;
+        }
+
+        .equal {
+            width: 60px;
+            height: 60px;
+            color: rgb(255, 255, 255);
+            background-color: rgb(9, 9, 65);
+            margin-top: 3px;
+            border: none;
+            border-radius: 2px;
+            font-size: large;
+        }
+
+        .keyCalculator:hover {
+            width: 60px;
+            height: 60px;
+            color: rgb(0, 0, 0);
+            margin-top: 3px;
+            border: none;
+            border-radius: 2px;
+            font-size: large;
+        }
+
+        .calculator {
+            width: 264px;
+            background-color: darkgrey;
+            padding: 2px 2px 6px 2px;
+        }
+
+        .display {
+            width: 254px;
+            height: 60px;
+            font-size: x-large;
+        }
+
+        .display.top {
+            border-color: transparent;
+            border: 0px 0px 0px 0px;
+            margin: 0px;
+        }
+
+        .display.bottom {
+            border-color: transparent;
+            border: 0px 0px 0px 0px;
+            margin: 0px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="calculator" id="calculator">
+        <div class="displayUnion">
+            <input class="display top" id="display" type="text" readonly>
+            <input class="display bottom" id="displayBottom" type="text" readonly>
+        </div>
+
+        <button class="keyCalculator" id="keyClear">C</button>
+        <button class="keyCalculator" id="keyPower">^</button>
+        <button class="keyCalculator" id="keyPercentage">%</button>
+        <button class="keyCalculator" id="keyDivide">/</button><br>
+        <button class="keyCalculator" id="key7">7</button>
+        <button class="keyCalculator" id="key8">8</button>
+        <button class="keyCalculator" id="key9">9</button>
+        <button class="keyCalculator" id="keyMultiply">*</button><br>
+        <button class="keyCalculator" id="key4">4</button>
+        <button class="keyCalculator" id="key5">5</button>
+        <button class="keyCalculator" id="key6">6</button>
+        <button class="keyCalculator" id="keyMinus">-</button><br>
+        <button class="keyCalculator" id="key1">1</button>
+        <button class="keyCalculator" id="key2">2</button>
+        <button class="keyCalculator" id="key3">3</button>
+        <button class="keyCalculator" id="keyPlus">+</button>
+        <button class="keyCalculator" id="key0">0</button>
+        <button class="keyCalculator" id="key100">00</button>
+        <button class="keyCalculator" id="keyPoint">.</button>
+        <button class="keyCalculator equal" id="keyEqual">=</button>
+    </div>
+
+    <script src="calculatorController.js"></script>
+</body>
+
+</html>

@@ -11,10 +11,10 @@ function eventListener(){
 
 async function getNumeroEgreso() {
     const numeroEgreso  =document.getElementById('numero');
+    const fecha  =document.getElementById('fecha');
     let numeroEgresoDB  = await traerUnNumeracion('Egreso');
     let dato            = numeroEgresoDB.data();
     numeroEgreso.value  =Number(dato.ultimoNumero)+1;
-    const fecha  =document.getElementById('fecha');
     fecha.value  =getFechaActual();
     console.log('fecha',getFechaActual())
 }
@@ -63,7 +63,10 @@ class IProducto{
         </div>
         `
         productList.appendChild(element)
+        console.log('campos:',producto.fecha,producto.dniColaborador,producto.numeroEgreso,creado,producto.name,tipoTransaccion,importeDebe,producto.price)
 
+
+        //fechaTransaccion,dniColaborador,numeroDocumento,creado,descripcion,tipoTransaccion,importeDebe,importeHaber
         guardarTransaccionesLaboral(producto.fecha,producto.dniColaborador,producto.numeroEgreso,creado,producto.name,tipoTransaccion,importeDebe,producto.price);
         updateNumeracion('Egreso',{ultimoNumero:producto.numeroEgreso})
         console.log('se registro un pago por:',producto.price,producto.numeroEgreso)
@@ -88,7 +91,7 @@ class IProducto{
         const container = document.querySelector('.container');
         const app = document.querySelector('#App');
         container.insertBefore(div,app)
-        setTimeout(()=>{document.querySelector('.alert').remove()},1500)
+        setTimeout(()=>{document.querySelector('.alert').remove()},2000)
     };
 }
 
@@ -97,6 +100,8 @@ class IProducto{
 
 
 document.getElementById('product-form').addEventListener('submit',function(e) {
+    e.preventDefault()
+    
     const numeroEgreso  = document.getElementById('numero').value;
     const fecha         = document.getElementById('fecha').value;
     const name          = `EG N°${numeroEgreso} ${document.getElementById('name').value}`;
@@ -105,6 +110,7 @@ document.getElementById('product-form').addEventListener('submit',function(e) {
     
     
     let producto        = new Producto(numeroEgreso,fecha,name,price,dniColaborador)
+    console.log('Producto:',producto)
     let ui              = new IProducto()
 
     if (numeroEgreso==='' || name==='' || price ==='' || dniColaborador==='' || fecha==='') {
@@ -116,11 +122,11 @@ document.getElementById('product-form').addEventListener('submit',function(e) {
     let celdaNumero=document.getElementById('numero')
     celdaNumero.value=Number(numeroEgreso)+1;
     console.log(producto)
-    e.preventDefault()
+    
 })
 
 document.getElementById('product-list').addEventListener('click',function(e){
+    e.preventDefault()
     const ui = new IProducto;
     ui.deleteProduct(e.target)
-    e.preventDefault()
 })

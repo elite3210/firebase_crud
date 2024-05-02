@@ -1,0 +1,182 @@
+@import url("https://fonts.googleapis.com/css2?family=Varela+Round&display=swap");
+@import url("https://use.fontawesome.com/releases/v6.5.1/css/all.css");
+
+h3{
+    margin: flex;
+}
+
+.container{
+    --color:#01af5e;
+    display: flex;
+    gap: 0px;
+    align-items: center;
+    justify-content: right;
+    font-family: "Varela Round",sans-serif;
+    border: solid var(--color) ;
+    border-radius:0px;
+    padding: 2px 50px 2px 3px;
+
+}
+
+.item{
+    color: white;
+    font-size: 0.8em;
+    align-items: center;
+    height: 24px;
+    width: 12%;
+    margin: 0px;
+    background-color: var(--color);
+    border-radius: 0px 0px 0px 0px;
+    padding: 4px 0px 4px 16px;
+    position: relative;
+    cursor: pointer;
+}
+
+
+.item::after{
+
+    content: "";
+    position: absolute;
+    top: 0px;
+    left: -1px;
+    z-index: 3;
+    height: 90%;
+    box-sizing: border-box;
+    border-style: solid;
+    border-color: transparent transparent transparent var(--color);
+    border-width: 16px 16px 16px 16px;
+}
+
+.item::before{
+    content: "";
+    position: absolute;
+    top: 0px;
+    left: 1px;
+    z-index: 2;
+    height: 80%;
+    box-sizing: border-box;
+    border-style: solid;
+    border-color: transparent transparent transparent white;
+    border-width: 16px 16px 16px 16px;
+}
+
+
+
+
+/*
+
+.item:nth-child(2){
+    --color:#813085;
+}
+
+.item:nth-child(3){
+    --color:#119630;
+}
+*/
+
+.layer{
+    background-color: transparent;
+
+    border-radius: inherit;
+    width: 100%;
+    
+    position: relative;
+    left: 20px;
+    transition: left 1s;
+}
+h3{
+    font-size: 1em;
+    height: 20px;
+    margin: 2px;
+
+    padding-left: 2px;
+    color: #fff;
+}
+h4{
+    color: #fff;
+    text-align: center;
+    font-size: 14px;
+    padding-top: 10px;
+}
+
+span{
+    background-color: var(--color);
+    --color-sombra:#0000002c;
+    display: none;
+    left: 10%;
+    position: absolute;
+    transition: left 1s;
+}
+
+
+.item:hover span{
+    left: 60px;
+    
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    color: #fff;
+    background-color: aquamarine;
+    display: grid;
+    place-content:center;
+    box-shadow: 
+    var(--color-sombra) 0px 1px 2px,
+    var(--color-sombra) 0px 2px 4px,
+    var(--color-sombra) 0px 4px 8px,
+    var(--color-sombra) 0px 8px 16px,
+    var(--color-sombra) 0px 16px 32px,
+    var(--color-sombra) 0px 32px 64px;
+    font-size: 14px;
+   
+    
+    bottom: 5px;
+    
+}
+
+i:hover{
+    color: blueviolet;
+}
+
+
+/*
+.item::after{
+    content: "";
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: 2;
+    height: 100%;
+    box-sizing: border-box;
+    border-style: solid;
+    border-color: transparent transparent transparent white;
+    border-width: 18px 18px 18px 18px;
+}
+
+.item::after{
+    content: "";
+    position: absolute;
+    top: 0px;
+    left: 96px;
+    z-index: 3;
+    height: 100%;
+    box-sizing: border-box;
+    border-style: solid;
+    border-color: transparent transparent transparent var(--color);
+    border-width: 18px 18px 18px 18px;
+}
+
+.item::before{
+    content: "";
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: 2;
+    height: 100%;
+    box-sizing: border-box;
+    border-style: solid;
+    border-color: transparent transparent transparent white;
+    border-width: 18px 18px 18px 18px;
+}
+
+
+

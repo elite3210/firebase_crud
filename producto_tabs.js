@@ -5,8 +5,6 @@ import {Datatable} from './dataTable.js'
 //tambien remueve la clase active de los paneles, despues del recorrido
 //le agrega al tab y panels las clase active
 
-const categorias=['Descartables', 'Cucharitas', 'Embalaje', 'Aditivo', 'Aditivos', 'Piñateria', 'Especial', 'Paliglobos', 'Material', 'Picador', 'Sorbetes', 'Forrados', 'Flexibles', 'Polipapel', 'Sorbeton', 'Sorbeton ']
-
 export function renderTabs(element,arrayObjetos) {
     const array=eliminarDuplicados(arrayObjetos,'categoriaPadre')
     const tabs_container=document.getElementById(element);
@@ -52,22 +50,26 @@ export function renderTabs(element,arrayObjetos) {
 
     agregaEventoTabs(tabsX,panelsX);
 
+    let inventarioTotal=Math.round(arrayObjetos.reduce((tot,obj)=>{ return tot+Number(obj['values'].stock*obj['values'].precio)},0))
+
     array.forEach((element,j)=>{
         let importe=document.getElementById(`title-${j}`)
         let objetosFiltrados=arrayObjetos.filter(fila=>fila['values'].categoriaPadre==element)
+        let importeCategoria=objetosFiltrados.reduce((tot,obj)=>tot+Number(obj['values'].importe),0)
         //console.log('h2',importe)
-        importe.textContent=new Intl.NumberFormat(navigator.languages).format(objetosFiltrados.reduce((tot,obj)=>tot+Number(obj['values'].importe),0));
-        let titulo= {' ':'',CODIGO:'idProducto',NOMBRE:'nombre',STOCK:'stock',UND:'unidad',PRECIO:'precio',VALOR:'importe'}
+        importe.textContent=`${new Intl.NumberFormat(navigator.languages).format(importeCategoria)}/${inventarioTotal}=${Math.round((importeCategoria/inventarioTotal)*100)}%`;
+        
+        let titulo= {CODIGO:'idProducto',NOMBRE:'nombre',STOCK:'stock',SEPARADO:'assignedStock',DISPONIBLE:'quantityAvailable',OBJETIVO:'targetStock',REPONER:'stockReplaced',VALOR:'importe'}
         let dt    = new Datatable(`#dataTable-${j}`,[]);
                     dt.setData(objetosFiltrados,titulo);
-                    dt.makeTable();
+                    dt.makeTable2();
     })
 }
 
 function agregaEventoTabs(tabs,panels){//recibe un NodeList con queryselectorALL, en especifico.
     tabs.forEach((tab,i)=>{
         tab.addEventListener('click',(e)=>{
-            console.log('click en:',e.target)
+            //console.log('click en:',e.target)
             panels.forEach((panel,j) => {
                 panel.classList.remove('active');   
                 tabs[j].classList.remove('active');
