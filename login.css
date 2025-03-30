@@ -1,0 +1,57 @@
+* {
+
+    margin: 0;
+    padding: 0;
+    box-sizing: content-box;
+
+}
+
+body {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #F0F4F3;
+}
+
+/* translateX(-120%) traslada a la derecha a sign-up*/
+.sign-up {
+    transform: translateX(-120%);
+
+}
+.container.toggle .sign-up {
+    transform: translateX(0%);
+    transform: translateY(-100%);
+}
+
+/*desplaza el contenido de iniciar sesion*/
+.container.toggle .sign-in {
+    transform: translateX(120%);
+}
+
+
+
+/*Welcome*/
+
+.welcome-sign-in {
+    transform: translateX(-250%);
+    
+}
+/*traslada al boton de registrar welcome*/
+.welcome-sign-up {
+    transform: translateX(0%);
+    transform: translateY(-850%);
+    
+}
+
+.container.toggle .welcome-sign-up {
+    transform: translateX(250%);
+    
+}
+
+/*traslada al boton de iniciar welcome*/
+.container.toggle .welcome-sign-in {
+    transform: translateX(0);
+    transform: translateY(-380%);
+}

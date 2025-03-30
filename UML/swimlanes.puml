@@ -1,0 +1,17 @@
+@startuml Venta
+|Cliente|
+start
+:Selecciona Producto;
+:Especifica las caracteristicas;
+|Vendedor|
+:Verifica disponibilidad;
+|Sistema|
+if(existeStock) then (Si)
+    :Actividad 4;
+else (No)
+:OfreceAlternativas;
+|Cliente|
+:Actividad 5;
+:Fin;
+stop
+@enduml

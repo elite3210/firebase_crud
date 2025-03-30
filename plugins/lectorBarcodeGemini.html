@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Captura de Códigos de Barras</title>
+    <script src="./quagga.js"></script>
+    <style>
+        video {
+            width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <input type="text" id="barcodeInput" disabled>
+    <button id="captureButton">Capturar Código de Barras</button>
+    <video id="video" width="320" height="240"></video>
+    <div id="barcodeResult"></div>
+
+
+
+    <script>
+
+
+        const video = document.getElementById('video');
+        const captureButton = document.getElementById('captureButton');
+        const barcodeInput = document.getElementById('barcodeInput');
+        const barcodeResult = document.getElementById('barcodeResult');
+
+        function startReading() {
+            navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+                .then(stream => {
+                    video.srcObject = stream;
+                    video.play();
+
+                    // Create canvas with willReadFrequently attribute
+                    //const canvas = document.createElement('canvas');
+                    //const ctx = canvas.getContext('2d', { willReadFrequently: true });
+
+                    // Iniciar el escaneo de códigos de barras inmediatamente
+                    Quagga.start();
+                })
+                .catch(err => {
+                    console.error('Error al acceder a la cámara:', err);
+                });
+        }
+
+        Quagga.init({
+            inputStream: {
+                name: "Live",
+                type: "LiveStream",
+                target: video
+            },
+            decoder: {
+                readers: ["code_39_reader"], // Ajusta según los códigos de barras que uses
+                debug: true
+            },
+            locate: true,
+            numOfWorkers: 2, // Ajusta el número de workers según tu hardware
+            frequency: 10, // Ajusta la frecuencia de escaneo
+            constraints: {
+                width: 640,
+                height: 480,
+                facingMode: "environment"
+            }
+        }, function (err) {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            console.log("Iniciando escaneo...");
+        });
+
+        //Quagga.onDetected(()=>{alert('detectado')});
+
+        Quagga.onDetected(function (result) {
+            barcodeInput.value = result.codeResult.code;
+            barcodeResult.textContent = result.codeResult.code;
+            console.log('barcodeResult.textContent', barcodeResult.textContent, barcodeResult);
+
+            // Detener el escaneo después de cada detección (opcional)
+            Quagga.stop();
+        });
+
+        captureButton.addEventListener('click', startReading);
+
+        /*
+
+const video = document.getElementById('video');
+const captureButton = document.getElementById('captureButton');
+const barcodeInput = document.getElementById('barcodeInput');
+const barcodeResult = document.getElementById('barcodeResult');
+
+function startReading() {
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+        .then(stream => {
+            video.srcObject = stream;
+            video.play();
+
+            // Iniciar el escaneo de códigos de barras inmediatamente
+            Quagga.start();
+        })
+        .catch(err => {
+            console.error('Error al acceder a la cámara:', err);
+        });
+}
+
+Quagga.init({
+    inputStream: {
+        name: "Live",
+        type: "LiveStream",
+        target: video
+    },
+    decoder: {
+        readers: ["code_39_reader"],
+        debug: true // Activar modo debug para ver más detalles
+    },
+    locate: true // Activar la localización del código de barras
+}, function(err) {
+    if (err) {
+        console.log(err);
+        return;
+    }
+    console.log("Iniciando escaneo...");
+});
+
+Quagga.onDetected(function(result) {
+    barcodeInput.value = result.codeResult.code;
+    barcodeResult.textContent = result.codeResult.code;
+    // Detener el escaneo después de cada detección (opcional)
+    Quagga.stop();
+});
+
+captureButton.addEventListener('click', startReading);
+*/
+        /*
+const video = document.getElementById('video');
+const captureButton = document.getElementById('captureButton');
+const barcodeInput = document.getElementById('barcodeInput');
+const barcodeResult = document.getElementById('barcodeResult');
+
+function startReading() {
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+        .then(stream => {
+            video.srcObject = stream;
+            video.play();
+        })
+        .catch(err => {
+            console.error('Error al acceder a la cámara:', err);
+        });
+}
+
+Quagga.init({
+    inputStream: {
+        name: "Live",
+        type: "LiveStream",
+        target: video
+    },
+    decoder: {
+        readers: ["code_39_reader"]
+    }
+}, function(err) {
+    if (err) {
+        console.log(err);
+        return;
+    }
+    console.log("Iniciando escaneo...");
+    Quagga.start();
+
+    Quagga.onDetected(function(result) {
+        barcodeInput.value = result.codeResult.code;
+        barcodeResult.textContent = result.codeResult.code;
+        Quagga.stop();
+    });
+});
+
+captureButton.addEventListener('click', startReading);
+*/
+    </script>
+</body>
+
+</html>

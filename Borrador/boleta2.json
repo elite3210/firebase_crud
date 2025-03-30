@@ -1,1 +1,79 @@
 [{"payStatus":false,"description":"Alexandra","salida":"2023-08-11T20:00","title":"2023-08-11T12:00","id":"CXHWbaafZmhPoT24VKZJ","nombreDia":"Viernes","hora":"8:0","tiempo":8},{"salida":"2023-08-10T19:00","title":"2023-08-10T13:00","description":"Alexandra","payStatus":false,"id":"FPWji4DRBrGGDN3ni2pm","nombreDia":"Jueves","hora":"6:0","tiempo":6},{"payStatus":false,"title":"2023-08-09T14:30","salida":"2023-08-09T17:00","description":"Alexandra","id":"TatBeDxNKr35KGUeq20P","nombreDia":"Miercoles","hora":"2:30","tiempo":2.5},{"salida":"2023-08-09T13:30","payStatus":false,"title":"2023-08-09T08:10","description":"Alexandra","id":"heGZBZ4kTGoSw47lM0Jz","nombreDia":"Miercoles","hora":"5:20","tiempo":5.33},{"description":"Alexandra","payStatus":false,"salida":"2023-08-08T21:00","title":"2023-08-08T12:30","id":"P9yAsex7Rn61EPQnIANz","nombreDia":"Martes","hora":"8:30","tiempo":8.5},{"title":"2023-08-07T13:00","salida":"2023-08-07T20:30","payStatus":false,"description":"Alexandra","id":"bN89KxaUy70cypnmtvlC","nombreDia":"Lunes","hora":"7:30","tiempo":7.5}]
+
+
+[
+    {"values":{"horario":"Regular","dniColaborador":"09551196","payStatus":false,"title":"2024-05-25T14:15","salida":"2024-05-25T19:01","description":"Rocio","nombreDia":"Sabado","hora":"4:46","tiempo":4.766666666666667,"importe":16.01314},"id":"dbnFSVGBOBgBhchHOOrH"},
+{"values":{"salida":"2024-05-25T13:15","horario":"Regular","description":"Rocio","payStatus":false,"dniColaborador":"09551196","title":"2024-05-25T08:20","nombreDia":"Sabado","hora":"4:55","tiempo":4.916666666666667,"importe":16.51705},"id":"3NNv1HCk2H6ZB31gqTmo"},
+{"values":{"payStatus":false,"salida":"2024-05-24T21:00","horario":"Regular","title":"2024-05-24T14:10","description":"Rocio","dniColaborador":"09551196","nombreDia":"Viernes","hora":"6:50","tiempo":6.833333333333333,"importe":22.9559},"id":"OMV8H0CfvrrdSNWyIYvZ"},
+{"values":{"title":"2024-05-24T08:25","dniColaborador":"09551196","payStatus":false,"description":"Rocio","horario":"Regular","salida":"2024-05-24T14:00","nombreDia":"Viernes","hora":"5:35","tiempo":5.583333333333333,"importe":18.756649999999997},"id":"qMhsNLU1sooF5oDT4QWG"},
+{"values":{"title":"2024-05-23T14:50","description":"Rocio","dniColaborador":"09551196","salida":"2024-05-23T20:15","payStatus":false,"horario":"Regular","nombreDia":"Jueves","hora":"5:25","tiempo":5.416666666666667,"importe":18.19675},"id":"qrPquU52rJeGxMIUBRja"},
+{"values":{"title":"2024-05-23T08:15","salida":"2024-05-23T13:40","description":"Rocio","horario":"Regular","payStatus":false,"dniColaborador":"09551196","nombreDia":"Jueves","hora":"5:25","tiempo":5.416666666666667,"importe":18.19675},"id":"GG2R2czDFhYXBBzZayc9"},
+{"values":{"title":"2024-05-22T14:40","horario":"Regular","dniColaborador":"09551196","payStatus":false,"salida":"2024-05-22T20:15","description":"Rocio","nombreDia":"Miercoles","hora":"5:35","tiempo":5.583333333333333,"importe":18.756649999999997},"id":"bAaDpkkvQkZMkiLtWA8n"},
+{"values":{"description":"Rocio","payStatus":false,"title":"2024-05-22T08:15","dniColaborador":"09551196","salida":"2024-05-22T13:30","horario":"Regular","nombreDia":"Miercoles","hora":"5:15","tiempo":5.25,"importe":17.63685},"id":"0RaOzY7kbAkmlIZstYbz"},
+{"values":{"description":"Rocio","salida":"2024-05-21T21:10","horario":"Regular","payStatus":false,"title":"2024-05-21T14:53","dniColaborador":"09551196","nombreDia":"Martes","hora":"6:17","tiempo":6.283333333333333,"importe":21.10823},"id":"0HAcGTnORgYVNnvaTsmD"},
+{"values":{"payStatus":false,"dniColaborador":"09551196","horario":"Regular","salida":"2024-05-21T13:50","title":"2024-05-21T08:15","description":"Rocio","nombreDia":"Martes","hora":"5:35","tiempo":5.583333333333333,"importe":18.756649999999997},"id":"wa1W3JYWY6zSE4jTuzzh"},
+{"values":{"dniColaborador":"09551196","salida":"2024-05-20T20:25","description":"Rocio","payStatus":false,"title":"2024-05-20T14:40","horario":"Regular","nombreDia":"Lunes","hora":"5:45","tiempo":5.75,"importe":19.31655},"id":"2QOzghcSLHx2gdhA53ND"},
+{"values":{"dniColaborador":"09551196","horario":"Regular","payStatus":false,"salida":"2024-05-20T13:40","description":"Rocio","title":"2024-05-20T08:15","nombreDia":"Lunes","hora":"5:25","tiempo":5.416666666666667,"importe":18.19675},"id":"aAa3wf4cGHOflaq2zzzo"}
+]
+
+[
+    {"title":"2023-08-12T08:25","payStatus":true,"description":"Mariela","salida":"2023-08-12T14:13","id":"kF20v0XJkyEOgs8dS5xk","nombreDia":"Sabado","hora":"5:48","tiempo":5.8,"importe":19.48452},
+{"salida":"2023-08-11T21:41","description":"Mariela","title":"2023-08-11T14:15","payStatus":true,"id":"Dx4RPZmzBy1xGhvVVJqr","nombreDia":"Viernes","hora":"7:26","tiempo":7.43,"importe":24.960341999999997},
+{"description":"Mariela","payStatus":true,"title":"2023-08-11T08:45","salida":"2023-08-11T13:07","id":"TW37TtskMhfHOnRTilND","nombreDia":"Viernes","hora":"4:22","tiempo":4.36,"importe":14.646984000000002},
+{"salida":"2023-08-10T22:45","payStatus":true,"description":"Mariela","title":"2023-08-10T15:00","id":"00ZU81FSxAJrKQ6IW1yP","nombreDia":"Jueves","hora":"7:45","tiempo":7.75,"importe":26.03535},
+{"description":"Mariela","salida":"2023-08-09T22:55","title":"2023-08-09T15:00","payStatus":true,"id":"MSYrT88irGlGuyafXOvJ","nombreDia":"Miercoles","hora":"7:55","tiempo":7.91,"importe":26.572854},
+{"description":"Mariela","salida":"2023-08-08T21:53","payStatus":true,"title":"2023-08-08T16:05","id":"vxRcpAnNEa2PI7YaadHp","nombreDia":"Martes","hora":"5:48","tiempo":5.8,"importe":19.48452},
+{"payStatus":true,"salida":"2023-08-07T22:55","description":"Mariela","title":"2023-08-07T14:40","id":"H6mSx0AVYXHo6fciS73k","nombreDia":"Lunes","hora":"8:15","tiempo":8.25,"importe":27.715049999999998}
+]
+
+
+[
+    {\"id\":\"QOLeRKpBaqFezhTqN3sm\",\"values\":{\"horario\":\"Regular\",\"description\":\"Angela\",\"title\":\"2024-01-06T09:00\",\"salida\":\"2024-01-06T20:10\",\"payStatus\":false,\"nombreDia\":\"Sabado\",\"hora\":\"11:10\",\"tiempo\":11.166666666666666,\"importe\":40.38313333333333}},
+    {\"id\":\"Z3ft68sQb6qd5Zi2LQaX\",\"values\":{\"description\":\"Angela\",\"title\":\"2024-01-05T09:30\",\"payStatus\":false,\"horario\":\"Regular\",\"salida\":\"2024-01-05T21:00\",\"nombreDia\":\"Viernes\",\"hora\":\"11:30\",\"tiempo\":11.5,\"importe\":41.5886}},
+    {\"id\":\"e3ykC69yLJQnCiT89kOH\",\"values\":{\"horario\":\"Noche\",\"description\":\"Angela\",\"payStatus\":false,\"salida\":\"2024-01-05T01:30\",\"title\":\"2024-01-04T21:30\",\"nombreDia\":\"Jueves\",\"hora\":\"4:0\",\"tiempo\":4,\"importe\":18.182}},
+    {\"id\":\"jxvRyFjWkIr8e8ozTQND\",\"values\":{\"horario\":\"Regular\",\"payStatus\":false,\"title\":\"2024-01-04T07:30\",\"salida\":\"2024-01-04T15:30\",\"description\":\"Angela\",\"nombreDia\":\"Jueves\",\"hora\":\"8:0\",\"tiempo\":8,\"importe\":28.9312}},
+    {\"id\":\"Bul9bLfArXh0jvUZ2FPF\",\"values\":{\"salida\":\"2024-01-03T11:45\",\"description\":\"Angela\",\"horario\":\"Regular\",\"title\":\"2024-01-03T09:00\",\"payStatus\":false,\"nombreDia\":\"Miercoles\",\"hora\":\"2:45\",\"tiempo\":2.75,\"importe\":9.9451}},
+    {\"id\":\"hte3AIXymDjzlGIb3S9R\",\"values\":{\"payStatus\":false,\"horario\":\"Regular\",\"salida\":\"2024-01-02T20:30\",\"title\":\"2024-01-02T09:00\",\"description\":\"Angela\",\"nombreDia\":\"Martes\",\"hora\":\"11:30\",\"tiempo\":11.5,\"importe\":41.5886}}
+]
+
+
+[{"id":"QOLeRKpBaqFezhTqN3sm","values":{"horario":"Regular","description":"Angela","title":"2024-01-06T09:00","salida":"2024-01-06T20:10","payStatus":false,"nombreDia":"Sabado","hora":"11:10","tiempo":11.166666666666666,"importe":40.38313333333333}},{"id":"Z3ft68sQb6qd5Zi2LQaX","values":{"description":"Angela","title":"2024-01-05T09:30","payStatus":false,"horario":"Regular","salida":"2024-01-05T21:00","nombreDia":"Viernes","hora":"11:30","tiempo":11.5,"importe":41.5886}},{"id":"e3ykC69yLJQnCiT89kOH","values":{"horario":"Noche","description":"Angela","payStatus":false,"salida":"2024-01-05T01:30","title":"2024-01-04T21:30","nombreDia":"Jueves","hora":"4:0","tiempo":4,"importe":18.182}},{"id":"jxvRyFjWkIr8e8ozTQND","values":{"horario":"Regular","payStatus":false,"title":"2024-01-04T07:30","salida":"2024-01-04T15:30","description":"Angela","nombreDia":"Jueves","hora":"8:0","tiempo":8,"importe":28.9312}},{"id":"Bul9bLfArXh0jvUZ2FPF","values":{"salida":"2024-01-03T11:45","description":"Angela","horario":"Regular","title":"2024-01-03T09:00","payStatus":false,"nombreDia":"Miercoles","hora":"2:45","tiempo":2.75,"importe":9.9451}},{"id":"hte3AIXymDjzlGIb3S9R","values":{"payStatus":false,"horario":"Regular","salida":"2024-01-02T20:30","title":"2024-01-02T09:00","description":"Angela","nombreDia":"Martes","hora":"11:30","tiempo":11.5,"importe":41.5886}},{"id":"CmQUglyJjQOF2EwOYcVs","values":{"payStatus":false,"horario":"Regular","salida":"2024-01-03T20:00","title":"2024-01-03T09:00","description":"Angela","nombreDia":"Lunes","hora":"11:00","tiempo":11.0,"importe":39.78}}]
+
+
+[
+{"serie":"50125:1","tarjeta":"50125","modelo":"7053","color":"Marron","suela":"Elena","talla":33},
+{"serie":"50125:2","tarjeta":"50125","modelo":"7053","color":"Marron","suela":"Elena","talla":34},
+{"serie":"50125:3","tarjeta":"50125","modelo":"7053","color":"Marron","suela":"Elena","talla":34},
+{"serie":"50125:4","tarjeta":"50125","modelo":"7053","color":"Marron","suela":"Elena","talla":35},
+{"serie":"50125:5","tarjeta":"50125","modelo":"7053","color":"Marron","suela":"Elena","talla":35},
+{"serie":"50125:6","tarjeta":"50125","modelo":"7053","color":"Marron","suela":"Elena","talla":35},
+{"serie":"50124:1","tarjeta":"50124","modelo":"7053","color":"Vino","suela":"Elena","talla":33},
+{"serie":"50124:2","tarjeta":"50124","modelo":"7053","color":"Vino","suela":"Elena","talla":34},
+{"serie":"50124:3","tarjeta":"50124","modelo":"7053","color":"Vino","suela":"Elena","talla":34},
+{"serie":"50124:4","tarjeta":"50124","modelo":"7053","color":"Vino","suela":"Elena","talla":35},
+{"serie":"50124:5","tarjeta":"50124","modelo":"7053","color":"Vino","suela":"Elena","talla":35},
+{"serie":"50124:6","tarjeta":"50124","modelo":"7053","color":"Vino","suela":"Elena","talla":35},
+{"serie":"50124:7","tarjeta":"50124","modelo":"7053","color":"Vino","suela":"Elena","talla":36},
+{"serie":"50124:8","tarjeta":"50124","modelo":"7053","color":"Vino","suela":"Elena","talla":36},
+{"serie":"50124:9","tarjeta":"50124","modelo":"7053","color":"Vino","suela":"Elena","talla":36},
+{"serie":"50124:10","tarjeta":"50124","modelo":"7053","color":"Vino","suela":"Elena","talla":37},
+{"serie":"50124:11","tarjeta":"50124","modelo":"7053","color":"Vino","suela":"Elena","talla":37},
+{"serie":"50124:12","tarjeta":"50124","modelo":"7053","color":"Vino","suela":"Elena","talla":38},
+{"serie":"50126:1","tarjeta":"50126","modelo":"6053","color":"Negro","suela":"Tabita","talla":33},
+{"serie":"50126:2","tarjeta":"50126","modelo":"6053","color":"Negro","suela":"Tabita","talla":34},
+{"serie":"50126:3","tarjeta":"50126","modelo":"6053","color":"Negro","suela":"Tabita","talla":34},
+{"serie":"50126:4","tarjeta":"50126","modelo":"6053","color":"Negro","suela":"Tabita","talla":35},
+{"serie":"50126:5","tarjeta":"50126","modelo":"6053","color":"Negro","suela":"Tabita","talla":35},
+{"serie":"50126:6","tarjeta":"50126","modelo":"6053","color":"Negro","suela":"Tabita","talla":35},
+{"serie":"50126:7","tarjeta":"50126","modelo":"6053","color":"Negro","suela":"Tabita","talla":36},
+{"serie":"50126:8","tarjeta":"50126","modelo":"6053","color":"Negro","suela":"Tabita","talla":36},
+{"serie":"50126:9","tarjeta":"50126","modelo":"6053","color":"Negro","suela":"Tabita","talla":36},
+{"serie":"50126:10","tarjeta":"50126","modelo":"6053","color":"Negro","suela":"Tabita","talla":37},
+{"serie":"50126:11","tarjeta":"50126","modelo":"6053","color":"Negro","suela":"Tabita","talla":37},
+{"serie":"50126:12","tarjeta":"50126","modelo":"6053","color":"Negro","suela":"Tabita","talla":38}
+]
+
+
+[{"talla33":1,"talla34":2,"talla35":3,"talla36":3,"talla37":2,"talla38":1,"serie":"50126:1","tarjeta":"50126","modelo":"6053","color":"Negro","suela":"Tabita"},
+{"talla33":1,"talla34":2,"talla35":3,"talla36":3,"talla37":2,"talla38":1,"serie":"50124:1","tarjeta":"50124","modelo":"7053","color":"Vino","suela":"Elena"}
+{"talla34":3,"talla35":3,"talla36":3,"talla37":3,"serie":"50121:1","tarjeta":"50121","modelo":"5052","color":"Marron","suela":"Mariposa"}]

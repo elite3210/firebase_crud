@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Estado de Situación Financiera</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .assets-section, .liabilities-section {
+            width: 45%;
+            background-color: #f4f4f4;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .item {
+            background-color: #fff;
+            border: 1px solid #e0e0e0;
+            padding: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .totals {
+            font-weight: bold;
+            margin-top: 20px;
+            text-align: right;
+        }
+        .export-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .patrimonio {
+            margin-top: 20px;
+            text-align: right;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <h1>Estado de Situación Financiera</h1>
+
+    <div class="container">
+        <div class="assets-section">
+            <h2>Activos</h2>
+            <form id="assets-form">
+                <select id="asset-category">
+                    <option value="">Seleccionar Categoría de Activo</option>
+                    <option value="efectivo">Efectivo</option>
+                    <option value="bancos">Bancos</option>
+                    <option value="inversiones">Inversiones</option>
+                    <option value="propiedades">Propiedades</option>
+                    <option value="vehiculos">Vehículos</option>
+                    <option value="otros">Otros Activos</option>
+                </select>
+                <input type="number" id="asset-value" placeholder="Valor" step="0.01" min="0">
+                <input type="text" id="asset-description" placeholder="Descripción">
+                <button type="button" onclick="addAsset()">Agregar Activo</button>
+            </form>
+            <div id="assets-list"></div>
+            <div id="assets-total" class="totals">Total Activos: $0.00</div>
+        </div>
+
+        <div class="liabilities-section">
+            <h2>Pasivos</h2>
+            <form id="liabilities-form">
+                <select id="liability-category">
+                    <option value="">Seleccionar Categoría de Pasivo</option>
+                    <option value="creditos">Créditos</option>
+                    <option value="prestamos">Préstamos</option>
+                    <option value="tarjetas">Tarjetas de Crédito</option>
+                    <option value="deudas">Otras Deudas</option>
+                </select>
+                <input type="number" id="liability-value" placeholder="Valor" step="0.01" min="0">
+                <input type="text" id="liability-description" placeholder="Descripción">
+                <button type="button" onclick="addLiability()">Agregar Pasivo</button>
+            </form>
+            <div id="liabilities-list"></div>
+            <div id="liabilities-total" class="totals">Total Pasivos: $0.00</div>
+        </div>
+    </div>
+
+    <div id="patrimonio" class="patrimonio">Patrimonio Neto: $0.00</div>
+    
+    <button class="export-btn" onclick="exportToPDF()">Exportar a PDF</button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        let assets = [];
+        let liabilities = [];
+
+        function addAsset() {
+            const category = document.getElementById('asset-category').value;
+            const value = parseFloat(document.getElementById('asset-value').value);
+            const description = document.getElementById('asset-description').value;
+
+            if (!category || isNaN(value)) {
+                alert('Por favor, complete todos los campos');
+                return;
+            }
+
+            assets.push({ category, value, description });
+            updateFinancialStatement();
+            clearAssetForm();
+        }
+
+        function addLiability() {
+            const category = document.getElementById('liability-category').value;
+            const value = parseFloat(document.getElementById('liability-value').value);
+            const description = document.getElementById('liability-description').value;
+
+            if (!category || isNaN(value)) {
+                alert('Por favor, complete todos los campos');
+                return;
+            }
+
+            liabilities.push({ category, value, description });
+            updateFinancialStatement();
+            clearLiabilityForm();
+        }
+
+        function updateFinancialStatement() {
+            const assetsList = document.getElementById('assets-list');
+            const liabilitiesList = document.getElementById('liabilities-list');
+            const assetsTotal = document.getElementById('assets-total');
+            const liabilitiesTotal = document.getElementById('liabilities-total');
+            const patrimonioElement = document.getElementById('patrimonio');
+
+            // Limpiar listas
+            assetsList.innerHTML = '';
+            liabilitiesList.innerHTML = '';
+
+            // Mostrar Activos
+            assets.forEach((asset, index) => {
+                const assetDiv = document.createElement('div');
+                assetDiv.classList.add('item');
+                assetDiv.innerHTML = `
+                    <span><strong>${asset.category}</strong>: $${asset.value.toFixed(2)} 
+                    ${asset.description ? `- ${asset.description}` : ''}</span>
+                    <button onclick="removeAsset(${index})">Eliminar</button>
+                `;
+                assetsList.appendChild(assetDiv);
+            });
+
+            // Mostrar Pasivos
+            liabilities.forEach((liability, index) => {
+                const liabilityDiv = document.createElement('div');
+                liabilityDiv.classList.add('item');
+                liabilityDiv.innerHTML = `
+                    <span><strong>${liability.category}</strong>: $${liability.value.toFixed(2)} 
+                    ${liability.description ? `- ${liability.description}` : ''}</span>
+                    <button onclick="removeLiability(${index})">Eliminar</button>
+                `;
+                liabilitiesList.appendChild(liabilityDiv);
+            });
+
+            // Calcular totales
+            const totalAssets = assets.reduce((sum, asset) => sum + asset.value, 0);
+            const totalLiabilities = liabilities.reduce((sum, liability) => sum + liability.value, 0);
+            const patrimonio = totalAssets - totalLiabilities;
+
+            // Actualizar totales
+            assetsTotal.textContent = `Total Activos: $${totalAssets.toFixed(2)}`;
+            liabilitiesTotal.textContent = `Total Pasivos: $${totalLiabilities.toFixed(2)}`;
+            patrimonioElement.textContent = `Patrimonio Neto: $${patrimonio.toFixed(2)}`;
+        }
+
+        function removeAsset(index) {
+            assets.splice(index, 1);
+            updateFinancialStatement();
+        }
+
+        function removeLiability(index) {
+            liabilities.splice(index, 1);
+            updateFinancialStatement();
+        }
+
+        function clearAssetForm() {
+            document.getElementById('asset-category').value = '';
+            document.getElementById('asset-value').value = '';
+            document.getElementById('asset-description').value = '';
+        }
+
+        function clearLiabilityForm() {
+            document.getElementById('liability-category').value = '';
+            document.getElementById('liability-value').value = '';
+            document.getElementById('liability-description').value = '';
+        }
+
+        function exportToPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            let yOffset = 20;
+            doc.setFontSize(18);
+            doc.text('Estado de Situación Financiera', 14, yOffset);
+            yOffset += 20;
+
+            // Activos
+            doc.setFontSize(14);
+            doc.text('Activos', 14, yOffset);
+            yOffset += 10;
+            assets.forEach(asset => {
+                doc.text(`${asset.category}: $${asset.value.toFixed(2)} ${asset.description || ''}`, 14, yOffset);
+                yOffset += 10;
+            });
+
+            // Total Activos
+            const totalAssets = assets.reduce((sum, asset) => sum + asset.value, 0);
+            doc.setFontSize(12);
+            doc.text(`Total Activos: $${totalAssets.toFixed(2)}`, 14, yOffset);
+            yOffset += 20;
+
+            // Pasivos
+            doc.setFontSize(14);
+            doc.text('Pasivos', 14, yOffset);
+            yOffset += 10;
+            liabilities.forEach(liability => {
+                doc.text(`${liability.category}: $${liability.value.toFixed(2)} ${liability.description || ''}`, 14, yOffset);
+                yOffset += 10;
+            });
+
+            // Total Pasivos
+            const totalLiabilities = liabilities.reduce((sum, liability) => sum + liability.value, 0);
+            doc.setFontSize(12);
+            doc.text(`Total Pasivos: $${totalLiabilities.toFixed(2)}`, 14, yOffset);
+            yOffset += 20;
+
+            // Patrimonio Neto
+            const patrimonio = totalAssets - totalLiabilities;
+            doc.setFontSize(16);
+            doc.text(`Patrimonio Neto: $${patrimonio.toFixed(2)}`, 14, yOffset);
+
+            doc.save('estado-situacion-financiera.pdf');
+        }
+    </script>
+</body>
+</html>

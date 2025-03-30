@@ -1,4 +1,5 @@
 import {Datatable} from './dataTable.js'
+import {renderOrdenManufacture} from './ventas/formularioVenta.js'
 
 //seleccionamos el contenedor de tabs y al recorrer agregamos un evento a cada tab
 //cada vez de damos click, vuelve a recorrere todos los tab para remover la clase active
@@ -59,8 +60,14 @@ export function renderTabs(element,arrayObjetos) {
         //console.log('h2',importe)
         importe.textContent=`${new Intl.NumberFormat(navigator.languages).format(importeCategoria)}/${inventarioTotal}=${Math.round((importeCategoria/inventarioTotal)*100)}%`;
         
-        let titulo= {CODIGO:'idProducto',NOMBRE:'nombre',STOCK:'stock',SEPARADO:'assignedStock',DISPONIBLE:'quantityAvailable',OBJETIVO:'targetStock',REPONER:'stockReplaced',VALOR:'importe'}
-        let dt    = new Datatable(`#dataTable-${j}`,[]);
+        let titulo= {CODIGO:'idProducto',NOMBRE:'nombre',VALOR:'importe',STOCK:'stock',SEPARADO:'assignedStock',DISPONIBLE:'quantityAvailable',RECIBIR:'productToReceive',COMBINADO:'quantityAvailableAfter',OBJETIVO:'targetStock',REPONER:'stockReplaced'}
+        let dt    = new Datatable(`#dataTable-${j}`,[
+            { id: 'dtnCrear', text: 'nuevo', icon: 'post_add', targetModal:'#myModal', action: function () { 
+                const item = dt.getSelected();
+                console.log('item:',item );
+                renderOrdenManufacture(item);
+             } }
+        ]);
                     dt.setData(objetosFiltrados,titulo);
                     dt.makeTable2();
     })
@@ -133,6 +140,10 @@ function eliminarDuplicados(arrayObjetos,clave){//recibe una lista de categoria 
     }
     return elementosUnicos;
 }
+
+
+
+
 
 
 //renderTabs('tabs-container',categorias)

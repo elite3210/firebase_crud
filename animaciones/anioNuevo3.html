@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #0f0c29;
+            background: linear-gradient(135deg, #24243e, #0f0c29, #302b63);
+        }
+
+        .snowflake {
+            position: absolute;
+            font-size: 24px;
+            user-select: none;
+            pointer-events: none;
+        }
+
+        #controls {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
+
+        button:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+        }
+
+        #progress {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-family: Arial;
+            background: rgba(0,0,0,0.7);
+            padding: 10px 20px;
+            border-radius: 5px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="controls">
+        <button id="recordButton">Grabar Animación (3s)</button>
+    </div>
+    <div id="progress">Preparando grabación...</div>
+
+    <script>
+        class Snowflake {
+            constructor() {
+                this.element = document.createElement('div');
+                this.element.className = 'snowflake';
+                this.element.innerHTML = '❄';
+                this.reset();
+                document.body.appendChild(this.element);
+            }
+
+            getRandomColor() {
+                //const colors = ['#FF0000','#00FF00','#0000FF','#FFFF00','#FF00FF','#00FFFF','#FFA500','#FF1493','#7B68EE','#00FA9A'];
+                const colors = ['#ffff00','#ffff00','#ffff00','#ffff00','#ffff00','#ffff00','#ffff00','#ffff00','#ffff00','#ffff00'];
+                return colors[Math.floor(Math.random() * colors.length)];
+            }
+
+            reset() {
+                this.x = Math.random() * window.innerWidth;
+                this.y = -30;
+                this.size = Math.random() * 40 + 10;
+                this.speed = Math.random() * 2 + 1;
+                this.swing = Math.random() * 3 + 2;
+                this.swingOffset = Math.random() * Math.PI * 2;
+                this.element.style.fontSize = `${this.size}px`;
+                this.element.style.color = this.getRandomColor();
+            }
+
+            update() {
+                this.y += this.speed;
+                this.x += Math.sin(this.y / 50 + this.swingOffset) * this.swing;
+                
+                if (this.y > window.innerHeight) {
+                    this.reset();
+                }
+
+                this.element.style.transform = `translate(${this.x}px, ${this.y}px)`;
+            }
+        }
+
+        const snowflakes = [];
+        let recording = false;
+        let recordingFrames = [];
+
+        function createSnowflakes() {
+            for (let i = 0; i < 50; i++) {
+                snowflakes.push(new Snowflake());
+            }
+        }
+
+        function animate() {
+            snowflakes.forEach(snowflake => snowflake.update());
+            requestAnimationFrame(animate);
+        }
+
+        function downloadURI(uri, name) {
+            const link = document.createElement('a');
+            link.download = name;
+            link.href = uri;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Función para capturar la animación
+        async function captureAnimation() {
+            const button = document.getElementById('recordButton');
+            const progress = document.getElementById('progress');
+            
+            if (recording) return;
+            
+            try {
+                recording = true;
+                recordingFrames = [];
+                button.disabled = true;
+                progress.style.display = 'block';
+                progress.textContent = 'Grabando...';
+
+                // Capturar frames durante 3 segundos
+                const startTime = Date.now();
+                while (Date.now() - startTime < 3000) {
+                    const canvas = await html2canvas(document.body, {
+                        backgroundColor: '#000000',
+                        logging: false
+                    });
+                    recordingFrames.push(canvas);
+                    await new Promise(r => setTimeout(r, 100)); // 10 fps
+                }
+
+                progress.textContent = 'Generando GIF...';
+
+                // Crear el GIF
+                const gif = new GIF({
+                    workers: 2,
+                    quality: 10,
+                    width: window.innerWidth,
+                    height: window.innerHeight,
+                    workerScript: 'https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js'
+                });
+
+                // Añadir frames al GIF
+                recordingFrames.forEach(frame => {
+                    gif.addFrame(frame, {delay: 100});
+                });
+
+                // Renderizar y descargar el GIF
+                gif.on('finished', function(blob) {
+                    const url = URL.createObjectURL(blob);
+                    downloadURI(url, 'snowflakes.gif');
+                    URL.revokeObjectURL(url);
+                    progress.style.display = 'none';
+                    button.disabled = false;
+                    recording = false;
+                });
+
+                gif.on('progress', function(p) {
+                    progress.textContent = `Generando GIF: ${Math.round(p * 100)}%`;
+                });
+
+                gif.render();
+
+            } catch (error) {
+                console.error('Error durante la grabación:', error);
+                progress.textContent = 'Error en la grabación. Intente nuevamente.';
+                button.disabled = false;
+                recording = false;
+            }
+        }
+
+        // Inicializar
+        createSnowflakes();
+        animate();
+
+        // Agregar html2canvas y gif.js dinámicamente
+        function loadScript(url) {
+            return new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = url;
+                script.onload = resolve;
+                script.onerror = reject;
+                document.head.appendChild(script);
+            });
+        }
+
+        // Cargar las librerías necesarias y configurar el botón
+        Promise.all([
+            loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'),
+            loadScript('https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.js')
+        ]).then(() => {
+            const recordButton = document.getElementById('recordButton');
+            recordButton.addEventListener('click', captureAnimation);
+        }).catch(error => {
+            console.error('Error cargando las librerías:', error);
+            document.getElementById('progress').textContent = 'Error cargando recursos necesarios';
+        });
+    </script>
+</body>
+</html>

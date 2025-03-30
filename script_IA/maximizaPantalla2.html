@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Mi Aplicación</title>
+    <style>
+        /* Resetear márgenes y padding */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Asegurar que html y body ocupen todo el espacio disponible */
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            position: fixed;
+        }
+
+        /* Contenedor principal de la aplicación */
+        #app {
+            width: 100%;
+            height: 100%;
+            background-color: #ffffff;
+            position: fixed;
+            top: 0;
+            left: 0;
+            /* Manejo del notch en iPhones */
+            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+        }
+
+        /* Botón de pantalla completa */
+        #fullscreenButton {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            padding: 10px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <!-- Aquí va el contenido de tu aplicación -->
+        <h1>Mi Aplicación</h1>
+        <button id="fullscreenButton">Pantalla Completa</button>
+    </div>
+
+    <script>
+
+        class FullscreenApp {
+            constructor() {
+                // Elementos del DOM
+                this.app = document.getElementById('app');
+                this.fullscreenButton = document.getElementById('fullscreenButton');
+
+                // Bindings de métodos
+                this.toggleFullscreen = this.toggleFullscreen.bind(this);
+                this.preventScroll = this.preventScroll.bind(this);
+                this.hideAddressBar = this.hideAddressBar.bind(this);
+
+                // Inicialización
+                this.init();
+            }
+
+            init() {
+                // Agregar event listeners
+                this.fullscreenButton.addEventListener('click', this.toggleFullscreen);
+                document.addEventListener('touchmove', this.preventScroll, { passive: false });
+                window.addEventListener('load', this.hideAddressBar);
+
+                // Escuchar cambios en el estado de pantalla completa
+                document.addEventListener('fullscreenchange', () => this.handleFullscreenChange());
+                document.addEventListener('webkitfullscreenchange', () => this.handleFullscreenChange());
+                document.addEventListener('mozfullscreenchange', () => this.handleFullscreenChange());
+                document.addEventListener('MSFullscreenChange', () => this.handleFullscreenChange());
+            }
+
+            toggleFullscreen() {
+                if (!this.isFullscreen()) {
+                    this.enterFullscreen();
+                } else {
+                    this.exitFullscreen();
+                }
+            }
+
+            isFullscreen() {
+                return !!(
+                    document.fullscreenElement ||
+                    document.webkitFullscreenElement ||
+                    document.mozFullScreenElement ||
+                    document.msFullscreenElement
+                );
+            }
+
+            enterFullscreen() {
+                const element = this.app;
+                if (element.requestFullscreen) {
+                    element.requestFullscreen();
+                } else if (element.webkitRequestFullscreen) {
+                    element.webkitRequestFullscreen();
+                } else if (element.mozRequestFullScreen) {
+                    element.mozRequestFullScreen();
+                } else if (element.msRequestFullscreen) {
+                    element.msRequestFullscreen();
+                }
+            }
+
+            exitFullscreen() {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+            }
+
+            handleFullscreenChange() {
+                const isFullscreen = this.isFullscreen();
+                this.fullscreenButton.textContent = isFullscreen ? 'Salir de Pantalla Completa' : 'Pantalla Completa';
+                // Aquí puedes agregar más lógica para manejar cambios en el estado de pantalla completa
+            }
+
+            preventScroll(event) {
+                event.preventDefault();
+            }
+
+            hideAddressBar() {
+                setTimeout(() => {
+                    window.scrollTo(0, 1);
+                }, 0);
+            }
+
+            // Método para destruir la instancia y limpiar event listeners
+            destroy() {
+                this.fullscreenButton.removeEventListener('click', this.toggleFullscreen);
+                document.removeEventListener('touchmove', this.preventScroll);
+                window.removeEventListener('load', this.hideAddressBar);
+                // Eliminar los listeners de cambio de pantalla completa
+                document.removeEventListener('fullscreenchange', this.handleFullscreenChange);
+                document.removeEventListener('webkitfullscreenchange', this.handleFullscreenChange);
+                document.removeEventListener('mozfullscreenchange', this.handleFullscreenChange);
+                document.removeEventListener('MSFullscreenChange', this.handleFullscreenChange);
+            }
+        }
+
+        // Inicialización cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', () => {
+            // Crear instancia de la aplicación
+            const app = new FullscreenApp();
+
+            // Opcional: Guardar la instancia en window para acceso global
+            window.fullscreenApp = app;
+        });
+    </script>
+</body>
+
+</html>

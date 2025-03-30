@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grabadora de Audio</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            margin-top: 2rem;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        #grabaciones {
+            margin-top: 20px;
+        }
+        .grabacion {
+            background-color: #f8f9fa;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .grabacion audio {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Grabadora de Audio</h1>
+        <button id="grabar">Iniciar Grabación</button>
+        <button id="detener" disabled>Detener Grabación</button>
+        <div id="grabaciones"></div>
+    </div>
+
+    <script>
+        let mediaRecorder;
+        let audioChunks = [];
+        let grabacionActiva = false;
+
+        const btnGrabar = document.getElementById('grabar');
+        const btnDetener = document.getElementById('detener');
+        const divGrabaciones = document.getElementById('grabaciones');
+
+        btnGrabar.onclick = async () => {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                
+                mediaRecorder.ondataavailable = (event) => {
+                    audioChunks.push(event.data);
+                };
+
+                mediaRecorder.onstop = () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    
+                    const grabacionDiv = document.createElement('div');
+                    grabacionDiv.className = 'grabacion';
+                    
+                    const fecha = new Date().toLocaleString();
+                    grabacionDiv.innerHTML = `
+                        <div>Grabación del ${fecha}</div>
+                        <audio controls src="${audioUrl}"></audio>
+                    `;
+                    
+                    divGrabaciones.prepend(grabacionDiv);
+                    audioChunks = [];
+                };
+
+                mediaRecorder.start();
+                grabacionActiva = true;
+                btnGrabar.disabled = true;
+                btnDetener.disabled = false;
+            } catch (error) {
+                console.error('Error al acceder al micrófono:', error);
+                alert('Error al acceder al micrófono. Por favor, asegúrate de dar permisos de acceso.');
+            }
+        };
+
+        btnDetener.onclick = () => {
+            if (grabacionActiva) {
+                mediaRecorder.stop();
+                mediaRecorder.stream.getTracks().forEach(track => track.stop());
+                grabacionActiva = false;
+                btnGrabar.disabled = false;
+                btnDetener.disabled = true;
+            }
+        };
+    </script>
+</body>
+</html>

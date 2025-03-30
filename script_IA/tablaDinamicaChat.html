@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Productos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        form {
+            background-color: #f4f4f4;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        input, select {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        #filter {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Gestión de Productos</h1>
+
+    <form id="productForm">
+        <input type="text" id="productName" placeholder="Nombre del Producto" required>
+        <input type="text" id="productCategory" placeholder="Categoría" required>
+        <input type="number" id="productPrice" placeholder="Precio" min="0" step="0.01" required>
+        <button type="submit">Agregar Producto</button>
+    </form>
+
+    <select id="filter">
+        <option value="">-- Filtrar por categoría --</option>
+    </select>
+
+    <table id="productTable">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Precio</th>
+                <th>Total Unidades</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="productTableBody"></tbody>
+        <tfoot>
+            <tr>
+                <td colspan="4" id="totalUnits">Total de unidades: 0</td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <script>
+        class ProductManager {
+            constructor() {
+                this.products = [];
+                this.categories = new Set();
+                this.productForm = document.getElementById('productForm');
+                this.productTableBody = document.getElementById('productTableBody');
+                this.filter = document.getElementById('filter');
+                this.totalUnits = document.getElementById('totalUnits');
+
+                this.productForm.addEventListener('submit', this.addProduct.bind(this));
+                this.filter.addEventListener('change', this.filterProducts.bind(this));
+            }
+
+            addProduct(event) {
+                event.preventDefault();
+                const name = document.getElementById('productName').value;
+                const category = document.getElementById('productCategory').value;
+                const price = parseFloat(document.getElementById('productPrice').value);
+
+                this.categories.add(category);
+                this.updateFilterOptions();
+
+                let existingProduct = this.products.find(p => p.name === name);
+                if (existingProduct) {
+                    existingProduct.count++;
+                    existingProduct.categories[category] = 
+                        (existingProduct.categories[category] || 0) + 1;
+                } else {
+                    const newProduct = {
+                        id: Date.now(),
+                        name: name,
+                        price: price,
+                        count: 1,
+                        categories: { [category]: 1 }
+                    };
+                    this.products.push(newProduct);
+                }
+
+                this.updateTable();
+                this.productForm.reset();
+            }
+
+            deleteProduct(productId) {
+                this.products = this.products.filter(product => product.id !== productId);
+                this.updateTable();
+            }
+
+            filterProducts() {
+                const selectedCategory = this.filter.value;
+                this.updateTable(selectedCategory);
+            }
+
+            updateFilterOptions() {
+                this.filter.innerHTML = '<option value="">-- Filtrar por categoría --</option>';
+                Array.from(this.categories).forEach(category => {
+                    const option = document.createElement('option');
+                    option.value = category;
+                    option.textContent = category;
+                    this.filter.appendChild(option);
+                });
+            }
+
+            updateTable(filterCategory = "") {
+                const headerRow = document.querySelector('#productTable thead tr');
+                headerRow.innerHTML = `
+                    <th>Nombre</th>
+                    <th>Precio</th>
+                    ${Array.from(this.categories)
+                        .map(cat => `<th>${cat}</th>`)
+                        .join('')}
+                    <th>Total Unidades</th>
+                    <th>Acciones</th>
+                `;
+
+                const filteredProducts = filterCategory
+                    ? this.products.filter(product => product.categories[filterCategory])
+                    : this.products;
+
+                this.productTableBody.innerHTML = filteredProducts.map(product => `
+                    <tr>
+                        <td>${product.name}</td>
+                        <td>$${product.price.toFixed(2)}</td>
+                        ${Array.from(this.categories)
+                            .map(cat => `<td>${product.categories[cat] || 0}</td>`)
+                            .join('')}
+                        <td>${product.count}</td>
+                        <td><button onclick="productManager.deleteProduct(${product.id})">Eliminar</button></td>
+                    </tr>
+                `).join('');
+
+                const totalUnits = this.products.reduce((sum, product) => sum + product.count, 0);
+                this.totalUnits.textContent = `Total de unidades: ${totalUnits}`;
+            }
+        }
+
+        const productManager = new ProductManager();
+    </script>
+</body>
+</html>

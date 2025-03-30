@@ -1,6 +1,9 @@
 import { db } from './firebase.js'
-import { collection, onSnapshot } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js";
+import { collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js";
 import { Datatable } from './dataTable.js'
+import { formularioVenta, renderBuyForm } from './ventas/formularioVenta.js'
+import { newDocument } from './ventas/newOrder.js'
+import { showMessage } from "./src/app/showMessage.js";
 
 
 const onGetCompras = (callback) => onSnapshot(collection(db, 'Compras'), callback)
@@ -44,11 +47,18 @@ const registroCompras = onGetCompras((comprasSnapShot) => {
     const dt = new Datatable('#dataTable',
         [
             {
-                id: 'btnEdit', text: 'editar', icon: 'contract',
+                id: 'btnNew', text: 'nuevo', icon: 'note_add', targetModal: '#myModal', action: function () {
+                    const item = dt.getSelected();
+                    const typeOperation='OrdenCompra';
+                    newDocument(typeOperation);
+                }
+            },
+            {
+                id: 'btnEdit', text: 'editar', icon: 'contract', targetModal: '#myModal',
                 action: function () {
                     const item = dt.getSelected();
                     console.log('mostrando documento formato PC...', item);
-                    pintarDocumento(item);
+                    renderBuyForm(item);
                 }
             },
             {
@@ -61,119 +71,18 @@ const registroCompras = onGetCompras((comprasSnapShot) => {
             { id: 'btnDelete', text: 'eliminar', icon: 'delete', action: function () { const elemntos = dt.getSelected(); console.log('eliminar datos...', elemntos); } }
         ]
     );
-
     dt.setData(items, titulo);
     dt.makeTable();
 
 });
 
-async function pintarDocumento(arrayObjeto) {//crea una ventana modal con los datos de la venta el detalle
+function pintarDocumento(arrayObjeto) {//crea una ventana modal con los datos de la venta el detalle
     console.log(' consulta venta arrayObjeto :', arrayObjeto)
-    const flotante = document.getElementById('flotante');
-    flotante.innerHTML = `
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#flotante2">Modal</button>
-    <div class="modal modal-lg" id="flotante2">
-  <div class="modal-dialog">
-  <div class="modal-content">
-  <div class="modal-header">
-  <h5 class="modal-title">::DETALLE PEDIDO::</h5>
-  </div>
-  <div class="modal-body" id="flotante2">
-  
-    <section id="documentoPDF">
-  
-    <div class="grupo1">
-        <div class="logo">
-            <img src="./imagenes/heinz_sport_sac_logo.png" width="250" >
-            </div>
-        <div class="contacto">
-            <h1 class="h6">www.heinzsport.com <i class="fa-solid fa-globe"></i></h1>
-            <h1 class="h6">info@heinzsport.com <i class="fa-regular fa-envelope"></i></h1>
-            <h1 class="h6">+51 962833765<i class="fa-brands fa-whatsapp"></i></h1>
-        </div>
-        <div class="cajita2">
-            <h3 class="h6" id="ruc2">RUC: 20605216715</h3>
-            <h3 class="h6">PEDIDO VENTA</h3>
-            <h3 class="h6" id="cotizacion"></h3>
-        </div>
-    </div>
-  
-  <form class="form" id="formulario">
-  <div class="cajita1">
-    <div class="input-group">    
-    <label for="ruc">CODIGO :</label>
-    <h1 class='form-control celda ruc' type="text" id="ruc"  list="datoClientes" required placeholder="Ingresar RUC o DNI"></h1>
-    </div>
-  
-    <div class="input-group"> 
-    <label for="cliente">CLIENTE :</label>
-    <h1  class='form-control celda cliente' type="text" id="cliente" placeholder="Razon Social o Nombre"></h1>
-    </div>
-  
-    <div class="input-group"> 
-    <label for="vendedor">VENDEDOR:</label>
-    <h1  class='form-control celda vendedor' type="text" id="vendedor" placeholder="Nombre del Vendedor"></h1>
-    </div>       
-  </div>
-  
-    <div class="cajita4">
-        <div class="input-group">
-            <label for="fecha">Fecha:</label>
-            <h3 class="form-control celda" id="fecha"></h3>
-        </div>
-        <div class="input-group">
-            <label for="tipoPago">Pago:</label>
-            <h3 class="form-control celda" type="text" id="tipoPago"></h3>
-        </div>
-        <div class="input-group">
-            <label for="metodoCobro">Cobro:</label>
-            <h3 class="form-control celda" type="text" id="metodoCobro"></h3>
-        </div>
-    </div>
-  </form>
-  
-    <table id='table' class="tabla">  
-        <thead class="tituloTabla">
-            <tr><th>Item</th><th>Codigo</th><th>Cantidad</th><th>Unidad</th><th>Descripcion</th><th>Precio</th><th>Importe</th></tr>
-        </thead>
-  
-        <tbody id="container"></tbody>
-        
-        <tfoot class="button-content">
-        <tr><th>Sub_Total (S/)</th><th></th><th><h1 id="celdaSubTotal"  class="h6"></h1></th><th>Descuento (S/)</th><th><h1 id="descuento"  class="h6"></h1></th><th>Total (S/)</th><th><h1 id="celda_total"  class="h3"></h1></th></tr>
-        </tfoot>
-    </table>
-    
-    <div class="cajaEnvio">
-          <div class="extra">
-            <label class="etiqueta" for="fechaEnvio">Fecha Envio:<h3 class="h6" type="date" id="fechaEnvio"></h3></label>
-            <label class="etiqueta" for="empresaEnvio">Empresa Transporte:<h3 class="h6" type="text" id="empresaEnvio"></h3></label>
-            <label class="etiqueta" for="addressTransportedBy">Telefono Transporte:<h3 class="h6" type="text" id="addressTransportedBy"></h3></label>
-          </div>
-         
-          
-        </div>
-  
-        
-      <br>
-      <br>
-   
-    </section>
-  
-  
-  
-    </div>
-    <div class="modal-footer">
-    
-    <button id="btn-imprimir" class="btn btn-primary">Imprimir</button>
-      <button class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
-    </div>
-  </div>
-  </div>
-  </div>
-  `
-    const btn_imprimir = document.getElementById('btn-imprimir')
-    btn_imprimir.addEventListener('click', generaPDF)
+    const flotante = document.getElementById('myModal');
+    flotante.innerHTML = formularioVenta
+
+    //const btn_imprimir = document.getElementById('btn-imprimir')
+    //btn_imprimir.addEventListener('click', generaPDF)
 
     cotizacion.textContent = arrayObjeto['values'].nuevoNumero
     //vendedor.textContent = arrayObjeto['values'].vendedor
@@ -182,9 +91,9 @@ async function pintarDocumento(arrayObjeto) {//crea una ventana modal con los da
     fecha.textContent = new Date(`${arrayObjeto['values'].fecha}T12:00:00Z`).toLocaleDateString()
     //tipoPago.value = arrayObjeto['values'].tipoPago
     //metodoCobro.value = arrayObjeto['values'].metodoCobro
-    celdaSubTotal.textContent = arrayObjeto['values'].subTotal
-    descuento.textContent = arrayObjeto['values'].descuento
-    celda_total.textContent = arrayObjeto['values'].importeTotal
+    //celdaSubTotal.textContent = arrayObjeto['values'].subTotal
+    //descuento.textContent = arrayObjeto['values'].descuento
+    //celda_total.textContent = arrayObjeto['values'].importeTotal
     //fechaEnvio.textContent = arrayObjeto['values'].fechaEnvio
 
     //let traerDoc = await traerUnSocio(arrayObjeto['values'].transportedBy);
@@ -213,29 +122,31 @@ async function pintarDocumento(arrayObjeto) {//crea una ventana modal con los da
 
 };
 
+//renderOrderForm(arrayObjeto)
+
 async function generaPDF() {
     console.log('generando pdf...')//crear pdf a partir del lenguaje y no de html
     const areaImpresion = document.getElementById('documentoPDF'); // <-- Aquí puedes elegir cualquier elemento del DOM
     let id_cotizacion = document.getElementById('cotizacion').value
-  
+
     await html2pdf()
-      .set({
-        margin: 5,
-        filename: `PV${id_cotizacion}`,
-        //se borro image jpg, averiguar codigo origina en github del cdn html2pdf form['cliente'].value
-        html2canvas: {
-          scale: 5, // A mayor escala, mejores gráficos, pero más peso
-          letterRendering: true,
-        },
-        jsPDF: {
-          unit: "mm",
-          format: 'a5',
-          orientation: 'landscape' // landscape o portrait
-        }
-      })
-      .from(areaImpresion)
-      .save()
-      .catch(err => console.log(err));
-  
-  }
+        .set({
+            margin: 5,
+            filename: `PV${id_cotizacion}`,
+            //se borro image jpg, averiguar codigo origina en github del cdn html2pdf form['cliente'].value
+            html2canvas: {
+                scale: 5, // A mayor escala, mejores gráficos, pero más peso
+                letterRendering: true,
+            },
+            jsPDF: {
+                unit: "mm",
+                format: 'a5',
+                orientation: 'landscape' // landscape o portrait
+            }
+        })
+        .from(areaImpresion)
+        .save()
+        .catch(err => console.log(err));
+
+}
 

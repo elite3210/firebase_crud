@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Balance General Detallado</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .form-container {
+            background-color: #f4f4f4;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .form-container input, 
+        .form-container select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        #balance-details {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        .category {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+        }
+        .export-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px 0;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        #total-summary {
+            font-weight: bold;
+            margin-top: 20px;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <h1>Balance General Detallado</h1>
+    
+    <div class="form-container">
+        <form id="income-form">
+            <h3>Ingresos</h3>
+            <select id="income-category">
+                <option value="">Seleccionar Categoría</option>
+                <option value="salary">Salario</option>
+                <option value="freelance">Trabajo Freelance</option>
+                <option value="investments">Inversiones</option>
+                <option value="other">Otros Ingresos</option>
+            </select>
+            <input type="number" id="income-amount" placeholder="Monto" step="0.01" min="0">
+            <input type="text" id="income-details" placeholder="Detalles adicionales">
+            <button type="button" onclick="addIncome()">Agregar Ingreso</button>
+        </form>
+
+        <form id="expense-form">
+            <h3>Gastos</h3>
+            <select id="expense-category">
+                <option value="">Seleccionar Categoría</option>
+                <option value="housing">Vivienda</option>
+                <option value="food">Alimentación</option>
+                <option value="transport">Transporte</option>
+                <option value="services">Servicios</option>
+                <option value="entertainment">Entretenimiento</option>
+                <option value="other">Otros Gastos</option>
+            </select>
+            <input type="number" id="expense-amount" placeholder="Monto" step="0.01" min="0">
+            <input type="text" id="expense-details" placeholder="Detalles adicionales">
+            <button type="button" onclick="addExpense()">Agregar Gasto</button>
+        </form>
+    </div>
+
+    <div id="balance-details">
+        <h2>Detalles del Balance</h2>
+        <div id="income-list"></div>
+        <div id="expense-list"></div>
+        <div id="total-summary"></div>
+    </div>
+
+    <button class="export-btn" onclick="exportToPDF()">Exportar a PDF</button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        let incomes = [];
+        let expenses = [];
+
+        function addIncome() {
+            const category = document.getElementById('income-category').value;
+            const amount = parseFloat(document.getElementById('income-amount').value);
+            const details = document.getElementById('income-details').value;
+
+            if (!category || isNaN(amount)) {
+                alert('Por favor, complete todos los campos');
+                return;
+            }
+
+            incomes.push({ category, amount, details });
+            updateBalanceDetails();
+            clearIncomeForm();
+        }
+
+        function addExpense() {
+            const category = document.getElementById('expense-category').value;
+            const amount = parseFloat(document.getElementById('expense-amount').value);
+            const details = document.getElementById('expense-details').value;
+
+            if (!category || isNaN(amount)) {
+                alert('Por favor, complete todos los campos');
+                return;
+            }
+
+            expenses.push({ category, amount, details });
+            updateBalanceDetails();
+            clearExpenseForm();
+        }
+
+        function updateBalanceDetails() {
+            const incomeList = document.getElementById('income-list');
+            const expenseList = document.getElementById('expense-list');
+            const totalSummary = document.getElementById('total-summary');
+
+            // Limpiar listas anteriores
+            incomeList.innerHTML = '<h3>Ingresos</h3>';
+            expenseList.innerHTML = '<h3>Gastos</h3>';
+
+            // Mostrar ingresos
+            incomes.forEach((income, index) => {
+                const incomeDiv = document.createElement('div');
+                incomeDiv.classList.add('category');
+                incomeDiv.innerHTML = `
+                    <strong>${income.category}</strong>: 
+                    $${income.amount.toFixed(2)} 
+                    ${income.details ? `- ${income.details}` : ''}
+                    <button onclick="removeIncome(${index})">Eliminar</button>
+                `;
+                incomeList.appendChild(incomeDiv);
+            });
+
+            // Mostrar gastos
+            expenses.forEach((expense, index) => {
+                const expenseDiv = document.createElement('div');
+                expenseDiv.classList.add('category');
+                expenseDiv.innerHTML = `
+                    <strong>${expense.category}</strong>: 
+                    $${expense.amount.toFixed(2)} 
+                    ${expense.details ? `- ${expense.details}` : ''}
+                    <button onclick="removeExpense(${index})">Eliminar</button>
+                `;
+                expenseList.appendChild(expenseDiv);
+            });
+
+            // Calcular totales
+            const totalIncome = incomes.reduce((sum, income) => sum + income.amount, 0);
+            const totalExpense = expenses.reduce((sum, expense) => sum + expense.amount, 0);
+            const balance = totalIncome - totalExpense;
+
+            totalSummary.innerHTML = `
+                Total Ingresos: $${totalIncome.toFixed(2)}<br>
+                Total Gastos: $${totalExpense.toFixed(2)}<br>
+                <span style="color: ${balance >= 0 ? 'green' : 'red'}">
+                    Balance: $${balance.toFixed(2)}
+                </span>
+            `;
+        }
+
+        function removeIncome(index) {
+            incomes.splice(index, 1);
+            updateBalanceDetails();
+        }
+
+        function removeExpense(index) {
+            expenses.splice(index, 1);
+            updateBalanceDetails();
+        }
+
+        function clearIncomeForm() {
+            document.getElementById('income-category').value = '';
+            document.getElementById('income-amount').value = '';
+            document.getElementById('income-details').value = '';
+        }
+
+        function clearExpenseForm() {
+            document.getElementById('expense-category').value = '';
+            document.getElementById('expense-amount').value = '';
+            document.getElementById('expense-details').value = '';
+        }
+
+        function exportToPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            doc.setFontSize(18);
+            doc.text('Balance General Detallado', 14, 22);
+
+            // Ingresos
+            doc.setFontSize(14);
+            doc.text('Ingresos', 14, 40);
+            let yOffset = 50;
+            incomes.forEach(income => {
+                doc.text(`${income.category}: $${income.amount.toFixed(2)} ${income.details || ''}`, 14, yOffset);
+                yOffset += 10;
+            });
+
+            // Gastos
+            yOffset += 10;
+            doc.text('Gastos', 14, yOffset);
+            yOffset += 10;
+            expenses.forEach(expense => {
+                doc.text(`${expense.category}: $${expense.amount.toFixed(2)} ${expense.details || ''}`, 14, yOffset);
+                yOffset += 10;
+            });
+
+            // Totales
+            const totalIncome = incomes.reduce((sum, income) => sum + income.amount, 0);
+            const totalExpense = expenses.reduce((sum, expense) => sum + expense.amount, 0);
+            const balance = totalIncome - totalExpense;
+
+            yOffset += 20;
+            doc.setFontSize(16);
+            doc.text(`Total Ingresos: $${totalIncome.toFixed(2)}`, 14, yOffset);
+            yOffset += 10;
+            doc.text(`Total Gastos: $${totalExpense.toFixed(2)}`, 14, yOffset);
+            yOffset += 10;
+            doc.text(`Balance: $${balance.toFixed(2)}`, 14, yOffset);
+
+            doc.save('balance-general.pdf');
+        }
+    </script>
+</body>
+</html>

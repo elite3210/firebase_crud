@@ -1,148 +1,57 @@
-import {boletaPagoRef} from './firebase.js'
-import {getDocs,query,where,orderBy,limit} from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js";
+import {boletaPagoRef,onGetBoletapago} from './firebase.js'
+import {getDocs,query,where} from "https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js";
+import { Datatable } from './dataTable.js';
 
+datosFirebase();
 
-const queryBoletaPago  = await getDocs(query(boletaPagoRef,where("payStatus", "==", false)));
-
-
-//traer los registros de produccion de firebase
-const produccionContainer = document.getElementById('produccionContainer')
-
-let tarifaJornada=[
-    {'tarifa':3.5738,'dni':'72091168','nombre':'Angela'},
-    {'tarifa':3.6719,'dni':'71338629','nombre':'Alexandra'},
-    {'tarifa':3.3594,'dni':'09551196','nombre':'Rocio'},
-    {'tarifa':3.0000,'dni':'70528292','nombre':'Heinz'},
-    {'tarifa':3.3594,'dni':'10216274','nombre':'Mariela'},
-    {'tarifa':4.9144,'dni':'42231772','nombre':'Elí'}
-]
-let objetosLS =''
-let datosInicioLS = JSON.parse(localStorage.getItem('datosBoleta'))
-
-
-let activarLS = false
-
-if (activarLS) {
-    pintarFilas(datosInicioLS)
-    
-} else {
-    datosFirebase(queryBoletaPago)
-    pintarFilas(objetosLS)
-    
-}
-
-console.log('objetosLS:',objetosLS)
-
-
-
-
-
-
-function pintarFilas(array){
-
-    array.forEach((obj,i) => {
-    let fila        = document.createElement('tr')
-    fila.setAttribute('class','fila')
-    fila.setAttribute('data-id',`${i}`)
-
-    
-    fila.innerHTML  = `<input type="checkbox" class="check">
-                    
-                    <td>${obj.numBoleta}</td>
-                    <td>${obj.nomBoleta}</td>
-                    <td>${obj.fechaBoleta}</td>
-                    <td>${obj.tiempoTotal.toFixed(2)}</td>
-                    <td>${obj.importe.toFixed(2)}</td>
-                    <td>${obj.payStatus}</td>            
-                    ` 
-    produccionContainer.appendChild(fila);
-    
-    });
-    eventoClickFila()
-}
-
-function sincronizarLocalStorage(objetos){//recibe nuevos datos lo guarda en LS y lo trae en memoria
-    
-
-    let objetoOrdenado=objetos.sort(function(a,b){return new Date(b.fechaBoleta).getTime()-new Date(a.fechaBoleta).getTime()})
-    
-    localStorage.removeItem('datosBoleta');
-    localStorage.setItem('datosBoleta',JSON.stringify(objetoOrdenado))
-    objetosLS=JSON.parse(localStorage.getItem('datosBoleta'))
-    console.log('se actualizó el LS...')
-}
-
-function datosFirebase(queryFirebase){//trae los datos de firebase y los guarda en LocalStorage
-    console.log('query que se trajo de Firebase:',queryBoletaPago)
-    let array =[]
-
-    queryFirebase.forEach((doc) => {
-        // doc.data() is never undefined for query doc snapshots
-        //console.log(doc.id, " => ", doc.data());
-        const objeto        = doc.data()
-        objeto.id           = doc.id 
-        array.push(objeto)
+async function datosFirebase(){//trae los datos de firebase y los guarda en LocalStorage
+    let items =[]
+    const queryBoletaPago  = await onGetBoletapago((boletaSnapShot)=>{
+    //console.log('query que se trajo de Firebase_:',queryBoletaPago)
+    boletaSnapShot.forEach((doc) => {
+        const objeto={};
+        objeto.id                       = doc.id; 
+        objeto['values']                = doc.data();
+        objeto['values'].tiempoTotal    = Number(objeto['values'].tiempoTotal).toFixed(2);
+        objeto['values'].importe        = `S/${Number(objeto['values'].importe).toFixed(2)}`;
+        objeto['values'].estado        = objeto['values'].payStatus==false?`<div class="corona"><div class="progress-adelantado" title="hola mundo" style="width:50%;"></div></div>`:`<span class="cancelado"></span>`;
+        items.push(objeto)
     })
-    sincronizarLocalStorage(array)
-}
 
-function eventoClickFila(){//pinta la fila si se hace check
-    vtnDetalle.innerHTML=''
-    const btnCheck = produccionContainer.querySelectorAll('.check')
-    const btnFila = produccionContainer.querySelectorAll('.fila')
-    btnFila.forEach(fila=>{
-        fila.addEventListener('click',(e)=>{
-            let id = fila.getAttribute('data-id')
-            if(fila.firstChild.checked){
-                fila.setAttribute('class','filaSeleccionada')
-                pintarOpciones(id)
+    items.sort((a,b)=> b['values'].numBoleta - a['values'].numBoleta)
+    //sincronizarLocalStorage(items);
+    pintarTabla(items);
+})
+};
 
-            }else{fila.setAttribute('class','fila')
-            }
-        })
-    })
-}
+function pintarTabla(array){//renderiza la tabla
+    const titulo = { NUMERO: 'numBoleta', NOMBRE: 'nomBoleta', FECHA: 'fechaBoleta', HORAS:'tiempoTotal', IMPORTE: 'importe',ESTADO:'estado'};
+    const toolsHeader=[
+        {
+        id: 'btnNew',text: 'nuevo', icon: 'overview', targetModal:'#myModal', action: function () {const item = dt.getSelected();crearBoleta(item);}
+        }
+    ]
 
-function pintarOpciones(id){//crea la cinta de opciones para la fila seleccionada
-    const cajaOpciones = document.getElementById('cajaOpciones')
-    //let filaPciones = document.createElement('tr')
-    //cajaOpciones.appendChild(filaPciones)
+    const dt = new Datatable('#dataTable',toolsHeader);
+    dt.setData(array, titulo);
+    dt.makeTable2();
+};
+
+function crearBoleta(item){//prepra para pasar los datos a pintarFilasDetalle
+    console.log('__item:',item);
+    let detalle     =JSON.parse(item['values'].horasTrabajadas);
+    console.log('__Detalle boleta:',detalle);
+    pintarTablaDetalle(detalle,item);
+};
+
+function pintarTablaDetalle(array,item){//renderiza el detalle de horasTrabajas en cada boleta
     
-    cajaOpciones.innerHTML=`
-                        <button class="btn-boleta fa-solid fa-receipt" data-id='${id}' id='btnBoleta' ></button>
-                        <button class ='btn-delete fa fa-trash' data-id='${id}'></button>
-                        <button class ='btn-pagar fa fa-hand-holding-dollar' data-id='${id}' value='${id}' color='transparent'></button>
-                        <button class ='btn-edit fa-solid fa-pen-to-square' color='transparent' data-id='${id}'></button>
-                        `
-    //eventoClickPagar()
-    //eventoClickEliminar()
-    //eventoClickEditar()
-    eventoClickBoleta()
-}
-
-function eventoClickBoleta(){
-    const btnBoleta         = document.getElementById('btnBoleta')
-    let id = btnBoleta.getAttribute('data-id')
+    let importe=array.reduce((acc, obj) => acc + obj['values'].importe, 0);
+    let horas=array.reduce((acc, obj) => acc + obj['values'].tiempo, 0);
     
-    btnBoleta.addEventListener('click',crearBoleta)
-}
-
-function crearBoleta(){//comentario
-    const btnBoleta         = document.getElementById('btnBoleta')
-    let id = btnBoleta.getAttribute('data-id')
-
-    let detalle=JSON.parse(objetosLS[id].detalle)
-    console.log('El detalle es:',detalle)
-
-    pintarFilasDetalle(detalle)
-}
-
-function pintarFilasDetalle(array){
-    let importe=array.reduce((acc, obj) => acc + obj.importe, 0)
-    let horas=array.reduce((acc, obj) => acc + obj.tiempo, 0)
-    
-    const vtnDetalle = document.getElementById("vtnDetalle")
-    vtnDetalle.innerHTML=''
+    //const vtnDetalle = document.getElementById("vtnDetalle")
+    const vtnDetalle = document.querySelector(".modal-body")//se debe llamar al body del modal para rellenarlo, previament el boton debe renderizar el modal
+    vtnDetalle.innerHTML='';
     const divSuperior = document.createElement('div')
     divSuperior.setAttribute('class','divSuperior')
     const qr = document.createElement('div')
@@ -150,7 +59,7 @@ function pintarFilasDetalle(array){
     const img=document.createElement('img')
     const divTicket=document.createElement('div')
     divTicket.setAttribute('class','divTicket')
-    divTicket.textContent='TICKET TIEMPO'
+    divTicket.innerHTML=`<h6>TICKET TIEMPO</h6><h6>${item['values'].numBoleta}</h6>`
     img.setAttribute('src',"https://api.qrserver.com/v1/create-qr-code/?data=HelloWorld&amp;size=100x100")
     img.setAttribute('width','60px')
     qr.appendChild(img)
@@ -161,7 +70,7 @@ function pintarFilasDetalle(array){
     divMedio.setAttribute('class','divMedio')
     const divFecha = document.createElement('div')
     divFecha.setAttribute('class','divFecha')
-    divFecha.textContent='26/08/2023'
+    divFecha.textContent=`FECHA: ${new Date(item['values'].fechaBoleta+'T12:00:00Z').toLocaleDateString()}`;
     //divFecha.textContent=new Date(Date.now()).toLocaleDateString()
      
     divSuperior.appendChild(qr)
@@ -182,32 +91,37 @@ function pintarFilasDetalle(array){
     vtnDetalle.appendChild(divSuperior)
     vtnDetalle.appendChild(divMedio)
     
-    const tbody = document.createElement("tbody")
+    const tbody     = document.createElement("tbody")
     let thead       = document.createElement('thead')
     let tfoot       = document.createElement('tfoot')
-    thead.innerHTML=`<tr><th>Dia</th><th>Entrada</th><th>Salida</th><th>Horas</th></tr>`
-    tfoot.innerHTML=`<tr><th>Horas</th><th id="celdaHoras">${horas}</th><th>Importe</th><th id="celdaImporte">${importe.toFixed(2)}</th></tr>`
+    thead.innerHTML =`<tr><th>Turno</th><th>Dia</th><th>Entrada</th><th>Salida</th><th>Horas</th></tr>`
+    tfoot.innerHTML =`<tr><th>Horas</th><th id="celdaHoras">${horas.toFixed(2)}</th><th>Importe</th><th></th><th id="celdaImporte">${importe.toFixed(2)}</th></tr>`
     
-
+    
     array.forEach((obj,i) => {
     let fila        = document.createElement('tr')
-    //fila.setAttribute('class','fila')
-    //fila.setAttribute('data-id',`${i}`)
     
     fila.innerHTML  = `
-                    <td>${obj.nombreDia}</td>
-                    <td>${obj.title.slice(5,16)}</td>
-                    <td>${obj.salida.slice(5,16)}</td>
-                    <td>${obj.hora}</td>
+                    <td>${obj['values'].horario}</td>
+                    <td>${obj['values'].nombreDia}${obj['values'].salida.slice(7,10)}</td>
+                    <td>${obj['values'].title.slice(11,16)}</td>
+                    <td>${obj['values'].salida.slice(11,16)}</td>
+                    <td>${obj['values'].hora}</td>
                     ` 
     tbody.appendChild(fila);
-    nombre.textContent=obj.description
-    });
+});
+nombre.textContent=`NOMBRE: ${item['values'].nomBoleta}`;
 
-    
     tblDetalle.appendChild(thead)
     tblDetalle.appendChild(tbody)
     tblDetalle.appendChild(tfoot)
     vtnDetalle.appendChild(tblDetalle)
     //eventoClickFila()
-}
+};
+
+function sincronizarLocalStorage(objetos){//recibe nuevos datos lo guarda en LS y lo trae en memoria
+    localStorage.removeItem('datosBoleta');
+    localStorage.setItem('datosBoleta',JSON.stringify(objetos));
+    objetosLS=JSON.parse(localStorage.getItem('datosBoleta'));
+    console.log('se actualizó el LS...');
+};

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zapatos</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Inventario de Zapatos</h1>
+        <table id="zapatosTable">
+            <thead>
+                <tr id="headerRow1">
+                    <!-- Encabezados principales se insertarán aquí -->
+                </tr>
+                <tr id="headerRow2">
+                    <!-- Encabezados de tallas se insertarán aquí -->
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Los datos se insertarán aquí -->
+            </tbody>
+        </table>
+    </div>
+    <script>
+// Clase Zapato
+class Zapato {
+    constructor(data) {
+        Object.assign(this, data);
+    }
+}
+
+// Clase InventarioZapatos
+class InventarioZapatos {
+    constructor(zapatos, atributoNumerico) {
+        this.zapatos = zapatos;
+        this.atributoNumerico = atributoNumerico;
+        this.inventario = this.procesarInventario();
+        this.valoresUnicos = this.obtenerValoresUnicos();
+        this.tallasUnicas = this.obtenerTallasUnicas();
+    }
+
+    procesarInventario() {
+        const inventario = {};
+
+        this.zapatos.forEach(zapato => {
+            const clave = this.generarClave(zapato);
+            if (!inventario[clave]) {
+                inventario[clave] = {
+                    ...zapato,
+                    tallas: {},
+                    pares: 0,
+                    precio: 50, // Suponemos que el precio es fijo por par de zapatos
+                    importe: 0
+                };
+            }
+            if (!inventario[clave].tallas[zapato[this.atributoNumerico]]) {
+                inventario[clave].tallas[zapato[this.atributoNumerico]] = 0;
+            }
+            inventario[clave].tallas[zapato[this.atributoNumerico]]++;
+            inventario[clave].pares++;
+            inventario[clave].importe = inventario[clave].pares * inventario[clave].precio;
+        });
+
+        return Object.values(inventario);
+    }
+
+    generarClave(zapato) {
+        const { [this.atributoNumerico]: _, ...rest } = zapato;
+        return Object.values(rest).join('-');
+    }
+
+    obtenerValoresUnicos() {
+        const valoresSet = new Set();
+        this.zapatos.forEach(zapato => {
+            const clave = this.generarClave(zapato);
+            valoresSet.add(clave);
+        });
+        return Array.from(valoresSet);
+    }
+
+    obtenerTallasUnicas() {
+        const tallasSet = new Set();
+        this.zapatos.forEach(zapato => tallasSet.add(zapato[this.atributoNumerico]));
+        return Array.from(tallasSet).sort((a, b) => a - b);
+    }
+
+    renderizarEncabezados() {
+        const headerRow1 = document.getElementById('headerRow1');
+        const headerRow2 = document.getElementById('headerRow2');
+
+        // Limpiar encabezados existentes
+        headerRow1.innerHTML = '';
+        headerRow2.innerHTML = '';
+
+        // Encabezados principales (claves únicas que no son numéricas y no son el atributo especificado)
+        const encabezadosPrincipales = this.obtenerEncabezadosPrincipales();
+        encabezadosPrincipales.forEach(header => {
+            const th = document.createElement('th');
+            th.rowSpan = 2;
+            th.textContent = header;
+            headerRow1.appendChild(th);
+        });
+
+        // Encabezado de tallas
+        const thTallas = document.createElement('th');
+        thTallas.colSpan = this.tallasUnicas.length;
+        thTallas.textContent = this.atributoNumerico.charAt(0).toUpperCase() + this.atributoNumerico.slice(1);
+        headerRow1.appendChild(thTallas);
+
+        // Encabezados de tallas individuales
+        this.tallasUnicas.forEach(talla => {
+            const th = document.createElement('th');
+            th.textContent = talla;
+            headerRow2.appendChild(th);
+        });
+
+        // Otros encabezados
+        const otrosHeaders = ['Pares', 'Precio', 'Importe'];
+        otrosHeaders.forEach(header => {
+            const th = document.createElement('th');
+            th.rowSpan = 2;
+            th.textContent = header;
+            headerRow1.appendChild(th);
+        });
+    }
+
+    obtenerEncabezadosPrincipales() {
+        const primerZapato = this.zapatos[0];
+        const encabezados = Object.keys(primerZapato).filter(key => key !== this.atributoNumerico && typeof primerZapato[key] !== 'number');
+        return encabezados;
+    }
+
+    renderizarTabla() {
+        const tbody = document.querySelector('#zapatosTable tbody');
+        tbody.innerHTML = '';
+
+        this.inventario.forEach(item => {
+            const row = document.createElement('tr');
+
+            let rowContent = '';
+            const encabezadosPrincipales = this.obtenerEncabezadosPrincipales();
+            encabezadosPrincipales.forEach(header => {
+                rowContent += `<td>${item[header]}</td>`;
+            });
+
+            // Agregar celdas de tallas
+            this.tallasUnicas.forEach(talla => {
+                rowContent += `<td>${item.tallas[talla] || ''}</td>`;
+            });
+
+            // Agregar otras celdas
+            rowContent += `
+                <td>${item.pares}</td>
+                <td>${item.precio}</td>
+                <td>${item.importe}</td>
+            `;
+
+            row.innerHTML = rowContent;
+            tbody.appendChild(row);
+        });
+    }
+
+    inicializar() {
+        this.renderizarEncabezados();
+        this.renderizarTabla();
+    }
+}
+
+// Datos de entrada
+const datosZapatos = [
+    { "serie": "50125:1", "tarjeta": "50125", "modelo": "7053", "color": "Marron", "suela": "Elena", "talla": 33 },
+    { "serie": "50125:2", "tarjeta": "50125", "modelo": "7053", "color": "Marron", "suela": "Elena", "talla": 34 },
+    { "serie": "50125:3", "tarjeta": "50125", "modelo": "7053", "color": "Marron", "suela": "Elena", "talla": 34 },
+    { "serie": "50125:4", "tarjeta": "50125", "modelo": "7053", "color": "Marron", "suela": "Elena", "talla": 35 },
+    { "serie": "50125:5", "tarjeta": "50125", "modelo": "7053", "color": "Marron", "suela": "Elena", "talla": 35 },
+    { "serie": "50125:6", "tarjeta": "50125", "modelo": "7053", "color": "Marron", "suela": "Elena", "talla": 35 },
+    { "serie": "50124:1", "tarjeta": "50124", "modelo": "7053", "color": "Vino", "suela": "Elena", "talla": 33 },
+    { "serie": "50124:2", "tarjeta": "50124", "modelo": "7053", "color": "Vino", "suela": "Elena", "talla": 34 },
+    { "serie": "50124:3", "tarjeta": "50124", "modelo": "7053", "color": "Vino", "suela": "Elena", "talla": 34 },
+    { "serie": "50124:4", "tarjeta": "50124", "modelo": "7053", "color": "Vino", "suela": "Elena", "talla": 35 },
+    { "serie": "50124:5", "tarjeta": "50124", "modelo": "7053", "color": "Vino", "suela": "Elena", "talla": 35 },
+    { "serie": "50124:6", "tarjeta": "50124", "modelo": "7053", "color": "Vino", "suela": "Elena", "talla": 35 },
+    { "serie": "50124:7", "tarjeta": "50124", "modelo": "7053", "color": "Vino", "suela": "Elena", "talla": 36 },
+    { "serie": "50124:8", "tarjeta": "50124", "modelo": "7053", "color": "Vino", "suela": "Elena", "talla": 36 },
+    { "serie": "50124:9", "tarjeta": "50124", "modelo": "7053", "color": "Vino", "suela": "Elena", "talla": 36 },
+    { "serie": "50124:10", "tarjeta": "50124", "modelo": "7053", "color": "Vino", "suela": "Elena", "talla": 37 },
+    { "serie": "50124:11", "tarjeta": "50124", "modelo": "7053", "color": "Vino", "suela": "Elena", "talla": 37 },
+    { "serie": "50124:12", "tarjeta": "50124", "modelo": "7053", "color": "Vino", "suela": "Elena", "talla": 38 },
+    { "serie": "50126:1", "tarjeta": "50126", "modelo": "6053", "color": "Negro", "suela": "Tabita", "talla": 33 },
+    { "serie": "50126:2", "tarjeta": "50126", "modelo": "6053", "color": "Negro", "suela": "Tabita", "talla": 34 },
+    { "serie": "50126:3", "tarjeta": "50126", "modelo": "6053", "color": "Negro", "suela": "Tabita", "talla": 34 },
+    { "serie": "50126:4", "tarjeta": "50126", "modelo": "6053", "color": "Negro", "suela": "Tabita", "talla": 35 },
+    { "serie": "50126:5", "tarjeta": "50126", "modelo": "6053", "color": "Negro", "suela": "Tabita", "talla": 35 },
+    { "serie": "50126:6", "tarjeta": "50126", "modelo": "6053", "color": "Negro", "suela": "Tabita", "talla": 35 },
+    { "serie": "50126:7", "tarjeta": "50126", "modelo": "6053", "color": "Negro", "suela": "Tabita", "talla": 36 },
+    { "serie": "50126:8", "tarjeta": "50126", "modelo": "6053", "color": "Negro", "suela": "Tabita", "talla": 36 },
+    { "serie": "50126:9", "tarjeta": "50126", "modelo": "6053", "color": "Negro", "suela": "Tabita", "talla": 36 },
+    { "serie": "50126:10", "tarjeta": "50126", "modelo": "6053", "color": "Negro", "suela": "Tabita", "talla": 37 },
+    { "serie": "50126:11", "tarjeta": "50126", "modelo": "6053", "color": "Negro", "suela": "Tabita", "talla": 37 },
+    { "serie": "50126:12", "tarjeta": "50126", "modelo": "6053", "color": "Negro", "suela": "Tabita", "talla": 38 }
+];
+
+// Crear instancia de InventarioZapatos e inicializar la tabla
+const inventario = new InventarioZapatos(datosZapatos.map(data => new Zapato(data)), 'talla');
+inventario.inicializar();
+    </script>
+</body>
+</html>

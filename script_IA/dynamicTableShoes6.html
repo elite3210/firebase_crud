@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Proforma - Calzados Mirla</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .container {
+            max-width: 750px;
+            margin: 0 auto;
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+
+        #invoiceContainer{
+            display: grid;
+            min-height: 100dvh;
+            max-width: 800px;
+            margin: 0 auto;
+            grid-template-rows: auto 1fr auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .title {
+            font-size: 24px;
+            color: #666;
+        }
+
+        .invoice-number {
+            padding: 5px 15px;
+            border: 1px solid #000;
+        }
+
+        .customer-info {
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th,
+        .tableDeatil td {
+            border: 1px solid #ddd;
+            padding: 2px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        .totals {
+            float: right;
+            width: 300px;
+        }
+
+        .totals table {
+            margin-top: 20px;
+        }
+
+        .btn-generate {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-generate:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div id="invoiceContainer">
+        <div class="header">
+            <div class="title">
+                <h1>Calzados "Mirla"</h1>
+                <p>Calidad - Garantía / Telf. (01)543-5985</p>
+            </div>
+            <div class="invoice-number">
+                <p>N° 018483</p>
+            </div>
+        </div>
+        <div class="container" id="invoice">
+            
+            <div class="customer-info">
+                <p><strong>SEÑOR(es):</strong> Pecho Meza, Doris</p>
+                <p><strong>DIRECCION:</strong> Huanuco</p>
+                <p><strong>FECHA:</strong> 23 diciembre</p>
+            </div>
+            <table id="tableDetail" id="tableDetail">
+                <thead>
+                    <tr>
+                        <th>Tarjeta</th>
+                        <th>Modelo</th>
+                        <th>Color</th>
+                        <th>Planta</th>
+                        <th>33</th>
+                        <th>34</th>
+                        <th>35</th>
+                        <th>36</th>
+                        <th>37</th>
+                        <th>38</th>
+                        <th>Pares</th>
+                        <th>P. Unit.</th>
+                        <th>SubTotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>16357</td>
+                        <td>1917</td>
+                        <td>Neg</td>
+                        <td>C4.Nely</td>
+                        <td>3</td>
+                        <td></td>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>4</td>
+                        <td>1</td>
+                        <td>12</td>
+                        <td>55.0</td>
+                        <td>660</td>
+                    </tr>
+                    <tr>
+                        <td>16357</td>
+                        <td>1917</td>
+                        <td>Neg</td>
+                        <td>C4.Nely</td>
+                        <td>3</td>
+                        <td></td>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>4</td>
+                        <td>1</td>
+                        <td>12</td>
+                        <td>55.0</td>
+                        <td>660</td>
+                    </tr>
+                    <tr>
+                        <td>16357</td>
+                        <td>1917</td>
+                        <td>Neg</td>
+                        <td>C4.Nely</td>
+                        <td>3</td>
+                        <td></td>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>4</td>
+                        <td>1</td>
+                        <td>12</td>
+                        <td>55.0</td>
+                        <td>660</td>
+                    </tr>
+                    <tr>
+                        <td>16357</td>
+                        <td>1917</td>
+                        <td>Neg</td>
+                        <td>C4.Nely</td>
+                        <td>3</td>
+                        <td></td>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>4</td>
+                        <td>1</td>
+                        <td>12</td>
+                        <td>55.0</td>
+                        <td>660</td>
+                    </tr>
+                    <tr>
+                        <td>16357</td>
+                        <td>1917</td>
+                        <td>Neg</td>
+                        <td>C4.Nely</td>
+                        <td>3</td>
+                        <td></td>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>4</td>
+                        <td>1</td>
+                        <td>12</td>
+                        <td>55.0</td>
+                        <td>660</td>
+                    </tr>
+                    <tr>
+                        <td>16357</td>
+                        <td>1917</td>
+                        <td>Neg</td>
+                        <td>C4.Nely</td>
+                        <td>3</td>
+                        <td></td>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>4</td>
+                        <td>1</td>
+                        <td>12</td>
+                        <td>55.0</td>
+                        <td>660</td>
+                    </tr>
+                    <!-- Add more rows as needed -->
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <div class="totals">
+                <table>
+                    <tr>
+                        <td><strong>SUB TOTAL S/.</strong></td>
+                        <td>6546.0</td>
+                    </tr>
+                    <tr>
+                        <td><strong>DESCUENTO S/.</strong></td>
+                        <td>0.0</td>
+                    </tr>
+                    <tr>
+                        <td><strong>TOTAL S/.</strong></td>
+                        <td>6546.0</td>
+                    </tr>
+                    <tr>
+                        <td><strong>TOTAL PARES</strong></td>
+                        <td>120</td>
+                    </tr>
+                </table>
+            </div>
+            <button class="btn-generate" onclick="generatePDF()">Generar PDF</button>
+        </div>
+    </div>
+
+    <script>
+        const proformaData = [
+            { tarjeta: '16357', modelo: '1917', color: 'Neg', planta: 'C4.Nely', t33: '', t34: '', t35: '', t36: '', t37: '', t38: '1', pares: 1, punit: 55.0, subtotal: 55.0 },
+            { tarjeta: '16661', modelo: '1917', color: 'Neg', planta: 'C4.Nely', t33: '', t34: '1', t35: '1', t36: '2', t37: '1', t38: '', pares: 5, punit: 55.0, subtotal: 275.0 },
+            { tarjeta: '17742', modelo: '1996', color: 'Neg', planta: 'C4.Nely', t33: '', t34: '1', t35: '2', t36: '2', t37: '1', t38: '', pares: 6, punit: 55.0, subtotal: 330.0 },
+            { tarjeta: '17766', modelo: '1917', color: 'Neg', planta: 'C4.Nely', t33: '1', t34: '1', t35: '2', t36: '1', t37: '1', t38: '', pares: 6, punit: 55.0, subtotal: 330.0 },
+            { tarjeta: '', modelo: '2117', color: 'Vino Box', planta: 'C4.Nely', t33: '', t34: '1', t35: '1', t36: '2', t37: '1', t38: '1', pares: 6, punit: 52.0, subtotal: 312.0 },
+            { tarjeta: '17767', modelo: '1917', color: 'Neg', planta: 'C4.Nely', t33: '2', t34: '2', t35: '4', t36: '2', t37: '2', t38: '', pares: 12, punit: 55.0, subtotal: 660.0 },
+            { tarjeta: '17768', modelo: '1917', color: 'Neg', planta: 'C4.Nely', t33: '2', t34: '2', t35: '4', t36: '2', t37: '2', t38: '', pares: 12, punit: 55.0, subtotal: 660.0 },
+            { tarjeta: '17777', modelo: '1917', color: 'Neg', planta: 'C3.T20', t33: '', t34: '1', t35: '1', t36: '2', t37: '1', t38: '1', pares: 6, punit: 55.0, subtotal: 330.0 },
+            { tarjeta: '', modelo: '', color: '', planta: 'C4.Nely', t33: '', t34: '1', t35: '1', t36: '2', t37: '1', t38: '1', pares: 6, punit: 55.0, subtotal: 330.0 },
+            { tarjeta: '17778', modelo: '1917', color: 'Neg', planta: 'P5.Cuña', t33: '1', t34: '1', t35: '3', t36: '3', t37: '3', t38: '1', pares: 12, punit: 55.0, subtotal: 660.0 },
+            { tarjeta: '17779', modelo: '1917', color: 'Vino Ch', planta: 'C4.Nely', t33: '2', t34: '2', t35: '4', t36: '2', t37: '2', t38: '', pares: 12, punit: 55.0, subtotal: 660.0 },
+            { tarjeta: '17801', modelo: '1996', color: 'Vino Box', planta: 'C2.Iris', t33: '', t34: '1', t35: '1', t36: '2', t37: '1', t38: '1', pares: 6, punit: 52.0, subtotal: 312.0 },
+            { tarjeta: '', modelo: '', color: '', planta: 'C4.Nely', t33: '', t34: '1', t35: '1', t36: '2', t37: '1', t38: '1', pares: 6, punit: 52.0, subtotal: 312.0 },
+            { tarjeta: '17815', modelo: '1917', color: 'Neg Box', planta: 'P5.Cuña', t33: '', t34: '1', t35: '1', t36: '2', t37: '1', t38: '1', pares: 6, punit: 55.0, subtotal: 330.0 },
+            { tarjeta: '', modelo: '', color: 'Vino Box', planta: 'P5.Cuña', t33: '', t34: '1', t35: '1', t36: '2', t37: '1', t38: '1', pares: 6, punit: 55.0, subtotal: 330.0 },
+            { tarjeta: '17842', modelo: '1917', color: 'Neg', planta: 'C4.Nely', t33: '3', t34: '3', t35: '', t36: '', t37: '', t38: '', pares: 6, punit: 55.0, subtotal: 330.0 },
+            { tarjeta: '', modelo: '', color: '', planta: 'P5.Cuña', t33: '3', t34: '3', t35: '', t36: '', t37: '', t38: '', pares: 6, punit: 55.0, subtotal: 330.0 }
+        ];
+
+        function generatePDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // Configuración de la página
+            doc.setFontSize(20);
+            doc.text('Calzados "Mirla"', 105, 15, { align: 'center' });
+            
+            doc.setFontSize(10);
+            doc.text('Calidad - Garantía / Telf. (01)543-5985', 105, 22, { align: 'center' });
+            
+            // Número de proforma
+            doc.rect(160, 25, 40, 10);
+            doc.text('N° 018483', 165, 31);
+
+            // Información del cliente
+            doc.text('SEÑOR(es): Pecho Meza, Doris', 14, 40);
+            doc.text('DIRECCION: Huanuco', 14, 46);
+            doc.text('FECHA: 23 diciembre', 14, 52);
+
+            // Generar tabla
+            doc.autoTable({
+                startY: 60,
+                head: [[
+                    'Tarjeta', 'Modelo', 'Color', 'Planta', 
+                    '33', '34', '35', '36', '37', '38',
+                    'Pares', 'P. Unit', 'SubTotal'
+                ]],
+                body: proformaData.map(row => [
+                    row.tarjeta,
+                    row.modelo,
+                    row.color,
+                    row.planta,
+                    row.t33,
+                    row.t34,
+                    row.t35,
+                    row.t36,
+                    row.t37,
+                    row.t38,
+                    row.pares,
+                    row.punit.toFixed(1),
+                    row.subtotal.toFixed(1)
+                ]),
+                theme: 'grid',
+                styles: {
+                    fontSize: 8,
+                    cellPadding: 1,
+                    overflow: 'linebreak',
+                    halign: 'center'
+                },
+                headStyles: {
+                    fillColor: [200, 200, 200],
+                    textColor: [0, 0, 0],
+                    fontStyle: 'bold'
+                }
+            });
+
+            // Calcular totales
+            const totalPares = proformaData.reduce((sum, row) => sum + row.pares, 0);
+            const subTotal = proformaData.reduce((sum, row) => sum + row.subtotal, 0);
+
+            // Agregar totales
+            const finalY = doc.lastAutoTable.finalY + 10;
+            doc.text('SUB TOTAL S/.', 140, finalY);
+            doc.text(subTotal.toFixed(1), 170, finalY);
+            
+            doc.text('DESCUENTO S/.', 140, finalY + 6);
+            doc.text('0.0', 170, finalY + 6);
+            
+            doc.text('TOTAL S/.', 140, finalY + 12);
+            doc.text(subTotal.toFixed(1), 170, finalY + 12);
+            
+            doc.text('TOTAL PARES', 140, finalY + 18);
+            doc.text(totalPares.toString(), 170, finalY + 18);
+
+            // Firma
+            doc.text('Recibi Conforme', 105, finalY + 40, { align: 'center' });
+
+            // Guardar PDF
+            doc.save('proforma-018483.pdf');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #0f0c29;
+            background: linear-gradient(135deg, #24243e, #0f0c29, #302b63);
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        canvas {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .container {
+            position: absolute;
+            text-align: center;
+            z-index: 2;
+            display: none;
+        }
+
+        .letter {
+            display: inline-block;
+            font-size: 4em;
+            font-weight: bold;
+            color: #fff;
+            opacity: 0;
+            margin: 0 5px;
+            transform: scale(0);
+        }
+
+        .letter.active {
+            animation: popIn 0.5s cubic-bezier(0.17, 0.89, 0.32, 1.49) forwards;
+        }
+
+        @keyframes popIn {
+            0% {
+                opacity: 0;
+                transform: scale(0) rotate(-180deg);
+            }
+            70% {
+                transform: scale(1.2) rotate(10deg);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) rotate(0);
+            }
+        }
+
+        .particle {
+            position: absolute;
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        .happy-new-year {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 48px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+            opacity: 0;
+            transition: opacity 2s;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .visible {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div id="newYearText" class="happy-new-year"></div>
+    <div class="container" id="container"></div>
+    <canvas id="canvas"></canvas>
+</body>
+<script>
+    // Fireworks code
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    let fireworks = [];
+    let particles = [];
+    const PARTICLE_SYMBOLS = ['❄', '❅', '❆', '✻', '✼', '✽', '❋'];
+
+    function setupCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    setupCanvas();
+    window.addEventListener('resize', setupCanvas);
+
+    class Firework {
+        constructor(x, y, targetX, targetY) {
+            this.x = x;
+            this.y = y;
+            this.targetX = targetX;
+            this.targetY = targetY;
+            this.speed = 16;
+            this.angle = Math.atan2(targetY - y, targetX - x);
+            this.velocity = {
+                x: Math.cos(this.angle) * this.speed,
+                y: Math.sin(this.angle) * this.speed
+            };
+            this.trail = [];
+            this.trailLength = 10;
+            this.hue = Math.random() * 360;
+        }
+
+        update() {
+            this.x += this.velocity.x;
+            this.y += this.velocity.y;
+            this.trail.push({ x: this.x, y: this.y });
+            if (this.trail.length > this.trailLength) {
+                this.trail.shift();
+            }
+            return Math.hypot(this.x - this.targetX, this.y - this.targetY) < 15;
+        }
+
+        draw() {
+            ctx.beginPath();
+            this.trail.forEach((pos, i) => {
+                const alpha = i / this.trailLength;
+                ctx.strokeStyle = `hsla(${this.hue}, 100%, 50%, ${alpha})`;
+                ctx.lineWidth = 2;
+                if (i > 0) {
+                    const prevPos = this.trail[i - 1];
+                    ctx.moveTo(prevPos.x, prevPos.y);
+                    ctx.lineTo(pos.x, pos.y);
+                }
+            });
+            ctx.stroke();
+        }
+    }
+
+    class Particle {
+        constructor(x, y, hue) {
+            this.x = x;
+            this.y = y;
+            this.hue = hue;
+            const angle = Math.random() * Math.PI * 2;
+            const velocity = Math.random() * 5 + 2;
+            this.velocity = {
+                x: Math.cos(angle) * velocity,
+                y: Math.sin(angle) * velocity
+            };
+            this.life = 1;
+            this.decay = Math.random() * 0.02 + 0.02;
+            this.symbol = PARTICLE_SYMBOLS[Math.floor(Math.random() * PARTICLE_SYMBOLS.length)];
+            this.rotation = Math.random() * Math.PI * 2;
+            this.rotationSpeed = (Math.random() - 0.5) * 0.2;
+            this.size = Math.random() * 8 + 24;
+        }
+
+        update() {
+            this.velocity.y += 0.1;
+            this.x += this.velocity.x;
+            this.y += this.velocity.y;
+            this.rotation += this.rotationSpeed;
+            this.life -= this.decay;
+            return this.life > 0;
+        }
+
+        draw() {
+            ctx.save();
+            ctx.translate(this.x, this.y);
+            ctx.rotate(this.rotation);
+            ctx.font = `${this.size}px Arial`;
+            ctx.fillStyle = `hsla(${this.hue}, 100%, 50%, ${this.life})`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(this.symbol, 0, 0);
+            ctx.restore();
+        }
+    }
+
+    function launchFirework() {
+        const startX = canvas.width/2;
+        //const startX = Math.random() * canvas.width;
+        const startY = canvas.height;
+        const targetX = startX + (Math.random() - 0.5) * 200;
+        const targetY = Math.random() * canvas.height * 0.3+canvas.height * 0.2;
+        fireworks.push(new Firework(startX, startY, targetX, targetY));
+    }
+
+    function explode(x, y, hue) {
+        for (let i = 0; i < 30; i++) {
+            particles.push(new Particle(x, y, hue));
+        }
+    }
+
+    // Text effect code
+    const text = "Heinz Sport SAC";
+    let currentIndex = 0;
+    let letters = [];
+    const characters = ['❄', '❅', '❆', '✻', '✼', '✽', '❋'];
+
+    function getRandomColor() {
+        const letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+
+    function createParticles(x, y) {
+        const particleCount = 20;
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.textContent = characters[Math.floor(Math.random() * characters.length)];
+            particle.style.color = getRandomColor();
+            particle.style.fontSize = `${Math.random() * 40 + 10}px`;
+            particle.style.left = `${x}px`;
+            particle.style.top = `${y}px`;
+            
+            const angle = (Math.PI * 2 * i) / particleCount;
+            const velocity = 5 + Math.random() * 5;
+            const vx = Math.cos(angle) * velocity;
+            const vy = Math.sin(angle) * velocity;
+            
+            document.body.appendChild(particle);
+            
+            let posX = x;
+            let posY = y;
+            let opacity = 1;
+            let scale = 1;
+            
+            const animate = () => {
+                posX += vx;
+                posY += vy;
+                opacity -= 0.02;
+                scale += 0.02;
+                particle.style.transform = `translate(${posX - x}px, ${posY - y}px) scale(${scale})`;
+                particle.style.opacity = opacity;
+                if (opacity > 0) {
+                    requestAnimationFrame(animate);
+                } else {
+                    particle.remove();
+                }
+            };
+            requestAnimationFrame(animate);
+        }
+    }
+
+    function initializeLetters() {
+        const container = document.getElementById('container');
+        container.innerHTML = '';
+        letters = [];
+        text.split('').forEach((char) => {
+            const span = document.createElement('span');
+            span.textContent = char;
+            span.className = 'letter';
+            container.appendChild(span);
+            letters.push(span);
+        });
+    }
+
+    function showNextLetter() {
+        if (currentIndex < letters.length) {
+            const letter = letters[currentIndex];
+            letter.classList.add('active');
+            const rect = letter.getBoundingClientRect();
+            createParticles(rect.left + rect.width/2, rect.top + rect.height/2);
+            currentIndex++;
+            setTimeout(showNextLetter, 150);
+        } else {
+            setTimeout(startNewYearText, 2000); // Delay before showing new year text
+        }
+    }
+
+    function startNewYearText() {
+        const newYearTextElement = document.getElementById('newYearText');
+        newYearTextElement.textContent = "¡Feliz Año Nuevo 2025!";
+        newYearTextElement.classList.add('visible');
+        const showInterval = setInterval(launchFirework, 400);
+        setTimeout(() => {
+            clearInterval(showInterval);
+        }, 5000);
+    }
+
+    // Animation sequence
+    function animate() {
+        ctx.fillStyle = 'rgba(0, 0, 51, 0.1)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        fireworks = fireworks.filter(firework => {
+            const exploded = firework.update();
+            firework.draw();
+            if (exploded) {
+                explode(firework.x, firework.y, firework.hue);
+                return false;
+            }
+            return true;
+        });
+
+        particles = particles.filter(particle => {
+            const alive = particle.update();
+            particle.draw();
+            return alive;
+        });
+
+        requestAnimationFrame(animate);
+    }
+
+    // Start everything
+    animate();
+    setTimeout(() => {
+        document.getElementById('container').style.display = 'block';
+        initializeLetters();
+        showNextLetter();
+    }, 1000);
+</script>
+</html>

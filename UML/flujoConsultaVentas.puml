@@ -1,0 +1,41 @@
+@startuml Estado de pedidos
+start
+if (obj['values'].estado == 'nuevo') then (Sí)
+    :obj['values'].retrasoEnvio = X1;
+    :obj['values'].retrasoPago = 0;
+    if (obj['values'].pagosPedido) then (Sí)
+        :obj['values'].pagosAcumulados = M;
+        :obj['values'].progreso = ElementEstado1;
+    else (No)
+    :obj['values'].progreso = ElementEstado7;
+endif
+
+elseif (obj['values'].fechaEnvio && obj['values'].estado != 'cancelado') then (Sí)
+    :obj['values'].retrasoEnvio = X2;
+    :obj['values'].retrasoPago = X3;
+    if (obj['values'].pagosPedido && obj['values'].retrasoPago <= 10) then (Sí)
+        :let arrayPagos = A4;
+        :obj['values'].pagosAcumulados = M3;
+        :obj['values'].progreso = ElementEstado2;
+elseif (obj['values'].pagosPedido && obj['values'].retrasoPago <= 30) then (Sí)
+    :obj['values'].progreso = ElementEstado3;
+elseif (!(obj['values'].pagosPedido) && obj['values'].retrasoPago <= 60) then (Sí)
+    :obj['values'].progreso = ElementEstado3;
+else
+    :obj['values'].progreso = ElementEstado4;
+endif
+elseif (obj['values'].estado == 'cancelado') then (Sí)
+    if (obj['values'].fechaEnvio) then (Sí)
+        :obj['values'].retrasoEnvio = X4;
+        :obj['values'].retrasoPago = X5;
+        :obj['values'].progreso = ElementEstado5;
+    else (No)
+        :obj['values'].retrasoEnvio = X6;
+        :obj['values'].pagosAcumulados = M2;
+        :obj['values'].progreso = ElementEstado6;
+endif
+else
+:alert('en construccion');
+endif
+stop
+@enduml

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Generador de SRS</title>
+
+    <style>
+        /* styles.css */
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        form {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .srs {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th,
+        td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+
+<body>
+    <form id="formularioSRS">
+        <label for="titulo">Título del proyecto:</label>
+        <input type="text" id="titulo" name="titulo" required>
+
+        <label for="descripcion">Descripción:</label>
+        <textarea id="descripcion" name="descripcion" required></textarea>
+
+        <label for="requisitos">Requisitos:</label>
+        <textarea id="requisitos" name="requisitos" required></textarea>
+
+        <button type="button" onclick="generarSRS()">Generar SRS</button>
+    </form>
+
+    <div id="vistaPrevia"></div>
+
+    <script>
+        // Funciones auxiliares
+        function crearElemento(tag, clases, contenido) {
+            const elemento = document.createElement(tag);
+            elemento.classList.add(...clases);
+            elemento.textContent = contenido;
+            return elemento;
+        }
+
+        function crearTabla(datos) {
+            const tabla = document.createElement('table');
+            // ... Lógica para crear las filas y columnas de la tabla
+            return tabla;
+        }
+
+        // Clases para representar los datos del SRS
+        class Proyecto {
+            constructor(titulo, descripcion) {
+                this.titulo = titulo;
+                this.descripcion = descripcion;
+            }
+        }
+
+        class Requisito {
+            constructor(id, descripcion, tipo) {
+                this.id = id;
+                this.descripcion = descripcion;
+                this.tipo = tipo;
+            }
+        }
+
+        // Función principal para generar el SRS
+        function generarSRS() {
+            // Obtener datos del formulario
+            const formulario = document.getElementById('formularioSRS');
+            const datos = new FormData(formulario);
+            // ... Convertir datos a objetos
+
+            // Crear el documento SRS como un elemento HTML
+            const documento = crearElemento('div', ['srs']);
+
+            // Declarar y inicializar la variable proyecto
+            let proyecto = null;
+            let titulo=datos.titulo
+            console.log('titulo',titulo);
+            
+            // Crear el objeto Proyecto
+            proyecto = new Proyecto(titulo, descripcion);
+
+            // Agregar secciones al documento, utilizando funciones para crear elementos HTML
+            documento.appendChild(crearElemento('h1', [], proyecto.titulo));
+            // ... Agregar otras secciones
+
+            // Mostrar la vista previa
+            vistaPrevia.innerHTML = '';
+            vistaPrevia.appendChild(documento);
+
+            // Convertir a PDF (utilizando jsPDF)
+            // ...
+        }
+
+
+    </script>
+</body>
+
+</html>

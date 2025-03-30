@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplicación de Productos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+        }
+
+        form {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        form label {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        form input {
+            width: calc(50% - 20px);
+            padding: 10px;
+            margin-top: 5px;
+        }
+
+        form button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        form button:hover {
+            background-color: #218838;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Ingreso de Productos</h1>
+        <form id="productForm">
+            <label for="name">Nombre:</label>
+            <input type="text" id="name" required>
+
+            <label for="category">Categoría:</label>
+            <input type="text" id="category" required>
+
+            <label for="price">Precio:</label>
+            <input type="number" id="price" step="0.01" required>
+
+            <button type="submit">Agregar Producto</button>
+        </form>
+
+        <h2>Lista de Productos</h2>
+        <table id="productTable">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Precio</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Filas de productos se insertarán aquí -->
+            </tbody>
+        </table>
+    </div>
+    <script>
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('productForm');
+    const tableHead = document.querySelector('#productTable thead tr');
+    const tableBody = document.querySelector('#productTable tbody');
+    const products = {}; // Objeto para almacenar productos únicos
+    const categoryCount = {}; // Objeto para contar la frecuencia de cada categoría
+
+    // Asegurarse de que la columna "Cantidad" esté presente
+    addQuantityColumnIfMissing();
+
+    form.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        const name = document.getElementById('name').value;
+        const category = document.getElementById('category').value;
+        const price = parseFloat(document.getElementById('price').value);
+
+        // Crear clave única para el producto basada en nombre y precio
+        const productKey = `${name}-${price}`;
+
+        // Incrementar el contador de la categoría
+        if (!categoryCount[category]) {
+            categoryCount[category] = 0;
+        }
+        categoryCount[category]++;
+
+        // Verificar si el producto ya existe
+        if (!products[productKey]) {
+            // Si no existe, crear una nueva fila
+            products[productKey] = {
+                name,
+                price,
+                categories: {}
+            };
+        }
+
+        // Incrementar el contador de la categoría para este producto
+        const product = products[productKey];
+        if (!product.categories[category]) {
+            product.categories[category] = 0;
+        }
+        product.categories[category]++;
+
+        // Actualizar la cabecera si la categoría no existe
+        if (!tableHead.querySelector(`th[data-category="${category}"]`)) {
+            const th = document.createElement('th');
+            th.textContent = category;
+            th.setAttribute('data-category', category);
+            tableHead.insertBefore(th, tableHead.querySelector('th:last-child')); // Insertar antes de la columna "Cantidad"
+        }
+
+        // Actualizar la fila del producto
+        let row = tableBody.querySelector(`tr[data-product-key="${productKey}"]`);
+        if (!row) {
+            // Si la fila no existe, crear una nueva
+            row = document.createElement('tr');
+            row.setAttribute('data-product-key', productKey);
+
+            const nameCell = document.createElement('td');
+            nameCell.textContent = product.name;
+            row.appendChild(nameCell);
+
+            const priceCell = document.createElement('td');
+            priceCell.textContent = `$${product.price.toFixed(2)}`;
+            row.appendChild(priceCell);
+
+            // Crear celdas de categoría para todas las categorías existentes
+            Array.from(tableHead.querySelectorAll('th')).slice(2, -1).forEach(th => {
+                const cat = th.getAttribute('data-category');
+                const cell = document.createElement('td');
+                cell.setAttribute('data-category', cat);
+                cell.textContent = product.categories[cat] || 0;
+                row.appendChild(cell);
+            });
+
+            // Crear celdas adicionales si faltan
+            const existingCategories = new Set(Array.from(tableHead.querySelectorAll('th')).map(th => th.getAttribute('data-category')));
+            const productCategories = Object.keys(product.categories);
+            productCategories.forEach(cat => {
+                if (!existingCategories.has(cat)) {
+                    const cell = document.createElement('td');
+                    cell.setAttribute('data-category', cat);
+                    cell.textContent = product.categories[cat] || 0;
+                    row.insertBefore(cell, row.querySelector('td:last-child'));
+                }
+            });
+
+            // Crear celdas adicionales con cero si faltan
+            const expectedColumns = tableHead.querySelectorAll('th').length - 2; // Excluyendo "Nombre" y "Cantidad"
+            while (row.querySelectorAll('td').length - 2 < expectedColumns) { // Excluyendo "Nombre" y "Cantidad"
+                const cell = document.createElement('td');
+                cell.textContent = '0';
+                row.insertBefore(cell, row.querySelector('td:last-child'));
+            }
+
+            const quantityCell = document.createElement('td');
+            quantityCell.textContent = calculateTotalQuantity(product);
+            row.appendChild(quantityCell);
+
+            tableBody.appendChild(row);
+        } else {
+            // Si la fila ya existe, actualizar las celdas de categoría
+            Array.from(tableHead.querySelectorAll('th')).slice(2, -1).forEach(th => {
+                const cat = th.getAttribute('data-category');
+                const cell = row.querySelector(`td[data-category="${cat}"]`) || document.createElement('td');
+                cell.setAttribute('data-category', cat);
+                cell.textContent = product.categories[cat] || 0;
+                row.insertBefore(cell, row.querySelector('td:last-child'));
+            });
+/*
+            // Crear celdas adicionales con cero si faltan
+            const existingCategories = new Set(Array.from(row.querySelectorAll('td')).slice(2, -1).map(td => td.getAttribute('data-category')));
+            const productCategories = Object.keys(product.categories);
+            productCategories.forEach(cat => {
+                if (!existingCategories.has(cat)) {
+                    const cell = document.createElement('td');
+                    cell.setAttribute('data-category', cat);
+                    cell.textContent = product.categories[cat] || 0;
+                    row.insertBefore(cell, row.querySelector('td:last-child'));
+                }
+            });
+*/
+/*
+            // Crear celdas adicionales con cero si faltan
+            const expectedColumns = tableHead.querySelectorAll('th').length - 2; // Excluyendo "Nombre" y "Cantidad"
+            while (row.querySelectorAll('td').length - 2 < expectedColumns) { // Excluyendo "Nombre" y "Cantidad"
+                const cell = document.createElement('td');
+                cell.textContent = '0';
+                row.insertBefore(cell, row.querySelector('td:last-child'));
+            }
+*/
+            // Actualizar la celda de "Cantidad"
+            const quantityCell = row.querySelector('td:last-child');
+            quantityCell.textContent = calculateTotalQuantity(product);
+        }
+
+        // Limpiar formulario
+        form.reset();
+    });
+
+    function addQuantityColumnIfMissing() {
+        const quantityTh = document.createElement('th');
+        quantityTh.textContent = 'Cantidad';
+        quantityTh.setAttribute('data-category', 'quantity');
+        if (!tableHead.querySelector('th[data-category="quantity"]')) {
+            tableHead.appendChild(quantityTh);
+        }
+    }
+
+    function calculateTotalQuantity(product) {
+        return Object.values(product.categories).reduce((sum, count) => sum + count, 0);
+    }
+});
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generador de Código de Barras</title>
+    <script src="./barcode39POO2.js"></script>
+</head>
+<body>
+    <div id="barcode"></div>
+
+    <script type="module">
+
+
+// Uso del nuevo enfoque
+const barcode = new Barcode39({
+    barHeight: 100,
+    text: "SB0070*",
+    size: 2
+});
+
+document.body.appendChild(barcode.generate());
+
+
+/*
+const printStyles = `
+    @media print {
+        div[style*="background-color"] {
+            display: inline-block;
+            float: none !important;
+        }
+        table {
+            page-break-inside: avoid;
+        }
+        div[style*="position:absolute"] {
+            position: static !important;
+        }
+    }
+`;
+
+
+// Uso del nuevo enfoque
+const barcode = new Barcode39({
+    x: 10,
+    y: 20,
+    barHeight: 100,
+    fontHeight: 20,
+    text: "*BS0070*",
+    size: 2
+});
+
+document.body.innerHTML = barcode.generate();
+
+const styleSheet = document.createElement("style");
+styleSheet.type = "text/css";
+styleSheet.innerHTML = printStyles;
+document.head.appendChild(styleSheet);
+*/
+/*
+        //import { Code39 } from './barcode39.js';
+
+        // Genera el código de barras
+        const barcodeHTML = Code39("", "", 100, 20, "HELLO123", 2);
+        
+        // Inserta el código de barras en el DOM
+        document.getElementById('barcode').innerHTML = barcodeHTML;
+        */
+    </script>
+</body>
+</html>

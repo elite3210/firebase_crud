@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animación Feliz Año Nuevo</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            font-size: 2em;
+        }
+        #text-container {
+            white-space: nowrap;
+            overflow: hidden;
+            border-right: .15em solid orange; /* The typewriter cursor */
+            animation: typing 3.5s steps(40, end),
+                       blink-caret .75s step-end infinite;
+        }
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: orange; }
+        }
+    </style>
+</head>
+<body>
+    <div id="text-container"></div>
+
+    <script>
+        const phrases = ["Feliz Año Nuevo 2025", "Heinz Sport SAC"];
+        let currentPhraseIndex = 0;
+        let charIndex = 0;
+
+        function typeWriter() {
+            const textContainer = document.getElementById('text-container');
+            if (charIndex < phrases[currentPhraseIndex].length) {
+                textContainer.textContent += phrases[currentPhraseIndex].charAt(charIndex);
+                charIndex++;
+                setTimeout(typeWriter, 100); // Speed of typing
+            } else {
+                setTimeout(changePhrase, 2000); // Time before changing phrase
+            }
+        }
+
+        function changePhrase() {
+            const textContainer = document.getElementById('text-container');
+            textContainer.textContent = ''; // Clear the current text
+            currentPhraseIndex = (currentPhraseIndex + 1) % phrases.length; // Cycle through phrases
+            charIndex = 0;
+            typeWriter(); // Start typing the next phrase
+        }
+
+        typeWriter(); // Start the animation
+    </script>
+</body>
+</html>

@@ -1,5 +1,6 @@
 class CalculatorModel {
     constructor() {
+        this.toggle = true;
         this.currentString = '';
         this.currentValue = null;
         this.pendingValue = null;
@@ -11,70 +12,99 @@ class CalculatorModel {
         if (this.currentValue === null) {
             this.currentValue = number;
             this.currentString = String(number);
-
+            //console.log('this.currentString:',this.currentString);
+            //console.log('this.currentValue:',this.currentValue);
         } else {
             // Si ya hay un valor, se asume que el usuario ingresará una nueva operación o continuará ingresando números
             if (this.operation === null) {
                 this.currentValue = this.currentValue * 10 + number;
-                this.currentString = String(number); //al numero en memoria se multiplica por 10 para convertirlo en decena y sumar la unidad asi se convierte un numero de mas cifras Asumiendo una calculadora básica sin punto decimal
+                this.currentString += String(number); //al numero en memoria se multiplica por 10 para convertirlo en decena y sumar la unidad asi se convierte un numero de mas cifras Asumiendo una calculadora básica sin punto decimal
+                //console.log('this.currentString:',this.currentString);
+                //console.log('this.currentValue:',this.currentValue);
             } else {
                 if (this.pendingValue === null) {
                     this.pendingValue = number;
-                    this.currentString = String(number);
+                    this.currentString += String(number);
+                    //console.log('this.currentString:',this.currentString);
+                    //console.log('this.currentValue:',this.currentValue);
                 } else {
                     this.pendingValue = this.pendingValue * 10 + number;
-                    this.currentString = String(number);
+                    this.currentString += String(number);
+                    //console.log('this.currentString:',this.currentString);
+                    //console.log('this.currentValue:',this.currentValue);
                 }
             }
         }
     }
+    
 
     pressOperation(operation) {
-        if (this.operation !== null && this.pendingValue !== null) {
+        if (this.operation !== null && this.pendingValue !== null) {//si hay un operador y un valor adicional realiza calculo
             this.calculate();
         }
         this.operation = operation;
+        this.currentString += operation;
+        //console.log('*pressO this.currentString:',this.currentString);
+        //console.log('*pressO this.currentValue:',this.currentValue);
     }
 
     calculate() {
         if (this.pendingValue === null) {
+            console.log('this.pendingValue === null...return');
             return;
         }
+        /*
         if (this.operation === '+') {
             this.currentValue += this.pendingValue;
-            this.currentString += String('+');
         } else if (this.operation === '-') {
-            this.currentValue -= this.pendingValue;
-            //this.currentString += String('-');
+            this.currentValue -= this.pendingValue;           
         } else if (this.operation === '*') {
             this.currentValue *= this.pendingValue;
-           //this.currentString += String('*');
         } else if (this.operation === '/') {
-            this.currentValue /= this.pendingValue;
-            //this.currentString += String('/');
+            this.currentValue /= this.pendingValue;           
         } else if (this.operation === '^') {
-            this.currentValue = Math.pow(this.currentValue, this.pendingValue);
-            //this.currentString += String('^');
+            this.currentValue = Math.pow(this.currentValue, this.pendingValue);           
         } else if (this.operation === '%') {
-            this.currentValue *= this.pendingValue/100;
-            //this.currentString += String('%');
+            this.currentValue *= this.pendingValue/100;           
+        }
+        */
+        
+
+        switch (this.operation) {
+            case '+': this.currentValue += this.pendingValue; break;     
+            case '-': this.currentValue -= this.pendingValue; break;     
+            case '*': this.currentValue *= this.pendingValue; break;     
+            case '/': this.currentValue /= this.pendingValue; break;     
+            case '^': this.currentValue = Math.pow(this.currentValue, this.pendingValue); break;     
+            case '%': this.currentValue = this.currentValue *= this.pendingValue/100; break;     
+            default: break;
         }
 
         this.pendingValue = null; // Resetear el valor pendiente
         this.operation = null; // Resetear la operación
-        this.currentString= ''; // Resetear la operación
+        //this.currentString= String(this.currentValue); // Resetear la operación
+        //console.log('keyPress =');
     }
 
     getCurrentValue() {
-        if (this.operation !== null) {
+        if (this.operation !== null && this.toggle) {//si se presionó una tecla de operacion
             return this.pendingValue;
-        } else {
+        } else if (this.operation === null && !(this.toggle)) {//si se presionó una tecla de operacion
+            this.toggle=true;
+            console.log('se presiono tecla igual....');
+            this.currentString=String(this.currentValue);
+            console.log('this.currentString:',this.currentString);
+            return this.currentString;
+
+        } else {//si aun no se presiono tecla operacion
             return this.currentValue;
         }
     }
 
     getCurrentString() {
-        return this.currentString;
+
+            return this.currentString;
+ 
     }
 
     reset() {
@@ -83,12 +113,12 @@ class CalculatorModel {
         this.operation = null;
         this.currentString= '';
     }
-}
+};
 
 class CalculatorView {
     constructor() {
-        this.display = document.getElementById('display');
-        this.displayBottom = document.getElementById('displayBottom');
+        this.display        = document.getElementById('display');
+        this.displayBottom  = document.getElementById('displayBottom');
         this.key0 = document.getElementById('key0');
         this.key1 = document.getElementById('key1');
         this.key2 = document.getElementById('key2');
@@ -99,14 +129,14 @@ class CalculatorView {
         this.key7 = document.getElementById('key7');
         this.key8 = document.getElementById('key8');
         this.key9 = document.getElementById('key9');
-        this.keyPlus = document.getElementById('keyPlus');
-        this.keyMinus = document.getElementById('keyMinus');
-        this.keyEqual = document.getElementById('keyEqual');
-        this.keyClear = document.getElementById('keyClear');
-        this.keyMultiply = document.getElementById('keyMultiply');
-        this.keyDivide = document.getElementById('keyDivide');
-        this.keyPower = document.getElementById('keyPower');
-        this.keyPercentage = document.getElementById('keyPercentage');
+        this.keyPlus        = document.getElementById('keyPlus');
+        this.keyMinus       = document.getElementById('keyMinus');
+        this.keyEqual       = document.getElementById('keyEqual');
+        this.keyClear       = document.getElementById('keyClear');
+        this.keyMultiply    = document.getElementById('keyMultiply');
+        this.keyDivide      = document.getElementById('keyDivide');
+        this.keyPower       = document.getElementById('keyPower');
+        this.keyPercentage  = document.getElementById('keyPercentage');
     }
 
     bindPressNumber(handler) {
@@ -189,13 +219,14 @@ class CalculatorView {
         });
     }
 
-    updateDisplay(value) {
-        this.display.value += String(value);
+    updateDisplayTop(value) {
+        this.display.value = String(value);
     }
+
     updateDisplayBottom(value) {
         this.displayBottom.value = value;
     }
-}
+};
 
 /*
 class CalculatorController {
@@ -237,79 +268,59 @@ class CalculatorController {
 
         this.view.bindPressNumber(this.handlePressNumber);
         this.view.bindPressOperation(this.handlePressOperation);
-        this.view.bindCalculate(this.handleCalculate);
+        this.view.bindCalculate(this.handleDisplay);
         this.view.bindReset(this.handleReset); // Si decides añadir un botón de reset
 
-        this.updateDisplay();
+        this.updateDisplayTop();
         this.updateDisplayBottom();
     }
 
     handlePressNumber = (number) => {
         this.model.pressNumber(number);
-        this.updateDisplay();
+        this.updateDisplayTop();
+        this.handleCalculate();
+        this.updateDisplayBottom();
     }
 
     handlePressOperation = (operation) => {
         this.model.pressOperation(operation);
+        this.updateDisplayTop();
     }
 
     handleCalculate = () => {
         this.model.calculate();
-        this.updateDisplayBottom();
+        
+        //console.log('presionaste =');
+    }
+
+    handleDisplay = () => {
+        this.view.updateDisplayTop(this.model.getCurrentValue() ?? 0); // Mostrar 0 si no hay valor
+        this.view.updateDisplayBottom('' ?? ''); // Mostrar 0 si no hay valor
+        this.model.toggle=false;
+        //this.model.calculate();
+        //this.currentString=String(this.currentValue);
+        console.log('presionaste =');
+        console.log('this.model.toggle',this.model.toggle);
     }
 
     handleReset = () => {
         this.model.reset();
-        this.updateDisplay();
+        this.updateDisplayTop();
         this.updateDisplayBottom();
     }
 
-    updateDisplay() {
-        this.view.updateDisplay(this.model.getCurrentString() ?? 0); // Mostrar 0 si no hay valor
+    updateDisplayTop() {
+        this.view.updateDisplayTop(this.model.getCurrentString() ?? ''); // Mostrar 0 si no hay valor
     }
+
+    updateDisplay2() {
+        this.view.updateDisplayTop(this.model.getCurrentValue() ?? 0); // Mostrar 0 si no hay valor
+    }
+
     updateDisplayBottom() {
         this.view.updateDisplayBottom(this.model.getCurrentValue() ?? ''); // Mostrar 0 si no hay valor
     }
-}
-
-/*
-class CalculatorController {
-    constructor(model, view) {
-        this.model = model;
-        this.view = view;
-
-        this.view.bindPressNumber(this.handlePressNumber);//recibe una funcion como argumento
-        this.view.bindPressOperation(this.handlePressOperation);
-        this.view.bindCalculate(this.handleCalculate);
-
-        this.updateDisplay();
-    }
-
-    handlePressNumber = (number) => {
-        this.model.pressNumber(number);
-        this.updateDisplay();  // Actualiza la pantalla cada vez que se presiona un número
-    }
-
-    handlePressOperation = (operation) => {
-        this.model.pressOperation(operation);
-        this.updateDisplayOperation();  // Actualización específica para mostrar que la operación está en curso
-    }
-
-    handleCalculate = () => {
-        this.model.calculate();
-        this.updateDisplay();  // Muestra el resultado final
-    }
-
-    updateDisplay() {
-        this.view.updateDisplay(this.model.getCurrentValue() ?? 0); // Mostrar 0 si no hay valor
-    }
-
-    updateDisplayOperation() {
-        // Muestra 0 o el valor pendiente para indicar que la operación está en espera de un segundo número
-        this.view.updateDisplay(this.model.pendingValue ?? this.model.currentValue ?? 0);
-    }
-}
-*/
+};
 
 const model = new CalculatorModel();
 const view = new CalculatorView();

@@ -1,0 +1,78 @@
+// index.html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mi Primera SPA</title>
+    <style>
+        .nav-link {
+            cursor: pointer;
+            color: blue;
+            text-decoration: underline;
+            margin: 0 10px;
+        }
+        .page {
+            display: none;
+        }
+        .active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <span class="nav-link" data-page="home">Inicio</span>
+        <span class="nav-link" data-page="about">Sobre Nosotros</span>
+        <span class="nav-link" data-page="contact">Contacto</span>
+    </nav>
+
+    <main>
+        <div id="home" class="page">
+            <h1>Bienvenido a mi SPA</h1>
+            <p>Esta es la página de inicio</p>
+        </div>
+
+        <div id="about" class="page">
+            <h1>Sobre Nosotros</h1>
+            <p>Somos una empresa dedicada al desarrollo web</p>
+        </div>
+
+        <div id="contact" class="page">
+            <h1>Contacto</h1>
+            <p>Email: ejemplo@correo.com</p>
+        </div>
+    </main>
+
+    <script>
+        // Función para manejar la navegación
+        function navigateTo(pageId) {
+            // Ocultar todas las páginas
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+
+            // Mostrar la página seleccionada
+            document.getElementById(pageId).classList.add('active');
+
+            // Actualizar la URL sin recargar la página
+            history.pushState({page: pageId}, '', `#${pageId}`);
+        }
+
+        // Agregar event listeners a los enlaces de navegación
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                const pageId = e.target.dataset.page;
+                navigateTo(pageId);
+            });
+        });
+
+        // Manejar la navegación con el botón de "atrás" del navegador
+        window.addEventListener('popstate', (e) => {
+            const pageId = e.state?.page || 'home';
+            navigateTo(pageId);
+        });
+
+        // Mostrar la página inicial
+        navigateTo('home');
+    </script>
+</body>
+</html>

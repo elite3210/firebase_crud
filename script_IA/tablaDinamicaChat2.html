@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Productos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        form {
+            display: grid;
+            grid-template-columns: 1fr  1fr 1fr 1fr 1fr 1fr 2fr;
+            background-color: #f4f4f4;
+            padding: 8px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        input, select {
+            width: 100%;
+            height: 100%;
+            margin-bottom: 10px;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+           margin-left: 2px;
+            cursor: pointer;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 1px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Gestión de Productos</h1>
+
+    <form id="productForm">
+        <input type="text" id="productName" placeholder="Nombre del Producto" required>
+        <input type="text" id="productCategory" placeholder="Categoría" required>
+        <input type="number" id="productPrice" placeholder="Precio" min="0" step="0.01" required>
+        <input type="text" id="productBrand" placeholder="Marca">
+        <input type="text" id="productColor" placeholder="Color">
+        <input type="number" id="productStock" placeholder="Stock" min="0">
+        <button type="submit">Agregar Producto</button>
+    </form>
+
+    <table id="productTable">
+        <thead>
+            <tr>
+                <th rowspan="2">Nombre</th>
+                <th rowspan="2">Precio</th>
+                <th rowspan="2">Marca</th>
+                <th rowspan="2">Color</th>
+                <th rowspan="2">Stock</th>
+                <th rowspan="2">Categoria</th>
+                <th rowspan="2">Total Unidades</th>
+            </tr>
+            <tr>
+            </tr>
+        </thead>
+        <tbody id="productTableBody"></tbody>
+    </table>
+
+    <script>
+        class ProductManager {
+            constructor() {
+                this.product=[];
+                this.products = [];
+                this.categories = new Set();
+                this.productForm = document.getElementById('productForm');
+                this.productTableBody = document.getElementById('productTableBody');
+
+                this.productForm.addEventListener('submit', this.addProduct.bind(this));
+            }
+
+            addProduct(event) {
+                event.preventDefault();
+                const name = document.getElementById('productName').value;
+                const category = document.getElementById('productCategory').value;
+                const price = parseFloat(document.getElementById('productPrice').value);
+                const brand = document.getElementById('productBrand').value || 'N/A';
+                const color = document.getElementById('productColor').value || 'N/A';
+                const stock = parseInt(document.getElementById('productStock').value) || 0;
+                const id = `${name}-${brand}-${color}-${price}`;
+                this.product.push(
+                    {
+                        id: id,
+                        name: name,
+                        price: price,
+                        brand: brand,
+                        color: color,
+                        stock: stock,
+                    }
+                )
+                // Añadir categoría si no existe
+                this.categories.add(category);
+
+                // Buscar si el producto ya existe
+                let existingProduct = this.products.find(p => p.id === id);
+                if (existingProduct) {
+                    existingProduct.count++;
+                    existingProduct.categories[category] = (existingProduct.categories[category] || 0) + 1;
+                } else {
+                    const newProduct = {
+                        id: id,
+                        name: name,
+                        price: price,
+                        brand: brand,
+                        color: color,
+                        stock: stock,
+                        count: 1,
+                        categories: { [category]: 1 }
+                    };
+                    this.products.push(newProduct);
+                }
+
+                this.updateTable();
+                //this.productForm.reset();
+                console.log('this.product:',this.product);
+                console.log('this.products:',this.products);
+                
+            }
+
+            updateTable() {
+                // Ordenar categorías alfabéticamente
+                console.log('sortedCategories.length:');
+                
+                const sortedCategories = Array.from(this.categories).sort();
+
+                // Actualizar cabecera de tabla con categorías
+                const headerRow = document.querySelector('#productTable thead');
+                headerRow.innerHTML = `
+                <tr>
+                    <th rowspan="2" style="text-align:left;">Nombre</th>
+                    <th rowspan="2">Precio</th>
+                    <th rowspan="2">Marca</th>
+                    <th rowspan="2">Color</th>
+                    <th rowspan="2">Stock</th>
+                    <th colspan=`+`${sortedCategories.length}`+`>Categoria</th>
+                    <th rowspan="2">Total Unidades</th>
+                </tr>
+                 <tr>
+                    ${sortedCategories.map(cat => `<th>${cat}</th>`).join('')}
+                </tr>
+                `;
+                console.log('sortedCategories:',sortedCategories.map(cat => `<th>${cat}</th>`).join(''))
+                    
+
+                // Actualizar cuerpo de tabla
+                this.productTableBody.innerHTML = this.products.map(product => `
+                    <tr>
+                        <td>${product.name}</td>
+                        <td>$${product.price.toFixed(2)}</td>
+                        <td>${product.brand}</td>
+                        <td>${product.color}</td>
+                        <td>${product.stock}</td>
+                        ${sortedCategories.map(cat => `<td>${product.categories[cat] || 0}</td>`).join('')}
+                        <td>${product.count}</td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        // Inicializar la aplicación
+        new ProductManager();
+    </script>
+</body>
+</html>

@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Sensores del Dispositivo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            padding: 20px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            color: #1a1a1a;
+        }
+
+        .sensor-row {
+            padding: 15px 20px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .sensor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .sensor-title {
+            font-weight: 500;
+            color: #1a1a1a;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+
+        .sensor-data {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 14px;
+            display: none;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .error-message {
+            color: #dc3545;
+            background-color: #f8d7da;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .permission-button {
+            padding: 6px 12px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+            font-size: 14px;
+        }
+
+        .permission-button:hover {
+            background-color: #1976D2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Panel de Sensores del Dispositivo</h1>
+        </div>
+        <div id="sensors-container"></div>
+    </div>
+
+    <script>
+        class SensorDashboard {
+            constructor() {
+                this.sensors = [
+                    {
+                        id: 'geolocation',
+                        name: 'Geolocalización',
+                        active: false,
+                        handler: this.handleGeolocation.bind(this)
+                    },
+                    {
+                        id: 'acceleration',
+                        name: 'Acelerómetro',
+                        active: false,
+                        handler: this.handleAcceleration.bind(this)
+                    },
+                    {
+                        id: 'orientation',
+                        name: 'Orientación',
+                        active: false,
+                        handler: this.handleOrientation.bind(this)
+                    },
+                    {
+                        id: 'camera',
+                        name: 'Cámara',
+                        active: false,
+                        handler: this.handleCamera.bind(this)
+                    },
+                    {
+                        id: 'microphone',
+                        name: 'Micrófono',
+                        active: false,
+                        handler: this.handleMicrophone.bind(this)
+                    },
+                    {
+                        id: 'battery',
+                        name: 'Batería',
+                        active: false,
+                        handler: this.handleBattery.bind(this)
+                    },
+                    {
+                        id: 'network',
+                        name: 'Red',
+                        active: false,
+                        handler: this.handleNetwork.bind(this)
+                    }
+                ];
+
+                this.init();
+            }
+
+            init() {
+                const container = document.getElementById('sensors-container');
+                this.sensors.forEach(sensor => {
+                    container.appendChild(this.createSensorRow(sensor));
+                });
+            }
+
+            createSensorRow(sensor) {
+                const row = document.createElement('div');
+                row.className = 'sensor-row';
+                row.innerHTML = `
+                    <div class="sensor-header">
+                        <span class="sensor-title">${sensor.name}</span>
+                        <label class="switch">
+                            <input type="checkbox" id="${sensor.id}-toggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div id="${sensor.id}-data" class="sensor-data"></div>
+                    <div id="${sensor.id}-error" class="error-message"></div>
+                `;
+
+                const toggle = row.querySelector(`#${sensor.id}-toggle`);
+                toggle.addEventListener('change', () => {
+                    sensor.active = toggle.checked;
+                    if (toggle.checked) {
+                        sensor.handler();
+                    } else {
+                        this.clearSensorData(sensor.id);
+                    }
+                });
+
+                return row;
+            }
+
+            clearSensorData(sensorId) {
+                document.getElementById(`${sensorId}-data`).style.display = 'none';
+                document.getElementById(`${sensorId}-error`).style.display = 'none';
+            }
+
+            updateSensorData(sensorId, data) {
+                const dataElement = document.getElementById(`${sensorId}-data`);
+                dataElement.textContent = JSON.stringify(data, null, 2);
+                dataElement.style.display = 'block';
+                document.getElementById(`${sensorId}-error`).style.display = 'none';
+            }
+
+            showError(sensorId, error) {
+                const errorElement = document.getElementById(`${sensorId}-error`);
+                errorElement.textContent = error;
+                errorElement.style.display = 'block';
+                document.getElementById(`${sensorId}-data`).style.display = 'none';
+            }
+
+            async handleGeolocation() {
+                if (!navigator.geolocation) {
+                    this.showError('geolocation', 'Geolocalización no disponible');
+                    return;
+                }
+
+                try {
+                    navigator.geolocation.watchPosition(
+                        (position) => {
+                            this.updateSensorData('geolocation', {
+                                latitude: position.coords.latitude,
+                                longitude: position.coords.longitude,
+                                accuracy: position.coords.accuracy
+                            });
+                        },
+                        (error) => {
+                            this.showError('geolocation', error.message);
+                        }
+                    );
+                } catch (error) {
+                    this.showError('geolocation', error.message);
+                }
+            }
+
+            handleAcceleration() {
+                if (!window.DeviceMotionEvent) {
+                    this.showError('acceleration', 'Acelerómetro no disponible');
+                    return;
+                }
+
+                window.addEventListener('devicemotion', (event) => {
+                    if (this.sensors.find(s => s.id === 'acceleration').active) {
+                        this.updateSensorData('acceleration', {
+                            x: event.accelerationIncludingGravity.x,
+                            y: event.accelerationIncludingGravity.y,
+                            z: event.accelerationIncludingGravity.z
+                        });
+                    }
+                });
+            }
+
+            handleOrientation() {
+                if (!window.DeviceOrientationEvent) {
+                    this.showError('orientation', 'Sensor de orientación no disponible');
+                    return;
+                }
+
+                window.addEventListener('deviceorientation', (event) => {
+                    if (this.sensors.find(s => s.id === 'orientation').active) {
+                        this.updateSensorData('orientation', {
+                            alpha: event.alpha,
+                            beta: event.beta,
+                            gamma: event.gamma
+                        });
+                    }
+                });
+            }
+
+            async handleCamera() {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                    this.updateSensorData('camera', { active: true });
+                    stream.getTracks().forEach(track => track.stop());
+                } catch (error) {
+                    this.showError('camera', error.message);
+                }
+            }
+
+            async handleMicrophone() {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    this.updateSensorData('microphone', { active: true });
+                    stream.getTracks().forEach(track => track.stop());
+                } catch (error) {
+                    this.showError('microphone', error.message);
+                }
+            }
+
+            async handleBattery() {
+                if (!navigator.getBattery) {
+                    this.showError('battery', 'API de batería no disponible');
+                    return;
+                }
+
+                try {
+                    const battery = await navigator.getBattery();
+                    const updateBatteryInfo = () => {
+                        this.updateSensorData('battery', {
+                            nivel: battery.level * 100 + '%',
+                            cargando: battery.charging ? 'Sí' : 'No',
+                            tiempoCarga: battery.chargingTime === Infinity ? 'N/A' : battery.chargingTime + 's',
+                            tiempoDescarga: battery.dischargingTime === Infinity ? 'N/A' : battery.dischargingTime + 's'
+                        });
+                    };
+
+                    battery.addEventListener('chargingchange', updateBatteryInfo);
+                    battery.addEventListener('levelchange', updateBatteryInfo);
+                    updateBatteryInfo();
+                } catch (error) {
+                    this.showError('battery', error.message);
+                }
+            }
+
+            handleNetwork() {
+                const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+                
+                if (!connection) {
+                    this.showError('network', 'API de red no disponible');
+                    return;
+                }
+
+                const updateNetworkInfo = () => {
+                    this.updateSensorData('network', {
+                        tipo: connection.type,
+                        velocidad: connection.downlink + ' Mbps',
+                        rtt: connection.rtt + ' ms',
+                        tipoEfectivo: connection.effectiveType
+                    });
+                };
+
+                connection.addEventListener('change', updateNetworkInfo);
+                updateNetworkInfo();
+            }
+        }
+
+        // Iniciar la aplicación
+        document.addEventListener('DOMContentLoaded', () => {
+            new SensorDashboard();
+        });
+    </script>
+</body>
+</html>

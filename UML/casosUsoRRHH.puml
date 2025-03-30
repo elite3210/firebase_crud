@@ -1,0 +1,50 @@
+@startuml RRHH
+actor Administrador
+actor "Gerente de RRHH" as GerenteRRHH
+actor Empleado
+
+usecase "Registro de Empleados" as UC1
+usecase "Actualización de Información de Empleados" as UC2
+usecase "Eliminación de Empleados" as UC3
+usecase "Gestión de Asistencias" as UC4
+usecase "Gestión de Permisos y Licencias" as UC5
+usecase "Gestión de Evaluaciones de Desempeño" as UC6
+usecase "Gestión de Nómina" as UC7
+usecase "Generación de Reportes" as UC8
+usecase "Notificaciones y Alertas" as UC9
+usecase "Gestión de Capacitación" as UC10
+usecase "Acceso y Roles de Usuario" as UC11
+usecase "Búsqueda y Filtrado de Empleados" as UC12
+usecase "Registro de Historial Laboral" as UC13
+usecase "Gestión de Beneficios y Compensaciones" as UC14
+
+Administrador -- UC1
+Administrador -- UC2
+Administrador -- UC3
+Administrador -- UC4
+Administrador -- UC7
+Administrador -- UC8
+Administrador -- UC10
+Administrador -- UC11
+Administrador -- UC12
+Administrador -- UC13
+Administrador -- UC14
+
+GerenteRRHH -- UC1
+GerenteRRHH -- UC2
+GerenteRRHH -- UC3
+GerenteRRHH -- UC4
+GerenteRRHH -- UC5
+GerenteRRHH -- UC6
+GerenteRRHH -- UC7
+GerenteRRHH -- UC8
+GerenteRRHH -- UC9
+GerenteRRHH -- UC10
+GerenteRRHH -- UC12
+GerenteRRHH -- UC13
+GerenteRRHH -- UC14
+
+Empleado -- UC5
+Empleado -- UC9
+
+@enduml

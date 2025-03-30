@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #heart {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            cursor: pointer;
+        }
+
+        .particle {
+            position: absolute;
+            pointer-events: none;
+            color: red;
+            font-size: 20px;
+            font-family: Arial;
+            animation: float 2s ease-out forwards;
+        }
+
+        .letter-particle {
+            position: absolute;
+            pointer-events: none;
+            color: #ff0000;
+            font-size: 16px;
+            font-family: Arial;
+            animation: fall 3s ease-out forwards;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translate(calc(random() * 200px - 100px),
+                        calc(random() * 200px - 100px)) scale(0);
+                opacity: 0;
+            }
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(500px);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="heart"></canvas>
+
+    <script>
+        const canvas = document.getElementById('heart');
+        const ctx = canvas.getContext('2d');
+        const letters = ['Y', 'A', 'M', 'I'];
+        let particles = [];
+        let isBreaking = false;
+
+        // Ajustar tamaño del canvas
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // Dibujar corazón
+        function drawHeart(x, y, size, color) {
+            ctx.beginPath();
+            ctx.moveTo(x, y + size / 4);
+            ctx.bezierCurveTo(
+                x, y,
+                x - size / 2, y,
+                x - size / 2, y + size / 4
+            );
+            ctx.bezierCurveTo(
+                x - size / 2, y + size / 2,
+                x, y + size * 3 / 4,
+                x, y + size
+            );
+            ctx.bezierCurveTo(
+                x, y + size * 3 / 4,
+                x + size / 2, y + size / 2,
+                x + size / 2, y + size / 4
+            );
+            ctx.bezierCurveTo(
+                x + size / 2, y,
+                x, y,
+                x, y + size / 4
+            );
+            ctx.fillStyle = color;
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        // Crear partícula
+        class Particle {
+            constructor(x, y, color, letter = null) {
+                this.x = x;
+                this.y = y;
+                this.color = color;
+                this.letter = letter;
+                this.speed = {
+                    x: (Math.random() - 0.5) * 5,
+                    y: Math.random() * 5 + 2
+                };
+                this.alpha = 1;
+            }
+
+            update() {
+                this.x += this.speed.x;
+                this.y += this.speed.y;
+                this.alpha -= 0.01;
+                return this.alpha > 0;
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                if (this.letter) {
+                    ctx.font = '20px Arial';
+                    ctx.fillStyle = this.color;
+                    ctx.fillText(this.letter, this.x, this.y);
+                } else {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
+                    ctx.fillStyle = this.color;
+                    ctx.fill();
+                }
+                ctx.restore();
+            }
+        }
+
+        // Animación principal
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+
+            if (!isBreaking) {
+                drawHeart(centerX, centerY, 100, '#ff0000');
+            }
+
+            particles = particles.filter(particle => {
+                particle.update();
+                particle.draw();
+                return particle.alpha > 0;
+            });
+
+            if (isBreaking && Math.random() < 0.3) {
+                const letter = letters[Math.floor(Math.random() * letters.length)];
+                particles.push(new Particle(
+                    centerX + (Math.random() - 0.5) * 50,
+                    centerY + (Math.random() - 0.5) * 50,
+                    '#ff0000',
+                    letter
+                ));
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        // Eventos del mouse
+        canvas.addEventListener('mouseover', () => {
+            isBreaking = true;
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+
+            // Crear explosión inicial de partículas
+            for (let i = 0; i < 50; i++) {
+                particles.push(new Particle(
+                    centerX + (Math.random() - 0.5) * 50,
+                    centerY + (Math.random() - 0.5) * 50,
+                    '#ff0000'
+                ));
+            }
+        });
+
+        canvas.addEventListener('mouseout', () => {
+            isBreaking = false;
+            particles = [];
+        });
+
+        animate();
+    </script>
+</body>
+
+</html>

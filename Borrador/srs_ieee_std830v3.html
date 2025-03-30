@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Generador de Documentos SRS IEEE 830-1998</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-section {
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            padding: 15px;
+        }
+        .dynamic-section {
+            background-color: #f4f4f4;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+            padding: 8px;
+        }
+        button {
+            margin: 10px 0;
+            padding: 5px 10px;
+        }
+        #srsOutput {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Generador de Documentos SRS IEEE 830-1998</h1>
+    
+    <div class="form-section" id="projectInfoSection">
+        <h2>Información del Proyecto</h2>
+        <input type="text" id="projectName" placeholder="Nombre del Proyecto">
+        <input type="text" id="projectScope" placeholder="Alcance del Proyecto">
+        <input type="text" id="organizationName" placeholder="Nombre de la Organización">
+    </div>
+
+    <div class="form-section" id="stakeholdersSection">
+        <h2>Stakeholders</h2>
+        <div id="stakeholderContainer">
+            <div class="dynamic-section">
+                <input type="text" class="stakeholderName" placeholder="Nombre del Stakeholder">
+                <input type="text" class="stakeholderRole" placeholder="Rol">
+            </div>
+        </div>
+        <button onclick="addStakeholder()">Agregar Stakeholder</button>
+    </div>
+
+    <div class="form-section" id="functionalRequirementsSection">
+        <h2>Requisitos Funcionales</h2>
+        <div id="userContainer">
+            <div class="dynamic-section" data-user-index="0">
+                <h3>Usuario 1</h3>
+                <div class="requirementsContainer">
+                    <div class="requirement">
+                        <input type="text" class="requirementId" placeholder="ID Requisito">
+                        <input type="text" class="requirementDescription" placeholder="Descripción del Requisito">
+                        <select class="requirementPriority">
+                            <option value="">Seleccionar Prioridad</option>
+                            <option value="Alta">Alta</option>
+                            <option value="Media">Media</option>
+                            <option value="Baja">Baja</option>
+                        </select>
+                    </div>
+                </div>
+                <button onclick="addRequirement(this)">Agregar Requisito</button>
+            </div>
+        </div>
+        <button onclick="addUser()">Agregar Usuario</button>
+    </div>
+
+    <div class="form-section" id="nonFunctionalRequirementsSection">
+        <h2>Requisitos No Funcionales</h2>
+        <div class="dynamic-section">
+            <input type="text" id="performanceRequirements" placeholder="Requisitos de Rendimiento">
+            <input type="text" id="securityRequirements" placeholder="Requisitos de Seguridad">
+            <input type="text" id="usabilityRequirements" placeholder="Requisitos de Usabilidad">
+        </div>
+    </div>
+
+    <div class="form-section" id="systemInterfacesSection">
+        <h2>Interfaces del Sistema</h2>
+        <div class="dynamic-section">
+            <input type="text" id="userInterfaces" placeholder="Interfaces de Usuario">
+            <input type="text" id="hardwareInterfaces" placeholder="Interfaces de Hardware">
+            <input type="text" id="softwareInterfaces" placeholder="Interfaces de Software">
+        </div>
+    </div>
+
+    <button onclick="generateSRS()">Generar Documento SRS</button>
+
+    <div id="srsOutput"></div>
+
+    <script>
+        class SRSGenerator {
+            constructor() {
+                this.stakeholders = [];
+                this.users = [];
+            }
+
+            addStakeholder(name, role) {
+                this.stakeholders.push({ name, role });
+            }
+
+            addUser(requirements) {
+                this.users.push(requirements);
+            }
+
+            generateSRSDocument() {
+                const projectName = document.getElementById('projectName').value;
+                const projectScope = document.getElementById('projectScope').value;
+                const organizationName = document.getElementById('organizationName').value;
+
+                const stakeholdersHTML = this.generateStakeholdersTable();
+                const functionalRequirementsHTML = this.generateFunctionalRequirementsTable();
+                const nonFunctionalRequirementsHTML = this.generateNonFunctionalRequirementsTable();
+                const systemInterfacesHTML = this.generateSystemInterfacesTable();
+
+                return `
+                    <h2>Documento de Especificación de Requisitos de Software (SRS)</h2>
+                    <table>
+                        <tr><th>Proyecto</th><td>${projectName || 'No especificado'}</td></tr>
+                        <tr><th>Alcance</th><td>${projectScope || 'No especificado'}</td></tr>
+                        <tr><th>Organización</th><td>${organizationName || 'No especificada'}</td></tr>
+                    </table>
+
+                    <h3>1. Stakeholders</h3>
+                    ${stakeholdersHTML}
+
+                    <h3>2. Requisitos Funcionales</h3>
+                    ${functionalRequirementsHTML}
+
+                    <h3>3. Requisitos No Funcionales</h3>
+                    ${nonFunctionalRequirementsHTML}
+
+                    <h3>4. Interfaces del Sistema</h3>
+                    ${systemInterfacesHTML}
+                `;
+            }
+
+            generateStakeholdersTable() {
+                const stakeholders = Array.from(document.querySelectorAll('.stakeholderName')).map((el, index) => ({
+                    name: el.value,
+                    role: document.querySelectorAll('.stakeholderRole')[index].value
+                }));
+
+                if (stakeholders.length === 0) return '<p>No se han definido stakeholders</p>';
+
+                let html = '<table><tr><th>Nombre</th><th>Rol</th></tr>';
+                stakeholders.forEach(stakeholder => {
+                    html += `<tr>
+                        <td>${stakeholder.name || 'Sin nombre'}</td>
+                        <td>${stakeholder.role || 'Sin rol'}</td>
+                    </tr>`;
+                });
+                html += '</table>';
+                return html;
+            }
+
+            generateFunctionalRequirementsTable() {
+                const userContainers = document.querySelectorAll('#userContainer .dynamic-section');
+                if (userContainers.length === 0) return '<p>No se han definido requisitos funcionales</p>';
+
+                let html = '<table><tr><th>Usuario</th><th>ID Requisito</th><th>Descripción</th><th>Prioridad</th></tr>';
+                userContainers.forEach((userContainer, userIndex) => {
+                    const requirementContainers = userContainer.querySelectorAll('.requirement');
+                    
+                    requirementContainers.forEach(reqContainer => {
+                        const requirementId = reqContainer.querySelector('.requirementId').value;
+                        const requirementDesc = reqContainer.querySelector('.requirementDescription').value;
+                        const requirementPriority = reqContainer.querySelector('.requirementPriority').value;
+
+                        html += `<tr>
+                            <td>Usuario ${userIndex + 1}</td>
+                            <td>${requirementId || 'Sin ID'}</td>
+                            <td>${requirementDesc || 'Sin descripción'}</td>
+                            <td>${requirementPriority || 'Sin prioridad'}</td>
+                        </tr>`;
+                    });
+                });
+                html += '</table>';
+                return html;
+            }
+
+            generateNonFunctionalRequirementsTable() {
+                const performanceReq = document.getElementById('performanceRequirements').value;
+                const securityReq = document.getElementById('securityRequirements').value;
+                const usabilityReq = document.getElementById('usabilityRequirements').value;
+
+                let html = '<table><tr><th>Tipo de Requisito</th><th>Descripción</th></tr>';
+                html += `
+                    <tr><td>Rendimiento</td><td>${performanceReq || 'No especificado'}</td></tr>
+                    <tr><td>Seguridad</td><td>${securityReq || 'No especificado'}</td></tr>
+                    <tr><td>Usabilidad</td><td>${usabilityReq || 'No especificado'}</td></tr>
+                `;
+                html += '</table>';
+                return html;
+            }
+
+            generateSystemInterfacesTable() {
+                const userInterfaces = document.getElementById('userInterfaces').value;
+                const hardwareInterfaces = document.getElementById('hardwareInterfaces').value;
+                const softwareInterfaces = document.getElementById('softwareInterfaces').value;
+
+                let html = '<table><tr><th>Tipo de Interfaz</th><th>Descripción</th></tr>';
+                html += `
+                    <tr><td>Interfaces de Usuario</td><td>${userInterfaces || 'No especificadas'}</td></tr>
+                    <tr><td>Interfaces de Hardware</td><td>${hardwareInterfaces || 'No especificadas'}</td></tr>
+                    <tr><td>Interfaces de Software</td><td>${softwareInterfaces || 'No especificadas'}</td></tr>
+                `;
+                html += '</table>';
+                return html;
+            }
+
+            downloadPDF(content) {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                doc.html(content, {
+                    callback: function(doc) {
+                        doc.save('DocumentoSRS.pdf');
+                    },
+                    x: 10,
+                    y: 10,
+                    width: 190,
+                    windowWidth: 750
+                });
+            }
+        }
+
+        const srsGenerator = new SRSGenerator();
+
+        function addStakeholder() {
+            const container = document.getElementById('stakeholderContainer');
+            const newSection = document.createElement('div');
+            newSection.classList.add('dynamic-section');
+            newSection.innerHTML = `
+                <input type="text" class="stakeholderName" placeholder="Nombre del Stakeholder">
+                <input type="text" class="stakeholderRole" placeholder="Rol">
+            `;
+            container.appendChild(newSection);
+        }
+
+        function addUser() {
+            const container = document.getElementById('userContainer');
+            const currentUserCount = container.children.length;
+            const newUserSection = document.createElement('div');
+            newUserSection.classList.add('dynamic-section');
+            newUserSection.dataset.userIndex = currentUserCount;
+            newUserSection.innerHTML = `
+                <h3>Usuario ${currentUserCount + 1}</h3>
+                <div class="requirementsContainer">
+                    <div class="requirement">
+                        <input type="text" class="requirementId" placeholder="ID Requisito">
+                        <input type="text" class="requirementDescription" placeholder="Descripción del Requisito">
+                        <select class="requirementPriority">
+                            <option value="">Seleccionar Prioridad</option>
+                            <option value="Alta">Alta</option>
+                            <option value="Media">Media</option>
+                            <option value="Baja">Baja</option>
+                        </select>
+                    </div>
+                </div>
+                <button onclick="addRequirement(this)">Agregar Requisito</button>
+            `;
+            container.appendChild(newUserSection);
+        }
+
+        function addRequirement(button) {
+            const requirementsContainer = button.previousElementSibling;
+            const newRequirement = document.createElement('div');
+            newRequirement.classList.add('requirement');
+            newRequirement.innerHTML = `
+                <input type="text" class="requirementId" placeholder="ID Requisito">
+                <input type="text" class="requirementDescription" placeholder="Descripción del Requisito">
+                <select class="requirementPriority">
+                    <option value="">Seleccionar Prioridad</option>
+                    <option value="Alta">Alta</option>
+                    <option value="Media">Media</option>
+                    <option value="Baja">Baja</option>
+                </select>
+            `;
+            requirementsContainer.appendChild(newRequirement);
+        }
+
+        function generateSRS() {
+            const srsContent = srsGenerator.generateSRSDocument();
+            const srsOutput = document.getElementById('srsOutput');
+            srsOutput.innerHTML = srsContent;
+        }
+
+        // Librería para generar PDF
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+        script.onload = function() {
+            const downloadButton = document.createElement('button');
+            downloadButton.textContent = 'Descargar PDF';
+            downloadButton.onclick = function() {
+                const srsOutput = document.getElementById('srsOutput');
+                srsGenerator.downloadPDF(srsOutput.innerHTML);
+            };
+            document.body.appendChild(downloadButton);
+        };
+        document.head.appendChild(script);
+    </script>
+</body>
+</html>

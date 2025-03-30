@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: #313131;
+            perspective: 1000px;
+        }
+
+        .container {
+            width: 220px;
+            height: 6px;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: rotate 4s infinite linear;
+        }
+
+        .tube {
+            position: absolute;
+            width: 220px;
+            height: 6px;
+            background: #ffeb3b;
+            border-radius: 3px;
+            transform-style: preserve-3d;
+        }
+
+        .face {
+            position: absolute;
+            width: 220px;
+            height: 6px;
+            background: #ffd700;
+            transform-origin: center;
+        }
+
+        .face-front { 
+            transform: translateZ(3px);
+            background: linear-gradient(90deg, 
+                #ffd700 0%, 
+                #ffd700 22%,
+                white 22%, white 24%,
+                #ffd700 24%, #ffd700 47%,
+                white 47%, white 49%,
+                #ffd700 49%, #ffd700 72%,
+                white 72%, white 74%,
+                #ffd700 74%, #ffd700 97%,
+                white 97%, white 99%,
+                #ffd700 99%, #ffd700 100%
+            );
+        }
+        
+        .face-back { 
+            transform: translateZ(-3px);
+            background: #cc9900; /* Interior más oscuro */
+        }
+
+        .face-right { 
+            width: 6px;
+            height: 6px;
+            right: 0;
+            transform: rotateY(90deg) translateZ(3px);
+            background: #cc9900;
+        }
+        
+        .face-left { 
+            width: 6px;
+            height: 6px;
+            left: 0;
+            transform: rotateY(-90deg) translateZ(3px);
+            background: #cc9900;
+        }
+        
+        .face-top {
+            height: 6px;
+            transform: rotateX(90deg) translateZ(3px);
+            background: linear-gradient(90deg, 
+                #ffd700 0%, 
+                #ffd700 22%,
+                white 22%, white 24%,
+                #ffd700 24%, #ffd700 47%,
+                white 47%, white 49%,
+                #ffd700 49%, #ffd700 72%,
+                white 72%, white 74%,
+                #ffd700 74%, #ffd700 97%,
+                white 97%, white 99%,
+                #ffd700 99%, #ffd700 100%
+            );
+        }
+        
+        .face-bottom {
+            height: 6px;
+            transform: rotateX(-90deg) translateZ(3px);
+            background: linear-gradient(90deg, 
+                #ffd700 0%, 
+                #ffd700 22%,
+                white 22%, white 24%,
+                #ffd700 24%, #ffd700 47%,
+                white 47%, white 49%,
+                #ffd700 49%, #ffd700 72%,
+                white 72%, white 74%,
+                #ffd700 74%, #ffd700 97%,
+                white 97%, white 99%,
+                #ffd700 99%, #ffd700 100%
+            );
+        }
+
+        @keyframes rotate {
+            from { transform: rotateX(0) rotateY(0); }
+            to { transform: rotateX(360deg) rotateY(360deg); }
+        }
+
+        .controls {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <button onclick="toggleAnimation()">Iniciar/Detener</button>
+        <br><br>
+        <input type="range" min="1" max="10" value="4" onchange="changeSpeed(this.value)">
+        <label>Velocidad</label>
+    </div>
+
+    <div class="container">
+        <div class="tube">
+            <div class="face face-front"></div>
+            <div class="face face-back"></div>
+            <div class="face face-right"></div>
+            <div class="face face-left"></div>
+            <div class="face face-top"></div>
+            <div class="face face-bottom"></div>
+        </div>
+    </div>
+
+    <script>
+        let isAnimating = true;
+        const container = document.querySelector('.container');
+
+        function toggleAnimation() {
+            isAnimating = !isAnimating;
+            container.style.animationPlayState = isAnimating ? 'running' : 'paused';
+        }
+
+        function changeSpeed(speed) {
+            container.style.animationDuration = (11 - speed) + 's';
+        }
+    </script>
+</body>
+</html>

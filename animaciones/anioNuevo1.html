@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        /* Estilos básicos para el contenedor principal */
+        body {
+            background: #0f0c29;
+            background: linear-gradient(135deg, #24243e, #0f0c29, #302b63);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        /* Contenedor para las palabras animadas */
+        .text-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        /* Estilo para cada palabra individual */
+        .word {
+            position: absolute;
+            font-family: Arial, sans-serif;
+            font-size: 32px; /* Aumentado el tamaño para palabras completas */
+            font-weight: bold;
+            animation: explode 2s ease-out forwards;
+            opacity: 0;
+            z-index: 100;
+            white-space: nowrap; /* Mantener la palabra junta */
+        }
+
+        /* Animación de explosión para las palabras */
+        @keyframes explode {
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 1;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--tx), var(--ty)) scale(1);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="text-container" id="container"></div>
+
+    <script>
+        // Seleccionar el contenedor principal
+        const container = document.getElementById('container');
+        
+        // Array de palabras que se mostrarán en la animación
+        const words = ['*','Feliz','*', 'Año','*', 'Nuevo','*', '2025','*'];
+        
+        // Índice para recorrer las palabras del array
+        let wordIndex = 0;
+
+        // Función para generar colores aleatorios
+        function getRandomColor() {
+            // Array de colores posibles para las palabras
+            const colors = [
+                '#ff0000', // rojo
+                '#00ff00', // verde
+                '#0000ff', // azul
+                '#ffff00', // amarillo
+                '#ff00ff', // magenta
+                '#00ffff', // cyan
+                '#ffa500', // naranja
+                '#ff69b4'  // rosa
+            ];
+            // Seleccionar y retornar un color aleatorio del array
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        // Función para crear y animar cada palabra
+        function createWord() {
+            // Reiniciar el índice cuando se llegue al final del array
+            if (wordIndex >= words.length) {
+                wordIndex = 0;
+            }
+
+            // Crear el elemento de la palabra
+            const word = document.createElement('div');
+            word.className = 'word';
+            word.textContent = words[wordIndex];
+            word.style.color = getRandomColor();
+            
+            // Posicionar la palabra en el centro
+            word.style.left = '50%';
+            word.style.top = '50%';
+
+            // Calcular la dirección aleatoria para la explosión
+            const angle = Math.random() * Math.PI * 2;
+            const distance = 200 + Math.random() * 300; // Aumentado el rango para mejor distribución
+            const tx = Math.cos(angle) * distance;
+            const ty = Math.sin(angle) * distance;
+
+            // Establecer las variables CSS para la animación
+            word.style.setProperty('--tx', `${tx}px`);
+            word.style.setProperty('--ty', `${ty}px`);
+
+            // Agregar la palabra al contenedor
+            container.appendChild(word);
+            wordIndex++;
+
+            // Eliminar la palabra después de que termine la animación
+            setTimeout(() => {
+                word.remove();
+            }, 2000);
+        }
+
+        // Crear múltiples instancias de la misma palabra
+        function createMultipleWords() {
+            // Crear la palabra principal
+            createWord();
+            
+            // Crear copias adicionales con ligeras variaciones
+            for (let i = 0; i < 2; i++) {
+                setTimeout(() => {
+                    const currentIndex = wordIndex - 1;
+                    if (currentIndex >= 0) {
+                        const word = document.createElement('div');
+                        word.className = 'word';
+                        word.textContent = words[currentIndex];
+                        word.style.color = getRandomColor();
+                        word.style.left = '50%';
+                        word.style.top = '50%';
+
+                        const angle = Math.random() * Math.PI * 2;
+                        const distance = 200 + Math.random() * 300;
+                        const tx = Math.cos(angle) * distance;
+                        const ty = Math.sin(angle) * distance;
+
+                        word.style.setProperty('--tx', `${tx}px`);
+                        word.style.setProperty('--ty', `${ty}px`);
+
+                        container.appendChild(word);
+
+                        setTimeout(() => {
+                            word.remove();
+                        }, 2000);
+                    }
+                }, i * 100); // Pequeño retraso entre copias
+            }
+        }
+
+        // Iniciar la animación, creando nuevas palabras cada 500ms
+        setInterval(createMultipleWords, 500);
+    </script>
+</body>
+</html>

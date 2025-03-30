@@ -1,0 +1,53 @@
+@startuml PresionalTecladoCalculadora
+start
+if (this.currentValue === null) then (Sí)
+    :this.currentValue
+    =
+    number;
+    :this.currentString
+    =
+    String(number);
+    note right
+        Hola
+        Mundo
+    end note
+else (No)
+    if (this.operation === null) then (Sí)
+        :this.currentValue
+        =
+        this.currentValue * 10 + number;
+        :this.currentString
+        +=
+        String(number);
+        note left
+            Hola
+            mundo
+        end note
+    else (No)
+        if (this.pendingValue === null) then (Sí)
+            :this.pendingValue
+            =
+            number;
+            :this.currentString
+            +=
+            String(number);
+            note right
+                Hola
+                Mundo
+            end note
+        else (No)
+            :this.pendingValue
+            =
+            this.pendingValue * 10 + number;
+            :this.currentString
+            +=
+            String(number);
+            note left
+                Hola
+                mundo
+            end note
+        endif
+    endif
+endif
+stop
+@enduml

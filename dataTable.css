@@ -34,40 +34,8 @@
     --dt-input-color:var(--color-primario)
 }
 
-/*
-:root{
-    --color-primario:white;
-    --color-secundario:rgb(61,68,73);
-    --color-iluminado:#3282b8;
-
-    --dt-status-available-color:greenyellow;
-    --dt-status-away-color:lightsalmon;
-    --dt-status-offline-color:lightgray;
-
-    --dt-padding:12px;
-    --dt-padding-s:6px;
-    --dt-padding-xs:2px;
-
-    --dt-border-radius:3px;
-
-    --dt-background-color-container:#2a3338;
-    --dt-border-color:var(--color-secundario);
-    --dt-bg-color:var(--color-iluminado);
-    --dt-text-color:var(--color-primario);
-    --dt-bg-active-button:var(--color-iluminado);
-    --dt-text-color-button:var(--color-primario);
-    --dt-text-color-active-button:var(--color-primario);
-    --dt-hover-cell-color:var(--color-iluminado);
-    --dt-even-row-color:var(--color-secundario);
-    --dt-focus-color:var(--color-iluminado);
-    --dt-input-backgound-color:var(--color-secundario);
-    --dt-input-color:var(--color-primario)
-}
-*/
-
 
 body{
-    
     height: 100vh;
     margin: 0;
     padding: 0;
@@ -309,6 +277,7 @@ body{
     background-color: var(--dt-status-offline-color);
 }
 td{
+    line-height: 1.2;
     border-bottom: 1px dotted rgb(87, 87, 87);
     
 }
@@ -318,6 +287,10 @@ td{
 .datatable-checkbox{
 
     vertical-align: middle;
+}
+.datatable{
+    margin: 0px;
+    padding: 0px;
 }
 
 

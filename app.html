@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intranet</title>
+    <!--Toastify css -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link rel="stylesheet" href="../dataTable.css">
+   <style>
+    /* Contenedor principal de la aplicación */
+    #app {
+            width: 100%;
+            height: 100%;
+            background-color: #73d4d7;
+            position: fixed;
+            top: 0;
+            left: 0;
+            /* Manejo del notch en iPhones */
+            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+        }
+
+  
+   </style>
+</head>
+
+<body id="app">
+    <nav id="navbar">
+        <div class="navbar1">
+            <div class="nav-container">
+                <button class="menu-toggle">☰</button>
+                <button class="menu-icon-company" id="fullscreenButton">Heinz Sport</button>
+                <ul class="menu"></ul>
+            </div>
+            <div class="nav-container-right">
+                <button id="btn-userName" style="background-color:transparent;color:magenta; border:none;"></button>
+                <button class="menu-toggle-right">☻</button>
+                <ul class="menu-right"></ul>
+            </div>
+        </div>
+    </nav>
+
+    <table id="dataTable" class="datatable"></table>
+
+    
+
+   
+
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+            // Manejar el botón de pantalla completa
+            const fullscreenButton = document.getElementById('fullscreenButton');
+            console.log('fullscreenButton',fullscreenButton);
+            
+            const app = document.getElementById('app');
+            console.log('app',app);
+            fullscreenButton.addEventListener('click', function() {
+                if (!document.fullscreenElement) {
+                    if (app.requestFullscreen) {
+                        app.requestFullscreen();
+                    } else if (app.webkitRequestFullscreen) {
+                        app.webkitRequestFullscreen();
+                    } else if (app.msRequestFullscreen) {
+                        app.msRequestFullscreen();
+                    }
+                } else {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen();
+                    } else if (document.webkitExitFullscreen) {
+                        document.webkitExitFullscreen();
+                    } else if (document.msExitFullscreen) {
+                        document.msExitFullscreen();
+                    }
+                }
+            });
+
+            // Prevenir el scroll y el rebote en iOS
+            document.addEventListener('touchmove', function(e) {
+                e.preventDefault();
+            }, { passive: false });
+
+            // Ocultar la barra de dirección al cargar
+            window.addEventListener('load', function() {
+                // Pequeño delay para asegurar que funcione
+                setTimeout(function() {window.scrollTo(0, 1);}, 0);
+            });
+        });
+</script>
+    <!--javaScript Bootstrap-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <!--Toastify script -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="./src/main.js" type="module"></script>
+</body>
+
+</html>

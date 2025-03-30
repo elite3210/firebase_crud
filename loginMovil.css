@@ -1,0 +1,176 @@
+*{
+
+    margin: 0;
+    padding: 0;
+    box-sizing: content-box;
+    
+}
+
+body{
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #F0F4F3;
+}
+
+.container{
+    width: 300%;
+    height: 800px;
+    /*display: flex;
+    position: relative;*/
+    background-color: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.container-form{
+    width: 100%;
+    overflow: hidden;
+}
+
+
+.container-form form{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.5s ease-in;
+}
+
+.container-form h2{
+    font-size: 30px;
+    margin-bottom: 20px;
+}
+
+.social-networks{
+    
+    display: flex;
+    gap: 12px;
+    margin-bottom: 25px;
+}
+
+.social-networks ion-icon{
+    border: 1px solid #C9CCCB;
+    border-radius: 6px;
+    padding: 8px;
+    cursor: pointer;
+}
+
+.container-form span{
+    font-size: 12px;
+    margin-bottom: 15px;
+}
+
+.container-input{
+    width: 300px;
+    height: 40px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    padding: 0 15px;
+    background-color: #EEEEEE;
+}
+
+.container-input input{
+    border: none;
+    outline: none;
+    width: 100%;
+    height: 100%;
+    background-color: inherit;
+}
+
+.container-form a{
+    color: black;
+    font-size: 14px;
+    margin-bottom: 20px;
+    margin-top: 5px;
+}
+
+.button{
+    width: 170px;
+    height: 45px;
+    font-size: 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    background-color: #3AB397;
+    color: white;
+}
+
+/*Animation forms*/
+.sign-up{
+    transform: translateY(-100%);
+}
+
+.container.toggle .sign-in{
+    transform: translateY(100%);
+}
+
+.container.toggle .sign-up{
+    transform: translateY(0%);
+}
+
+/*Welcome*/
+
+.container-welcome{
+    position: absolute;
+    width: 100%;
+    height: 25%;
+    display: flex;
+    align-items: center;
+    transform: translateY(-100%);/*Presenta el welcome en la parte inferior*/
+    transition: transform 0.5s ease-in-out, border-radius 0.5s ease-in-out;
+    background-color:#3AB397 ;
+    overflow: hidden;
+    border-radius: 30% 30% 0 0;
+}
+
+.container-welcome .welcome{
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 0 50px;
+    color: white;
+    transition: transform 0.5s ease-in-out;
+}
+
+.container.toggle .container-welcome{
+    transform: translateY(-370%);/*Ubica el welcome en la parte superior*/
+    border-radius: 0 0 30% 30%;
+    background-color: #3AABAD;
+}
+
+.welcome-sign-in{
+    transform: translateY(100%);
+}
+
+.container-welcome h3{
+    font-size: 40px;
+}
+
+.container-welcome p{
+    font-size: 14px;
+    text-align: center;
+}
+
+.container-welcome button{
+    border: 2px solid white;
+    background-color: transparent;
+}
+
+.container.toggle .welcome-sign-in{
+    transform: translateY(0%);
+}
+
+.container.toggle .welcome-sign-up{
+    transform: translateY(100%);
+}

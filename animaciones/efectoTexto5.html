@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #0f0c29;
+            background: linear-gradient(135deg, #24243e, #0f0c29, #302b63);
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+        }
+
+        .container {
+            position: relative;
+            text-align: center;
+        }
+
+        .letter {
+            display: inline-block;
+            font-size: 4em;
+            font-weight: bold;
+            color: #fff;
+            opacity: 0;
+            margin: 0 5px;
+            transform: scale(0);
+        }
+
+        .letter.active {
+            animation: popIn 0.5s cubic-bezier(0.17, 0.89, 0.32, 1.49) forwards;
+        }
+
+        @keyframes popIn {
+            0% {
+                opacity: 0;
+                transform: scale(0) rotate(-180deg);
+            }
+            70% {
+                transform: scale(1.2) rotate(10deg);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) rotate(0);
+            }
+        }
+
+        .particle {
+            position: absolute;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .restart-btn {
+            position: fixed;
+            bottom: 30px;
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #ff3366, #ff6b6b);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(255, 51, 102, 0.3);
+        }
+
+        .restart-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 51, 102, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="container"></div>
+    <button class="restart-btn" onclick="restartAnimation()">Reiniciar</button>
+
+    <script>
+        const text = "Amada Mia";
+        let currentIndex = 0;
+        let letters = [];
+        
+        //const characters = '!@#$%^&*+=<>?/{}[]';
+        const characters = ['❄', '❅', '❆', '✻', '✼', '✽', '❋'];
+        
+        //const colors = ['#ff3366', '#ff6b6b', '#4ecdc4', '#45b7d1', '#96f7d2'];
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+
+        function createParticles(x, y) {
+            const particleCount = 20;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.textContent = characters[Math.floor(Math.random() * characters.length)];
+                //particle.style.color = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.color = getRandomColor();
+                particle.style.fontSize = `${Math.random() * 40 + 10}px`;
+                particle.style.left = `${x}px`;
+                particle.style.top = `${y}px`;
+                
+                const angle = (Math.PI * 2 * i) / particleCount;
+                const velocity = 5 + Math.random() * 5;
+                const vx = Math.cos(angle) * velocity;
+                const vy = Math.sin(angle) * velocity;
+                
+                document.body.appendChild(particle);
+                
+                let posX = x;
+                let posY = y;
+                let opacity = 1;
+                let scale = 1;
+                
+                const animate = () => {
+                    posX += vx;
+                    posY += vy;
+                    opacity -= 0.02;
+                    scale += 0.02;
+                    
+                    particle.style.transform = `translate(${posX - x}px, ${posY - y}px) scale(${scale})`;
+                    particle.style.opacity = opacity;
+                    
+                    if (opacity > 0) {
+                        requestAnimationFrame(animate);
+                    } else {
+                        particle.remove();
+                    }
+                };
+                
+                requestAnimationFrame(animate);
+            }
+        }
+
+        function initializeLetters() {
+            const container = document.getElementById('container');
+            container.innerHTML = '';
+            letters = [];
+            text.split('').forEach((char) => {
+                const span = document.createElement('span');
+                span.textContent = char;
+                span.className = 'letter';
+                container.appendChild(span);
+                letters.push(span);
+            });
+        }
+
+        function showNextLetter() {
+            if (currentIndex < letters.length) {
+                const letter = letters[currentIndex];
+                letter.classList.add('active');
+                const rect = letter.getBoundingClientRect();
+                createParticles(rect.left + rect.width/2, rect.top + rect.height/2);
+                currentIndex++;
+                setTimeout(showNextLetter, 150);
+            }
+        }
+
+        function restartAnimation() {
+            currentIndex = 0;
+            letters.forEach(letter => {
+                letter.classList.remove('active');
+            });
+            setTimeout(showNextLetter, 500);
+        }
+
+        initializeLetters();
+        setTimeout(showNextLetter, 500);
+    </script>
+</body>
+</html>

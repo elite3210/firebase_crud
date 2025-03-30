@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Actualizando tabla de producto_tabs</h1>
+
+
+    <fieldset>
+        <legend>¿Se puede vender?</legend>
+        <!-- Solo se puede seleccionar un botón de opción en un grupo con el mismo nombre,
+            y, por lo tanto, solo un botón de opción en un grupo con el mismo nombre que tiene marcado el atributo «requerido»
+            basta para hacer de una selección un requisito -->
+            <input type="checkbox" id="canBeSold"  required><label for="canBeSold">Pueder ser vendido</label>
+            <input type="checkbox" id="canBePurcharsed" required><label for="canBePurcharsed">Puede ser Comprado</label>
+        
+    </fieldset>
+
+
+    <script type="module" src="./updateDB.js"></script>
+</body>
+</html>

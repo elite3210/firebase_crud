@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barcode Scanner</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+
+        #video-container {
+            display: none;
+            position: relative;
+        }
+
+        video {
+            width: 100%;
+            max-width: 400px;
+            border: 2px solid #ccc;
+        }
+
+        #results {
+            margin-top: 20px;
+        }
+
+        .barcode-result {
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Barcode Scanner</h1>
+    <input type="text" id="barcode-input" placeholder="Código de barras manual">
+    <button id="capture-button">Capturar código de barras</button>
+
+    <div id="video-container">
+        <video id="video" autoplay playsinline></video>
+    </div>
+
+    <div id="results"></div>
+
+    
+    <script>
+        const captureButton = document.getElementById("capture-button");
+        const videoContainer = document.getElementById("video-container");
+        const video = document.getElementById("video");
+        const results = document.getElementById("results");
+
+        let isScanning = false;
+
+        captureButton.addEventListener("click", () => {
+            if (!isScanning) {
+                startScanner();
+                captureButton.textContent = "Detener captura";
+            } else {
+                stopScanner();
+                captureButton.textContent = "Capturar código de barras";
+            }
+        });
+
+        function startScanner() {
+            videoContainer.style.display = "block";
+
+
+
+            Quagga.init({
+                inputStream: {
+                    type: "LiveStream",
+                    target: video,
+                    constraints: {
+                        facingMode: "environment",
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    }
+                },
+                decoder: {
+                    readers: ["code_39_reader"]
+                }
+            }, (err) => {
+
+                if (err) {
+                    if (err.name === 'NotReadableError') {
+                        alert("No se pudo acceder a la cámara. Verifica los permisos y asegúrate de que no haya otras aplicaciones usándola.");
+                    } else {
+                        alert("Ocurrió un error inesperado. Por favor, intenta nuevamente más tarde.");
+                    }
+                    return;
+                }
+                Quagga.start();
+                isScanning = true;
+            });
+
+            Quagga.onDetected((data) => {
+                const barcode = data.codeResult.code;
+                if (barcode) {
+                    // Evitar múltiples detecciones rápidas del mismo código
+                    Quagga.offDetected();
+                    displayResult(barcode);
+                    setTimeout(() => Quagga.onDetected(onDetected), 2000);
+                }
+            });
+        }
+
+        function stopScanner() {
+            Quagga.stop();
+            videoContainer.style.display = "none";
+            isScanning = false;
+        }
+
+        function displayResult(barcode) {
+            const div = document.createElement("div");
+            div.className = "barcode-result";
+            div.textContent = `Código capturado: ${barcode}`;
+            results.appendChild(div);
+        }
+
+        function onDetected(data) {
+            const barcode = data.codeResult.code;
+            if (barcode) {
+                displayResult(barcode);
+            }
+        }
+    </script>
+</body>
+
+</html>

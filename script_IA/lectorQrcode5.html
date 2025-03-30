@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escáner de Códigos QR Continuo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        #scanner-container {
+            width: 100%;
+            max-width: 500px;
+            margin: 20px auto;
+            position: relative;
+        }
+        #reader {
+            width: 100%;
+            max-width: 500px;
+            background-color: #f0f0f0;
+            min-height: 300px;
+        }
+        #qr-box-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            border: 3px solid white;
+            transition: border-color 0.3s ease;
+            z-index: 10;
+        }
+        #capture-btn {
+            padding: 10px 20px;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        #capture-btn.scanning {
+            background-color: #dc3545;
+        }
+        #capture-btn.not-scanning {
+            background-color: #4CAF50;
+        }
+        #result, #history {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            word-break: break-all;
+        }
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: #f0f0f0;
+        }
+        .history-item .link-btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .clear-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .duplicate-message {
+            color: orange;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Escáner de Códigos QR Continuo</h1>
+    <audio id="beepSound" src="store-scanner-beep-90395" preload="auto"></audio>
+    <audio id="errorSound" src="short-beep-error.mp3" preload="auto"></audio>
+    <div id="scanner-container">
+        <video id="reader"></video>
+        <div id="qr-box-overlay"></div>
+    </div>
+    
+    <button id="capture-btn" class="not-scanning">Iniciar Escaneo</button>
+    
+    <div id="result"></div>
+    <div id="duplicate-msg" class="duplicate-message"></div>
+
+    <div id="history-container">
+        <h3>Historial de Escaneos</h3>
+        <div id="history"></div>
+        <button id="clear-history" class="clear-btn">Limpiar Historial</button>
+    </div>
+
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <script>
+        const captureBtn = document.getElementById('capture-btn');
+        const resultDiv = document.getElementById('result');
+        const historyDiv = document.getElementById('history');
+        const clearHistoryBtn = document.getElementById('clear-history');
+        const duplicateMsgDiv = document.getElementById('duplicate-msg');
+        const qrBoxOverlay = document.getElementById('qr-box-overlay');
+        const beepSound = document.getElementById('beepSound');
+        const html5QrCode = new Html5Qrcode("reader");
+
+        // Historial de escaneos
+        let scanHistory = JSON.parse(localStorage.getItem('qrScanHistory')) || [];
+        let isScanning = false;
+
+        function isValidUrl(string) {
+            try {
+                new URL(string);
+                return true;
+            } catch {
+                return false;
+            }
+        }
+
+        function updateQrBoxColor(status) {
+            switch(status) {
+                case 'default':
+                    qrBoxOverlay.style.borderColor = 'white';
+                    break;
+                case 'success':
+                    qrBoxOverlay.style.borderColor = 'green';
+                    break;
+                case 'duplicate':
+                    qrBoxOverlay.style.borderColor = 'red';
+                    break;
+            }
+        }
+
+        function saveToHistory(text) {
+            // Verificar si ya existe en el historial
+            const isDuplicate = scanHistory.some(item => item.text === text);
+
+            if (isDuplicate) {
+                // Mostrar mensaje de duplicado y cambiar color del recuadro
+                duplicateMsgDiv.textContent = 'Este código QR ya ha sido escaneado anteriormente.';
+                updateQrBoxColor('duplicate');
+                errorSound.play();
+                setTimeout(() => {
+                    duplicateMsgDiv.textContent = '';
+                    updateQrBoxColor('default');
+                }, 3000);
+                
+                return false;
+            }
+
+            // Cambiar color del recuadro a verde cuando se escanea con éxito
+            updateQrBoxColor('success');
+            setTimeout(() => updateQrBoxColor('default'), 1500);
+
+            // Reproducir sonido solo para nuevos códigos QR
+            beepSound.play();
+
+            // Agregar al inicio del arreglo
+            scanHistory.unshift({
+                text: text,
+                timestamp: new Date().toLocaleString(),
+                isUrl: isValidUrl(text)
+            });
+
+            // Limitar a los últimos 10 escaneos
+            if (scanHistory.length > 10) {
+                scanHistory = scanHistory.slice(0, 10);
+            }
+
+            // Guardar en localStorage
+            localStorage.setItem('qrScanHistory', JSON.stringify(scanHistory));
+
+            // Actualizar vista del historial
+            renderHistory();
+
+            return true;
+        }
+
+        function renderHistory() {
+            historyDiv.innerHTML = scanHistory.map((item, index) => `
+                <div class="history-item">
+                    <span>${item.text} (${item.timestamp})</span>
+                    ${item.isUrl ? `
+                        <button class="link-btn" onclick="openLink('${item.text}')">
+                            Abrir Link
+                        </button>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        // Función global para abrir links
+        window.openLink = function(url) {
+            window.open(url, '_blank');
+        }
+
+        function startScanning() {
+            const config = { 
+                fps: 10,    
+                qrbox: 250  
+            };
+
+            Html5Qrcode.getCameras().then(cameras => {
+                if (cameras && cameras.length) {
+                    const cameraId = cameras.find(camera => 
+                        camera.label.toLowerCase().includes('back')
+                    )?.id || cameras[0].id;
+
+                    // Establecer color predeterminado al iniciar
+                    updateQrBoxColor('default');
+
+                    html5QrCode.start(
+                        cameraId, 
+                        config, 
+                        onScanSuccess
+                    ).catch(err => {
+                        resultDiv.innerHTML = `Error al iniciar la cámara: ${err.message}`;
+                        toggleScanning(); // Desactivar si hay error
+                    });
+
+                    // Cambiar estado del botón
+                    captureBtn.textContent = 'Detener Escaneo';
+                    captureBtn.classList.remove('not-scanning');
+                    captureBtn.classList.add('scanning');
+                    isScanning = true;
+                } else {
+                    resultDiv.innerHTML = 'No se encontraron cámaras.';
+                }
+            }).catch(err => {
+                resultDiv.innerHTML = `Error al obtener cámaras: ${err.message}`;
+                toggleScanning(); // Desactivar si hay error
+            });
+        }
+
+        function stopScanning() {
+            html5QrCode.stop().then(() => {
+                // Restablecer color del recuadro
+                updateQrBoxColor('default');
+
+                // Cambiar estado del botón
+                captureBtn.textContent = 'Iniciar Escaneo';
+                captureBtn.classList.remove('scanning');
+                captureBtn.classList.add('not-scanning');
+                isScanning = false;
+            }).catch(err => {
+                console.error("Error al detener la cámara:", err);
+            });
+        }
+
+        function toggleScanning() {
+            if (isScanning) {
+                stopScanning();
+            } else {
+                startScanning();
+            }
+        }
+
+        function onScanSuccess(decodedText, decodedResult) {
+            // Mostrar resultado
+            resultDiv.innerHTML = `
+                <h3>Código QR Capturado:</h3>
+                <p>${decodedText}</p>
+            `;
+
+            // Intentar guardar en historial
+            const saved = saveToHistory(decodedText);
+
+            // Si es un link válido, preguntar si quiere abrirlo
+            if (saved && isValidUrl(decodedText)) {
+                if(confirm(`¿Deseas abrir el siguiente enlace?\n${decodedText}`)) {
+                    window.open(decodedText, '_blank');
+                }
+            }
+        }
+
+        // Evento para alternar el escáner al hacer clic en el botón
+        captureBtn.addEventListener('click', toggleScanning);
+
+        // Evento para limpiar historial
+        clearHistoryBtn.addEventListener('click', () => {
+            scanHistory = [];
+            localStorage.removeItem('qrScanHistory');
+            renderHistory();
+        });
+
+        // Renderizar historial al cargar
+        renderHistory();
+    </script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+@startuml Estado de pedidos
+
+start
+
+if (fecha.Envio ) then (Sí) 
+    
+    :retrasoPago = X2;
+    if (pagoPedido) then (Sí)
+        :pagosAcumulados = M;
+
+        if(fechaCancelado) then (si)
+            :estado = cancelado;
+        else(No)
+            :estado=credito;
+        endif
+    else (No)
+        :Estado=credito;
+    endif
+else (no)
+    :retrasoEnvio = X1;
+    if (pagoPedido) then (Sí)
+        :estado=adelantado; 
+        :pagosAcumulados = M;
+        :progreso = Elemnt;
+    else (No)
+        :Estado=nuevo;
+        
+    endif
+endif
+stop
+@enduml

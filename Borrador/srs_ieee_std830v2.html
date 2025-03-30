@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Generador de Documentos SRS IEEE 830-1998</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.15/jspdf.plugin.autotable.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .form-section {
+            background-color: #f4f4f4;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        input, select, textarea {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 8px;
+        }
+        #srsPreview {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+        .btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        .actor-section {
+            background-color: #e9e9e9;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+        .requisito-line {
+            display: flex;
+            margin-bottom: 10px;
+        }
+        .requisito-line input {
+            margin-right: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Generador de Documentos SRS IEEE 830-1998</h1>
+    
+    <form id="srsForm">
+        <div class="form-section">
+            <h2>Información del Proyecto</h2>
+            <input type="text" id="projectTitle" placeholder="Título del Proyecto" required 
+                   value="Sistema de Gestión de Biblioteca Online">
+            <textarea id="projectDescription" placeholder="Descripción General del Proyecto" 
+                      rows="4">Un sistema web para gestionar préstamos, inventario y usuarios de una biblioteca municipal, permitiendo búsqueda de libros, reservas online y seguimiento de préstamos.</textarea>
+            
+            <label>Plataforma:</label>
+            <select id="platform">
+                <option value="web">Aplicación Web</option>
+                <option value="mobile">Aplicación Móvil</option>
+                <option value="desktop">Aplicación Escritorio</option>
+            </select>
+        </div>
+
+        <div class="form-section" id="actoresSection">
+            <h2>Actores y Requisitos Funcionales</h2>
+            <div id="actoresContainer">
+                <!-- Los actores se agregarán dinámicamente aquí -->
+            </div>
+            <button type="button" onclick="agregarActor()" class="btn">+ Agregar Actor</button>
+        </div>
+
+        <div class="form-section">
+            <h2>Requisitos No Funcionales</h2>
+            <textarea id="nonFunctionalRequirements" placeholder="Descripción de requisitos no funcionales" 
+                      rows="4">El sistema debe responder a las consultas de búsqueda en menos de 2 segundos. Implementará cifrado de contraseñas y control de acceso basado en roles.</textarea>
+        </div>
+
+        <button type="button" onclick="generateSRS()" class="btn">Generar SRS</button>
+        <button type="button" onclick="downloadPDF()" class="btn">Descargar PDF</button>
+    </form>
+
+    <div id="srsPreview"></div>
+
+    <script>
+    // Clases de modelo
+    class Actor {
+        constructor(nombre) {
+            this.nombre = nombre;
+            this.requisitos = [];
+        }
+
+        agregarRequisito(requisito) {
+            this.requisitos.push(requisito);
+        }
+    }
+
+    class Requisito {
+        constructor(id, descripcion) {
+            this.id = id;
+            this.descripcion = descripcion;
+        }
+    }
+
+    class GeneradorSRS {
+        constructor(titulo, descripcion, plataforma) {
+            this.titulo = titulo;
+            this.descripcion = descripcion;
+            this.plataforma = plataforma;
+            this.actores = [];
+            this.requisitoNoFuncional = '';
+        }
+
+        agregarActor(actor) {
+            this.actores.push(actor);
+        }
+
+        agregarRequisitoNoFuncional(requisito) {
+            this.requisitoNoFuncional = requisito;
+        }
+
+        generarContenidoHTML() {
+            let contenido = `
+                <h2>1. Información del Proyecto</h2>
+                <table>
+                    <tr>
+                        <th>Título</th>
+                        <td>${this.titulo}</td>
+                    </tr>
+                    <tr>
+                        <th>Descripción</th>
+                        <td>${this.descripcion}</td>
+                    </tr>
+                    <tr>
+                        <th>Plataforma</th>
+                        <td>${this.plataforma}</td>
+                    </tr>
+                </table>
+
+                <h2>2. Actores y Requisitos Funcionales</h2>
+            `;
+
+            this.actores.forEach((actor, index) => {
+                contenido += `
+                    <h3>Actor ${index + 1}: ${actor.nombre}</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Descripción del Requisito</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${actor.requisitos.map((req, reqIndex) => `
+                                <tr>
+                                    <td>RF-${index + 1}.${reqIndex + 1}</td>
+                                    <td>${req.descripcion}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            });
+
+            contenido += `
+                <h2>3. Requisitos No Funcionales</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Descripción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>RNF-1</td>
+                            <td>${this.requisitoNoFuncional}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            `;
+
+            return contenido;
+        }
+    }
+
+    // Funciones de interfaz de usuario
+    function agregarActor() {
+        const actoresContainer = document.getElementById('actoresContainer');
+        const nuevoActorDiv = document.createElement('div');
+        nuevoActorDiv.className = 'actor-section';
+        
+        const contadorActores = actoresContainer.children.length + 1;
+        nuevoActorDiv.innerHTML = `
+            <h3>Actor ${contadorActores}</h3>
+            <input type="text" placeholder="Nombre del Actor" class="actor-nombre" value="Usuario ${contadorActores}">
+            <div class="requisitos-container">
+                <div class="requisito-line">
+                    <input type="text" placeholder="Descripción del Requisito" class="requisito-descripcion">
+                    <button type="button" onclick="agregarRequisito(this)">+ Requisito</button>
+                </div>
+            </div>
+        `;
+        
+        actoresContainer.appendChild(nuevoActorDiv);
+    }
+
+    function agregarRequisito(boton) {
+        const requisitosContainer = boton.closest('.actor-section').querySelector('.requisitos-container');
+        const nuevoRequisito = document.createElement('div');
+        nuevoRequisito.className = 'requisito-line';
+        nuevoRequisito.innerHTML = `
+            <input type="text" placeholder="Descripción del Requisito" class="requisito-descripcion">
+            <button type="button" onclick="this.parentElement.remove()">- Eliminar</button>
+        `;
+        
+        requisitosContainer.appendChild(nuevoRequisito);
+    }
+
+    function generateSRS() {
+        const generador = new GeneradorSRS(
+            document.getElementById('projectTitle').value,
+            document.getElementById('projectDescription').value,
+            document.getElementById('platform').value
+        );
+
+        // Obtener actores y sus requisitos
+        const actoresContainer = document.getElementById('actoresContainer');
+        Array.from(actoresContainer.children).forEach(actorDiv => {
+            const nombreActor = actorDiv.querySelector('.actor-nombre').value;
+            const actor = new Actor(nombreActor);
+
+            const requisitosLines = actorDiv.querySelectorAll('.requisito-descripcion');
+            requisitosLines.forEach(requisitoInput => {
+                if (requisitoInput.value.trim()) {
+                    const requisito = new Requisito(null, requisitoInput.value);
+                    actor.agregarRequisito(requisito);
+                }
+            });
+
+            generador.agregarActor(actor);
+        });
+
+        // Agregar requisito no funcional
+        generador.agregarRequisitoNoFuncional(
+            document.getElementById('nonFunctionalRequirements').value
+        );
+
+        // Generar y mostrar contenido
+        const srsContent = generador.generarContenidoHTML();
+        document.getElementById('srsPreview').innerHTML = srsContent;
+    }
+
+    function downloadPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        const srsContent = document.getElementById('srsPreview').innerText;
+        
+        // Usar autoTable para crear tablas en PDF
+        doc.text("Especificación de Requisitos de Software (SRS)", 10, 10);
+        doc.autoTable({
+            startY: 20,
+            html: '#srsPreview table'
+        });
+        
+        doc.save('DocumentoSRS.pdf');
+    }
+
+    // Agregar un actor inicial al cargar la página
+    window.onload = agregarActor;
+    </script>
+</body>
+</html>

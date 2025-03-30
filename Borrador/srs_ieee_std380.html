@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Generador de Documentos SRS IEEE 830-1998</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .form-section {
+            background-color: #f4f4f4;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 8px;
+        }
+
+        #srsPreview {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Generador de Documentos SRS IEEE 830-1998</h1>
+
+    <form id="srsForm">
+        <div class="form-section">
+            <h2>Información del Proyecto</h2>
+            <input type="text" id="projectTitle" placeholder="Título del Proyecto" required
+                value="Sistema de Gestión de Biblioteca Online">
+            <textarea id="projectDescription" placeholder="Descripción General del Proyecto"
+                rows="4">Un sistema web para gestionar préstamos, inventario y usuarios de una biblioteca municipal, permitiendo búsqueda de libros, reservas online y seguimiento de préstamos.</textarea>
+
+            <label>Plataforma:</label>
+            <select id="platform">
+                <option value="web">Aplicación Web</option>
+                <option value="mobile">Aplicación Móvil</option>
+                <option value="desktop">Aplicación Escritorio</option>
+            </select>
+        </div>
+
+        <div class="form-section">
+            <h2>Requisitos Funcionales</h2>
+            <div>
+                <input type="checkbox" id="reqLogin" checked>
+                <label for="reqLogin">Autenticación de Usuarios</label>
+            </div>
+            <div>
+                <input type="checkbox" id="reqSearch" checked>
+                <label for="reqSearch">Búsqueda de Libros</label>
+            </div>
+            <textarea id="functionalRequirements" placeholder="Descripción adicional de requisitos funcionales"
+                rows="4">El sistema deberá permitir a los usuarios buscar libros por título, autor o categoría. Los usuarios registrados podrán realizar reservas y ver el estado de sus préstamos.</textarea>
+        </div>
+
+        <div class="form-section">
+            <h2>Requisitos No Funcionales</h2>
+            <div>
+                <input type="checkbox" id="nfPerformance" checked>
+                <label for="nfPerformance">Rendimiento</label>
+            </div>
+            <div>
+                <input type="checkbox" id="nfSecurity" checked>
+                <label for="nfSecurity">Seguridad</label>
+            </div>
+            <textarea id="nonFunctionalRequirements" placeholder="Descripción de requisitos no funcionales"
+                rows="4">El sistema debe responder a las consultas de búsqueda en menos de 2 segundos. Implementará cifrado de contraseñas y control de acceso basado en roles.</textarea>
+        </div>
+
+        <button type="button" onclick="generateSRS()" class="btn">Generar SRS</button>
+        <button type="button" onclick="downloadPDF()" class="btn">Descargar PDF</button>
+    </form>
+
+    <div id="srsPreview"></div>
+
+    <script>
+        // Clase base para elementos del SRS
+        class SRSElement {
+            constructor(id, description) {
+                this.id = id;
+                this.description = description;
+            }
+        }
+
+        // Clase para representar el Proyecto
+        class Proyecto extends SRSElement {
+            constructor(titulo, descripcion, plataforma) {
+                super(titulo, descripcion);
+                this.plataforma = plataforma;
+            }
+        }
+
+        // Clase para Requisitos
+        class Requisito extends SRSElement {
+            constructor(id, descripcion, tipo) {
+                super(id, descripcion);
+                this.tipo = tipo;
+            }
+        }
+
+        // Clase principal para generar SRS
+        class GeneradorSRS {
+            constructor(proyecto) {
+                this.proyecto = proyecto;
+                this.reqFuncionales = [];
+                this.reqNoFuncionales = [];
+            }
+
+            agregarRequisito(requisito) {
+                if (requisito.tipo === 'funcional') {
+                    this.reqFuncionales.push(requisito);
+                } else {
+                    this.reqNoFuncionales.push(requisito);
+                }
+            }
+
+            generarContenidoHTML() {
+                return `
+                <h1>Especificación de Requisitos de Software (SRS)</h1>
+                <h2>1. Introducción</h2>
+                <h3>1.1 Propósito</h3>
+                <p>Este documento describe los requisitos para el proyecto: ${this.proyecto.description}</p>
+
+                <h3>1.2 Alcance</h3>
+                <p>El sistema será desarrollado para ${this.proyecto.plataforma}</p>
+
+                <h2>2. Descripción General</h2>
+                <h3>2.1 Perspectiva del Producto</h3>
+                <p>${this.proyecto.description}</p>
+
+                <h2>3. Requisitos Específicos</h2>
+                <h3>3.1 Requisitos Funcionales</h3>
+                <ul>
+                    ${this.reqFuncionales.map(req => `<li>${req.description}</li>`).join('')}
+                </ul>
+
+                <h3>3.2 Requisitos No Funcionales</h3>
+                <ul>
+                    ${this.reqNoFuncionales.map(req => `<li>${req.description}</li>`).join('')}
+                </ul>
+            `;
+            }
+        }
+
+        function generateSRS() {
+            const proyecto = new Proyecto(
+                document.getElementById('projectTitle').value,
+                document.getElementById('projectDescription').value,
+                document.getElementById('platform').value
+            );
+
+            const generador = new GeneradorSRS(proyecto);
+
+            // Agregar requisitos funcionales
+            if (document.getElementById('reqLogin').checked) {
+                generador.agregarRequisito(new Requisito(
+                    'RF01',
+                    'El sistema permitirá la autenticación de usuarios con inicio de sesión seguro',
+                    'funcional'
+                ));
+            }
+
+            if (document.getElementById('reqSearch').checked) {
+                generador.agregarRequisito(new Requisito(
+                    'RF02',
+                    'El sistema ofrecerá funcionalidades de búsqueda avanzada de libros',
+                    'funcional'
+                ));
+            }
+
+            generador.agregarRequisito(new Requisito(
+                'RNF01',
+                document.getElementById('nonFunctionalRequirements').value,
+                'no funcional'
+            ));
+
+            const srsContent = generador.generarContenidoHTML();
+            document.getElementById('srsPreview').innerHTML = srsContent;
+        }
+
+        function downloadPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            const srsContent = document.getElementById('srsPreview').innerText;
+            doc.text(srsContent, 10, 10);
+            doc.save('DocumentoSRS.pdf');
+        }
+    </script>
+</body>
+
+</html>

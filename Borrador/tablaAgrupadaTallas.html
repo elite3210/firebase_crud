@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabla de Zapatos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tfoot th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tfoot th:last-child {
+            background-color: #ff9800;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .total-row th {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Tabla de Zapatos</h1>
+<div id="tabla-container"></div>
+
+<script>
+   // Definimos el JSON de entrada
+const datosEntrada = [
+    {"serie":"50125:1","tarjeta":"50125","modelo":"7053","color":"Marron","suela":"Elena","talla":33},
+    {"serie":"50125:2","tarjeta":"50125","modelo":"7053","color":"Marron","suela":"Elena","talla":34},
+    {"serie":"50125:3","tarjeta":"50125","modelo":"7053","color":"Marron","suela":"Elena","talla":34},
+    {"serie":"50125:4","tarjeta":"50125","modelo":"7053","color":"Marron","suela":"Elena","talla":35},
+    {"serie":"50125:5","tarjeta":"50125","modelo":"7053","color":"Marron","suela":"Elena","talla":35},
+    {"serie":"50125:6","tarjeta":"50125","modelo":"7053","color":"Marron","suela":"Elena","talla":35},
+    {"serie":"50124:1","tarjeta":"50124","modelo":"7053","color":"Vino","suela":"Elena","talla":33},
+    {"serie":"50124:2","tarjeta":"50124","modelo":"7053","color":"Vino","suela":"Elena","talla":34},
+    {"serie":"50124:3","tarjeta":"50124","modelo":"7053","color":"Vino","suela":"Elena","talla":34},
+    {"serie":"50124:4","tarjeta":"50124","modelo":"7053","color":"Vino","suela":"Elena","talla":35},
+    {"serie":"50124:5","tarjeta":"50124","modelo":"7053","color":"Vino","suela":"Elena","talla":35},
+    {"serie":"50124:6","tarjeta":"50124","modelo":"7053","color":"Vino","suela":"Elena","talla":35},
+    {"serie":"50124:7","tarjeta":"50124","modelo":"7053","color":"Vino","suela":"Elena","talla":36},
+    {"serie":"50124:8","tarjeta":"50124","modelo":"7053","color":"Vino","suela":"Elena","talla":36},
+    {"serie":"50124:9","tarjeta":"50124","modelo":"7053","color":"Vino","suela":"Elena","talla":36},
+    {"serie":"50124:10","tarjeta":"50124","modelo":"7053","color":"Vino","suela":"Elena","talla":37},
+    {"serie":"50124:11","tarjeta":"50124","modelo":"7053","color":"Vino","suela":"Elena","talla":37},
+    {"serie":"50124:12","tarjeta":"50124","modelo":"7053","color":"Vino","suela":"Elena","talla":38},
+    {"serie":"50126:1","tarjeta":"50126","modelo":"6053","color":"Negro","suela":"Tabita","talla":33},
+    {"serie":"50126:2","tarjeta":"50126","modelo":"6053","color":"Negro","suela":"Tabita","talla":34},
+    {"serie":"50126:3","tarjeta":"50126","modelo":"6053","color":"Negro","suela":"Tabita","talla":34},
+    {"serie":"50126:4","tarjeta":"50126","modelo":"6053","color":"Negro","suela":"Tabita","talla":35},
+    {"serie":"50126:5","tarjeta":"50126","modelo":"6053","color":"Negro","suela":"Tabita","talla":35},
+    {"serie":"50126:6","tarjeta":"50126","modelo":"6053","color":"Negro","suela":"Tabita","talla":35},
+    {"serie":"50126:7","tarjeta":"50126","modelo":"6053","color":"Negro","suela":"Tabita","talla":36},
+    {"serie":"50126:8","tarjeta":"50126","modelo":"6053","color":"Negro","suela":"Tabita","talla":36},
+    {"serie":"50126:9","tarjeta":"50126","modelo":"6053","color":"Negro","suela":"Tabita","talla":36},
+    {"serie":"50126:10","tarjeta":"50126","modelo":"6053","color":"Negro","suela":"Tabita","talla":37},
+    {"serie":"50126:11","tarjeta":"50126","modelo":"6053","color":"Negro","suela":"Tabita","talla":37},
+    {"serie":"50126:12","tarjeta":"50126","modelo":"6053","color":"Negro","suela":"Tabita","talla":38}
+];
+
+
+function groupByTallas(ArrayObj) {
+    // Creamos un objeto para almacenar la agrupación de datos
+const agrupadosPorTarjeta = {};
+
+// Recorremos cada elemento del JSON de entrada
+datosEntrada.forEach(item => {
+    // Obtenemos la tarjeta actual
+    const tarjeta = item.tarjeta;
+
+    // Si la tarjeta no existe en el objeto agrupadosPorTarjeta, la inicializamos
+    if (!agrupadosPorTarjeta[tarjeta]) {
+        agrupadosPorTarjeta[tarjeta] = {
+            //serie: item.serie.split(':')[0], // Tomamos solo el número de la serie
+            tarjeta: item.tarjeta,
+            modelo: item.modelo,
+            color: item.color,
+            suela: item.suela,
+            tallas: {}
+        };
+    }
+
+    // Incrementamos el contador de la talla actual
+    const tallaKey = `talla${item.talla}`;
+    if (agrupadosPorTarjeta[tarjeta].tallas[tallaKey]) {
+        agrupadosPorTarjeta[tarjeta].tallas[tallaKey]++;
+    } else {
+        agrupadosPorTarjeta[tarjeta].tallas[tallaKey] = 1;
+    }
+});
+
+// Convertimos el objeto agrupado en un array de objetos
+const datosSalida = Object.values(agrupadosPorTarjeta).map(item => {
+    // Combinamos las propiedades de tallas con el objeto principal
+    return { ...item, ...item.tallas };
+});
+
+// Eliminamos la propiedad tallas del objeto final
+datosSalida.forEach(item => {
+    delete item.tallas;
+});
+
+// Imprimimos el resultado por consola
+//console.log(JSON.stringify(datosSalida, null, 2));
+return datosSalida
+}
+
+const datosPares =groupByTallas(datosEntrada);
+
+    // Función para renderizar la tabla
+    function renderizarTabla(arrayObjetos) {
+        //const arrayObjetos=JSON.stringify(arrayObjetos1)
+        //console.log(arrayObjetos);
+        
+        const container = document.getElementById('tabla-container');
+        const table = document.createElement('table');
+
+        // Encuentra el objeto con más claves
+        const maxKeys = Math.max(...arrayObjetos.map(obj => Object.keys(obj).length));
+
+        // Crea el thead
+        const thead = document.createElement('thead');
+        const headerRow1 = document.createElement('tr');
+        const headerRow2 = document.createElement('tr');
+
+        // Columnas fijas
+        const fixedColumns = ['tarjeta', 'modelo', 'color', 'suela'];
+        fixedColumns.forEach(column => {
+            const th1 = document.createElement('th');
+            th1.rowSpan = 2;
+            th1.textContent = column.charAt(0).toUpperCase() + column.slice(1);
+            headerRow1.appendChild(th1);
+
+            //const th2 = document.createElement('th');
+            //th2.style.display = 'none'; // Ocultar la segunda fila para estas columnas
+            //headerRow2.appendChild(th2);
+        });
+
+        // Columnas de tallas
+        const tallas = new Set();
+        arrayObjetos.forEach(item => {
+            Object.keys(item).forEach(key => {
+                if (key.startsWith('talla')) {
+                    tallas.add(key);
+                }
+            });
+        });
+
+        // Ordenar las tallas
+        const sortedTallas = Array.from(tallas).sort();
+
+        sortedTallas.forEach((talla,i) => {
+            const th1 = document.createElement('th');
+            if (i<1) {
+                th1.colSpan = sortedTallas.length;
+                th1.textContent = 'Tallas';
+                //th1.colSpan = maxKeys-4;
+            th1.textContent = 'Tallas';
+            headerRow1.appendChild(th1);
+            }
+            
+
+            const th2 = document.createElement('th');
+            th2.textContent = talla.replace('talla', '');
+            headerRow2.appendChild(th2);
+        });
+
+        // Columnas adicionales
+        const additionalColumns = ['Pares', 'Precio', 'Importe'];
+        additionalColumns.forEach(column => {
+            const th1 = document.createElement('th');
+            th1.rowSpan = 2;
+            th1.textContent = column;
+            headerRow1.appendChild(th1);
+
+            //const th2 = document.createElement('th');
+            //th2.style.display = 'none'; // Ocultar la segunda fila para estas columnas
+           //headerRow2.appendChild(th2);
+        });
+
+        thead.appendChild(headerRow1);
+        thead.appendChild(headerRow2);
+        table.appendChild(thead);
+
+        // Crea el tbody
+        const tbody = document.createElement('tbody');
+        arrayObjetos.forEach(item => {
+            const row = document.createElement('tr');
+
+            // Columnas fijas
+            fixedColumns.forEach(column => {
+                const td = document.createElement('td');
+                td.textContent = item[column] || '';
+                row.appendChild(td);
+            });
+
+            // Columnas de tallas
+            sortedTallas.forEach(talla => {
+                const td = document.createElement('td');
+                td.textContent = item[talla] || '';
+                row.appendChild(td);
+            });
+
+            // Columnas adicionales
+            const cantidadPares = Object.keys(item)
+                .filter(key => key.startsWith('talla'))
+                .reduce((sum, key) => sum + (item[key] || 0), 0);
+
+            const precio = 50;
+            const subTotal = cantidadPares * precio;
+
+            row.appendChild(createCell(cantidadPares));
+            row.appendChild(createCell(precio));
+            row.appendChild(createCell(subTotal));
+
+            tbody.appendChild(row);
+        });
+        table.appendChild(tbody);
+        // Crea el tfoot
+        //const tfoot = document.createElement('tfoot');
+        //const totalRow = document.createElement('tr');
+       // const importeTotalRow = document.createElement('tr');
+        
+        /*
+        // Columnas fijas
+        fixedColumns.forEach(() => {
+            const th = document.createElement('th');
+            th.style.borderRight = '1px solid #ddd';
+            th.textContent = '';
+            totalRow.appendChild(th);
+            importeTotalRow.appendChild(th);
+        });
+
+        // Columnas de tallas
+        const totalTallas = {};
+        sortedTallas.forEach(talla => {
+            totalTallas[talla] = arrayObjetos.reduce((sum, item) => sum + (item[talla] || 0), 0);
+        });
+
+        sortedTallas.forEach(talla => {
+            const th = document.createElement('th');
+            th.textContent = totalTallas[talla];
+            totalRow.appendChild(th);
+        });
+        */
+
+        // Columnas adicionales
+        const totalPares = arrayObjetos.reduce((sum, item) => sum + Object.keys(item)
+            .filter(key => key.startsWith('talla'))
+            .reduce((innerSum, key) => innerSum + (item[key] || 0), 0), 0);
+        const importeTotal = totalPares * 50;
+
+        //totalRow.appendChild(createCell(totalPares));
+        //totalRow.appendChild(createCell(''));
+        //totalRow.appendChild(createCell(''));
+
+        //importeTotalRow.appendChild(createCell('Total pares'));
+        //importeTotalRow.appendChild(createCell('Importe Total'));
+        //importeTotalRow.appendChild(createCell(importeTotal));
+
+        //tfoot.appendChild(totalRow);
+        //tfoot.appendChild(importeTotalRow);
+        //table.appendChild(tfoot);
+
+        container.appendChild(table);
+    }
+
+    // Función auxiliar para crear una celda con bordes personalizados
+    function createCell(content) {
+        const td = document.createElement('td');
+        td.textContent = content;
+        //td.style.borderLeft = '1px solid #ddd';
+        return td;
+    }
+
+    // Renderizar la tabla
+    renderizarTabla(datosPares);
+</script>
+
+</body>
+</html>

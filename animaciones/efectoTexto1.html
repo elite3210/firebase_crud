@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(45deg, #000428, #004e92);
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        .letter {
+            display: inline-block;
+            font-size: 4em;
+            color: transparent;
+            animation: colorChange 2s infinite;
+            opacity: 0;
+            transform: scale(0) rotate(180deg);
+            margin: 0 5px;
+        }
+
+        .letter.active {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+            transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes colorChange {
+            0% { color: #ff0000; }
+            25% { color: #ffd700; }
+            50% { color: #00ff00; }
+            75% { color: #00ffff; }
+            100% { color: #ff0000; }
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            animation: starTwinkle 1s infinite;
+        }
+
+        @keyframes starTwinkle {
+            0% { opacity: 0; }
+            50% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        .restart-btn {
+            position: fixed;
+            bottom: 20px;
+            padding: 15px 30px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+
+        .restart-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="container"></div>
+    <button class="restart-btn" onclick="restartAnimation()">Reiniciar</button>
+
+    <script>
+        const text = "Feliz Año Nuevo 2025";
+        let currentIndex = 0;
+        let letters = [];
+
+        // Crear estrellas de fondo
+        function createStars() {
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 1 + 's';
+                document.body.appendChild(star);
+            }
+        }
+
+        function initializeLetters() {
+            const container = document.getElementById('container');
+            container.innerHTML = '';
+            letters = [];
+            text.split('').forEach((char) => {
+                const span = document.createElement('span');
+                span.textContent = char;
+                span.className = 'letter';
+                container.appendChild(span);
+                letters.push(span);
+            });
+        }
+
+        function showNextLetter() {
+            if (currentIndex < letters.length) {
+                letters[currentIndex].classList.add('active');
+                currentIndex++;
+                setTimeout(showNextLetter, 150);
+            }
+        }
+
+        function restartAnimation() {
+            currentIndex = 0;
+            letters.forEach(letter => {
+                letter.classList.remove('active');
+            });
+            setTimeout(showNextLetter, 500);
+        }
+
+        // Inicializar todo
+        createStars();
+        initializeLetters();
+        setTimeout(showNextLetter, 500);
+    </script>
+</body>
+</html>

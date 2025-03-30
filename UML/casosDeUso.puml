@@ -1,0 +1,36 @@
+@startuml Comercializacion
+left to right direction
+
+actor "Usuario" as User
+
+rectangle "Sistema de Ventas, Compras e Inventario" {
+    usecase "Registrar Venta" as RegisterSale
+    usecase "Registrar Compra" as RegisterPurchase
+    usecase "Gestionar Inventario" as ManageInventory
+    usecase "Gestionar Cliente" as ManageCustomer
+    usecase "Gestionar Promociones" as ManagePromotions
+    usecase "Gestionar Productos" as ManageProducts
+     {
+        usecase "Gestionar Productos de Ventas" as ManageSalesProducts
+        usecase "Gestionar Productos de Compras" as ManagePurchaseProducts;
+        usecase "Gestionar Productos de Inventario" as ManageInventoryProducts;
+    }
+}
+
+User --> RegisterSale: Realiza venta
+User --> RegisterPurchase: Realiza compra
+User --> ManageInventory: Gestiona inventario
+User --> ManageCustomer: Gestiona cliente
+User --> ManagePromotions: Gestiona promociones
+User --> ManageSalesProducts: Gestiona productos de ventas
+User --> ManagePurchaseProducts: Gestiona productos de compras
+User --> ManageInventoryProducts: Gestiona productos de inventario
+
+ManageCustomer ..> RegisterSale: Incluir
+ManageCustomer ..> RegisterPurchase: Incluir
+ManagePromotions <|-- RegisterSale: Extender
+ManageProducts <|-- RegisterSale: Generalizar
+ManageProducts <|-- RegisterPurchase: Generalizar
+ManageProducts <|-- ManageInventory: Generalizar
+
+@enduml

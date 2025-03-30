@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estado de Situación Financiera</title>
+    <link rel="stylesheet" href="balance.css">
+    
+</head>
+<body>
+    <div class="container">
+        <h1>Estado de Situación Financiera</h1>
+        
+        <form id="financialForm">
+            <h2>Activo</h2>
+            <label for="cash">Efectivo:</label>
+            <input type="number" id="cash" name="cash" required>
+            
+            <label for="accountsReceivable">Cuentas por Cobrar:</label>
+            <input type="number" id="accountsReceivable" name="accountsReceivable" required>
+            
+            <label for="inventory">Inventario:</label>
+            <input type="number" id="inventory" name="inventory" required>
+            
+            <label for="propertyPlantEquipment">Propiedad, Planta y Equipo:</label>
+            <input type="number" id="propertyPlantEquipment" name="propertyPlantEquipment" required>
+            
+            <h2>Pasivo</h2>
+            <label for="accountsPayable">Cuentas por Pagar:</label>
+            <input type="number" id="accountsPayable" name="accountsPayable" required>
+            
+            <label for="shortTermDebt">Deuda a Corto Plazo:</label>
+            <input type="number" id="shortTermDebt" name="shortTermDebt" required>
+            
+            <label for="longTermDebt">Deuda a Largo Plazo:</label>
+            <input type="number" id="longTermDebt" name="longTermDebt" required>
+            
+            <h2>Patrimonio Neto</h2>
+            <label for="equity">Capital Social:</label>
+            <input type="number" id="equity" name="equity" required>
+            
+            <button type="submit">Generar Balance General</button>
+        </form>
+        
+        <div id="balanceGeneral"></div>
+    </div>
+    
+    <script>
+        document.getElementById('financialForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    
+    // Obtener valores del formulario
+    const cash = parseFloat(document.getElementById('cash').value);
+    const accountsReceivable = parseFloat(document.getElementById('accountsReceivable').value);
+    const inventory = parseFloat(document.getElementById('inventory').value);
+    const propertyPlantEquipment = parseFloat(document.getElementById('propertyPlantEquipment').value);
+    const accountsPayable = parseFloat(document.getElementById('accountsPayable').value);
+    const shortTermDebt = parseFloat(document.getElementById('shortTermDebt').value);
+    const longTermDebt = parseFloat(document.getElementById('longTermDebt').value);
+    const equity = parseFloat(document.getElementById('equity').value);
+    
+    // Calcular totales
+    const totalAssets = cash + accountsReceivable + inventory + propertyPlantEquipment;
+    const totalLiabilities = accountsPayable + shortTermDebt + longTermDebt;
+    const totalEquity = equity;
+    
+    // Verificar si el balance general está equilibrado
+    if (totalAssets !== totalLiabilities + totalEquity) {
+        alert('El balance general no está equilibrado. Por favor, verifica los valores.');
+        return;
+    }
+    
+    // Generar el balance general
+    const balanceGeneralHTML = `
+        <h3>Balance General</h3>
+        <div>
+        <div class="activo">
+        <table>
+            <thead>
+                <tr>
+                    <th>Activo</th>
+                    <th>Monto</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Efectivo</td>
+                    <td>${cash.toFixed(2)}</td>
+                </tr>
+                <tr>
+                    <td>Cuentas por Cobrar</td>
+                    <td>${accountsReceivable.toFixed(2)}</td>
+                </tr>
+                <tr>
+                    <td>Inventario</td>
+                    <td>${inventory.toFixed(2)}</td>
+                </tr>
+                <tr>
+                    <td>Propiedad, Planta y Equipo</td>
+                    <td>${propertyPlantEquipment.toFixed(2)}</td>
+                </tr>
+                <tr>
+                    <td>Total Activo</td>
+                    <td><strong>${totalAssets.toFixed(2)}</strong></td>
+                </tr>
+            </tbody>
+        </table>
+        </div>
+        <div class="pasivo">
+        <table>
+            <thead>
+                <tr>
+                    <th>Pasivo</th>
+                    <th>Monto</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Cuentas por Pagar</td>
+                    <td>${accountsPayable.toFixed(2)}</td>
+                </tr>
+                <tr>
+                    <td>Deuda a Corto Plazo</td>
+                    <td>${shortTermDebt.toFixed(2)}</td>
+                </tr>
+                <tr>
+                    <td>Deuda a Largo Plazo</td>
+                    <td>${longTermDebt.toFixed(2)}</td>
+                </tr>
+                <tr>
+                    <td>Total Pasivo</td>
+                    <td><strong>${totalLiabilities.toFixed(2)}</strong></td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Patrimonio Neto</th>
+                    <th>Monto</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Capital Social</td>
+                    <td>${equity.toFixed(2)}</td>
+                </tr>
+                <tr>
+                    <td>Total Patrimonio Neto</td>
+                    <td><strong>${totalEquity.toFixed(2)}</strong></td>
+                </tr>
+            </tbody>
+        </table>
+        </div>
+    </div>
+    `;
+    
+    document.getElementById('balanceGeneral').innerHTML = balanceGeneralHTML;
+});
+    </script>
+</body>
+</html>

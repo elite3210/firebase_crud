@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplicación de Productos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+        }
+
+        form {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        form label {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        form input {
+            width: calc(50% - 20px);
+            padding: 10px;
+            margin-top: 5px;
+        }
+
+        form button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        form button:hover {
+            background-color: #218838;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Ingreso de Productos</h1>
+        <form id="productForm">
+            <label for="name">Modelo:</label>
+            <input type="text" id="name" required>
+            
+            <label for="category">Talla:</label>
+            <input type="text" id="category" required>
+            
+            <label for="price">Precio:</label>
+            <input type="number" id="price" step="0.01" required>
+            
+            <button type="submit">Agregar Producto</button>
+        </form>
+
+        <h2>Lista de Productos</h2>
+        <table id="productTable">
+            <thead>
+                <tr>
+                    <th>Modelo</th>
+                    <th>Precio</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Filas de productos se insertarán aquí -->
+            </tbody>
+        </table>
+    </div>
+    <script>
+        // Clase para manejar la lógica de la tabla de productos
+        class ProductTable {
+            constructor(formId, tableId) {
+                this.form = document.getElementById(formId);
+                this.tableHead = document.querySelector(`${tableId} thead tr`);
+                this.tableBody = document.querySelector(`${tableId} tbody`);
+                this.products = {}; // Objeto para almacenar productos únicos
+                this.categoryCount = {}; // Objeto para contar la frecuencia de cada categoría
+
+                this.init();
+            }
+
+            init() {
+                // Agregar evento de envío al formulario
+                this.form.addEventListener('submit', this.handleSubmit.bind(this));
+            }
+
+            handleSubmit(event) {
+                event.preventDefault();
+
+                // Obtener valores del formulario
+                const name = document.getElementById('name').value;
+                const category = document.getElementById('category').value;
+                const price = parseFloat(document.getElementById('price').value);
+
+                // Crear clave única para el producto basada en nombre y precio
+                const productKey = `${name}-${price}`;
+
+                // Incrementar el contador de la categoría
+                if (!this.categoryCount[category]) {
+                    this.categoryCount[category] = 0;
+                }
+                this.categoryCount[category]++;
+
+                // Verificar si el producto ya existe
+                if (!this.products[productKey]) {
+                    // Si no existe, crear una nueva fila
+                    this.products[productKey] = {
+                        name,
+                        price,
+                        categories: {}
+                    };
+                }
+
+                // Incrementar el contador de la categoría para este producto
+                const product = this.products[productKey];
+                if (!product.categories[category]) {
+                    product.categories[category] = 0;
+                }
+                product.categories[category]++;
+
+                // Actualizar la cabecera si la categoría no existe
+                this.updateHeader(category);
+
+                // Actualizar la fila del producto
+                this.updateRow(productKey, product);
+
+                // Limpiar formulario
+                this.form.reset();
+            }
+
+            updateHeader(category) {
+                // Verificar si la categoría ya está en la cabecera
+                if (!this.tableHead.querySelector(`th[data-category="${category}"]`)) {
+                    const th = document.createElement('th');
+                    th.textContent = category;
+                    th.setAttribute('data-category', category);
+                    this.tableHead.appendChild(th);
+                }
+            }
+
+            updateRow(productKey, product) {
+                // Buscar la fila del producto o crear una nueva si no existe
+                let row = this.tableBody.querySelector(`tr[data-product-key="${productKey}"]`);
+                if (!row) {
+                    row = document.createElement('tr');
+                    row.setAttribute('data-product-key', productKey);
+
+                    const nameCell = document.createElement('td');
+                    nameCell.textContent = product.name;
+                    row.appendChild(nameCell);
+
+                    const priceCell = document.createElement('td');
+                    priceCell.textContent = `$${product.price.toFixed(2)}`;
+                    row.appendChild(priceCell);
+
+                    this.tableBody.appendChild(row);
+                } else {
+                    // Si la fila ya existe, limpiar las celdas de categoría
+                    Array.from(row.querySelectorAll('td')).slice(2).forEach(cell => {
+                        cell.textContent = '';
+                    });
+                }
+
+                // Actualizar celdas de categoría
+                Array.from(this.tableHead.querySelectorAll('th')).forEach(th => {
+                    const cat = th.getAttribute('data-category');
+                    if (cat) {
+                        const cell = row.querySelector(`td[data-category="${cat}"]`) || document.createElement('td');
+                        cell.setAttribute('data-category', cat);
+                        cell.textContent = product.categories[cat] || 0;
+                        row.appendChild(cell);
+                    }
+                });
+            }
+        }
+
+        // Inicializar la tabla de productos
+        document.addEventListener('DOMContentLoaded', () => {
+            new ProductTable('productForm', 'productTable');
+        });
+    </script>
+</body>
+<!-- 
+¡Claro! Aquí tienes un prompt detallado que describe la aplicación web que genera una tabla dinámica a partir de los datos ingresados en un formulario sobre productos:
+
+Prompt:
+
+Desarrolla una aplicación web que permita a los usuarios ingresar datos de productos y generar una tabla dinámica que muestre estos datos. La aplicación debe cumplir con los siguientes requisitos:
+
+Interfaz de Usuario:
+El formulario debe incluir campos para ingresar el modelo del producto, la talla y el precio.
+Los campos deben ser obligatorios.
+El botón de envío del formulario debe estar etiquetado como "Agregar Producto".
+Tabla Dinámica:
+La tabla debe mostrar una lista de productos ingresados, incluyendo el modelo, el precio y la cantidad de unidades disponibles en diferentes tallas.
+Cada vez que se ingresa un nuevo producto, se debe actualizar la tabla:
+Si el producto ya existe (mismo modelo y precio), se debe incrementar la cantidad correspondiente a la talla ingresada.
+Si el producto es nuevo, se debe agregar una nueva fila a la tabla.
+Si se ingresa una nueva talla para un producto existente, se debe agregar una nueva columna a la tabla para esa talla y actualizar la cantidad.
+Estilos:
+La interfaz debe ser simple y agradable visualmente.
+Utiliza un diseño responsivo para que la aplicación funcione bien en diferentes dispositivos.
+Aplica estilos CSS para mejorar la legibilidad y la apariencia de la tabla y el formulario.
+Funcionalidad:
+Al enviar el formulario, los datos deben ser validados y, si son correctos, deben ser agregados a la tabla dinámicamente sin recargar la página.
+El formulario debe limpiarse automáticamente después de agregar un producto.
+Ejemplo de Uso:
+Un usuario ingresa un producto con modelo "Zapatilla", talla "38" y precio "50.00". La tabla muestra una fila con "Zapatilla", "$50.00" y una columna "38" con el valor "1".
+Si el usuario ingresa otro producto con el mismo modelo y precio pero con talla "39", la tabla se actualiza para mostrar una nueva columna "39" con el valor "1" y la columna "38" mantiene su valor "1".
+Si el usuario ingresa un tercer producto con el mismo modelo, precio y talla "38", la tabla actualiza la columna "38" para mostrar el valor "2".
+Consideraciones Adicionales:
+Asegúrate de manejar correctamente los decimales en el campo de precio.
+Implementa una lógica eficiente para manejar la adición de nuevas filas y columnas en la tabla.
+Proporciona comentarios en el código para facilitar su comprensión y mantenimiento.
+
+
+-->
+
+
+</html>

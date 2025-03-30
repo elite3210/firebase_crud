@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escáner de Código de Barras</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+
+        #videoContainer {
+            position: relative;
+            max-width: 100%;
+            margin: 20px 0;
+        }
+
+        #video {
+            width: 100%;
+            max-width: 640px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+        }
+
+        #canvas {
+            display: none;
+        }
+
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .result {
+            margin: 10px;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            word-break: break-all;
+        }
+
+        #results {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Escáner de Código de Barras</h1>
+    <button id="startButton">Capturar código de barras</button>
+    <div id="videoContainer">
+        <video id="video" playsinline></video>
+        <canvas id="canvas"></canvas>
+    </div>
+    <div id="results"></div>
+    <audio id="beepSound" src="beep-104060.mp3" preload="auto"></audio>
+
+    <script>
+        const startButton = document.getElementById('startButton');
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const resultsDiv = document.getElementById('results');
+        const ctx = canvas.getContext('2d');
+        let stream = null;
+
+        // Configuración del escáner
+        const scanInterval = 100; // Milisegundos entre cada escaneo
+        let scanning = false;
+        let lastResult = '';
+
+        startButton.addEventListener('click', async () => {
+            try {
+                if (!scanning) {
+                    // Solicitar acceso a la cámara
+                    stream = await navigator.mediaDevices.getUserMedia({
+                        video: {
+                            facingMode: 'environment'
+                        }
+                    });
+
+                    video.srcObject = stream;
+                    await video.play();
+
+                    // Ajustar el tamaño del canvas al video
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+
+                    scanning = true;
+                    startButton.textContent = 'Detener';
+                    scanBarcode();
+                } else {
+                    // Detener la cámara
+                    if (stream) {
+                        stream.getTracks().forEach(track => track.stop());
+                    }
+                    video.srcObject = null;
+                    scanning = false;
+                    startButton.textContent = 'Capturar código de barras';
+                }
+            } catch (err) {
+                console.error('Error al acceder a la cámara:', err);
+                alert('Error al acceder a la cámara. Asegúrate de dar permisos.');
+            }
+        });
+
+        async function scanBarcode() {
+            if (!scanning) return;
+
+            // Capturar frame del video en el canvas
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            try {
+                // Crear un BarcodeDetector
+                if ('BarcodeDetector' in window) {
+                    const barcodeDetector = new BarcodeDetector({
+                        formats: ['code_39']
+                    });
+
+                    // Detectar códigos de barras en el frame actual
+                    const barcodes = await barcodeDetector.detect(canvas);
+
+                    for (const barcode of barcodes) {
+                        if (barcode.rawValue !== lastResult) {
+                            lastResult = barcode.rawValue;
+
+                            // Play sound
+                            const beepSound = document.getElementById('beepSound');
+                            beepSound.play();
+
+                            // Stop camera stream
+                            if (stream) {
+                                stream.getTracks().forEach(track => track.stop());
+                                video.srcObject = null;
+                                scanning = false;
+                                startButton.textContent = 'Capturar código de barras';
+                            }
+
+                            // Crear nuevo elemento para mostrar el resultado
+                            const resultElement = document.createElement('div');
+                            resultElement.className = 'result';
+                            resultElement.textContent = `Código capturado: ${barcode.rawValue}`;
+                            resultsDiv.insertBefore(resultElement, resultsDiv.firstChild);
+                        }
+                    }
+                } else {
+                    alert('Tu navegador no soporta la API de BarcodeDetector');
+                    scanning = false;
+                    startButton.textContent = 'Capturar código de barras';
+                    return;
+                }
+            } catch (err) {
+                console.error('Error al escanear:', err);
+            }
+
+            // Continuar escaneando
+            setTimeout(scanBarcode, scanInterval);
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Generador de Etiquetas Configurable</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        .config-panel {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100%;
+            background: #f5f5f5;
+            padding: 20px;
+            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+            transition: right 0.3s;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .config-panel.open {
+            right: 0;
+        }
+
+        .toggle-config {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1001;
+        }
+
+        .input-form,
+        .config-section {
+            max-width: 600px;
+            margin: 0 auto 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background: white;
+        }
+
+        .config-section h3 {
+            margin-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .input-group small {
+            display: block;
+            color: #666;
+            margin-top: 2px;
+            font-size: 0.8em;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .labels-container {
+            display: grid;
+            gap: 10px;
+            padding: 20px;
+        }
+
+        .label {
+            border: 1px solid #000;
+            padding: 10px;
+            text-align: center;
+            page-break-inside: avoid;
+        }
+
+        .label-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .product-code {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .product-name {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .product-price {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        @media print {
+            .no-print {
+                display: none;
+            }
+
+            body {
+                padding: 0;
+                margin: 0;
+            }
+
+            .labels-container {
+                gap: 0;
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <button class="toggle-config no-print" onclick="toggleConfig()">⚙️ Configuración</button>
+
+    <div class="config-panel no-print" id="configPanel">
+        <h3>Configuración de Página</h3>
+        <div class="input-group">
+            <label for="pageWidth">Ancho de Página (mm):</label>
+            <input type="number" id="pageWidth" value="210" min="1">
+            <small>A4 = 210mm</small>
+        </div>
+        <div class="input-group">
+            <label for="pageHeight">Alto de Página (mm):</label>
+            <input type="number" id="pageHeight" value="297" min="1">
+            <small>A4 = 297mm</small>
+        </div>
+
+        <h3>Configuración de Etiquetas</h3>
+        <div class="input-group">
+            <label for="labelColumns">Columnas por Página:</label>
+            <input type="number" id="labelColumns" value="2" min="1" max="10">
+        </div>
+        <div class="input-group">
+            <label for="labelWidth">Ancho de Etiqueta (mm):</label>
+            <input type="number" id="labelWidth" value="90" min="1">
+        </div>
+        <div class="input-group">
+            <label for="labelHeight">Alto de Etiqueta (mm):</label>
+            <input type="number" id="labelHeight" value="120" min="1">
+        </div>
+
+        <h3>Márgenes y Espaciado</h3>
+        <div class="input-group">
+            <label for="marginLeft">Margen Izquierdo (mm):</label>
+            <input type="number" id="marginLeft" value="10" min="0">
+        </div>
+        <div class="input-group">
+            <label for="marginRight">Margen Derecho (mm):</label>
+            <input type="number" id="marginRight" value="10" min="0">
+        </div>
+        <div class="input-group">
+            <label for="marginTop">Margen Superior (mm):</label>
+            <input type="number" id="marginTop" value="10" min="0">
+        </div>
+        <div class="input-group">
+            <label for="marginBottom">Margen Inferior (mm):</label>
+            <input type="number" id="marginBottom" value="10" min="0">
+        </div>
+        <div class="input-group">
+            <label for="columnGap">Separación entre Columnas (mm):</label>
+            <input type="number" id="columnGap" value="5" min="0">
+        </div>
+        <div class="input-group">
+            <label for="rowGap">Separación entre Filas (mm):</label>
+            <input type="number" id="rowGap" value="5" min="0">
+        </div>
+
+        <button onclick="applyConfig()">Aplicar Configuración</button>
+    </div>
+
+    <div class="input-form no-print">
+        <div class="input-group">
+            <label for="productCode">Código del Producto:</label>
+            <input type="text" id="productCode" required>
+        </div>
+        <div class="input-group">
+            <label for="productName">Nombre del Producto:</label>
+            <input type="text" id="productName" required>
+        </div>
+        <div class="input-group">
+            <label for="productPrice">Precio:</label>
+            <input type="number" id="productPrice" step="0.01" required>
+        </div>
+        <button onclick="addLabel()">Agregar Etiqueta</button>
+        <button onclick="window.print()">Imprimir Etiquetas</button>
+        <button onclick="clearLabels()">Limpiar Todo</button>
+    </div>
+
+    <div class="labels-container" id="labelsContainer"></div>
+
+    <script>
+        let labelCount = 0;
+        const maxLabels = 20;
+
+        function toggleConfig() {
+            document.getElementById('configPanel').classList.toggle('open');
+        }
+
+        function applyConfig() {
+            const container = document.getElementById('labelsContainer');
+            const columns = document.getElementById('labelColumns').value;
+            const labelWidth = document.getElementById('labelWidth').value;
+            const labelHeight = document.getElementById('labelHeight').value;
+            const marginLeft = document.getElementById('marginLeft').value;
+            const marginRight = document.getElementById('marginRight').value;
+            const columnGap = document.getElementById('columnGap').value;
+            const rowGap = document.getElementById('rowGap').value;
+
+            // Aplicar configuración al contenedor
+            container.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
+            container.style.gap = `${rowGap}mm ${columnGap}mm`;
+            container.style.padding = `${document.getElementById('marginTop').value}mm ${marginRight}mm ${document.getElementById('marginBottom').value}mm ${marginLeft}mm`;
+
+            // Aplicar configuración a las etiquetas existentes
+            const labels = container.getElementsByClassName('label');
+            for (let label of labels) {
+                label.style.width = `${labelWidth}mm`;
+                label.style.height = `${labelHeight}mm`;
+            }
+
+            // Crear regla de estilo para impresión
+            let printStyle = document.getElementById('printStyle');
+            if (!printStyle) {
+                printStyle = document.createElement('style');
+                printStyle.id = 'printStyle';
+                document.head.appendChild(printStyle);
+            }
+
+            printStyle.innerHTML = `
+                @page {
+                    size: ${document.getElementById('pageWidth').value}mm ${document.getElementById('pageHeight').value}mm;
+                    margin: 0;
+                }
+                @media print {
+                    .labels-container {
+                        gap: ${rowGap}mm ${columnGap}mm !important;
+                        padding: ${document.getElementById('marginTop').value}mm ${marginRight}mm ${document.getElementById('marginBottom').value}mm ${marginLeft}mm !important;
+                    }
+                    .label {
+                        width: ${labelWidth}mm !important;
+                        height: ${labelHeight}mm !important;
+                    }
+                }
+            `;
+
+            toggleConfig();
+        }
+
+        function addLabel() {
+            if (labelCount >= maxLabels) {
+                alert('Has alcanzado el límite de 20 etiquetas por página');
+                return;
+            }
+
+            const code = document.getElementById('productCode').value;
+            const name = document.getElementById('productName').value;
+            const price = document.getElementById('productPrice').value;
+
+            if (!code || !name || !price) {
+                alert('Por favor completa todos los campos');
+                return;
+            }
+
+            const label = document.createElement('div');
+            label.className = 'label';
+
+            // Aplicar dimensiones configuradas
+            label.style.width = `${document.getElementById('labelWidth').value}mm`;
+            label.style.height = `${document.getElementById('labelHeight').value}mm`;
+
+            const labelContent = document.createElement('div');
+            labelContent.className = 'label-content';
+
+            const qrContainer = document.createElement('div');
+            qrContainer.id = `qr-${labelCount}`;
+
+            const productCode = document.createElement('div');
+            productCode.className = 'product-code';
+            productCode.textContent = `Código: ${code}`;
+
+            const productName = document.createElement('div');
+            productName.className = 'product-name';
+            productName.textContent = name;
+
+            const productPrice = document.createElement('div');
+            productPrice.className = 'product-price';
+            productPrice.textContent = `$${parseFloat(price).toFixed(2)}`;
+
+            labelContent.appendChild(qrContainer);
+            labelContent.appendChild(productCode);
+            labelContent.appendChild(productName);
+            labelContent.appendChild(productPrice);
+            label.appendChild(labelContent);
+
+            document.getElementById('labelsContainer').appendChild(label);
+
+            new QRCode(qrContainer, {
+                text: code,
+                width: 128,
+                height: 128
+            });
+
+            labelCount++;
+            clearInputs();
+        }
+
+        function clearInputs() {
+            document.getElementById('productCode').value = '';
+            document.getElementById('productName').value = '';
+            document.getElementById('productPrice').value = '';
+        }
+
+        function clearLabels() {
+            document.getElementById('labelsContainer').innerHTML = '';
+            labelCount = 0;
+        }
+
+        // Aplicar configuración inicial
+        applyConfig();
+    </script>
+</body>
+
+</html>

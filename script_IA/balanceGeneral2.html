@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estado de Situación Financiera</title>
+    <!--<link rel="stylesheet" href="styles.css">-->
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1, h2 {
+    color: #333;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+input[type="number"] {
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+button[type="button"] {
+    background-color: #007bff;
+}
+
+button[type="button"]:hover {
+    background-color: #0056b3;
+}
+
+#balanceGeneral {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+#balanceGeneral h3 {
+    margin-bottom: 10px;
+}
+
+#balanceGeneral table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#balanceGeneral th, #balanceGeneral td {
+    padding: 8px;
+    text-align: right;
+    border-bottom: 1px solid #ddd;
+}
+
+#balanceGeneral th {
+    background-color: #f2f2f2;
+}
+
+.details-section {
+    margin-bottom: 20px;
+}
+
+.details-list {
+    margin-top: 10px;
+}
+
+.details-list input[type="number"] {
+    width: 80%;
+    margin-right: 10px;
+}
+
+.details-list button {
+    background-color: #dc3545;
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.details-list button:hover {
+    background-color: #c82333;
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Estado de Situación Financiera</h1>
+        
+        <form id="financialForm">
+            <h2>Activo</h2>
+            <div id="cashDetails" class="details-section">
+                <label for="cash">Efectivo:</label>
+                <input type="number" id="cash" name="cash" required>
+                <button type="button" onclick="addDetail('cash')">Agregar Detalle</button>
+                <div id="cashDetailsList" class="details-list"></div>
+            </div>
+            
+            <div id="accountsReceivableDetails" class="details-section">
+                <label for="accountsReceivable">Cuentas por Cobrar:</label>
+                <input type="number" id="accountsReceivable" name="accountsReceivable" required>
+                <button type="button" onclick="addDetail('accountsReceivable')">Agregar Detalle</button>
+                <div id="accountsReceivableDetailsList" class="details-list"></div>
+            </div>
+            
+            <div id="inventoryDetails" class="details-section">
+                <label for="inventory">Inventario:</label>
+                <input type="number" id="inventory" name="inventory" required>
+                <button type="button" onclick="addDetail('inventory')">Agregar Detalle</button>
+                <div id="inventoryDetailsList" class="details-list"></div>
+            </div>
+            
+            <div id="propertyPlantEquipmentDetails" class="details-section">
+                <label for="propertyPlantEquipment">Propiedad, Planta y Equipo:</label>
+                <input type="number" id="propertyPlantEquipment" name="propertyPlantEquipment" required>
+                <button type="button" onclick="addDetail('propertyPlantEquipment')">Agregar Detalle</button>
+                <div id="propertyPlantEquipmentDetailsList" class="details-list"></div>
+            </div>
+            
+            <h2>Pasivo</h2>
+            <div id="accountsPayableDetails" class="details-section">
+                <label for="accountsPayable">Cuentas por Pagar:</label>
+                <input type="number" id="accountsPayable" name="accountsPayable" required>
+                <button type="button" onclick="addDetail('accountsPayable')">Agregar Detalle</button>
+                <div id="accountsPayableDetailsList" class="details-list"></div>
+            </div>
+            
+            <div id="shortTermDebtDetails" class="details-section">
+                <label for="shortTermDebt">Deuda a Corto Plazo:</label>
+                <input type="number" id="shortTermDebt" name="shortTermDebt" required>
+                <button type="button" onclick="addDetail('shortTermDebt')">Agregar Detalle</button>
+                <div id="shortTermDebtDetailsList" class="details-list"></div>
+            </div>
+            
+            <div id="longTermDebtDetails" class="details-section">
+                <label for="longTermDebt">Deuda a Largo Plazo:</label>
+                <input type="number" id="longTermDebt" name="longTermDebt" required>
+                <button type="button" onclick="addDetail('longTermDebt')">Agregar Detalle</button>
+                <div id="longTermDebtDetailsList" class="details-list"></div>
+            </div>
+            
+            <h2>Patrimonio Neto</h2>
+            <div id="equityDetails" class="details-section">
+                <label for="equity">Capital Social:</label>
+                <input type="number" id="equity" name="equity" >
+                <button type="button" onclick="addDetail('equity')">Agregar Detalle</button>
+                <div id="equityDetailsList" class="details-list"></div>
+            </div>
+            
+            <button type="submit">Generar Balance General</button>
+        </form>
+        
+        <div id="balanceGeneral"></div>
+    </div>
+    
+    <script>
+const details = {
+    cash: [],
+    accountsReceivable: [],
+    inventory: [],
+    propertyPlantEquipment: [],
+    accountsPayable: [],
+    shortTermDebt: [],
+    longTermDebt: [],
+    equity: []
+};
+
+function addDetail(category) {
+    const detailList = document.getElementById(`${category}DetailsList`);
+    const newDetail = document.createElement('div');
+    newDetail.className = 'detail-item';
+    newDetail.innerHTML = `
+        <input type="text" placeholder="Descripción" required>
+        <input type="number" placeholder="Monto" required>
+        <button type="button" onclick="removeDetail('${category}', this)">Eliminar</button>
+    `;
+    detailList.appendChild(newDetail);
+}
+
+function removeDetail(category, button) {
+    const detailItem = button.parentElement;
+    const detailList = document.getElementById(`${category}DetailsList`);
+    detailList.removeChild(detailItem);
+    
+    // Actualizar el total de la categoría
+    updateCategoryTotal(category);
+}
+
+function getCategoryTotal(category) {
+    const mainInput = document.getElementById(category);
+    const mainValue = parseFloat(mainInput.value) || 0;
+    
+    const detailInputs = document.querySelectorAll(`#${category}DetailsList input[type="number"]`);
+    let detailSum = 0;
+    detailInputs.forEach(input => {
+        detailSum += parseFloat(input.value) || 0;
+    });
+    
+    return mainValue + detailSum;
+}
+
+function updateCategoryTotal(category) {
+    const total = getCategoryTotal(category);
+    document.getElementById(category).value = total.toFixed(2);
+}
+
+function getCategoryDetails(category) {
+    const detailItems = document.querySelectorAll(`#${category}DetailsList .detail-item`);
+    const categoryDetails = [];
+    
+    detailItems.forEach(item => {
+        const description = item.querySelector('input[type="text"]').value;
+        const amount = parseFloat(item.querySelector('input[type="number"]').value) || 0;
+        categoryDetails.push({ description, amount });
+    });
+    
+    return categoryDetails;
+}
+
+document.getElementById('financialForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    
+    // Obtener valores del formulario
+    const cash = getCategoryTotal('cash');
+    const accountsReceivable = getCategoryTotal('accountsReceivable');
+    const inventory = getCategoryTotal('inventory');
+    const propertyPlantEquipment = getCategoryTotal('propertyPlantEquipment');
+    const accountsPayable = getCategoryTotal('accountsPayable');
+    const shortTermDebt = getCategoryTotal('shortTermDebt');
+    const longTermDebt = getCategoryTotal('longTermDebt');
+    const equity = getCategoryTotal('equity');
+    
+    // Calcular totales
+    const totalAssets = cash + accountsReceivable + inventory + propertyPlantEquipment;
+    const totalLiabilities = accountsPayable + shortTermDebt + longTermDebt;
+    const totalEquity = totalAssets-totalLiabilities;
+    
+    // Verificar si el balance general está equilibrado
+    if (totalAssets !== totalLiabilities + totalEquity) {
+        alert('El balance general no está equilibrado. Por favor, verifica los valores.');
+        return;
+    }
+    
+    // Generar el balance general con detalles
+    const balanceGeneralHTML = `
+        <h3>Balance General</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Activo</th>
+                    <th>Monto</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${generateCategoryRows('Efectivo', 'cash')}
+                ${generateCategoryRows('Cuentas por Cobrar', 'accountsReceivable')}
+                ${generateCategoryRows('Inventario', 'inventory')}
+                ${generateCategoryRows('Propiedad, Planta y Equipo', 'propertyPlantEquipment')}
+                <tr>
+                    <td>Total Activo</td>
+                    <td><strong>${totalAssets.toFixed(2)}</strong></td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Pasivo</th>
+                    <th>Monto</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${generateCategoryRows('Cuentas por Pagar', 'accountsPayable')}
+                ${generateCategoryRows('Deuda a Corto Plazo', 'shortTermDebt')}
+                ${generateCategoryRows('Deuda a Largo Plazo', 'longTermDebt')}
+                <tr>
+                    <td>Total Pasivo</td>
+                    <td><strong>${totalLiabilities.toFixed(2)}</strong></td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Patrimonio Neto</th>
+                    <th>Monto</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${generateCategoryRows('Capital Social', 'equity')}
+                <tr>
+                    <td>Total Patrimonio Neto</td>
+                    <td><strong>${totalEquity.toFixed(2)}</strong></td>
+                </tr>
+            </tbody>
+        </table>
+    `;
+    
+    document.getElementById('balanceGeneral').innerHTML = balanceGeneralHTML;
+});
+
+function generateCategoryRows(categoryName, categoryKey) {
+    const categoryDetails = getCategoryDetails(categoryKey);
+    let rows = '';
+    
+    categoryDetails.forEach(detail => {
+        rows += `<tr><td>${detail.description}</td><td>${detail.amount.toFixed(2)}</td></tr>`;
+    });
+    
+    rows += `<tr><td><strong>Total ${categoryName}</strong></td><td><strong>${getCategoryTotal(categoryKey).toFixed(2)}</strong></td></tr>`;
+    
+    return rows;
+}
+
+// Agregar eventos para actualizar el total cuando cambien los valores de los detalles
+document.addEventListener('input', function(event) {
+    const target = event.target;
+    if (target.tagName === 'INPUT' && target.type === 'number') {
+        const category = target.closest('.details-section').id.replace('Details', '');
+        updateCategoryTotal(category);
+    }
+});
+    </script>
+</body>
+</html>

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Corazón de Partículas</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: black;
+        }
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <script>
+        // [Previous canvas setup code remains the same]
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        let particles = [];
+        let borderParticles = [];
+        let mouseX = 0;
+        let mouseY = 0;
+        const letters = ['AMADA', 'MIA'];
+        let bleeding = [];
+        let heartScale = 1;
+        let heartbeat = 0;
+        let lastBeat = 0;
+
+        // Colores vibrantes para las letras del latido
+        const colors = [
+            '#FF0000', // Rojo
+            '#FF69B4', // Rosa
+            '#FF4500', // Naranja Rojizo
+            '#FFD700', // Oro
+            '#FF1493', // Rosa Profundo
+            '#FF00FF', // Magenta
+            '#FF6347', // Tomate
+            '#FF8C00', // Naranja Oscuro
+            '#FFA500', // Naranja
+            '#FF7F50'  // Coral
+        ];
+
+        function getRandomColor() {
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        canvas.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        function isMouseNearHeart() {
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const dx = mouseX - centerX;
+            const dy = mouseY - centerY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            return distance < 250; // Aumentada la distancia de detección
+        }
+
+        class Particle {
+            // [Previous Particle class code remains the same]
+            constructor(x, y, isBorder = false, radius = 0) {
+                this.baseRadius = radius;
+                this.x = x;
+                this.y = y;
+                this.baseX = x;
+                this.baseY = y;
+                this.size = isBorder ? 3 : 2;
+                this.isBorder = isBorder;
+                this.color = isBorder ? '#ff8888' : '#ff0000';
+                this.speedX = 0;
+                this.speedY = 0;
+                this.letter = letters[Math.floor(Math.random() * letters.length)];
+            }
+
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            update() {
+                const angleFromCenter = Math.atan2(this.baseY - canvas.height/2, this.baseX - canvas.width/2);
+                const distFromCenter = Math.sqrt(
+                    Math.pow(this.baseX - canvas.width/2, 2) + 
+                    Math.pow(this.baseY - canvas.height/2, 2)
+                );
+                
+                const targetX = canvas.width/2 + Math.cos(angleFromCenter) * distFromCenter * heartScale;
+                const targetY = canvas.height/2 + Math.sin(angleFromCenter) * distFromCenter * heartScale;
+
+                const dx = mouseX - this.x;
+                const dy = mouseY - this.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < 100) {
+                    const angle = Math.atan2(dy, dx);
+                    const force = (100 - distance) / 200;
+                    this.speedX -= Math.cos(angle) * force * 2;
+                    this.speedY -= Math.sin(angle) * force * 2;
+                    
+                    if (Math.random() < 0.1) {
+                        bleeding.push(new BleedingParticle(this.x, this.y, this.letter, false));
+                    }
+                }
+
+                this.speedX += (targetX - this.x) * 0.05;
+                this.speedY += (targetY - this.y) * 0.05;
+
+                this.speedX *= 0.9;
+                this.speedY *= 0.9;
+
+                this.x += this.speedX;
+                this.y += this.speedY;
+            }
+        }
+
+        class BleedingParticle {
+            constructor(x, y, letter, isHeartbeat = false) {
+                this.x = x;
+                this.y = y;
+                this.letter = letter;
+                this.alpha = 1;
+                this.fontSize = 16;
+                this.isHeartbeat = isHeartbeat;
+                
+                if (isHeartbeat) {
+                    const angle = Math.atan2(y - canvas.height/2, x - canvas.width/2);
+                    const speed = 3 + Math.random() * 2;
+                    this.speedX = Math.cos(angle) * speed;
+                    this.speedY = Math.sin(angle) * speed;
+                    this.color = getRandomColor(); // Color aleatorio para partículas del latido
+                } else {
+                    this.speedX = (Math.random() - 0.5) * 1;
+                    this.speedY = Math.random() * 0.5 + 0.5;
+                    this.color = '#FF0000'; // Las partículas de sangrado mantienen el color rojo
+                }
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (!this.isHeartbeat) {
+                    this.speedY += 0.03;
+                }
+                this.alpha -= 0.005;
+            }
+
+            draw() {
+                ctx.fillStyle = this.isHeartbeat ? 
+                    `${this.color}${Math.floor(this.alpha * 255).toString(16).padStart(2, '0')}` :
+                    `rgba(255, 0, 0, ${this.alpha})`;
+                ctx.font = `${this.fontSize}px Arial`;
+                ctx.fillText(this.letter, this.x, this.y);
+            }
+        }
+
+        function createHeartbeatParticles() {
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const numParticles = 20;
+            
+            for (let i = 0; i < numParticles; i++) {
+                const angle = (Math.PI * 2 * i) / numParticles;
+                const radius = 50;
+                const x = centerX + Math.cos(angle) * radius;
+                const y = centerY + Math.sin(angle) * radius;
+                bleeding.push(new BleedingParticle(x, y, letters[i % letters.length], true));
+            }
+        }
+
+        function createHeart() {
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const scale = 10;
+            
+            // [Previous heart creation code remains the same]
+            for (let angle = 0; angle < Math.PI * 2; angle += 0.05) {
+                const heartX = 16 * Math.pow(Math.sin(angle), 3);
+                const heartY = -(13 * Math.cos(angle) - 
+                               5 * Math.cos(2 * angle) - 
+                               2 * Math.cos(3 * angle) - 
+                               Math.cos(4 * angle));
+                
+                borderParticles.push(new Particle(
+                    centerX + heartX * scale,
+                    centerY + heartY * scale,
+                    true
+                ));
+            }
+
+            for (let angle = 0; angle < Math.PI * 2; angle += 0.1) {
+                for (let r = 0; r < 1; r += 0.1) {
+                    const heartX = 16 * Math.pow(Math.sin(angle), 3);
+                    const heartY = -(13 * Math.cos(angle) - 
+                                   5 * Math.cos(2 * angle) - 
+                                   2 * Math.cos(3 * angle) - 
+                                   Math.cos(4 * angle));
+                    
+                    particles.push(new Particle(
+                        centerX + heartX * scale * r,
+                        centerY + heartY * scale * r,
+                        false,
+                        r
+                    ));
+                }
+            }
+        }
+
+        function animate() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            heartbeat += 0.05;
+            const previousScale = heartScale;
+            heartScale = 1 + Math.sin(heartbeat) * 0.1;
+
+            if (!isMouseNearHeart() && 
+                previousScale < heartScale && 
+                Math.sin(heartbeat) > 0.95 && 
+                heartbeat - lastBeat > 1) {
+                createHeartbeatParticles();
+                lastBeat = heartbeat;
+            }
+
+            [...particles, ...borderParticles].forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+
+            bleeding = bleeding.filter(particle => particle.alpha > 0);
+            bleeding.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        createHeart();
+        animate();
+    </script>
+</body>
+</html>

@@ -14,6 +14,7 @@ const descripcion      = document.getElementById('descripcion')
 let objetos=JSON.parse(localStorage.getItem('produccion'))
 //let objetos=[]
 let start=true
+let alternador = true
 
 cargarEventListeners()
 
@@ -27,7 +28,7 @@ function cargarEventListeners(){
     tabla.addEventListener('click',operacionesEnTabla)
     tabla.addEventListener('keypress',actualizaImporte)
     //tabla.addEventListener('touchend',actualizaImporteTouch)        
-}
+};
 
 function pintarTabla(objetos){
     console.log('Lo que hay en LS:',objetos)
@@ -39,7 +40,7 @@ function pintarTabla(objetos){
         pintarFilasVacias(objetos)
         actualizaImporteTotal()   
     }
-}
+};
 
 function crearVenta(){
 
@@ -49,7 +50,7 @@ function crearVenta(){
     objetos=[]
     form.reset()
     pintarTabla(objetos) //vueve a pintar el formulario vacio
-}
+};
 
 function registrarVenta(){//captura los datos del formulario para guardar en BD
     console.log('dentro funcion registraReceta:')
@@ -70,7 +71,7 @@ function registrarVenta(){//captura los datos del formulario para guardar en BD
 
     let receta   = JSON.stringify(objetos)
     
-    updateProduct(id,{receta:receta,actualizado:fechaActualizado})//actualiza el stock del insumo
+    updateProduct(id,{receta:receta,actualizado:fechaActualizado,peso:celda_total.value})//actualiza el stock del insumo
     
     console.log('Registro de receta es un exito:',receta)
 }
@@ -127,8 +128,6 @@ function eliminarProducto(e){
         console.log('diste clik en boton delete... nuevo objeto',objetos)
         pintarTabla(objetos)
 }
-
-let alternador = true
 
 function filaMuestraStock(e){
     let id_producto=e.target.getAttribute('data-id')                            //captura el ID producto de la fila

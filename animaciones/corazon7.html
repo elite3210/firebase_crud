@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #1a1a1a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+
+        #container {
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .particle {
+            position: absolute;
+
+            font-size: 24px;
+            opacity: 0;
+            transition: opacity 0.5s;
+            transform-origin: center;
+            user-select: none;
+        }
+
+        .message {
+            position: fixed;
+            color: #ff69b4;
+            font-size: 2rem;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 2s;
+            z-index: 100;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .start-button {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            background: #ff69b4;
+            border: none;
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: transform 0.3s;
+            z-index: 200;
+        }
+
+        .start-button:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <button class="start-button">Iniciar Animación</button>
+        <div class="message">¡Te quiero mucho!</div>
+    </div>
+
+    <script>
+        const container = document.getElementById('container');
+        const message = document.querySelector('.message');
+        const startButton = document.querySelector('.start-button');
+        const particles = [];
+        const particleCount = 200;
+        let animationStarted = false;
+        let expansionFactor = 0;
+        let animationFrame;
+
+        // Array de símbolos para las partículas
+        const symbols = ['❄', '❅', '❆', '✻', '✼', '✽', '❋'];
+        function getRandomColor() {
+            // Array de colores posibles para las palabras
+            const colors = [
+                '#ff0000', // rojo
+                '#00ff00', // verde
+                '#0000ff', // azul
+                '#ffff00', // amarillo
+                '#ff00ff', // magenta
+                '#00ffff', // cyan
+                '#ffa500', // naranja
+                '#ff69b4'  // rosa
+            ];
+            // Seleccionar y retornar un color aleatorio del array
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            // Selecciona un símbolo aleatorio del array
+            particle.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+            particle.style.color = getRandomColor();
+            //particle.textContent.fontsize(48)
+            container.appendChild(particle);
+            return {
+                element: particle,
+                x: 0,
+                y: 0,
+                angle: Math.random() * Math.PI * 2,
+                baseSpeed: 0.5 + Math.random() * 0.5,
+                wobble: Math.random() * Math.PI * 2,
+                wobbleSpeed: 0.03 + Math.random() * 0.02,
+                rotation: 0,
+                rotationSpeed: (Math.random() - 0.5) * 2
+            };
+        }
+
+        function createParticles() {
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(createParticle());
+            }
+        }
+
+        function updateParticles() {
+            if (!animationStarted) return;
+
+            expansionFactor = Math.min(expansionFactor + 0.005, 1);
+            const screenSize = Math.max(window.innerWidth, window.innerHeight);
+            
+            particles.forEach(particle => {
+                particle.wobble += particle.wobbleSpeed;
+                particle.rotation += particle.rotationSpeed;
+                
+                // Ecuación del corazón
+                const t = particle.angle;
+                const heartX = 16 * Math.pow(Math.sin(t), 3);
+                const heartY = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
+                
+                // Aplica la expansión y el wobble
+                const scale = screenSize / 80 * expansionFactor;
+                const wobbleX = Math.sin(particle.wobble) * 10;
+                const wobbleY = Math.cos(particle.wobble) * 10;
+                
+                particle.x = heartX * scale + wobbleX;
+                particle.y = heartY * scale + wobbleY;
+
+                // Actualiza la posición, rotación y opacidad
+                particle.element.style.transform = `translate(${particle.x}px, ${particle.y}px) rotate(${particle.rotation}deg)`;
+                particle.element.style.opacity = expansionFactor;
+            });
+
+            // Muestra el mensaje cuando la expansión está casi completa
+            if (expansionFactor > 0.8) {
+                message.style.opacity = '1';
+            }
+
+            animationFrame = requestAnimationFrame(updateParticles);
+        }
+
+        function startAnimation() {
+            if (animationStarted) return;
+            
+            animationStarted = true;
+            startButton.style.display = 'none';
+            updateParticles();
+        }
+
+        // Inicialización
+        createParticles();
+        startButton.addEventListener('click', startAnimation);
+
+        // Limpieza al redimensionar
+        window.addEventListener('resize', () => {
+            if (animationFrame) {
+                cancelAnimationFrame(animationFrame);
+            }
+            expansionFactor = 0;
+            updateParticles();
+        });
+    </script>
+</body>
+</html>

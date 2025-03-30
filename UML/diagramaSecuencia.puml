@@ -1,0 +1,8 @@
+@startuml
+actor Administrador
+actor "Gerente de RRHH" as Gerente
+boundary Sistema
+database "Base de Datos" as BD
+
+Administrador -> Sistema : Selecciona gestionar beneficios
+Sistema -> Administrador : Muestra

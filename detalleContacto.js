@@ -1,10 +1,11 @@
 import { Datatable } from './dataTable.js'
 import { updateClientes } from './firebase.js';
+import { viewDocument } from "./ventas/viewDocument.js";
 
 //const url = window.location.href;
-const url = new URL(window.location.href); // se crea el objeto URL, el cual almacena toda la URL
-const params = url.searchParams; //se almacenan todos los parámetros en una variable
-const id = params.get("id"); // se utiliza el método GET para captar el valor del parámetro nombre
+const url = new URL(window.location.href); //captura la URL y se crea el objeto URL, el cual almacena toda la URL
+const params = url.searchParams; //seleciona los parámetros y almacenan todos  en una variable
+const id = params.get("id"); // se utiliza el método GET para captar el valor del parámetro nombre despues de el signo "?"
 //const edad = params.get("edad"); // se utiliza el método GET para captar el valor del parámetro edad
 console.log('el id del contacto es:', id); // se muestra en consola el valor "Juan"
 //console.log(edad); // se muestra en consola el valor "25"
@@ -13,16 +14,18 @@ console.log('url:', url)
 const form = document.getElementById('formularioClientes')
 const btnEditar = document.getElementById('btnEditar')
 const linkVentas = document.getElementById('ventas')
+
 linkVentas.addEventListener('click', () => {
     window.location = `./ventas.html?id=${id}`
 })
 
 btnEditar.addEventListener('click', editarCliente)
-let contactosLS = JSON.parse(localStorage.getItem('Contactos'))//PREVIAMENTE SE GURDO EN LS Y ACA LO RECUPERAMOS
-let ventasLS = JSON.parse(localStorage.getItem('Ventas'))//PREVIAMENTE SE GURDO EN LS Y ACA LO RECUPERAMOS
-console.log('ventasLS:', ventasLS)
+
+let contactosLS = JSON.parse(localStorage.getItem('Socios'))//PREVIAMENTE SE GURDO EN LS Y ACA LO RECUPERAMOS
 let obj = contactosLS.filter((fila) => { return fila.id == id })
 console.log('Cliente:', obj)
+
+let ventasLS = JSON.parse(localStorage.getItem('todasLasVentas'))//PREVIAMENTE SE GURDO EN LS Y ACA LO RECUPERAMOS
 let objVentas = ventasLS.filter((fila) => { return fila['values'].ruc == id })
 console.log('objVentas:', objVentas)
 
@@ -94,14 +97,14 @@ const dt = new Datatable('#dataTable',
             action: function () {
                 const elementos = dt.getSelected();
                 console.log('mostrando documento formato PC...', elementos);
-                pintarDocumento(elementos)
+                viewDocument(elementos)
             }
         },
         {
             id: 'btnDocument', text: 'doc', icon: 'document_scanner',
             action: function () {
                 const elementos = dt.getSelected();
-                pintarDocumento(elementos);
+                viewDocument(elementos);
                 console.log('mostrando documento Formato Ticket...', elementos);
             }
         }

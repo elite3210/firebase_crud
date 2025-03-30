@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #000;
+            font-family: monospace;
+            overflow: hidden;
+        }
+
+        .container {
+            position: relative;
+            text-align: center;
+        }
+
+        .letter {
+            display: inline-block;
+            font-size: 4em;
+            opacity: 0;
+            color: #0f0;
+            margin: 0 5px;
+            text-shadow: 0 0 10px #0f0;
+            position: relative;
+        }
+
+        .letter.active {
+            opacity: 1;
+            animation: flicker 0.2s infinite;
+        }
+
+        @keyframes flicker {
+            0% { opacity: 1; }
+            50% { opacity: 0.8; }
+            100% { opacity: 1; }
+        }
+
+        .matrix-rain {
+            position: absolute;
+            color: #0f0;
+            font-size: 20px;
+            animation: fall linear forwards;
+            opacity: 0;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-100vh);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+        }
+
+        .digit-change {
+            position: absolute;
+            top: 0;
+            left: 0;
+            font-family: monospace;
+            color: #0f0;
+            opacity: 0;
+        }
+
+        .restart-btn {
+            position: fixed;
+            bottom: 30px;
+            padding: 15px 30px;
+            background: transparent;
+            color: #0f0;
+            border: 2px solid #0f0;
+            font-family: monospace;
+            cursor: pointer;
+            font-size: 18px;
+            text-transform: uppercase;
+            transition: all 0.3s;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+        }
+
+        .restart-btn:hover {
+            background: rgba(0, 255, 0, 0.2);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="container"></div>
+    <button class="restart-btn" onclick="restartAnimation()">Reiniciar</button>
+
+    <script>
+        const text = "Feliz Año Nuevo 2025";
+        let currentIndex = 0;
+        let letters = [];
+        const matrixChars = "アイウエオカキクケコサシスセソタチツテトナニヌネノ0123456789";
+
+        function createMatrixRain() {
+            const rain = document.createElement('div');
+            rain.className = 'matrix-rain';
+            rain.style.left = `${Math.random() * 100}vw`;
+            rain.textContent = matrixChars[Math.floor(Math.random() * matrixChars.length)];
+            
+            document.body.appendChild(rain);
+            
+            const duration = Math.random() * 2000 + 1000;
+            rain.style.animation = `fall ${duration}ms linear`;
+            
+            setTimeout(() => rain.remove(), duration);
+        }
+
+        function scrambleEffect(element) {
+            const finalChar = element.textContent;
+            let iterations = 0;
+            const maxIterations = 10;
+            
+            const interval = setInterval(() => {
+                element.textContent = matrixChars[Math.floor(Math.random() * matrixChars.length)];
+                iterations++;
+                
+                if(iterations > maxIterations) {
+                    clearInterval(interval);
+                    element.textContent = finalChar;
+                }
+            }, 50);
+        }
+
+        function initializeLetters() {
+            const container = document.getElementById('container');
+            container.innerHTML = '';
+            letters = [];
+            text.split('').forEach((char) => {
+                const span = document.createElement('span');
+                span.textContent = char;
+                span.className = 'letter';
+                container.appendChild(span);
+                letters.push(span);
+            });
+        }
+
+        function showNextLetter() {
+            if (currentIndex < letters.length) {
+                const letter = letters[currentIndex];
+                letter.classList.add('active');
+                scrambleEffect(letter);
+                for(let i = 0; i < 3; i++) {
+                    createMatrixRain();
+                }
+                currentIndex++;
+                setTimeout(showNextLetter, 200);
+            }
+        }
+
+        function restartAnimation() {
+            currentIndex = 0;
+            letters.forEach(letter => {
+                letter.classList.remove('active');
+            });
+            setTimeout(showNextLetter, 500);
+        }
+
+        // Lluvia de fondo continua
+        setInterval(createMatrixRain, 100);
+
+        initializeLetters();
+        setTimeout(showNextLetter, 500);
+    </script>
+</body>
+</html>

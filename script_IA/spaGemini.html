@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mi SPA Simple</title>
+</head>
+<body>
+    <a href="/">Home</a>
+    <a href="/about">About</a>
+    <div id="app"></div>
+    <script>
+        const app = document.getElementById('app');
+
+// Funciones para renderizar cada vista
+function renderHome() {
+    app.innerHTML = '<h1>¡Bienvenido a mi SPA!</h1>';
+}
+
+function renderAbout() {
+    app.innerHTML = '<h2>Acerca de</h2><p>Esta es una simple SPA creada con JavaScript vanilla.</p>';
+}
+
+// Función para manejar la navegación
+function navigate(path) {
+    switch (path) {
+        case '/':
+            renderHome();
+            break;
+        case '/about':
+            renderAbout();
+            break;
+        default:
+            renderHome();
+    }
+}
+
+// Agregar un evento de clic a los enlaces
+document.addEventListener('click', (event) => {
+    if (event.target.tagName === 'A') {
+        event.preventDefault(); // Evita el comportamiento por defecto del enlace
+        const path = event.target.getAttribute('href');
+        navigate(path);
+    }
+});
+
+// Simulación de un enrutador básico
+window.addEventListener('load', () => {
+    const path = window.location.pathname;
+    console.log('pathname:',path);
+    
+    navigate(path);
+});
+    </script>
+</body>
+</html>

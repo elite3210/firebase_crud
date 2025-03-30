@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: black;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="heartCanvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('heartCanvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let particles = [];
+        let fallingLetters = [];
+        let mouseX = 0;
+        let mouseY = 0;
+        let isMouseOverHeart = false;
+
+        const letters = ['Y', 'A', 'M', 'I'];
+
+        class FallingLetter {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.speed = Math.random() * 2 + 1;
+                this.letter = letters[Math.floor(Math.random() * letters.length)];
+                this.opacity = 1;
+                this.rotation = Math.random() * Math.PI * 2;
+                this.fontSize = Math.random() * 15 + 15; // Tamaño entre 15 y 30px
+            }
+
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+                ctx.fillStyle = `rgba(255, 0, 0, ${this.opacity})`;
+                ctx.font = `${this.fontSize}px Arial`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(this.letter, 0, 0);
+                ctx.restore();
+            }
+
+            update() {
+                this.y += this.speed;
+                this.opacity -= 0.01;
+                this.rotation += 0.02;
+                return this.opacity > 0 && this.y < canvas.height;
+            }
+        }
+
+        class Particle {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.size = Math.random() * 3 + 2;
+                this.baseX = x;
+                this.baseY = y;
+                this.density = (Math.random() * 30) + 1;
+                this.color = 'red';
+            }
+
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.closePath();
+                ctx.fill();
+            }
+
+            update() {
+                let dx = mouseX - this.x;
+                let dy = mouseY - this.y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+                let forceDirectionX = dx / distance;
+                let forceDirectionY = dy / distance;
+                let maxDistance = 100;
+                let force = (maxDistance - distance) / maxDistance;
+                let directionX = forceDirectionX * force * this.density;
+                let directionY = forceDirectionY * force * this.density;
+
+                if (distance < maxDistance) {
+                    this.x -= directionX;
+                    this.y -= directionY;
+                    if (distance < 150) {
+                        isMouseOverHeart = true;
+                    }
+                } else {
+                    if (this.x !== this.baseX) {
+                        let dx = this.x - this.baseX;
+                        this.x -= dx / 10;
+                    }
+                    if (this.y !== this.baseY) {
+                        let dy = this.y - this.baseY;
+                        this.y -= dy / 10;
+                    }
+                }
+            }
+        }
+
+        function createHeart() {
+            const heartWidth = canvas.width * 0.2;
+            const heartHeight = canvas.height * 0.3;
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+
+            for (let angle = 0; angle < Math.PI * 2; angle += 0.03) {
+                const x = centerX + heartWidth * Math.pow(Math.sin(angle), 3);
+                const y = centerY + heartHeight * (
+                    -(13 * Math.cos(angle) - 5 * Math.cos(2 * angle) - 2 * Math.cos(3 * angle) - Math.cos(4 * angle)) / 16
+                );
+                particles.push(new Particle(x, y));
+            }
+
+            for (let angle = 0; angle < Math.PI * 2; angle += 0.05) {
+                const x = centerX + (heartWidth + 10) * Math.pow(Math.sin(angle), 3);
+                const y = centerY + (heartHeight + 10) * (
+                    -(13 * Math.cos(angle) - 5 * Math.cos(2 * angle) - 2 * Math.cos(3 * angle) - Math.cos(4 * angle)) / 16
+                );
+                const borderParticle = new Particle(x, y);
+                borderParticle.color = '#ff69b4';
+                borderParticle.size = 4;
+                particles.push(borderParticle);
+            }
+        }
+
+        function createFallingLetters() {
+            if (isMouseOverHeart) {
+                // Crear letras cayendo en posiciones aleatorias alrededor del mouse
+                for (let i = 0; i < 2; i++) {
+                    const randomOffset = (Math.random() - 0.5) * 50;
+                    fallingLetters.push(new FallingLetter(mouseX + randomOffset, mouseY));
+                }
+            }
+        }
+
+        function animate() {
+            ctx.fillStyle = 'rgba(0,0,0,0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            isMouseOverHeart = false;
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+
+            // Actualizar y dibujar letras cayendo
+            createFallingLetters();
+            fallingLetters = fallingLetters.filter(letter => {
+                letter.draw();
+                return letter.update();
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        canvas.addEventListener('mousemove', (event) => {
+            mouseX = event.x;
+            mouseY = event.y;
+        });
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            particles = [];
+            fallingLetters = [];
+            createHeart();
+        });
+
+        createHeart();
+        animate();
+    </script>
+</body>
+
+</html>

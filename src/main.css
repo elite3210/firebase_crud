@@ -1,0 +1,33 @@
+.logged-in{
+    color: hotpink;
+}
+
+.logged-out{
+    color:#ff69b4;    
+}
+
+
+/*pagina para obtener los valores de un filter a partir de un color en hexadecimal*/
+/*https://codepen.io/sosuke/pen/Pjoqqp*/
+.icons{
+    filter: invert(61%) sepia(21%) saturate(4533%) hue-rotate(297deg) brightness(104%) contrast(101%);
+}
+
+.icons:hover{
+    filter: invert(99%) sepia(79%) saturate(2%) hue-rotate(233deg) brightness(108%) contrast(101%);
+}
+
+.logged-in-user{
+    color:lawngreen;
+}
+
+.logo-skieks{
+    filter: invert(61%) sepia(21%) saturate(4533%) hue-rotate(297deg) brightness(104%) contrast(101%);
+}
+
+.logo-skieks:hover{
+    filter: invert(99%) sepia(79%) saturate(2%) hue-rotate(233deg) brightness(108%) contrast(101%);
+}
+
+
+

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escáner de Códigos QR</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        #scanner-container {
+            width: 100%;
+            max-width: 500px;
+            margin: 20px auto;
+        }
+        #reader {
+            width: 100%;
+            max-width: 500px;
+            background-color: #f0f0f0;
+            min-height: 300px;
+        }
+        #capture-btn {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <h1>Escáner de Códigos QR</h1>
+    
+    <div id="scanner-container">
+        <div id="reader"></div>
+    </div>
+    
+    <button id="capture-btn">Capturar Código QR</button>
+    
+    <div id="result"></div>
+    <audio id="beepSound" src="beep-104060.mp3" preload="auto"></audio>
+
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <script>
+        const captureBtn = document.getElementById('capture-btn');
+        const resultDiv = document.getElementById('result');
+        const html5QrCode = new Html5Qrcode("reader");
+
+        function startScanning() {
+            // Opciones de configuración
+            const config = { 
+                fps: 10,    // Fotogramas por segundo
+                qrbox: 250  // Tamaño del cuadro de escaneo
+            };
+
+            // Solicitar la lista de cámaras
+            Html5Qrcode.getCameras().then(cameras => {
+                if (cameras && cameras.length) {
+                    // Seleccionar la cámara trasera si está disponible, de lo contrario usar la primera
+                    const cameraId = cameras.find(camera => 
+                        camera.label.toLowerCase().includes('back')
+                    )?.id || cameras[0].id;
+
+                    // Iniciar escaneo
+                    html5QrCode.start(
+                        cameraId, 
+                        config, 
+                        onScanSuccess
+                    ).catch(err => {
+                        resultDiv.innerHTML = `Error al iniciar la cámara: ${err.message}`;
+                    });
+                } else {
+                    resultDiv.innerHTML = 'No se encontraron cámaras.';
+                }
+            }).catch(err => {
+                resultDiv.innerHTML = `Error al obtener cámaras: ${err.message}`;
+            });
+        }
+
+        function onScanSuccess(decodedText, decodedResult) {
+            // Detener el escaneo
+            html5QrCode.stop();
+
+            // Mostrar el resultado
+            resultDiv.innerHTML = `
+                <h3>Código QR Capturado:</h3>
+                <p>${decodedText}</p>
+            `;
+
+            // Reproducir sonido de éxito
+            //const beepSound = document.getElementById('beepSound');
+            beepSound.play();
+        }
+
+        // Evento para iniciar el escáner al hacer clic en el botón
+        captureBtn.addEventListener('click', startScanning);
+    </script>
+</body>
+</html>

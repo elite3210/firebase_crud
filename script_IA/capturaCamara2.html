@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Control de Asistencia</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .camera-container {
+            margin-bottom: 20px;
+        }
+
+        #video {
+            width: 100%;
+            max-width: 640px;
+            margin-bottom: 10px;
+        }
+
+        #canvas {
+            display: none;
+        }
+
+        .controls {
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin-right: 10px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .captured-images {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .image-item {
+            position: relative;
+        }
+
+        .image-item img {
+            width: 100%;
+            height: auto;
+            border-radius: 4px;
+        }
+
+        .image-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+        }
+
+        .image-actions button {
+            padding: 5px 10px;
+            font-size: 0.9em;
+        }
+
+        .image-actions button.delete {
+            background-color: #f44336;
+        }
+
+        .image-actions button.save {
+            background-color: #2196F3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sistema de Control de Asistencia</h1>
+    
+    <div class="main-container">
+        <div class="camera-section">
+            <h2>Registro de Entrada/Salida</h2>
+            <video id="video" autoplay></video>
+            <canvas id="canvas"></canvas>
+            <div class="controls">
+                <button id="startCamera">Iniciar Cámara</button>
+                <button id="capture" disabled>Capturar Foto</button>
+            </div>
+            <div class="form-group">
+                <label for="employeeId">ID de Empleado:</label>
+                <input type="text" id="employeeId" placeholder="Ingrese ID o escanee tarjeta">
+            </div>
+            <div class="form-group">
+                <label for="temperature">Temperatura (°C):</label>
+                <input type="number" id="temperature" step="0.1" placeholder="36.5">
+            </div>
+            <div class="form-group">
+                <label for="registerType">Tipo de Registro:</label>
+                <select id="registerType">
+                    <option value="entrada">Entrada</option>
+                    <option value="salida">Salida</option>
+                </select>
+            </div>
+            <button id="registerAttendance" disabled>Registrar Asistencia</button>
+            <div id="statusMessage" class="status-info"></div>
+        </div>
+
+        <div class="form-section">
+            <h2>Registros Recientes</h2>
+            <div class="search-section">
+                <input type="date" id="searchDate">
+                <input type="text" id="searchEmployee" placeholder="Buscar por ID o nombre">
+                <button id="searchButton">Buscar</button>
+            </div>
+            <table class="records-table">
+                <thead>
+                    <tr>
+                        <th>Fecha/Hora</th>
+                        <th>ID Empleado</th>
+                        <th>Tipo</th>
+                        <th>Temperatura</th>
+                        <th>Foto</th>
+                    </tr>
+                </thead>
+                <tbody id="recordsTableBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Esperar a que el DOM esté completamente cargado
+        document.addEventListener('DOMContentLoaded', () => {
+            // Variables globales
+            let stream = null;
+            let currentPhoto = null;
+            let attendanceRecords = [];
+
+            // Obtener referencias a elementos del DOM
+            const video = document.getElementById('video');
+            const canvas = document.getElementById('canvas');
+            const captureButton = document.getElementById('capture');
+            const startCameraButton = document.getElementById('startCamera');
+            const registerButton = document.getElementById('registerAttendance');
+            
+            // Verificar que todos los elementos existan
+            if (!video || !canvas || !captureButton || !startCameraButton || !registerButton) {
+                console.error('No se pudieron encontrar todos los elementos necesarios');
+                return;
+            }
+
+            // Inicializar el contexto del canvas
+            const ctx = canvas.getContext('2d');
+            
+            // Configurar el tamaño del canvas
+            canvas.width = 640;
+            canvas.height = 480;
+
+            // Función para detener la cámara
+            function stopCamera() {
+                if (stream) {
+                    stream.getTracks().forEach(track => {
+                        track.stop();
+                    });
+                    stream = null;
+                    video.srcObject = null;
+                    captureButton.disabled = true;
+                    startCameraButton.disabled = false;
+                }
+            }
+
+            // Función para mostrar mensajes de estado
+            function showStatus(message, isSuccess) {
+                const statusDiv = document.getElementById('statusMessage');
+                if (statusDiv) {
+                    statusDiv.textContent = message;
+                    statusDiv.className = 'status-info ' + (isSuccess ? 'success' : 'error');
+                }
+            }
+
+            // Iniciar la cámara
+            startCameraButton.addEventListener('click', async () => {
+                try {
+                    stream = await navigator.mediaDevices.getUserMedia({
+                        video: { facingMode: 'user' },
+                        audio: false
+                    });
+                    video.srcObject = stream;
+                    captureButton.disabled = false;
+                    startCameraButton.disabled = true;
+                } catch (err) {
+                    showStatus('Error al acceder a la cámara: ' + err.message, false);
+                }
+            });
+
+            // Capturar foto
+            captureButton.addEventListener('click', () => {
+                if (!stream) {
+                    showStatus('Por favor, inicie la cámara primero', false);
+                    return;
+                }
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                currentPhoto = canvas.toDataURL('image/png');
+                registerButton.disabled = false;
+                showStatus('Foto capturada exitosamente', true);
+            });
+
+            // Registrar asistencia
+            registerButton.addEventListener('click', () => {
+                const employeeId = document.getElementById('employeeId').value;
+                const temperature = parseFloat(document.getElementById('temperature').value);
+                const registerType = document.getElementById('registerType').value;
+
+                if (!employeeId || !temperature || !currentPhoto) {
+                    showStatus('Por favor complete todos los campos', false);
+                    return;
+                }
+
+                if (temperature >= 37.5) {
+                    showStatus('¡ALERTA! Temperatura elevada. Por favor notifique a RRHH', false);
+                    return;
+                }
+
+                const record = {
+                    datetime: new Date().toLocaleString(),
+                    employeeId: employeeId,
+                    type: registerType,
+                    temperature: temperature,
+                    photo: currentPhoto
+                };
+
+                attendanceRecords.unshift(record);
+                updateRecordsTable();
+                resetForm();
+                stopCamera();
+                showStatus('Registro guardado exitosamente', true);
+            });
+
+            // Función para actualizar la tabla de registros
+            function updateRecordsTable() {
+                const tbody = document.getElementById('recordsTableBody');
+                if (!tbody) return;
+                
+                tbody.innerHTML = '';
+                attendanceRecords.forEach(record => {
+                    const row = tbody.insertRow();
+                    row.insertCell().textContent = record.datetime;
+                    row.insertCell().textContent = record.employeeId;
+                    row.insertCell().textContent = record.type;
+                    
+                    const tempCell = row.insertCell();
+                    tempCell.textContent = record.temperature;
+                    if (record.temperature >= 37.5) {
+                        tempCell.className = 'temperature-warning';
+                    }
+
+                    const photoCell = row.insertCell();
+                    const img = document.createElement('img');
+                    img.src = record.photo;
+                    img.style.width = '50px';
+                    photoCell.appendChild(img);
+                });
+            }
+
+            // Función para resetear el formulario
+            function resetForm() {
+                const employeeIdInput = document.getElementById('employeeId');
+                const temperatureInput = document.getElementById('temperature');
+                if (employeeIdInput) employeeIdInput.value = '';
+                if (temperatureInput) temperatureInput.value = '';
+                currentPhoto = null;
+                registerButton.disabled = true;
+            }
+
+            // Búsqueda de registros
+            const searchButton = document.getElementById('searchButton');
+            if (searchButton) {
+                searchButton.addEventListener('click', () => {
+                    const date = document.getElementById('searchDate')?.value;
+                    const searchTerm = document.getElementById('searchEmployee')?.value.toLowerCase();
+                    
+                    const filteredRecords = attendanceRecords.filter(record => {
+                        const matchesDate = !date || record.datetime.includes(date);
+                        const matchesSearch = !searchTerm || 
+                            record.employeeId.toLowerCase().includes(searchTerm);
+                        return matchesDate && matchesSearch;
+                    });
+
+                    const tbody = document.getElementById('recordsTableBody');
+                    if (tbody) {
+                        tbody.innerHTML = '';
+                        filteredRecords.forEach(record => {
+                            // Mismo código de visualización que en updateRecordsTable
+                            const row = tbody.insertRow();
+                            row.insertCell().textContent = record.datetime;
+                            row.insertCell().textContent = record.employeeId;
+                            row.insertCell().textContent = record.type;
+                            
+                            const tempCell = row.insertCell();
+                            tempCell.textContent = record.temperature;
+                            if (record.temperature >= 37.5) {
+                                tempCell.className = 'temperature-warning';
+                            }
+
+                            const photoCell = row.insertCell();
+                            const img = document.createElement('img');
+                            img.src = record.photo;
+                            img.style.width = '50px';
+                            photoCell.appendChild(img);
+                        });
+                    }
+                });
+            }
+
+            // Limpiar la cámara al cerrar la página
+            window.addEventListener('beforeunload', stopCamera);
+        });
+    </script>
+</body>
+</html>

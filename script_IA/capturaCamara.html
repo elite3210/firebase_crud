@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplicación de Cámara Web</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .camera-container {
+            margin-bottom: 20px;
+        }
+
+        #video {
+            width: 100%;
+            max-width: 640px;
+            margin-bottom: 10px;
+        }
+
+        #canvas {
+            display: none;
+        }
+
+        .controls {
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin-right: 10px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .captured-images {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .image-item {
+            position: relative;
+        }
+
+        .image-item img {
+            width: 100%;
+            height: auto;
+            border-radius: 4px;
+        }
+
+        .image-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+        }
+
+        .image-actions button {
+            padding: 5px 10px;
+            font-size: 0.9em;
+        }
+
+        .image-actions button.delete {
+            background-color: #f44336;
+        }
+
+        .image-actions button.save {
+            background-color: #2196F3;
+        }
+    </style>
+</head>
+<body>
+    <div class="camera-container">
+        <video id="video" autoplay></video>
+        <canvas id="canvas"></canvas>
+    </div>
+    <div class="controls">
+        <button id="startCamera">Iniciar Cámara</button>
+        <button id="capture">Capturar</button>
+    </div>
+    <div class="captured-images" id="capturedImages"></div>
+
+    <script>
+        let stream = null;
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const capturedImages = document.getElementById('capturedImages');
+        const ctx = canvas.getContext('2d');
+
+        // Configurar el tamaño del canvas
+        canvas.width = 640;
+        canvas.height = 480;
+
+        // Iniciar la cámara
+        document.getElementById('startCamera').addEventListener('click', async () => {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: 'user' },
+                    audio: false
+                });
+                video.srcObject = stream;
+            } catch (err) {
+                console.error('Error al acceder a la cámara:', err);
+                alert('No se pudo acceder a la cámara');
+            }
+        });
+
+        // Capturar imagen
+        document.getElementById('capture').addEventListener('click', () => {
+            if (!stream) {
+                alert('Por favor, inicia la cámara primero');
+                return;
+            }
+
+            // Dibujar el frame actual del video en el canvas
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            // Crear elemento para la imagen capturada
+            const imageContainer = document.createElement('div');
+            imageContainer.className = 'image-item';
+            
+            // Crear la imagen
+            const img = document.createElement('img');
+            img.src = canvas.toDataURL('image/png');
+            
+            // Crear botones de acción
+            const actions = document.createElement('div');
+            actions.className = 'image-actions';
+            
+            const deleteBtn = document.createElement('button');
+            deleteBtn.textContent = 'Eliminar';
+            deleteBtn.className = 'delete';
+            deleteBtn.onclick = () => imageContainer.remove();
+            
+            const saveBtn = document.createElement('button');
+            saveBtn.textContent = 'Guardar';
+            saveBtn.className = 'save';
+            saveBtn.onclick = () => {
+                const link = document.createElement('a');
+                link.download = `captura-${Date.now()}.png`;
+                link.href = img.src;
+                link.click();
+            };
+            
+            // Agregar elementos al contenedor
+            actions.appendChild(deleteBtn);
+            actions.appendChild(saveBtn);
+            imageContainer.appendChild(img);
+            imageContainer.appendChild(actions);
+            capturedImages.appendChild(imageContainer);
+        });
+    </script>
+</body>
+</html>

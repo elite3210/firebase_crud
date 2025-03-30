@@ -1,0 +1,38 @@
+@startuml Problema de Investigacion
+
+start
+
+if (Problema) then (Social) 
+    
+    :Contexto de la situación problemática;
+    :Pregunta 1,2,3,...n;
+    :Requiere Solucion?;
+    :Tiene Solucion en un tiempo determinado?;
+    :Variables;
+    :Objetividad;
+    :Especificidad;
+    :Contrastabilidad empírica;
+    if (pagoPedido) then (Sí)
+        :pagosAcumulados = M;
+
+        if(fechaCancelado) then (si)
+            :estado = cancelado;
+        else(No)
+            :estado=credito;
+        endif
+    else (No)
+        :Estado=credito;
+    endif
+else (Natural)
+    :retrasoEnvio = X1;
+    if (pagoPedido) then (Sí)
+        :estado=adelantado; 
+        :pagosAcumulados = M;
+        :progreso = Elemnt;
+    else (No)
+        :Estado=nuevo;
+        
+    endif
+endif
+stop
+@enduml

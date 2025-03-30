@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #1a1a1a;
+            height: 100vh;
+        }
+
+        .snowflake {
+            position: absolute;
+            user-select: none;
+            cursor: default;
+            animation-timing-function: linear;
+            animation-iteration-count: infinite;
+        }
+
+        @keyframes fall {
+            100% {
+                transform: translateY(-20px) rotate(0deg);
+            }
+
+            0% {
+                transform: translateY(100vh) rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <script>
+        const snowflakes = ['❄', '❅', '❆', '✻', '✼', '✽', '❋','❅'];
+        // Array de colores posibles para las palabras
+        //const colors = ['#ffffff', '#e3f2fd', '#bbdefb', '#90caf9', '#64b5f6', '#42a5f5', '#2196f3'];
+        // Array de colores posibles para las palabras
+        const colors = [
+                '#ff0000', // rojo
+                '#00ff00', // verde
+                '#0000ff', // azul
+                '#ffff00', // amarillo
+                '#ff00ff', // magenta
+                '#00ffff', // cyan
+                '#ffa500', // naranja
+                '#ff69b4'  // rosa
+            ];
+
+        function createSnowflake() {
+            const snowflake = document.createElement('div');
+            snowflake.className = 'snowflake';
+
+            // Propiedades aleatorias
+            const symbol = snowflakes[Math.floor(Math.random() * snowflakes.length)];
+            const color = colors[Math.floor(Math.random() *( colors.length))];
+            const size = Math.random() * 40 + 15; // 10px a 30px
+            const left = Math.random() * 100; // 0% a 100%
+            const duration = Math.random() * 5 + 3; // 3s a 8s
+            const delay = Math.random() * 10; // 0s a 5s
+
+            // Aplicar estilos
+            snowflake.innerHTML = symbol;
+            snowflake.style.color = color;
+            snowflake.style.fontSize = `${size}px`;
+            snowflake.style.left = `${left}%`;
+            snowflake.style.animation = `fall ${duration}s ${delay}s linear infinite`;
+
+            document.body.appendChild(snowflake);
+
+            // Eliminar el copo cuando termine la animación
+            setTimeout(() => {
+                snowflake.remove();
+            }, (duration + delay) * 2000);
+        }
+
+        // Crear copos iniciales
+        for (let i = 0; i < 100; i++) {
+            createSnowflake();
+        }
+
+        // Crear nuevos copos periódicamente
+        setInterval(createSnowflake, 400);
+    </script>
+</body>
+
+</html>

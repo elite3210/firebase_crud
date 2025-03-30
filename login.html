@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="login.css">
+
+    <!--Google Material Icons -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <!--Toastify css -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <title>login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            
+        }
+
+        .container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .login-container {
+            background-color: #2f2f2f;
+            border-radius: 8px;
+            box-shadow: rgb(31 31 31 / 17%) 0px -23px 25px 0px inset,
+                rgb(108 108 108 / 23%) 0px -36px 30px 0px inset,
+                rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px,
+                rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px,
+                rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px;
+            padding: 300px 40px 40px 5px;
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+            overflow: hidden;
+            /* Importante para contener los formularios */
+            height: 600px;
+            /* Altura fija para mantener consistencia */
+        }
+
+        /* Form Styles */
+        .login-form {
+            position: absolute;
+            width: 100%;
+            left: 0;
+            top: 0;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            transition: transform 0.5s ease-in-out;
+            background-color: #2f2f2f;
+        }
+
+        .sign-up {
+            transform: translateX(100%);
+        }
+
+        .sign-in {
+            transform: translateX(0);
+        }
+
+        .container.toggle .sign-up {
+            transform: translateX(0);
+        }
+
+        .container.toggle .sign-in {
+            transform: translateX(-100%);
+        }
+
+        /* Welcome Section Styles */
+        .welcome {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            transition: all 0.5s ease-in-out;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .welcome-sign-up {
+            bottom: 20px;
+            transform: translateY(-200%);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .welcome-sign-in {
+            bottom: 20px;
+            transform: translateY(0);
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .container.toggle .welcome-sign-up {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .container.toggle .welcome-sign-in {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Input Styles */
+        .input-group {
+            position: relative;
+            width: 100%;
+        }
+
+        .input-group input {
+            background: none;
+            border: 1px solid #353535;
+            padding: 15px 23px;
+            font-size: 16px;
+            border-radius: 8px;
+            color: #979797;
+            width: 100%;
+            box-shadow: rgb(136 136 136 / 17%) 0px -23px 25px 0px inset,
+                rgb(81 81 81 / 23%) 0px -36px 30px 0px inset,
+                rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px,
+                rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px,
+                rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px;
+        }
+
+        .input-group img {
+            position: absolute;
+            left: -30px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .input-group input:focus {
+            border-color: #0173ed;
+            outline: none;
+        }
+
+        /* Text Styles */
+        .heading {
+            color: #ffffff;
+            font-size: 32px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .paragraph {
+            color: #ffffff;
+            font-size: 14px;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        /* Button Styles */
+        .button {
+            padding: 12px 30px;
+            background: linear-gradient(to bottom, #ffffff, #f0f0f0);
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            color: #606060;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: auto;
+            min-width: 150px;
+            align-self: center;
+        }
+
+        .button:hover {
+            box-shadow: 0 4px 3px 1px #FCFCFC, 0 6px 8px #D6D7D9, 0 -4px 4px #CECFD1, 0 -6px 4px #FEFEFE, inset 0 0 3px 3px #CECFD1;
+        }
+
+        .button:active {
+            box-shadow: 0 4px 3px 1px #FCFCFC, 0 6px 8px #D6D7D9, 0 -4px 4px #CECFD1, 0 -6px 4px #FEFEFE, inset 0 0 5px 3px #999, inset 0 0 30px #aaa;
+        }
+
+        .button:focus {
+            box-shadow: 0 4px 3px 1px #FCFCFC, 0 6px 8px #D6D7D9, 0 -4px 4px #CECFD1, 0 -6px 4px #FEFEFE, inset 0 0 5px 3px #999, inset 0 0 30px #aaa;
+        }
+
+        /* Social Networks */
+        .social-networks {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .social-networks button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px;
+            transition: transform 0.3s ease;
+            background: none;
+            border: 1px solid #474747;
+            font-size: 16px;
+            border-radius: 8px;
+            color: #979797;
+            box-shadow: rgb(136 136 136 / 17%) 0px -23px 25px 0px inset,
+                rgb(81 81 81 / 23%) 0px -36px 30px 0px inset,
+                rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px,
+                rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px,
+                rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px;
+        }
+
+        .social-networks button:hover {
+            border: 1px solid #0173ed;
+            transform: scale(1.1);
+        }
+
+        /* Links */
+        .bottom-text {
+            text-align: center;
+        }
+
+        .bottom-text a {
+            color: #0173ed;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .bottom-text a:hover {
+            color: #3f95f2;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container" id="container">
+        <div class="login-container">
+            <form class="sign-in login-form" id="login-form">
+                <h2 class="heading">Iniciar Sesión</h2>
+                <div class="social-networks">
+                    <button><img src="./icons/logo-twitch.svg" width="25px"></button>
+                    <button><img src="./icons/logo-twitter.svg" width="25px"></button>
+                    <button><img src="./icons/logo-instagram.svg" width="25px"></button>
+                    <button><img src="./icons/logo-google.svg" width="25px"></button>
+                    <button><img src="./icons/mail.svg" width="25px"></button>
+                </div>
+                <span class="paragraph">Use su correo y contraseña</span>
+                <div class="container-input input-group" style="display: flex;">
+                    <img src="./icons/mail.svg" width="25px">
+                    <input type="text" id="login-email" placeholder="Email">
+                </div>
+                <div class="container-input input-group" style="display: flex;">
+                    <img src="./icons/lock-closed.svg" width="25px">
+                    <input type="password" id="login-password" placeholder="Password">
+                </div>
+                <button class="button" id="btn-signin">INICIAR SESIÓN</button>
+                <div class="bottom-text">
+                    <a href="#">¿Olvidaste tu contraseña?</a>
+
+                </div>
+            </form>
+            <form class="sign-up login-form" id="signup-form">
+                <h2 class="heading">Registrarse</h2>
+                <div class="social-networks">
+                    <button><img src="./icons/logo-twitch.svg" width="25px"></button>
+                    <button><img src="./icons/logo-twitter.svg" width="25px"></button>
+                    <button><img src="./icons/logo-instagram.svg" width="25px"></button>
+                    <button><img src="./icons/logo-google.svg" width="25px"></button>
+                    <button><img src="./icons/mail.svg" width="25px"></button>
+                </div>
+                <span class="paragraph">Use su correo electronico para registrarse</span>
+                <div class="container-input input-group" style="display: flex;">
+                    <img src="./icons/person.svg" width="25px">
+                    <input id="signup-name" type="text" placeholder="Nombre" required>
+                </div>
+                <div class="container-input input-group" style="display: flex;">
+                    <img src="./icons/mail.svg" width="25px">
+                    <input id="signup-email" type="text" placeholder="Email" required>
+                </div>
+                <div class="container-input input-group" style="display: flex;">
+                    <img src="./icons/lock-closed.svg" width="25px">
+                    <input id="signup-password" type="password" placeholder="Password" required>
+                </div>
+
+                <button class="button" id="btn-signup">REGISTRARSE</button>
+            </form>
+        </div>
+
+        <div class="welcome-sign-up welcome">
+            <button class="button" id="btn-sign-up">Registrarse</button>
+        </div>
+        <div class="welcome-sign-in welcome">
+            <button class="button" id="btn-sign-in">Iniciar Sesión</button>
+            <h3 class="paragraph">¡Hola!</h3>
+            <p class="paragraph">Registrese con sus datos personales para todas las funciones del sistema</p>
+        </div>
+
+    </div>
+
+
+
+</body>
+
+</html>
+
+<body>
+    <!--alterna el formulario login-->
+    <script src="./login.js" type="module">
+    </script>
+    <!--logica de ingreso o login o login-->
+    <script src="./src/app/signinForm.js" type="module"></script>
+    <!--logica de registro usario loginup-->
+    <script src="./src/app/signupForm.js" type="module"></script>
+    <!--Toastify script -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script>
+        //Controla el css del boton welcome
+
+        const container = document.querySelector(".container");
+        const btnSignIn = document.getElementById("btn-sign-in");
+        const btnSignUp = document.getElementById("btn-sign-up");//tbn de welcome
+
+        btnSignIn.addEventListener("click", () => {
+            container.classList.remove("toggle");
+        })
+
+        btnSignUp.addEventListener("click", () => {
+            container.classList.add("toggle");
+        })
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,70 @@
+@startuml Organigrama Heinz Soport
+!define RECTANGLE class
+
+RECTANGLE CEO {
+    Director General
+}
+
+RECTANGLE DesarrolloSoftware {
+    Equipo de Desarrollo de Software
+    --
+    Desarrolladores de Software
+    Analistas de Sistemas
+    Ingenieros de QA/Testers
+}
+
+RECTANGLE Produccion {
+    Gerente de Producción
+    --
+    Supervisor de Planta
+    Operarios de Producción
+    Supervisor de Mantenimiento
+    Técnicos de Mantenimiento
+}
+
+RECTANGLE VentasMarketing {
+    Gerente de Ventas y Marketing
+    --
+    Equipo de Ventas
+    Equipo de Marketing
+}
+
+RECTANGLE Finanzas {
+    Gerente de Finanzas
+    --
+    Contador
+    Administrativo de Pagos
+    Administrativo de Cobros
+}
+
+RECTANGLE RecursosHumanos {
+    Gerente de Recursos Humanos
+    --
+    Especialista en Reclutamiento
+    Especialista en Capacitación
+    Especialista en Relaciones Laborales
+}
+
+RECTANGLE Calidad {
+    Gerente de Calidad
+    --
+    Inspector de Calidad
+    Analista de Control de Calidad
+}
+
+RECTANGLE TI {
+    Gerente de Tecnología de la Información (TI)
+    --
+    Soporte Técnico
+    Técnicos de Soporte
+    Administradores de Redes
+}
+
+CEO -down-> DesarrolloSoftware
+CEO -down-> Produccion
+CEO -down-> VentasMarketing
+CEO -down-> Finanzas
+CEO -down-> RecursosHumanos
+CEO -down-> Calidad
+CEO -down-> TI
+@enduml

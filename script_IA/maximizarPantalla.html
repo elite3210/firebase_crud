@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Mi Aplicación</title>
+    <style>
+        /* Resetear márgenes y padding */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Asegurar que html y body ocupen todo el espacio disponible */
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            position: fixed;
+        }
+
+        /* Contenedor principal de la aplicación */
+        #app {
+            width: 100%;
+            height: 100%;
+            background-color: #ffffff;
+            position: fixed;
+            top: 0;
+            left: 0;
+            /* Manejo del notch en iPhones */
+            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+        }
+
+        /* Botón de pantalla completa */
+        #fullscreenButton {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            padding: 10px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- Aquí va el contenido de tu aplicación -->
+        <h1>Mi Aplicación</h1>
+        <button id="fullscreenButton">Pantalla Completa</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Manejar el botón de pantalla completa
+            const fullscreenButton = document.getElementById('fullscreenButton');
+            const app = document.getElementById('app');
+
+            fullscreenButton.addEventListener('click', function() {
+                if (!document.fullscreenElement) {
+                    if (app.requestFullscreen) {
+                        app.requestFullscreen();
+                    } else if (app.webkitRequestFullscreen) {
+                        app.webkitRequestFullscreen();
+                    } else if (app.msRequestFullscreen) {
+                        app.msRequestFullscreen();
+                    }
+                } else {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen();
+                    } else if (document.webkitExitFullscreen) {
+                        document.webkitExitFullscreen();
+                    } else if (document.msExitFullscreen) {
+                        document.msExitFullscreen();
+                    }
+                }
+            });
+
+            // Prevenir el scroll y el rebote en iOS
+            document.addEventListener('touchmove', function(e) {
+                e.preventDefault();
+            }, { passive: false });
+
+            // Ocultar la barra de dirección al cargar
+            window.addEventListener('load', function() {
+                // Pequeño delay para asegurar que funcione
+                setTimeout(function() {window.scrollTo(0, 1);}, 0);
+            });
+        });
+    </script>
+</body>
+</html>

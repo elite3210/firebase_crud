@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Estado de Situación Financiera</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --background-light: #ecf0f1;
+            --text-dark: #2c3e50;
+            --shadow-subtle: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--background-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            font-size: 24pt;
+            margin: 30px auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .form-section,
+        .statement-section {
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: var(--shadow-subtle);
+            padding: 10px;
+        }
+
+        .form-section h2 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 10px;
+        }
+
+        .form-assets, .form-liabilities{
+            display: grid;
+
+        }
+
+        .item1{
+            grid-column: 1 / span 2;
+            grid-row: 1;
+        }
+
+        .item4{
+            grid-column: 1 / span 2;
+            grid-row: 3;
+        }
+
+        .item5{
+            grid-column: 1 / span 2;
+            grid-row: 4;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group select {
+            font-size: 18pt;
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #2980b9;
+        }
+
+        .statement-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .assets-section,
+        .liabilities-section {
+            background-color: var(--background-light);
+            padding: 3px;
+            border-radius: 3px;
+        }
+
+        .item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: white;
+            padding: 3px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        button{
+            font-size: 24pt;
+            border: none;
+        }
+
+        .item .delete-btn {
+            background-color: transparent;
+            cursor: pointer;
+        }
+
+        .totals {
+            text-align: right;
+            font-weight: bold;
+            margin-top: 15px;
+            background-color: white;
+            border-radius: 5px;
+        }
+
+        .patrimonio {
+            grid-column: 1 / -1;
+            text-align: right;
+            font-size: 1.2em;
+            padding: 15px;
+            background-color: var(--secondary-color);
+            color: white;
+            border-radius: 5px;
+        }
+
+        .export-btn {
+            grid-column: 1 / -1;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .export-btn:hover {
+            background-color: #27ae60;
+        }
+        /* New styles for company form */
+        .company-form-section {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow-subtle);
+            padding: 30px;
+            margin-top: 20px;
+        }
+
+        .company-form-section h2 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 10px;
+        }
+
+        #company-logo-preview {
+            max-width: 200px;
+            max-height: 200px;
+            margin: 15px 0;
+            display: block;
+        }
+
+        @media (min-width: 740px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            .statement-section{
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <script defer type="application/javascript" src="https://api.ipify.org?format=jsonp&callback=getIP"></script>
+</head>
+
+<body>
+    <div class="container">       
+        <!-- Formularios -->
+        <div class="form-section">
+            <div class="form-assets">
+                <h2 class="item1">Registro de Activos</h2>
+                <div class="form-group item2">
+                    <label for="asset-category">Categoría</label>
+                    <select id="asset-category">
+                        <option value="">Seleccionar Categoría</option>
+                        <option value="EFECTIVO">Caja</option>
+                        <option value="EFECTIVO">Bancos</option>
+                        <option value="CUENTAS X COBRAR">Ctas. x Cobrar Clientes</option>
+                        <option value="CUENTAS X COBRAR">Ctas. x Cobrar Familia</option>
+                        <option value="INVENTARIOS">Inv. Mercaderia</option>
+                        <option value="INVENTARIOS">Inv. Prod. Terminados</option>
+                        <option value="INVENTARIOS">Inv. Prod. Procesos</option>
+                        <option value="INVENTARIOS">Inv. Materiales</option>
+                        <option value="MAQUINARIA Y EQUIPOS">Maquinaria</option>
+                        <option value="MAQUINARIA Y EQUIPOS">Equipos</option>
+                        <option value="PROPIEDADES">Propiedades</option>
+                        <option value="VEHICULOS">Vehículos</option>
+                        <option value="OTROS">Otros Activos</option>
+                    </select>
+                </div>
+                <div class="form-group item3">
+                    <label for="asset-description">Descripción</label>
+                    <input type="text" id="asset-description" placeholder="Descripción opcional">
+                </div>
+                
+                <div class="form-group item4">
+                    <label for="asset-value">Valor</label>
+                    <input type="number" id="asset-value" placeholder="Valor del activo" step="0.01" min="0">
+                </div>
+                
+
+                <button type="button" class="btn item5" id="add-asset-btn">Agregar Activo</button>
+            </div>
+
+            <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;">
+
+            <div class="form-liabilities">
+                <h2 class="item1">Registro de Pasivos</h2>
+                <div class="form-group item2">
+                    <label for="liability-category">Categoría</label>
+                    <select id="liability-category">
+                        <option value="">Seleccionar Categoría</option>
+                        <option value="IMPUESTOS">Impuestos x pagar Sunat</option>
+                        <option value="TRABAJADORES">Ctas x Pagar Trabajadores</option>
+                        <option value="PROVEEDORES">Ctas x Pagar Proveedores</option>
+                        <option value="CREDITOS">Ctas x Pagar Bancos</option>
+                        <option value="PRESTAMOS">Ctas x Pagar Familia</option>
+                        <option value="OTROS">Otras Deudas</option>
+                    </select>
+                </div>
+                <div class="form-group item3">
+                    <label for="liability-description">Descripción</label>
+                    <input type="text" id="liability-description" placeholder="Descripción opcional">
+                </div>
+                
+                <div class="form-group item4">
+                    <label for="liability-value">Valor</label>
+                    <input type="number" id="liability-value" placeholder="Valor del pasivo" step="0.01" min="0">
+                </div>
+                
+                
+                <button type="button" class="btn item5" id="add-liability-btn">Agregar Pasivo</button>
+            </div>
+        </div>
+
+        <!-- Estado de Situación Financiera -->
+        <div class="statement-section">
+            <div class="assets-section">
+                <h2>Activos</h2>
+                <div id="assets-list"></div>
+                <div id="assets-total" class="totals">Total Activos: S/0.00</div>
+            </div>
+
+            <div class="liabilities-section">
+                <h2>Pasivos</h2>
+                <div id="liabilities-list"></div>
+                <div id="liabilities-total" class="totals">Total Pasivos: S/0.00</div>
+            </div>
+
+            <div id="patrimonio" class="patrimonio">Patrimonio Neto: S/0.00</div>
+            
+        </div>
+
+        <!-- New Company Details Form -->
+        <div class="form-section company-form-section">
+            <h2>Datos de la Empresa</h2>
+            <div class="form-group">
+                <label for="company-name">Nombre de la Empresa</label>
+                <input type="text" id="company-name" placeholder="Nombre de la empresa">
+            </div>
+            <div class="form-group">
+                <label for="company-ruc">RUC</label>
+                <input type="text" id="company-ruc" placeholder="Número de RUC">
+            </div>
+            <div class="form-group">
+                <label for="company-address">Dirección</label>
+                <input type="text" id="company-address" placeholder="Dirección de la empresa">
+            </div>
+            <div class="form-group">
+                <label for="company-logo">Logo de la Empresa</label>
+                <input type="file" id="company-logo" accept="image/*">
+                <img id="company-logo-preview" src="" alt="Vista previa del logo" style="display:none;">
+            </div>
+            <button type="button" class="btn" id="save-company-btn">Guardar Datos de Empresa</button>
+        </div>
+
+        <button class="export-btn" id="export-pdf-btn">Exportar Estado Financiero</button>
+        
+    </div>
+    
+      
+      
+
+      <script type="application/javascript">
+        //let json={"ip":"192.168.0.16"}
+        function getIP() {
+          document.write("My public IP address is: ", json.ip);
+        }
+
+        getIP()
+      </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.15/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+    <script>
+        // Definición de variables globales
+        let assets = [];
+        let liabilities = [];
+
+        // Función para agregar activos
+        function addAsset() {
+            const category = document.getElementById('asset-category').value;
+            const value = parseFloat(document.getElementById('asset-value').value);
+            const descriptionAlt = document.getElementById('asset-category').options[document.getElementById('asset-category').selectedIndex].text;
+            const description = document.getElementById('asset-description').value;
+            if (!category || isNaN(value)) {
+                alert('Por favor, complete todos los campos');
+                return;
+            }
+
+            assets.push({ category, value,description,descriptionAlt});
+            updateFinancialStatement();
+            clearAssetForm();
+        }
+
+        // Función para agregar pasivos
+        function addLiability() {
+            const category = document.getElementById('liability-category').value;
+            const value = parseFloat(document.getElementById('liability-value').value);
+            const description = document.getElementById('liability-description').value;
+            const descriptionAlt = document.getElementById('liability-category').options[document.getElementById('liability-category').selectedIndex].text;
+
+            if (!category || isNaN(value)) {
+                alert('Por favor, complete todos los campos');
+                return;
+            }
+
+            liabilities.push({ category, value, description,descriptionAlt});
+            updateFinancialStatement();
+            clearLiabilityForm();
+        }
+
+        // Función para actualizar el estado financiero
+        function updateFinancialStatement() {
+            const assetsList = document.getElementById('assets-list');
+            const liabilitiesList = document.getElementById('liabilities-list');
+            const assetsTotal = document.getElementById('assets-total');
+            const liabilitiesTotal = document.getElementById('liabilities-total');
+            const patrimonioElement = document.getElementById('patrimonio');
+
+            // Limpiar listas
+            assetsList.innerHTML = '';
+            liabilitiesList.innerHTML = '';
+
+            // Mostrar Activos
+            assets.forEach((asset, index) => {
+                const assetDiv = document.createElement('div');
+                assetDiv.classList.add('item');
+                assetDiv.innerHTML = `
+                    <span><strong>${asset.category}</strong>: S/${asset.value.toLocaleString('es-MX')} 
+                    ${asset.description ? `- ${asset.description}` : `- ${asset.descriptionAlt}`}</span>
+                    <button class="delete-btn" onclick="removeAsset(${index})"><img src="../icons/delete_24dp_EA3323_FILL0_wght400_GRAD0_opsz24.svg"></img></button>
+                `;
+                assetsList.appendChild(assetDiv);
+            });
+
+            // Mostrar Pasivos
+            liabilities.forEach((liability, index) => {
+                const liabilityDiv = document.createElement('div');
+                liabilityDiv.classList.add('item');
+                liabilityDiv.innerHTML = `
+                    <span><strong>${liability.category}</strong>: S/${liability.value.toLocaleString('es-MX')} 
+                    ${liability.description ? `- ${liability.description}` : `- ${liability.descriptionAlt}`}</span>
+                    <button class="delete-btn" onclick="removeLiability(${index})"><img src="../icons/delete_24dp_EA3323_FILL0_wght400_GRAD0_opsz24.svg"></img></button>
+                `;
+                liabilitiesList.appendChild(liabilityDiv);
+            });
+
+            // Calcular totales
+            const totalAssets = assets.reduce((sum, asset) => sum + asset.value, 0);
+            const totalLiabilities = liabilities.reduce((sum, liability) => sum + liability.value, 0);
+            const patrimonio = totalAssets - totalLiabilities;
+
+            // Actualizar totales
+            assetsTotal.textContent = `Total Activos: S/${totalAssets.toLocaleString('es-MX')}`;
+            liabilitiesTotal.textContent = `Total Pasivos: S/${totalLiabilities.toLocaleString('es-MX')}`;
+            patrimonioElement.textContent = `Patrimonio Neto: S/${patrimonio.toLocaleString('es-MX')}`;
+        }
+
+        // Función para eliminar activos
+        function removeAsset(index) {
+            assets.splice(index, 1);
+            updateFinancialStatement();
+        }
+
+        // Función para eliminar pasivos
+        function removeLiability(index) {
+            liabilities.splice(index, 1);
+            updateFinancialStatement();
+        }
+
+        // Función para limpiar formulario de activos
+        function clearAssetForm() {
+            document.getElementById('asset-category').value = '';
+            document.getElementById('asset-value').value = '';
+            document.getElementById('asset-description').value = '';
+        }
+
+        // Función para limpiar formulario de pasivos
+        function clearLiabilityForm() {
+            document.getElementById('liability-category').value = '';
+            document.getElementById('liability-value').value = '';
+            document.getElementById('liability-description').value = '';
+        }
+
+        // Objeto de datos de Empresa
+        let companyDetails = {
+            name: '',
+            ruc: '',
+            address: '',
+            logoData: null
+        };
+
+        // Previsualizacion de Logo de empresa
+        document.getElementById('company-logo').addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                const logoPreview = document.getElementById('company-logo-preview');
+                logoPreview.src = e.target.result;
+                logoPreview.style.display = 'block';
+                companyDetails.logoData = e.target.result;
+            };
+
+            reader.readAsDataURL(file);
+        });
+
+        // Guardar datos de empresa
+        document.getElementById('save-company-btn').addEventListener('click', function () {
+            companyDetails.name = document.getElementById('company-name').value;
+            companyDetails.ruc = document.getElementById('company-ruc').value;
+            companyDetails.address = document.getElementById('company-address').value;
+
+            alert('Datos de empresa guardados correctamente');
+        });
+
+        // Función para exportar a PDF (código anterior)
+        function exportToPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('p', 'mm', 'a4');
+
+            // Configuraciones de documento
+            const pageWidth = doc.internal.pageSize.width;
+            const pageHeight = doc.internal.pageSize.height;
+            const margin = 5;
+            // Altura del encabezado
+            const headerHeight = 30;
+
+            // QR Code Generation
+            function generateQRCode(text) {
+                const qr = qrcode(0, 'M');
+                qr.addData(text);
+                qr.make();
+                return qr.createDataURL(5);
+            }
+
+            // Function to add company header
+            // Función para agregar encabezado en cada página
+            function addHeader(doc, pageNumber, totalPages) {
+                // Restablecer configuraciones
+                doc.setPage(pageNumber);
+                doc.setFontSize(10);
+                doc.setTextColor(100);
+
+                // Company Logo
+                if (companyDetails.logoData) {
+                    doc.addImage(companyDetails.logoData, 'JPEG', margin, 3, 29, 25);//5 es margen al inicio en mm, 25,25 cuadro logo relacion 1.1549:1
+                }
+
+                // Company Details
+                let startY = margin+5;
+                if (companyDetails.name) {
+                    doc.text(companyDetails.name, 40, startY);
+                    startY += 5;
+                }
+                if (companyDetails.ruc) {
+                    doc.text(`RUC: ${companyDetails.ruc}`, 40, startY);
+                    startY += 5;
+                }
+                if (companyDetails.address) {
+                    doc.text(`Dirección: ${companyDetails.address}`, 40, startY);
+                }
+
+                // QR Code
+                if (companyDetails.name) {
+                    const qrCodeData = generateQRCode(companyDetails.name);
+                    //doc.addImage(qrCodeData, 'PNG', pageWidth - 40, 10, 30, 30);
+                    doc.addImage(qrCodeData, 'PNG', pageWidth - 40, 1, 27, 27);
+                }
+
+                // Separator line
+                doc.setLineWidth(0.5);
+                doc.line(margin, headerHeight, pageWidth - margin, headerHeight);
+            }
+
+
+            // Función para agregar pie de página
+            function addFooter(doc, pageNumber, totalPages) {
+                // Número de página
+                doc.setFontSize(8);
+                doc.setTextColor(100);
+                doc.text(`Página ${pageNumber} de ${totalPages}`, pageWidth - margin - 20, pageHeight - 5, { align: 'center' });
+            }
+
+            // Preparar datos para tabla activo
+            const assetsData = assets.map(asset => [
+                asset.category,
+                asset.description || asset.descriptionAlt,
+                `S/${asset.value.toLocaleString('es-MX')}`
+            ]);
+            console.log('assets:',assets);
+            console.log('assetsData:',assetsData);
+            
+
+            // Preparar datos para tabla pasivo
+            const liabilitiesData = liabilities.map(liability => [
+                liability.category,
+                liability.description || liability.descriptionAlt,
+                `S/${liability.value.toLocaleString('es-MX')}`
+            ]);
+
+            // Calcular totales
+            const totalAssets = assets.reduce((sum, asset) => sum + asset.value, 0);
+            const totalLiabilities = liabilities.reduce((sum, liability) => sum + liability.value, 0);
+            const patrimonio = totalAssets - totalLiabilities;
+
+            // Configuración comunues de autoTable para manejar múltiples tabla en páginas
+            const tableOptions = {
+                theme: 'striped',
+                styles: {
+                    fontSize: 8
+                },
+                columnStyles: {
+                    2: { halign: 'right' }
+                },
+                // Ajustar espacio inicial para el encabezado
+                startY: headerHeight + 17,
+                // Añadir un margen al final de cada página
+                margin: { top: headerHeight + 10, bottom: 20 }
+            };
+
+            // Título de la sección
+            doc.setFontSize(14);
+            doc.setTextColor(0);
+            doc.text('Estado de Situación Financiera', pageWidth / 2, 36, { align: 'center' });
+            doc.setFontSize(8);
+            doc.text('(Al 31 de enero 2024 , en Soles)', pageWidth / 2, 40, { align: 'center' });
+
+           
+            // Tabla de Activos
+            doc.autoTable({
+                ...tableOptions,
+                head: [['ACTIVOS','Descripción', 'Valor']],
+                body: assetsData//aca va el arrar de arrar generado con metodo.map
+            });
+
+            // Total de Activos
+            doc.autoTable({
+                ...tableOptions,
+                body: [
+                    ['', 'Total Activos', `S/${totalAssets.toLocaleString('es-MX')}`]
+                ],
+                startY: doc.lastAutoTable.finalY + 3,
+                headStyles: {//color de encabezado de tabla
+                    fillColor: [41, 128, 185],
+                    textColor: 255
+                },
+                theme: 'plain',
+                styles: {
+                    fontSize: 10,
+                    fontStyle: 'bold'
+                },
+                columnStyles: {
+                    2: { halign: 'right' }
+                }
+            });
+
+            // Tabla de Pasivos
+            doc.autoTable({
+                ...tableOptions,
+                head: [['PASIVOS', 'Descripción', 'Valor']],
+                headStyles: {
+                    fillColor: [26, 189, 156],
+                    textColor: 255
+                },
+                body: liabilitiesData,
+                startY: doc.lastAutoTable.finalY + 5
+            });
+
+            // Total de Pasivos
+            doc.autoTable({
+                ...tableOptions,
+                body: [
+                    ['', 'Total Pasivos', `S/${totalLiabilities.toLocaleString('es-MX')}`]
+                ],
+                startY: doc.lastAutoTable.finalY + 3,
+                theme: 'plain',
+                styles: {
+                    fontSize: 10,
+                    fontStyle: 'bold'
+                },
+                columnStyles: {
+                    2: { halign: 'right' }
+                }
+            });
+
+
+            // Tabla de Patrimonio
+            doc.autoTable({
+                ...tableOptions,
+                head: [['PATRIMONIO', 'Descripción', 'Valor']],
+                headStyles: {
+                    fillColor: [26, 189, 156],
+                    textColor: 255
+                },
+                body: [['CAPITAL', 'Capital', patrimonio.toLocaleString('es-MX')]],
+                startY: doc.lastAutoTable.finalY + 5
+            });
+
+            // Total Patrimonio Neto
+            doc.autoTable({
+                ...tableOptions,
+                body: [
+                    ['', 'Patrimonio Neto', `S/${patrimonio.toLocaleString('es-MX')}`]
+                ],
+                startY: doc.lastAutoTable.finalY + 3,
+                theme: 'plain',
+                styles: {
+                    fontSize: 12,
+                    fontStyle: 'bold'
+                },
+                columnStyles: {
+                    2: { halign: 'right', textColor: [0, 128, 0] }
+                },
+            });
+
+            // Notas al pie
+            doc.setFontSize(8);
+            doc.setTextColor(100);
+            doc.text('Nota: Este es un estado financiero generado automáticamente', margin, doc.lastAutoTable.finalY + 20);
+            doc.text('Montos expresados en Soles', margin, doc.lastAutoTable.finalY + 24);
+            const finalPage = doc.internal.getNumberOfPages();         
+
+            // Añadir encabezado y pie a todas las páginas
+            for (let i = 1; i <= finalPage; i++) {
+                //addHeader();
+                addHeader(doc, i, finalPage);
+                addFooter(doc, i, finalPage);
+            }
+            // Guardar documento
+            doc.save('Estado_Situacion_Financiera.pdf');
+        }
+
+        // Listeners de eventos
+        document.addEventListener('DOMContentLoaded', () => {
+            // Agregar eventos a los botones
+            document.getElementById('add-asset-btn').addEventListener('click', addAsset);
+            document.getElementById('add-liability-btn').addEventListener('click', addLiability);
+            document.getElementById('export-pdf-btn').addEventListener('click', exportToPDF);
+        });
+    </script>
+</body>
+</html>

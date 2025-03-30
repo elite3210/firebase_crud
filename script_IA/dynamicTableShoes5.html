@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Proforma - Calzados Mirla</title>
+    <!-- Add html2canvas library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .container {
+            max-width: 750px;
+            margin: 0 auto;
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .title {
+            font-size: 24px;
+            color: #666;
+        }
+
+        .invoice-number {
+            padding: 5px 15px;
+            border: 1px solid #000;
+        }
+
+        .customer-info {
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        .totals {
+            float: right;
+            width: 300px;
+        }
+
+        .totals table {
+            margin-top: 20px;
+        }
+
+        .btn-generate {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-generate:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="invoiceContainer">
+        <div class="container" id="invoice">
+            <div class="header">
+                <div class="title">
+                    <h1>Calzados "Mirla"</h1>
+                    <p>Calidad - Garantía / Telf. (01)543-5985</p>
+                </div>
+                <div class="invoice-number">
+                    <p>N° 018483</p>
+                </div>
+            </div>
+            <div class="customer-info">
+                <p><strong>SEÑOR(es):</strong> Pecho Meza, Doris</p>
+                <p><strong>DIRECCION:</strong> Huanuco</p>
+                <p><strong>FECHA:</strong> 23 diciembre</p>
+            </div>
+            <table id="tableDetail">
+                <thead>
+                    <tr>
+                        <th>Tarjeta</th>
+                        <th>Modelo</th>
+                        <th>Color</th>
+                        <th>Planta</th>
+                        <th>33</th>
+                        <th>34</th>
+                        <th>35</th>
+                        <th>36</th>
+                        <th>37</th>
+                        <th>38</th>
+                        <th>Pares</th>
+                        <th>P. Unit.</th>
+                        <th>SubTotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>16357</td>
+                        <td>1917</td>
+                        <td>Neg</td>
+                        <td>C4.Nely</td>
+                        <td>3</td>
+                        <td></td>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>4</td>
+                        <td>1</td>
+                        <td>12</td>
+                        <td>55.0</td>
+                        <td>660</td>
+                    </tr>
+                    <tr>
+                        <td>16357</td>
+                        <td>1917</td>
+                        <td>Neg</td>
+                        <td>C4.Nely</td>
+                        <td>3</td>
+                        <td></td>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>4</td>
+                        <td>1</td>
+                        <td>12</td>
+                        <td>55.0</td>
+                        <td>660</td>
+                    </tr>
+                    <tr>
+                        <td>16357</td>
+                        <td>1917</td>
+                        <td>Neg</td>
+                        <td>C4.Nely</td>
+                        <td>3</td>
+                        <td></td>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>4</td>
+                        <td>1</td>
+                        <td>12</td>
+                        <td>55.0</td>
+                        <td>660</td>
+                    </tr>
+                    <tr>
+                        <td>16357</td>
+                        <td>1917</td>
+                        <td>Neg</td>
+                        <td>C4.Nely</td>
+                        <td>3</td>
+                        <td></td>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>4</td>
+                        <td>1</td>
+                        <td>12</td>
+                        <td>55.0</td>
+                        <td>660</td>
+                    </tr>
+                    <tr>
+                        <td>16357</td>
+                        <td>1917</td>
+                        <td>Neg</td>
+                        <td>C4.Nely</td>
+                        <td>3</td>
+                        <td></td>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>4</td>
+                        <td>1</td>
+                        <td>12</td>
+                        <td>55.0</td>
+                        <td>660</td>
+                    </tr>
+                    <tr>
+                        <td>16357</td>
+                        <td>1917</td>
+                        <td>Neg</td>
+                        <td>C4.Nely</td>
+                        <td>3</td>
+                        <td></td>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>4</td>
+                        <td>1</td>
+                        <td>12</td>
+                        <td>55.0</td>
+                        <td>660</td>
+                    </tr>
+                    <!-- Add more rows as needed -->
+                </tbody>
+            </table>
+        </div>
+        <div class="totals">
+            <table>
+                <tr>
+                    <td><strong>SUB TOTAL S/.</strong></td>
+                    <td>6546.0</td>
+                </tr>
+                <tr>
+                    <td><strong>DESCUENTO S/.</strong></td>
+                    <td>0.0</td>
+                </tr>
+                <tr>
+                    <td><strong>TOTAL S/.</strong></td>
+                    <td>6546.0</td>
+                </tr>
+                <tr>
+                    <td><strong>TOTAL PARES</strong></td>
+                    <td>120</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <button class="btn-generate" onclick="generatePDF()">Generar PDF</button>
+
+    <script>
+        function generatePDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('p', 'mm', 'a5');
+
+            const invoice = document.getElementById("invoiceContainer");
+
+            doc.html(invoice, {
+                callback: function (doc) {
+                    doc.save('proforma-018483.pdf');
+                },
+                x: 10,
+                y: 10,
+                width: 190,
+                windowWidth: 800
+            });
+        }
+    </script>
+</body>
+
+</html>

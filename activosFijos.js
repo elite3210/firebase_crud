@@ -1,5 +1,5 @@
 import {db} from './firebase.js'
-import {collection,onSnapshot} from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js";
+import {collection,onSnapshot} from "https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js";
 import {Datatable} from './dataTable.js'
 
 

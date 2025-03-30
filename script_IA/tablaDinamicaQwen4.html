@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventario de Productos</title>
+<style>
+    body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+}
+
+form {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+label {
+    width: 100%;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="number"] {
+    width: calc(48% - 10px);
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+</style>
+</head>
+<body>
+    <div class="container">
+        <h1>Inventario de Productos</h1>
+        <form id="productForm">
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" name="nombre" required>
+
+            <label for="precio">Precio:</label>
+            <input type="number" id="precio" name="precio" required>
+
+            <label for="categoria">Categoría:</label>
+            <input type="text" id="categoria" name="categoria" required>
+
+            <button type="submit">Agregar Producto</button>
+        </form>
+
+        <table id="inventoryTable">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Precio Total</th>
+                    <th>Categorías</th>
+                    <th>Observaciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Aquí se insertarán las filas de la tabla -->
+            </tbody>
+        </table>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('productForm');
+    const tableBody = document.getElementById('inventoryTable').getElementsByTagName('tbody')[0];
+    let inventory = {};
+
+    form.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        const nombre = document.getElementById('nombre').value;
+        const precio = parseFloat(document.getElementById('precio').value);
+        const categoria = document.getElementById('categoria').value;
+
+        if (!inventory[nombre]) {
+            inventory[nombre] = {
+                precioTotal: 0,
+                categorias: {},
+                observaciones: 0
+            };
+        }
+
+        inventory[nombre].precioTotal += precio;
+
+        if (!inventory[nombre].categorias[categoria]) {
+            inventory[nombre].categorias[categoria] = 0;
+        }
+        inventory[nombre].categorias[categoria]++;
+        inventory[nombre].observaciones++;
+
+        renderTable();
+        form.reset();
+    });
+
+    function renderTable() {
+        tableBody.innerHTML = '';
+
+        for (const [nombre, producto] of Object.entries(inventory)) {
+            const row = tableBody.insertRow();
+            row.insertCell(0).textContent = nombre;
+            row.insertCell(1).textContent = producto.precioTotal.toFixed(2);
+
+            const categoriasCell = row.insertCell(2);
+            const categoriasText = Object.entries(producto.categorias)
+                .map(([cat, count]) => `${cat} (${count})`)
+                .join(', ');
+            categoriasCell.textContent = categoriasText;
+
+            row.insertCell(3).textContent = producto.observaciones;
+        }
+    }
+});
+    </script>
+
+</body>
+</html>
+

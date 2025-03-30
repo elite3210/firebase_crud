@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Tabla de Zapatos - Generador PDF</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        /* Estilo específico para las celdas de tallas */
+        td:nth-child(n+5):nth-child(-n+12),
+        th:nth-child(n+5):nth-child(-n+12) {
+            border: 2px solid #999;
+            min-width: 40px;
+            background-color: #fff;
+        }
+
+        /* Centrado del texto "Tallas" */
+        #headerRow1 th:nth-child(5) {
+            text-align: center;
+            background-color: #f4f4f4;
+            font-weight: bold;
+        }
+        
+        th {
+            background-color: #f4f4f4;
+        }
+        
+        .actions {
+            margin-bottom: 20px;
+        }
+        
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        .total-row {
+            font-weight: bold;
+            background-color: #f9f9f9;
+        }
+
+        /* Eliminar bordes internos entre las columnas de tallas en el header */
+        #headerRow1 th[colspan="8"] {
+            border-bottom: none;
+        }
+        #headerRow2 th:nth-child(n+1):nth-child(-n+8) {
+            border-top: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="actions">
+            <button onclick="generatePDF()">Generar PDF</button>
+        </div>
+        
+        <table id="zapatosTable">
+            <thead>
+                <tr id="headerRow1">
+                    <th rowspan="2">Tarjeta</th>
+                    <th rowspan="2">Modelo</th>
+                    <th rowspan="2">Color</th>
+                    <th rowspan="2">Suela</th>
+                    <th colspan="8" style="text-align: center;">Tallas</th>
+                    <th rowspan="2">Pares</th>
+                    <th rowspan="2">Precio</th>
+                    <th rowspan="2">Importe</th>
+                </tr>
+                <tr id="headerRow2">
+                    <th>30</th>
+                    <th>33</th>
+                    <th>34</th>
+                    <th>35</th>
+                    <th>36</th>
+                    <th>37</th>
+                    <th>38</th>
+                    <th>39</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>50125</td>
+                    <td>7053</td>
+                    <td>Marron</td>
+                    <td>Elena</td>
+                    <td></td>
+                    <td>1</td>
+                    <td>2</td>
+                    <td>3</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>6</td>
+                    <td>50</td>
+                    <td>300</td>
+                </tr>
+                <tr>
+                    <td>50124</td>
+                    <td>7053</td>
+                    <td>Vino</td>
+                    <td>Elena</td>
+                    <td></td>
+                    <td>1</td>
+                    <td>2</td>
+                    <td>3</td>
+                    <td>3</td>
+                    <td>2</td>
+                    <td>1</td>
+                    <td></td>
+                    <td>12</td>
+                    <td>50</td>
+                    <td>600</td>
+                </tr>
+                <tr>
+                    <td>50126</td>
+                    <td>6053</td>
+                    <td>Negro</td>
+                    <td>Tabita</td>
+                    <td></td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>3</td>
+                    <td>3</td>
+                    <td></td>
+                    <td>1</td>
+                    <td>2</td>
+                    <td>11</td>
+                    <td>50</td>
+                    <td>550</td>
+                </tr>
+                <tr>
+                    <td>50127</td>
+                    <td>6053</td>
+                    <td>Negro</td>
+                    <td>Tabita</td>
+                    <td>1</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>1</td>
+                    <td>50</td>
+                    <td>50</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        window.jsPDF = window.jspdf.jsPDF;
+
+        function calculateTotals() {
+            const rows = document.querySelectorAll('#zapatosTable tbody tr');
+            let totalPares = 0;
+            let totalImporte = 0;
+
+            rows.forEach(row => {
+                totalPares += parseInt(row.children[12].textContent) || 0;
+                totalImporte += parseInt(row.children[14].textContent) || 0;
+            });
+
+            return { totalPares, totalImporte };
+        }
+
+        function generatePDF() {
+            const doc = new jsPDF();
+            const table = document.getElementById('zapatosTable');
+            
+            // Configuración del documento
+            doc.setFont('helvetica');
+            doc.setFontSize(20);
+            doc.text('Reporte de Zapatos', 14, 20);
+            
+            // Calcular totales
+            const { totalPares, totalImporte } = calculateTotals();
+            
+            // Configuración de la tabla
+            doc.autoTable({
+                html: '#zapatosTable',
+                startY: 30,
+                styles: {
+                    fontSize: 8,
+                    cellPadding: 2,
+                },
+                columnStyles: {
+                    0: {cellWidth: 15}, // Tarjeta
+                    1: {cellWidth: 15}, // Modelo
+                    2: {cellWidth: 15}, // Color
+                    3: {cellWidth: 15}, // Suela
+                    // Tallas (columnas 4-11) con bordes negros
+                    4: {cellWidth: 10},
+                    5: {cellWidth: 10},
+                    6: {cellWidth: 10},
+                    7: {cellWidth: 10},
+                    8: {cellWidth: 10},
+                    9: {cellWidth: 10},
+                    10: {cellWidth: 10},
+                    11: {cellWidth: 10},
+                    12: {cellWidth: 15}, // Pares
+                    13: {cellWidth: 15}, // Precio
+                    14: {cellWidth: 15}, // Importe
+                },
+                bodyStyles: {
+                    lineColor: [0, 0, 0],
+                    lineWidth: 0,
+                },
+                // Función para personalizar las celdas
+                didParseCell: function(data) {
+                    // Si es una celda del body (no header) y está entre las columnas 5-12
+                    if (data.row.section === 'body' && data.column.index >= 4 && data.column.index < 12) {
+                        data.cell.styles.lineWidth = 0.1; // Borde más grueso
+                        data.cell.styles.lineColor = [0, 0, 0]; // Color negro
+                    }
+                },
+                didDrawPage: function(data) {
+                    // Agregar pie de página
+                    const pageHeight = doc.internal.pageSize.height;
+                    doc.setFontSize(10);
+                    doc.text(`Total Pares: ${totalPares} - Total Importe: $${totalImporte}`, 14, pageHeight - 10);
+                }
+            });
+            
+            // Guardar el PDF
+            doc.save('reporte-zapatos.pdf');
+        }
+    </script>
+</body>
+</html>

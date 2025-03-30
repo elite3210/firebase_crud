@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #heart {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            cursor: pointer;
+        }
+
+        .particle {
+            position: absolute;
+            pointer-events: none;
+            color: red;
+            font-weight: bold;
+            font-size: 20px;
+            transition: all 0.5s ease;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="heart"></div>
+
+    <script>
+        const heart = document.getElementById('heart');
+        let particles = [];
+        let isBreaking = false;
+
+        // Crear partículas iniciales para formar el corazón
+        function createHeartParticles() {
+            const points = [];
+            for (let i = 0; i < Math.PI * 2; i += 0.1) {
+                const t = i * 16;
+                const x = 16 * Math.pow(Math.sin(t), 3);
+                const y = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
+                points.push({ x: x * 3 + 100, y: y * 3 + 100 });
+            }
+
+            points.forEach((point) => {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = point.x + 'px';
+                particle.style.top = point.y + 'px';
+                particle.innerHTML = 'Y';
+                particle.originalX = point.x;
+                particle.originalY = point.y;
+                heart.appendChild(particle);
+                particles.push(particle);
+            });
+        }
+
+        // Función para romper el corazón
+        function breakHeart() {
+            if (isBreaking) return;
+            isBreaking = true;
+
+            const letters = ['Y', 'A', 'M', 'I'];
+            particles.forEach((particle, index) => {
+                const angle = Math.random() * Math.PI * 2;
+                const force = 10 + Math.random() * 5;
+                const velocityX = Math.cos(angle) * force;
+                const velocityY = Math.sin(angle) * force;
+
+                // Cambiar emoji por letra
+                particle.innerHTML = letters[index % letters.length];
+                particle.style.color = '#ff0000';
+
+                // Animación de "sangrado"
+                const animate = () => {
+                    const currentX = parseFloat(particle.style.left);
+                    const currentY = parseFloat(particle.style.top);
+
+                    particle.style.left = (currentX + velocityX) + 'px';
+                    particle.style.top = (currentY + velocityY) + 'px';
+                    particle.style.opacity = parseFloat(particle.style.opacity || 1) - 0.01;
+
+                    if (parseFloat(particle.style.opacity) > 0) {
+                        requestAnimationFrame(animate);
+                    } else {
+                        particle.remove();
+                    }
+                };
+
+                animate();
+            });
+        }
+
+        // Inicializar corazón
+        createHeartParticles();
+
+        // Eventos del mouse
+        heart.addEventListener('mouseenter', breakHeart);
+
+        // Función para reiniciar el corazón
+        function resetHeart() {
+            if (!isBreaking) return;
+
+            heart.innerHTML = '';
+            particles = [];
+            isBreaking = false;
+            createHeartParticles();
+        }
+
+        // Reiniciar después de 5 segundos de romperse
+        heart.addEventListener('mouseenter', () => {
+            setTimeout(resetHeart, 5000);
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplicación de Productos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+        }
+
+        form {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        form label {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        form input {
+            width: calc(50% - 20px);
+            padding: 10px;
+            margin-top: 5px;
+        }
+
+        form button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        form button:hover {
+            background-color: #218838;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Ingreso de Productos</h1>
+        <form id="productForm">
+            <label for="name">Nombre:</label>
+            <input type="text" id="name" required>
+
+            <label for="category">Categoría:</label>
+            <input type="text" id="category" required>
+
+            <label for="price">Precio:</label>
+            <input type="number" id="price" step="0.01" required>
+
+            <button type="submit">Agregar Producto</button>
+        </form>
+
+        <h2>Lista de Productos</h2>
+        <table id="productTable">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Precio</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Filas de productos se insertarán aquí -->
+            </tbody>
+        </table>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('productForm');
+            const tableHead = document.querySelector('#productTable thead tr');
+            const tableBody = document.querySelector('#productTable tbody');
+            const products = {}; // Objeto para almacenar productos únicos
+            const categories = new Set(); // Conjunto para almacenar categorías únicas
+
+            form.addEventListener('submit', (event) => {
+                event.preventDefault();
+
+                const name = document.getElementById('name').value;
+                const category = document.getElementById('category').value;
+                const price = parseFloat(document.getElementById('price').value);
+
+                // Crear clave única para el producto basada en nombre y precio
+                const productKey = `${name}-${price}`;
+
+                // Agregar la categoría al conjunto de categorías
+                categories.add(category);
+
+                // Verificar si el producto ya existe
+                if (!products[productKey]) {
+                    // Si no existe, crear una nueva fila
+                    products[productKey] = {
+                        name,
+                        price,
+                        categories: {}
+                    };
+                }
+
+                // Incrementar el contador de la categoría para este producto
+                const product = products[productKey];
+                if (!product.categories[category]) {
+                    product.categories[category] = 0;
+                }
+                product.categories[category]++;
+
+                // Actualizar la cabecera si la categoría no existe
+                if (!tableHead.querySelector(`th[data-category="${category}"]`)) {
+                    const th = document.createElement('th');
+                    th.textContent = category;
+                    th.setAttribute('data-category', category);
+                    tableHead.appendChild(th);
+                }
+
+                // Actualizar la fila del producto
+                let row = tableBody.querySelector(`tr[data-product-key="${productKey}"]`);
+                if (!row) {
+                    // Si la fila no existe, crear una nueva
+                    row = document.createElement('tr');
+                    row.setAttribute('data-product-key', productKey);
+
+                    const nameCell = document.createElement('td');
+                    nameCell.textContent = product.name;
+                    row.appendChild(nameCell);
+
+                    const priceCell = document.createElement('td');
+                    priceCell.textContent = `$${product.price.toFixed(2)}`;
+                    row.appendChild(priceCell);
+
+                    // Añadir celdas para cada categoría existente
+                    categories.forEach(cat => {
+                        const cell = document.createElement('td');
+                        cell.setAttribute('data-category', cat);
+                        cell.textContent = product.categories[cat] || 0;
+                        row.appendChild(cell);
+                    });
+
+                    tableBody.appendChild(row);
+                } else {
+                    // Si la fila ya existe, actualizar las celdas de categoría
+                    categories.forEach(cat => {
+                        let cell = row.querySelector(`td[data-category="${cat}"]`);
+                        if (!cell) {
+                            cell = document.createElement('td');
+                            cell.setAttribute('data-category', cat);
+                            row.appendChild(cell);
+                        }
+                        cell.textContent = product.categories[cat] || 0;
+                    });
+                }
+
+                // Limpiar formulario
+                form.reset();
+            });
+        });
+
+
+    </script>
+</body>
+
+</html>

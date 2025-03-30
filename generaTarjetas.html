@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="generaTarjetas.css">
-    <link href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css" rel="stylesheet"/>
+    <link href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css" rel="stylesheet" />
     <script src="https://kit.fontawesome.com/434a77214b.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
     <script src="https://parzibyte.github.io/ejemplos-javascript/html-a-pdf/html2pdf.bundle.min.js"></script>
@@ -12,6 +13,47 @@
     <script src="JsBarcode.code128.min.js"></script>
 
     <title>Tarjetas</title>
+
+    <style>
+        /* Estilos generales para la tabla */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        /* Estilos para las celdas de la cabecera */
+        th {
+            background-color: #f2f2f2;
+            text-align: left;
+            padding: 8px;
+        }
+
+        /* Estilos para las celdas del cuerpo */
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        /* Estilos para las filas alternas */
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        /* Estilos para la fila del total general */
+        tr:last-child {
+            font-weight: bold;
+            background-color: #e6e6e6;
+        }
+
+        /* Estilos adicionales que puedes personalizar */
+        .total-column {
+            text-align: right;
+        }
+
+        .highlight {
+            background-color: yellow;
+        }
+    </style>
 </head>
 
 <div class="ventana">
@@ -19,23 +61,35 @@
         <div id="pdfDoc">
             <form id="formulario">
                 <div>
-                <input type="number" id="pares" value="12">
-                <input type="text" id="tarjeta" value="50123" placeholder="tarjeta">
-                <input type="text" id="modelo" value="7052" placeholder="Modelo">
-                <input type="text" id="color" value="Vino" placeholder="Color">
-                <input type="text" id="suela" value="Tabita" placeholder="Suela">
-                <input type="number" id="talla" value="36" placeholder="Talla">
-                <button id="btnGenerar">Generar</button>
+                    <input type="number" id="pares" value="12">
+                    <input type="text" id="tarjeta" value="50123" placeholder="tarjeta">
+                    <input type="text" id="modelo" value="7052" placeholder="Modelo">
+                    <input type="text" id="color" value="Vino" placeholder="Color">
+                    <input type="text" id="suela" value="Tabita" placeholder="Suela">
+                    <input type="number" id="talla" value="36" placeholder="Talla">
+                    <button id="btnGenerar">Generar</button>
                 </div id="mainTable">
-                
+
             </form>
             <table class="miTabla">
-                <thead><tr><th>Serie</th><th>Modelo</th><th>Color</th><th>Suela</th><th>Talla</th></tr></thead>
+                <thead>
+                    <tr>
+                        <th>Serie</th>
+                        <th>Modelo</th>
+                        <th>Color</th>
+                        <th>Suela</th>
+                        <th>Talla</th>
+                    </tr>
+                </thead>
                 <tbody id="contenedor">
-                
+
                 </tbody>
-                <tfoot><tr><td>Total</td></tr></tfoot>
-                
+                <tfoot>
+                    <tr>
+                        <td>Total</td>
+                    </tr>
+                </tfoot>
+
                 <button id="pdfOut">Imprimir</button>
             </table>
         </div>
@@ -48,7 +102,7 @@
         <table class="miTabla2" id="miTabla2"></table>
     </section>
 </div>
-    <script type="module" src="./generaTarjetas.js"></script> 
+<script type="module" src="./generaTarjetas.js"></script>
 </body>
 
 </html>

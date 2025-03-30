@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <table>
+        <thead>
+            <tr>
+                <th rowspan="2">Tarjeta</th>
+                <th rowspan="2">Modelo</th>
+                <th rowspan="2">Color</th>
+                <th rowspan="2">Suela</th>
+                <th colspan="6">Tallas</th>
+                <th rowspan="2">Pares</th>
+                <th rowspan="2">Precio</th>
+                <th rowspan="2">Importe</th>
+            </tr>
+            <tr>
+                <th>33</th>
+                <th>34</th>
+                <th>35</th>
+                <th>36</th>
+                <th>37</th>
+                <th>38</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>50124</td>
+                <td>7053</td>
+                <td>Vino</td>
+                <td>Elena</td>
+                <td>1</td>
+                <td>2</td>
+                <td>3</td>
+                <td>3</td>
+                <td>2</td>
+                <td>1</td>
+                <td>12</td>
+                <td>50</td>
+                <td>600</td>
+            </tr>
+            <tr>
+                <td>50125</td>
+                <td>7053</td>
+                <td>Marron</td>
+                <td>Elena</td>
+                <td>1</td>
+                <td>2</td>
+                <td>3</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>6</td>
+                <td>50</td>
+                <td>300</td>
+            </tr>
+            <tr>
+                <td>50126</td>
+                <td>6053</td>
+                <td>Negro</td>
+                <td>Tabita</td>
+                <td>1</td>
+                <td>2</td>
+                <td>3</td>
+                <td>3</td>
+                <td>2</td>
+                <td>1</td>
+                <td>12</td>
+                <td>50</td>
+                <td>600</td>
+            </tr>
+        </tbody>
+    </table>
+
+
+
+
+    <script>
+        // Definimos el JSON de entrada
+        const datosEntrada = [
+            { "serie": "50125:1", "tarjeta": "50125", "modelo": "7053", "color": "Marron", "suela": "Elena", "talla": 33 },
+            { "serie": "50125:2", "tarjeta": "50125", "modelo": "7053", "color": "Marron", "suela": "Elena", "talla": 34 },
+            { "serie": "50125:3", "tarjeta": "50125", "modelo": "7053", "color": "Marron", "suela": "Elena", "talla": 34 },
+            { "serie": "50125:4", "tarjeta": "50125", "modelo": "7053", "color": "Marron", "suela": "Elena", "talla": 35 },
+            { "serie": "50125:5", "tarjeta": "50125", "modelo": "7053", "color": "Marron", "suela": "Elena", "talla": 35 },
+            { "serie": "50125:6", "tarjeta": "50125", "modelo": "7053", "color": "Marron", "suela": "Elena", "talla": 35 },
+            { "serie": "50124:1", "tarjeta": "50124", "modelo": "7053", "color": "Vino", "suela": "Elena", "talla": 33 },
+            { "serie": "50124:2", "tarjeta": "50124", "modelo": "7053", "color": "Vino", "suela": "Elena", "talla": 34 },
+            { "serie": "50124:3", "tarjeta": "50124", "modelo": "7053", "color": "Vino", "suela": "Elena", "talla": 34 },
+            { "serie": "50124:4", "tarjeta": "50124", "modelo": "7053", "color": "Vino", "suela": "Elena", "talla": 35 },
+            { "serie": "50124:5", "tarjeta": "50124", "modelo": "7053", "color": "Vino", "suela": "Elena", "talla": 35 },
+            { "serie": "50124:6", "tarjeta": "50124", "modelo": "7053", "color": "Vino", "suela": "Elena", "talla": 35 },
+            { "serie": "50124:7", "tarjeta": "50124", "modelo": "7053", "color": "Vino", "suela": "Elena", "talla": 36 },
+            { "serie": "50124:8", "tarjeta": "50124", "modelo": "7053", "color": "Vino", "suela": "Elena", "talla": 36 },
+            { "serie": "50124:9", "tarjeta": "50124", "modelo": "7053", "color": "Vino", "suela": "Elena", "talla": 36 },
+            { "serie": "50124:10", "tarjeta": "50124", "modelo": "7053", "color": "Vino", "suela": "Elena", "talla": 37 },
+            { "serie": "50124:11", "tarjeta": "50124", "modelo": "7053", "color": "Vino", "suela": "Elena", "talla": 37 },
+            { "serie": "50124:12", "tarjeta": "50124", "modelo": "7053", "color": "Vino", "suela": "Elena", "talla": 38 },
+            { "serie": "50126:1", "tarjeta": "50126", "modelo": "6053", "color": "Negro", "suela": "Tabita", "talla": 33 },
+            { "serie": "50126:2", "tarjeta": "50126", "modelo": "6053", "color": "Negro", "suela": "Tabita", "talla": 34 },
+            { "serie": "50126:3", "tarjeta": "50126", "modelo": "6053", "color": "Negro", "suela": "Tabita", "talla": 34 },
+            { "serie": "50126:4", "tarjeta": "50126", "modelo": "6053", "color": "Negro", "suela": "Tabita", "talla": 35 },
+            { "serie": "50126:5", "tarjeta": "50126", "modelo": "6053", "color": "Negro", "suela": "Tabita", "talla": 35 },
+            { "serie": "50126:6", "tarjeta": "50126", "modelo": "6053", "color": "Negro", "suela": "Tabita", "talla": 35 },
+            { "serie": "50126:7", "tarjeta": "50126", "modelo": "6053", "color": "Negro", "suela": "Tabita", "talla": 36 },
+            { "serie": "50126:8", "tarjeta": "50126", "modelo": "6053", "color": "Negro", "suela": "Tabita", "talla": 36 },
+            { "serie": "50126:9", "tarjeta": "50126", "modelo": "6053", "color": "Negro", "suela": "Tabita", "talla": 36 },
+            { "serie": "50126:10", "tarjeta": "50126", "modelo": "6053", "color": "Negro", "suela": "Tabita", "talla": 37 },
+            { "serie": "50126:11", "tarjeta": "50126", "modelo": "6053", "color": "Negro", "suela": "Tabita", "talla": 37 },
+            { "serie": "50126:12", "tarjeta": "50126", "modelo": "6053", "color": "Negro", "suela": "Tabita", "talla": 38 }
+        ];
+
+
+        function groupByTallas(ArrayObj) {
+            // Creamos un objeto para almacenar la agrupación de datos
+            const agrupadosPorTarjeta = {};
+
+            // Recorremos cada elemento del JSON de entrada
+            datosEntrada.forEach(item => {
+                // Obtenemos la tarjeta actual
+                const tarjeta = item.tarjeta;
+
+                // Si la tarjeta no existe en el objeto agrupadosPorTarjeta, la inicializamos
+                if (!agrupadosPorTarjeta[tarjeta]) {
+                    agrupadosPorTarjeta[tarjeta] = {
+                        //serie: item.serie.split(':')[0], // Tomamos solo el número de la serie
+                        tarjeta: item.tarjeta,
+                        modelo: item.modelo,
+                        color: item.color,
+                        suela: item.suela,
+                        tallas: {}
+                    };
+                }
+
+                // Incrementamos el contador de la talla actual
+                const tallaKey = `talla${item.talla}`;
+                if (agrupadosPorTarjeta[tarjeta].tallas[tallaKey]) {
+                    agrupadosPorTarjeta[tarjeta].tallas[tallaKey]++;
+                } else {
+                    agrupadosPorTarjeta[tarjeta].tallas[tallaKey] = 1;
+                }
+            });
+
+            // Convertimos el objeto agrupado en un array de objetos
+            const datosSalida = Object.values(agrupadosPorTarjeta).map(item => {
+                // Combinamos las propiedades de tallas con el objeto principal
+                return { ...item, ...item.tallas };
+            });
+
+            // Eliminamos la propiedad tallas del objeto final
+            datosSalida.forEach(item => {
+                delete item.tallas;
+            });
+
+            // Imprimimos el resultado por consola
+            //console.log(JSON.stringify(datosSalida, null, 2));
+            return datosSalida
+        }
+
+        console.log('groupByTallas:', groupByTallas(datosEntrada));
+
+    </script>
+</body>
+
+</html>

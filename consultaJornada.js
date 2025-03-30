@@ -1,27 +1,31 @@
 import { jornadaRef, deleteTask, updateTask, guardarBoletaPago, traerUnNumeracion, updateNumeracion, guardarTransaccionesLaboral } from './firebase.js'
-import { getDocs, query, where, orderBy } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js";
+import { getDocs, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js";
+import { Datatable } from './dataTable.js';
+import { showMessage } from "./src/app/showMessage.js";
 
 console.log('Modulo consultaJornada.js trabajando... Inicio:')
 
+const queryJornada = query(jornadaRef, where("payStatus", "==", false), orderBy("title", "desc"));
+const querySnapshot = await getDocs(queryJornada);
+console.log('querySnapshot:', querySnapshot);
+
 const numeroTicket = await traerUnNumeracion('Ticket');
-const queryJornada = await getDocs(query(jornadaRef, where("payStatus", "==", false)), orderBy("title", "desc"));
-//const queryJornada      = await getDocs(query(jornadaRef,where("payStatus", "==", false)),orderBy("title", "desc"));
-
-
 const tabla = document.getElementById('tabla')
 const cajaOpciones = document.getElementById('opciones')
 const listaSeleccion = document.getElementById('colaborador')
-const cajaFormularios = document.getElementById('cajaFormlarios')
 const tareaForm = document.getElementById('tarea-form')
 
+
 let editStatus = false;
-const personaFiltrada = '';
 let id = '';          //por comodidad se volvio el id una variable global, hay que corregir que sea local y pasarlo por e.target.dataset
-let objetosLS = '';
+
+let objetosLS = JSON.parse(localStorage.getItem('jornadaDatos'));
 let objetosLSFiltrado = '';
 let objetosLSBoleta = [];
+let objetosNoSeleccionados = [];
 let tiempoTotBoleta = 0;
-
+let selectedEmployee = '';
+let objetosProcesados = '';
 
 
 //Datos a personalizar por pagina
@@ -36,20 +40,38 @@ const tarifaJornada = [
     { tarifa: 4.9144, 'dni': '42231772', 'nombre': 'Alison', horario: 'regular' },
     { tarifa: 3.6857, 'dni': '48256517', 'nombre': 'Madeleine', horario: 'regular' },
     { tarifa: 4.063, 'dni': '80400965', 'nombre': 'Oswaldo', horario: 'regular' },
-    { tarifa: 1, 'dni': '42934967', 'nombre': 'Giovanna', horario: 'regular' }
+    { tarifa: 1, 'dni': '42934967', 'nombre': 'Giovanna', horario: 'regular' },
+    { tarifa: 3.6857, 'dni': '74702640', 'nombre': 'Mirella', horario: 'regular' },
+    { tarifa: 3.8787, 'dni': '77269606', 'nombre': 'Paola', horario: 'regular' }
   ]
   
-  const tarifaJornadaFeriado = [
+  const tarifaJornadaNoche = [
     { tarifa: 4.5455, 'dni': '72091168', 'nombre': 'Angela', horario: 'noche' },
     { tarifa: 4.5455, 'dni': '71338629', 'nombre': 'Alexandra', horario: 'noche' },
     { tarifa: 4.5455, 'dni': '71338629', 'nombre': 'Xiomara', horario: 'noche' },
-    { tarifa: 4.091, 'dni': '09551196', 'nombre': 'Rocio', horario: 'noche' },
+    { tarifa: 4.5455, 'dni': '09551196', 'nombre': 'Rocio', horario: 'noche' },
     { tarifa: 4.091, 'dni': '70528292', 'nombre': 'Heinz', horario: 'noche' },
     { tarifa: 4.5455, 'dni': '10216274', 'nombre': 'Mariela', horario: 'noche' },
     { tarifa: 4.5455, 'dni': '42231772', 'nombre': 'Elí', horario: 'noche' },
     { tarifa: 4.5455, 'dni': '42231772', 'nombre': 'Alison', horario: 'noche' },
     { tarifa: 4.5455, 'dni': '80400965', 'nombre': 'Oswaldo', horario: 'noche' },
-    { tarifa: 4.5455, 'dni': '48256517', 'nombre': 'Madeleine', horario: 'noche' }
+    { tarifa: 4.5455, 'dni': '48256517', 'nombre': 'Madeleine', horario: 'noche' },
+    { tarifa: 4.5455, 'dni': '77269606', 'nombre': 'Paola', horario: 'noche' }
+  ]
+  
+  const tarifaJornadaFeriado = [
+    { tarifa: 4.5455, 'dni': '72091168', 'nombre': 'Angela', horario: 'feriado' },
+    { tarifa: 4.5455, 'dni': '71338629', 'nombre': 'Alexandra', horario: 'feriado' },
+    { tarifa: 4.5455, 'dni': '71338629', 'nombre': 'Xiomara', horario: 'feriado' },
+    { tarifa: 6.7187, 'dni': '09551196', 'nombre': 'Rocio', horario: 'feriado' },
+    { tarifa: 4.091, 'dni': '70528292', 'nombre': 'Heinz', horario: 'feriado' },
+    { tarifa: 7.190, 'dni': '10216274', 'nombre': 'Mariela', horario: 'feriado' },
+    { tarifa: 4.5455, 'dni': '42231772', 'nombre': 'Elí', horario: 'feriado' },
+    { tarifa: 4.5455, 'dni': '42231772', 'nombre': 'Alison', horario: 'feriado' },
+    { tarifa: 4.5455, 'dni': '80400965', 'nombre': 'Oswaldo', horario: 'feriado' },
+    { tarifa: 4.5455, 'dni': '48256517', 'nombre': 'Madeleine', horario: 'feriado' },
+    { tarifa: 4.5455, 'dni': '74702640', 'nombre': 'Mirella', horario: 'feriado' },
+    { tarifa: 4.5455, 'dni': '77269606', 'nombre': 'Paola', horario: 'feriado' }
   ]
 
 const tarifaJornada_19_11_23 = [
@@ -69,41 +91,149 @@ const tarifaJornadaAnterior = [
     { 'tarifa': 3.3594, 'dni': '09551196', 'nombre': 'Rocio', 'turno': 'dia' },
     { 'tarifa': 3.0000, 'dni': '70528292', 'nombre': 'Heinz', 'turno': 'dia' },
     { 'tarifa': 3.3594, 'dni': '10216274', 'nombre': 'Mariela', 'turno': 'dia' },
-    { 'tarifa': 4.9144, 'dni': '42231772', 'nombre': 'Elí', 'turno': 'dia' }
+    { 'tarifa': 4.9144, 'dni': '42231772', 'nombre': 'Elí', 'turno': 'dia' },
+    { 'tarifa': 3.6857, 'dni': '74702640', 'nombre': 'Mirella', 'turno': 'regular' }
 ]
 
 //console.log('Datos traidos de Firestore:',queryJornada)
+datosFirebase();
 
-datosFirebase()
-pintarTabla(objetosLS, tabla)
-listaSeleccion.addEventListener('blur', filtrarTabla)
+listaSeleccion.addEventListener('blur', filtrarTabla);
 
 function datosFirebase() {//trae los datos de firebase
-    let objetoJornada = []
+    let objetoJornada = [];
 
-    queryJornada.forEach((doc) => {
-
-        const objeto = doc.data()
-        objeto.id = doc.id
-        objetoJornada.push(objeto)
-        //console.log('objJornada...:',objeto)
-    })
-    //console.log('objJornada:',objetoJornada)
-    let objetosProcesados = procesarDatos(objetoJornada)
-    sincronizarLocalStorage(objetosProcesados)
+    querySnapshot.forEach((doc) => {
+        const objeto = {};
+        objeto['id'] = doc.id;
+        objeto['values'] = doc.data();
+        objetoJornada.push(objeto);
+    });
+    //objetoJornada.sort((a,b)=> a['values'].description-b['values'].description)
+    objetosProcesados = procesarDatos(objetoJornada);
+    sincronizarLocalStorage(objetosProcesados);
+    console.log('items:', objetoJornada);
+    pintarTabla(objetosProcesados, tabla);
 }
+//console.log('tablaSemana(objetosLS):',tablaSemana(objetosLS));
+
+const titulo = { NOMBRE: 'nombrePersona', LUNES: 'Lunes', MARTES: 'Martes', MIERCOLES: 'Miercoles', JUEVES: 'Jueves', VIERNES: 'Viernes', SABADO: 'Sabado', DOMINGO: 'Domingo', IMPORTE: 'total' };
+
+const dt = new Datatable('#dataTable', []);
+dt.setData(planillaSemanal(objetosLS), titulo);
+dt.makeTable2();
+
+
+function planillaSemanal(items) {
+    let personasUnicas = eliminarDuplicados(items, 'description');//array de nombres de personas
+    let arraySemana = [];
+    let contadorId = 1;
+    //
+    for (const persona of personasUnicas) {
+        let filaPersona = {};
+        filaPersona.id = contadorId;
+        filaPersona.values = {};
+        filaPersona['values'].nombrePersona = persona;
+        let itemPersona = items.filter(item => item['values'].description == persona);//separamos todos los datos de una persona,devuelve un array de objetos
+        let diasPersona = groupBy(itemPersona, 'nombreDia', 'importe');//devuelve un array objetos
+        console.log(`diasPersona-${persona}:`, diasPersona);
+        filaPersona['values'].total = diasPersona.reduce((totalizador, obj) => totalizador + obj['values'].importe, 0);
+
+        let diasSemana = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'];
+        //rellenamos de cero la tabla
+        for (const dia of diasSemana) {
+            filaPersona['values'][dia] = 0;
+        }
+        //rellenamos cuando hay dato existente
+        for (const objDia of diasPersona) {
+            filaPersona['values'][objDia['values'].nombreDia] = objDia['values'].importe;//extraemos los valores de cada dia de cada objeto para juntar un solo objeto con todos los dias
+        }
+
+        arraySemana.push(filaPersona);
+        contadorId++;
+    };
+
+    //agregamos una fila final y en este los totales de cada columna.
+    let totalPorDia = groupBy(items, 'nombreDia', 'importe');
+    let filaPersona = {};
+    filaPersona.id = contadorId + 1;
+    filaPersona.values = {};
+    filaPersona['values'].nombrePersona = 'TotalDia';
+    filaPersona['values'].total = totalPorDia.reduce((totalizador, obj) => totalizador + obj['values'].importe, 0);
+    for (const objDia of totalPorDia) {
+        filaPersona['values'][objDia['values'].nombreDia] = objDia['values'].importe;
+    };
+
+    arraySemana.push(filaPersona);
+    return arraySemana;
+};
+
+function groupBy(items, clave, concepto) {//funcion que recibe un lista de objetos y agrupa segun clave,porejemplo el mes y por variable importe iguala concepto en estecaso
+    let itemsAgrupado = []//agrupa objetos en cada mes = clave  e importes=concepto ejemplo: {"id": 1,"values": {"mes": "Setiembre","concepto": 30113}}
+    let elementosUnicos = eliminarDuplicados(items, clave);//de los items elimina los meses duplicados=clave
+
+    let contador = 1;
+    for (const valor of elementosUnicos) {//coge cada valor=mes y compara para extraer el valor
+        let objeto = {}
+        let acumulador = 0;
+
+        for (const fila of items) {
+            if (fila['values'][clave] == valor) {
+                acumulador += fila['values'][concepto];
+            };
+        };
+        objeto.id = contador;
+        objeto.values = {};
+        objeto.values[clave] = valor;
+        objeto.values[concepto] = Math.round(acumulador);
+        itemsAgrupado.push(objeto);
+        contador++;
+        //queda asi ejemplo: {"id": 1,"values": {"mes": "Setiembre","concepto": 3013}}
+        //queda asi ejemplo: {"id": 2,"values": {"mes": "octubre","concepto": 3013}}
+        //queda asi ejemplo: {"id": 3,"values": {"mes": "noviembre","concepto": 3013}}
+        //queda asi ejemplo: {"id": 4,"values": {"mes": "diciembre","concepto": 3013}}
+    }
+    //console.log('dentro de la funcion groupBy:itemsAgrupado...final');
+    return itemsAgrupado;
+};
+
+function eliminarDuplicados(arrayObjetos, clave) {//recibe una lista de categoria duplicadas y reduce a unicos
+    let grupos = [];//para separar el atributo a reducir meses repetidos
+    let elementosUnicos = [];//elementos unicos o meses unicos
+
+    for (const fila of arrayObjetos) {//extraemos los valores de la categoria mes en toda las filas, objetivo por fila inclusive si se repite
+        grupos.push(fila['values'][clave]);
+    };
+
+    for (let i = 0; i < grupos.length; i++) {//reducimos los meses a elementos unicos
+        let esDuplicado = false;
+        for (let j = 0; j < elementosUnicos.length; j++) {//recorre toda la lista de elemntos unicos por cada fila de grupos
+            if (grupos[i] == elementosUnicos[j]) {
+                esDuplicado = true;
+                break;
+            };
+        }
+
+        if (!esDuplicado) {//solo agrega los que no aparecen en elemento unicos
+            elementosUnicos.push(grupos[i]);
+        }
+    }
+    return elementosUnicos;
+};
 
 //guardarTransaccionesLaboral = (fechaBoleta,dniBoleta,numBoleta,creado,descripcion,tipoTransaccion,importe)
 
 function pintarTabla(objetos, contenedor) {//crea tablas
+    clearHTML(tabla);
     pintarFilas(objetos, contenedor)
-    eventoClickFila()
+    //eventoClickFila()
 }
 
-function pintarFilas(objetos, contenedor) {//crea filas de tabla y coloca datos de local Storege
-    objetos.sort((a, b) => b.title - a.title);//metodo para ordenar array de objetos
-    let tiempoTotal = objetos.reduce((total, obj) => total + obj.tiempo, 0)
-    let importeTotal = objetos.reduce((total, obj) => total + obj.importe, 0)//buscar la forma de hacer ambas operaciones en uno
+function pintarFilas(objetos, contenedor) {//crea filas de tabla y coloca datos de local Storage
+    //objetos.sort((a, b) => b.title - a.title);//metodo para ordenar array de objetos
+    //console.log('objetos:', objetos)
+    let tiempoTotal = objetos.reduce((total, obj) => total + obj['values'].tiempo, 0)
+    let importeTotal = objetos.reduce((total, obj) => total + obj['values'].importe, 0)//buscar la forma de hacer ambas operaciones en uno
     //console.log('ordenado??:',objetos)
     console.log('tiempototal:', tiempoTotal)
     const thead = document.createElement('thead')
@@ -111,7 +241,7 @@ function pintarFilas(objetos, contenedor) {//crea filas de tabla y coloca datos 
 
     const tfoot = document.createElement('tfoot')
 
-    tfoot.innerHTML = `<tr><th></th><th></th><th>Horas</th><th id="tiempoTotal">${tiempoTotal}</th><th></th><th>Importe S/</th><th id="importeTotal">${importeTotal}</th></tr>`
+    tfoot.innerHTML = `<tr><th></th><th></th><th>Horas</th><th id="tiempoTotalVarios">${tiempoTotal}</th><th></th><th></th><th>Importe S/</th><th id="importeTotalVarios">${importeTotal}</th></tr>`
     const tbody = document.createElement('tbody')
     tbody.setAttribute('id', "jornadaContainer")
     tbody.setAttribute('class', "caja")
@@ -122,13 +252,13 @@ function pintarFilas(objetos, contenedor) {//crea filas de tabla y coloca datos 
         fila.setAttribute('data-id', obj.id);
 
         fila.innerHTML = `<input type="checkbox" class="check">
-                        <td>${obj.horario}</td>
-                        <td>${obj.description}</td>
-                        <td>${obj.nombreDia}</td>
-                        <td>${obj.title}</td>
-                        <td>${obj.salida}</td>
-                        <td>${obj.hora}</td>
-                        <td>${Number(obj.importe).toFixed(2)}</td>
+                        <td>${obj['values'].horario}</td>
+                        <td>${obj['values'].description}</td>
+                        <td>${obj['values'].nombreDia}</td>
+                        <td>${obj['values'].title}</td>
+                        <td>${obj['values'].salida}</td>
+                        <td>${obj['values'].hora}</td>
+                        <td>${Number(obj['values'].importe).toFixed(2)}</td>
                         `
         tbody.appendChild(fila);
     })
@@ -137,91 +267,39 @@ function pintarFilas(objetos, contenedor) {//crea filas de tabla y coloca datos 
     contenedor.appendChild(tfoot)
 }
 
+
 function filtrarTabla() {//filtra datos de tabla en respuesta al datalist
+    const modalBody = document.querySelector('.modal-body')
     console.log('se ejecuto blur...')
-    //console.log('evento:',e)
-    let seleccion = listaSeleccion.value;
-    console.log('persona:', seleccion)
-    objetosLSFiltrado = objetosLS.filter(elemt => elemt.description == seleccion)
-    //console.log('filtrado',objetosLSFiltrado)
-    limpiarFormulario()
-    limpiarTabla()
+    objetosLSBoleta = [];
+    selectedEmployee = '';
+    selectedEmployee = listaSeleccion.value;
+    console.log('Empleado seleccionado:', selectedEmployee)
+    
+    objetosLSFiltrado = objetosLS.filter(elemt => elemt['values'].description == selectedEmployee)
+
+    clearHTML(tareaForm);//elimina la el formulario de edicion
+    clearHTML(tabla);
+    clearHTML(modalBody);
     pintarFilas(objetosLSFiltrado, tabla)
     eventoClickFila()
-
 }
 
-function eventoClickFila() {//pinta la fila si se hace check
-    let filaSeleccionada = false;
-    //const btnCheck = jornadaContainer.querySelectorAll('.check')
+function eventoClickFila() {//pinta la fila y cambia a clase filaseleccionada si se hace check
+
     const btnFila = jornadaContainer.querySelectorAll('.fila')
     btnFila.forEach(fila => {
         fila.addEventListener('click', (e) => {
-            console.log('hijo de fila:', fila.firstChild.checked)
-
-            /*
-            if(!filaSeleccionada){
-                fila.setAttribute('class','filaSeleccionada')
-                id = fila.getAttribute('data-id')
-                console.log('diste click en fila:',id)
-                pintarOpciones(id)
-                filaSeleccionada=true;
-            }else{
-                if(fila.getAttribute('class')=='filaSeleccionada'){
-                    
-                        console.log('fila.getAttribute:',fila.getAttribute('class'))
-                        fila.setAttribute('class','fila')
-                        filaSeleccionada=false;
-                    
-                }
-            }
-            */
+            //console.log('hijo de fila:', fila.firstChild.checked)
 
             if (fila.firstChild.checked) {
                 fila.setAttribute('class', 'filaSeleccionada')
                 id = fila.getAttribute('data-id')
-                console.log('diste click en fila:', id)
+                //console.log('diste click en fila:', id)
                 pintarOpciones(id)
             } else {
                 fila.setAttribute('class', 'fila')
             }
-
-
-            /*//esta funcion pinta una unica fila yy se desactiva unicamente si se da click en la fila seleccionada
-            function eventoClickFila(){//pinta la fila si se hace check
-    let filaSeleccionada=false;
-    //const btnCheck = jornadaContainer.querySelectorAll('.check')
-    const btnFila = jornadaContainer.querySelectorAll('.fila')
-    btnFila.forEach(fila=>{
-        fila.addEventListener('click',(e)=>{
-            console.log('hijo de fila:',fila.firstChild.checked)
-            if(!filaSeleccionada){
-                fila.setAttribute('class','filaSeleccionada')
-                id = fila.getAttribute('data-id')
-                console.log('diste click en fila:',id)
-                pintarOpciones(id)
-                filaSeleccionada=true;
-            }else{
-                if(fila.getAttribute('class')=='filaSeleccionada'){
-                    
-                        console.log('fila.getAttribute:',fila.getAttribute('class'))
-                        fila.setAttribute('class','fila')
-                        filaSeleccionada=false;
-                    
-                }
-            }
-            /*
-            if(fila.firstChild.checked){
-                fila.setAttribute('class','filaSeleccionada')
-                id = fila.getAttribute('data-id')
-                console.log('diste click en fila:',id)
-                pintarOpciones(id)
-            }else{fila.setAttribute('class','fila')
-            }
-            */
-
-
-
         })
     })
 }
@@ -229,15 +307,15 @@ function eventoClickFila() {//pinta la fila si se hace check
 function pintarOpciones(id) {//crea la cinta de opciones para la fila seleccionada
 
     cajaOpciones.innerHTML = `
-                        <button class="btn-boleta fa-solid fa-receipt" data-id='${id}'></button>
+                        <button class="btn-boleta fa-solid fa-receipt" data-id='${id}' data-bs-toggle="modal" data-bs-target="#myModal"></button>
                         <button class ='btn-delete fa fa-trash' data-id='${id}'></button>
-                        <button class ='btn-pagar fa fa-hand-holding-dollar' data-id='${id}' value='${id}' color='transparent'></button>
+                        <button class ='btn-pagar fa fa-hand-holding-dollar' data-id='${id}'  data-bs-toggle="modal" data-bs-target="#myModal" value='${id}' color='transparent'></button>
                         <button class ='btn-edit fa-solid fa-pen-to-square' color='transparent' data-id='${id}'></button>
                         `
-    eventoClickPagar()
-    eventoClickEliminar()
-    eventoClickEditar()
-    eventoClickBoleta()
+    eventoClickPagar();
+    eventoClickEliminar();
+    eventoClickEditar();
+    eventoClickBoleta();
 }
 
 function eventoClickEliminar() {//elimina fila selecionada, error: despues de eliminar no se puede hace boleta
@@ -250,12 +328,12 @@ function eventoClickEliminar() {//elimina fila selecionada, error: despues de el
             deleteTask(id)      //eliminamos en la BD Firestore
 
             let objetosLSModificado = objetosLS.filter(elemt => elemt.id != id)
-            sincronizarLocalStorage(objetosLSModificado)
-            limpiarTabla()
+            sincronizarLocalStorage(objetosLSModificado);
+            clearHTML(tabla);
             pintarFilas(objetosLSModificado, tabla)
         })
     })
-}
+};
 
 function eventoClickPagar() {
     const btnPagar = cajaOpciones.querySelectorAll('.btn-pagar')
@@ -268,14 +346,14 @@ function eventoClickPagar() {
 
             let objetosLSModificado = objetosLS.filter(elemt => elemt.id != id);
             sincronizarLocalStorage(objetosLSModificado)
-            limpiarTabla()
+            clearHTML(tabla);
             //let objetosLSFiltrado2=objetosLSFiltrado.filter(elemt => elemt.id != id)
             pintarTabla(objetosLS, tabla) //vuelve a pintar las filas pero no agrega los escuchas de eventos los addEventListener
             //cajaOpciones.innerHTML=''
 
         })
     })
-}
+};
 
 function eventoClickEditar() {//error: despues de eliminar no se puede hace boleta
 
@@ -289,20 +367,28 @@ function eventoClickEditar() {//error: despues de eliminar no se puede hace bole
                 pintarFrmEdicion(id) //pinta formulario con entradas vacias y boton con id
                 //const doc =await traerTask(e.target.dataset.id);
                 //let obj=doc.data()
-                let objetoEncontradoLS = objetosLS.filter(obj => obj.id == id)
-                console.log('objeto a editar:', objetoEncontradoLS[0])
+                let objetoEncontradoLS = objetosLS.filter(obj => obj.id == id)[0];
+                console.log('objeto a editar:', objetoEncontradoLS)
 
-                tareaForm['tarea-title'].value = objetoEncontradoLS[0].title;
-                tareaForm['tarea-description'].value = objetoEncontradoLS[0].description;
-                tareaForm['salida-title'].value = objetoEncontradoLS[0].salida;
-                tareaForm['horario'].value = objetoEncontradoLS[0].horario;
+                tareaForm['tarea-title'].value = objetoEncontradoLS['values'].title;
+                tareaForm['tarea-description'].value = objetoEncontradoLS['values'].description;
+                tareaForm['salida-title'].value = objetoEncontradoLS['values'].salida;
+                tareaForm['horario'].value = objetoEncontradoLS['values'].horario;
+                tareaForm['payStatus'].value = objetoEncontradoLS['values'].payStatus;
 
                 editStatus = true;
                 tareaForm['boton-task-save'].innerHTML = 'Actualizar'
             })
         });
     } else { console.log('no puedes editar...') }
-}
+};
+
+function eventoClickBoleta() {
+    const btnBoleta = cajaOpciones.querySelectorAll('.btn-boleta')
+    btnBoleta.forEach(btn => {
+        btn.addEventListener('click', crearBoleta)
+    })
+};
 
 function pintarFrmEdicion(id) {
 
@@ -315,6 +401,7 @@ function pintarFrmEdicion(id) {
                                 <option value="Xiomara">
                                 <option value="Heinz">
                                 <option value="Elí">
+                                <option value="Mirella">
                             </datalist>
                             <div class="cajota">
                                 <div class="cajita2">
@@ -328,7 +415,9 @@ function pintarFrmEdicion(id) {
                                     <label for="tarea-description">Nombre:</label>
                                     <input type="text" list="colaborador" name="car" id="tarea-description" required>
                                     <label for="horario">Horario:</label>
-                                    <input type="text"id="horario">
+                                    <input type="text" id="horario">
+                                    <label for="payStatus">payStatus:</label>
+                                    <input type="text" id="payStatus">
                                 </div>
                                     <div id="container-btn" class="container-btn">
                                         <button id="boton-task-save" class="boton" data-id=${id}>Guardar</button> 
@@ -337,7 +426,7 @@ function pintarFrmEdicion(id) {
                             `
     tareaForm.innerHTML = entradasFormulario
     tareaForm.addEventListener('submit', registrarFrmEdicion)
-}
+};
 
 function registrarFrmEdicion(e) {
     e.preventDefault()  //cancela envio datos por metodo post y su posterior reset
@@ -351,7 +440,6 @@ function registrarFrmEdicion(e) {
 
     if (!editStatus) {
         console.log('guardando...')
-
         guardarTask(titulo.value, descripcion.value, salida.value, payStatus)//false el pago, por defecto al registrar por primera vez
     } else {
         console.log('actualizando Firebase...', id)
@@ -361,144 +449,98 @@ function registrarFrmEdicion(e) {
         console.log('filtrando..', id)
         //actualizando local storage
         let objetosLSActualizado = objetosLS.filter(elemt => elemt.id != id);
-        objetosLSActualizado.push({ title: titulo.value, description: descripcion.value, salida: salida.value, payStatus: payStatus, id: id })
+        let objetoEditado = [{ title: titulo.value, description: descripcion.value, salida: salida.value, payStatus: payStatus, id: id }];
+
+        objetosLSActualizado.push(procesarDatos(objetoEditado))
         sincronizarLocalStorage(objetosLSActualizado)
+        objetosLS = JSON.parse(localStorage.getItem('jornadaDatos'));
         console.log('sincronizado LSActualizado..')
 
     }
     tareaForm.reset()
-    limpiarFormulario()
-    limpiarTabla()
+    clearHTML(tareaForm);
+    clearHTML(tabla);
     pintarFilas(objetosLS, tabla) //vuelve a pintar las filas pero no agrega los escuchas de eventos los addEventListener
-}
+};
 
-function limpiarTabla() {
-    //forma lenta de limpiar
-    //contenedorCarrito.innerHTML=''
-    while (tabla.firstChild) {
-        tabla.removeChild(tabla.firstChild)
-    }
-}
-
-function limpiarElemento(elemento) {
-    console.log('dentro de limpiar elemto...')
-    //forma lenta de limpiar
-    //contenedorCarrito.innerHTML=''
+function clearHTML(elemento) {
     while (elemento.firstChild) {
         elemento.removeChild(elemento.firstChild)
     }
-}
+};
 
 function crearBoleta() {//crea una ventana emergente de boleta
-    const filasSeleccionadas = jornadaContainer.querySelectorAll('.filaSeleccionada')//selecciona todas las filas seleccionadas
+        try {
+            const filasSeleccionadas = jornadaContainer.querySelectorAll('.filaSeleccionada')//selecciona todas las filas seleccionadas
+        const filasNoSeleccionadas = jornadaContainer.querySelectorAll('.fila')//selecciona todas las filas seleccionadas
 
-    filasSeleccionadas.forEach((fila) => {
-        let id = fila.getAttribute('data-id')
-        objetosLSBoleta.push(objetosLS.filter(obj => obj.id == id)[0])
-    })
-    pintarFormularioBoleta(objetosLSBoleta)
+        filasSeleccionadas.forEach((fila) => {
+            let id = fila.getAttribute('data-id');
+            objetosLSBoleta.push(objetosLS.filter(obj => obj.id == id)[0]);
+        })
+    
+        filasNoSeleccionadas.forEach((fila) => {
+            let id = fila.getAttribute('data-id');
+            objetosNoSeleccionados.push(objetosLS.filter(obj => obj.id == id)[0]);
+        })
+        pintarFormularioBoleta(objetosLSBoleta)
+        } catch (error) {
+            console.log('algo esta fallando en function crearBoleta()',error);
+            
+        }
+    
+        
+  
+    
+
 }
 
-function eventoClickBoleta() {
 
-    const btnBoleta = cajaOpciones.querySelectorAll('.btn-boleta')
-    btnBoleta.forEach(btn => {
-        btn.addEventListener('click', crearBoleta)
-    })
-}
-
-function limpiarFormulario() {
-    tareaForm.innerHTML = ''
-}
-
-function pintarFormularioBoleta(objetosLSBoleta) {
-    tiempoTotBoleta = objetosLSBoleta.reduce((total, obj) => total + obj.tiempo, 0)
-    const formularioBoleta = document.createElement('section')
-    formularioBoleta.setAttribute('class', 'vtnEmergente')
-
-
-    let entradasFormulario = `
-                            <datalist id="colaboradorList">
-
-                            </datalist>
-                            <datalist id="Colaboradores">
-                                <option value='09551196'>Rocio</option>
-                                <option value='10216274'>Mariela</option>
-                                <option value='72091168'>Angela</option>
-                                <option value='80400965'>Oswaldo</option>
-                                <option value='70528292'>Heinz</option>
-                                <option value='71338629'>Alexandra</option>
-                                <option value='0'>Xiomara</option>
-                                <option value='48256517'>Madeleine</option>
-                            </datalist>
-                            <div class="boletaFormulario">
-                                <h1>^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</h1>
-                                <div class="ctnInpBoleta">
+function pintarFormularioBoleta(arrayObj) {
+    tiempoTotBoleta = arrayObj.reduce((total, obj) => total + obj['values'].tiempo, 0)
+    console.log('selectedEmployee:', selectedEmployee);
+    if (selectedEmployee) {
+        let entradasFormulario = `
+                            <div class="boletaFormulario" id="boletaFormulario">
+                                <form class="ctnInpBoleta" id="formTicket">
                                     <label for="dni">DNI:</label>
                                     <input type="text" class= "inpBoleta" min="8"  id="dniBoleta" list="Colaboradores" required><br>
                                     <label for="nombre">Nombre:</label>
                                     <input type="text" class= "inpBoleta" list="colaboradorList" name="persona" id="nomBoleta" required><br>
-                                    <label for="tarea-title" required>Numero Ticket :</label>
-                                    <input class="boleta inpBoleta" type="text" id='numeroTicket'><br>
-                                    <label for="salida-title" required>Fecha :</label>
-                                    <input class="fecha2 inpBoleta"  type="date" id='fechaBoleta'>
-                                </div>
-                                <div class="ctnBtnCerrar"><i class="fa-solid fa-circle-xmark" id="btnCerrar"></i></div>
+                                    <label for="tarea-title">N° Ticket :</label>
+                                    <input class="boleta inpBoleta" type="text" id='numeroTicket' required><br>
+                                    <label for="salida-title">Fecha :</label>
+                                    <input class="fecha2 inpBoleta"  type="date" id='fechaBoleta' required>
+                                </form>
                             </div>
-                            <h1>^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</h1>
                             `
-    formularioBoleta.innerHTML = entradasFormulario
+        let bodyModal = document.querySelector('.modal-body');
+        let footerModal = document.querySelector('.modal-footer');
+        
+        clearHTML(footerModal);
+        bodyModal.innerHTML = entradasFormulario
+        let formTicket = document.getElementById('formTicket');
+        let boletaFormulario = document.getElementById('boletaFormulario');
+        let obtenerDNI = tarifaJornada.filter(elemt => elemt.nombre == selectedEmployee)[0];
+        console.log('obtenerDNI', obtenerDNI);
 
+        formTicket['dniBoleta'].value = obtenerDNI.dni
+        formTicket['nomBoleta'].value = selectedEmployee;
+        formTicket['numeroTicket'].value = Number(numeroTicket.data().ultimoNumero) + 1;
 
-    const body = document.getElementById('body')
-    body.style.display = 'none';
-    pintarFilasBoleta(objetosLSBoleta, formularioBoleta)
+        console.log('Numero de ticket Anterior:', numeroTicket.data().ultimoNumero)
+        pintarFilasBoleta(arrayObj,boletaFormulario)
 
-    const datalistDNI = document.createElement('datalist')
-    datalistDNI.id='colaboradorList'
-    
-    console.log('datalistDNI',datalistDNI)
-    var inputDNI = document.createElement('input');
-    inputDNI.setAttribute('type', "text");
-    inputDNI.setAttribute('list', 'colaboradorList');
-
-    console.log('inputDNI',inputDNI)
-    for (const tarifa of tarifaJornada) {
-        const opcion = document.createElement("option");
-        opcion.value= tarifa.dni;
-        opcion.textContent= tarifa.nombre;
-        datalistDNI.appendChild(opcion);
+        const btnGuardar = document.createElement('button')
+        btnGuardar.setAttribute('class', 'btn btn-primary')
+        btnGuardar.textContent = 'Guardar';
+        footerModal.appendChild(btnGuardar);
+        btnGuardar.addEventListener('click', guardarBoleta);
+        pintarTabla(objetosProcesados, tabla);
+    } else {
+        showMessage(`Error:Debe filtrar una persona primero`)
     }
-    formularioBoleta.appendChild(inputDNI)
-
-
-
-
-    const btnGuardar = document.createElement('button')
-    btnGuardar.textContent = 'Guardar'
-    formularioBoleta.appendChild(btnGuardar)
-    btnGuardar.addEventListener('click', guardarBoleta)
-
-    const btnImprimir = document.createElement('button')
-    btnImprimir.textContent = 'Imprimir'
-    formularioBoleta.appendChild(btnImprimir)
-    btnImprimir.addEventListener('click', generaPDF)
-
-    cajaFormularios.appendChild(formularioBoleta)
-
-    const btnCerrar = document.getElementById('btnCerrar')
-    btnCerrar.addEventListener('click', cerrarFrmBoleta)
-
-    //rellenamos el input correspondiente a numeracion de ticket
-    const nuevoNumeroTicket = document.getElementById('numeroTicket')
-    nuevoNumeroTicket.value = Number(numeroTicket.data().ultimoNumero) + 1;
-    console.log('Numero de ticket Anterior:', numeroTicket.data().ultimoNumero)
-
-}
-
-function determinaTurno() { };
-
-function determinaFeriado() { };
+};
 
 function tiempoTranscurrido(entrada, salida) {//recibe horas de entra y salida en texto y devuelve un objeto con las horas enteras y minutos separados y en decimales
     const horas = {}
@@ -508,10 +550,10 @@ function tiempoTranscurrido(entrada, salida) {//recibe horas de entra y salida e
     horas.minutosEnteros = Math.trunc(lapsoMiliseg / (1000 * 60) % 60);//los milisegundos pasamos a minutos y que extraemos el modulo de 60 con % 60 y extraemos parte entera con math.trunc
     horas.horasDecimal = lapsoMiliseg / (1000 * 60 * 60).toFixed(2);
     horas.horasMinutos = `${horas.horasEnteras}:${horas.minutosEnteros}`;
-    return horas;//return objeto horas={horasEnteras:valor,minutosEnteros:valor,horasDecimal:valor,horasMinutos:valor}
+    return horas;//return un objeto horas={horasEnteras:valor,minutosEnteros:valor,horasDecimal:valor,horasMinutos:valor}
 };
 
-function nombreDia(entrada) {
+function nombreDia(entrada) {//retorna nombre del dia de semana
     const nombreDia = ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'];
     return nombreDia[new Date(entrada).getDay()]
 };
@@ -520,11 +562,10 @@ function procesarDatos(objetos) {//realiza los calculos de hora y asigna el prec
 
     objetos.forEach((obj) => {
         //console.log('obj de cada foreach',obj)
-        obj['nombreDia'] = nombreDia(obj.title);
-        obj['hora'] = tiempoTranscurrido(obj.title, obj.salida).horasMinutos;
-        obj['tiempo'] = tiempoTranscurrido(obj.title, obj.salida).horasDecimal;
-        obj['importe'] = obj['tiempo'] * getTarifaJornada(obj, tarifaJornada, tarifaJornadaFeriado);
-
+        obj['values'].nombreDia = nombreDia(obj['values'].title);
+        obj['values'].hora = tiempoTranscurrido(obj['values'].title, obj['values'].salida).horasMinutos;
+        obj['values'].tiempo = tiempoTranscurrido(obj['values'].title, obj['values'].salida).horasDecimal;
+        obj['values'].importe = obj['values'].tiempo * getTarifaJornada(obj, tarifaJornada, tarifaJornadaNoche, tarifaJornadaFeriado);
         //console.log('lo que devuelve el filter:',tarifaJornada.filter(elemt => elemt.nombre == obj.description.trim())[0])
     })
 
@@ -534,61 +575,43 @@ function procesarDatos(objetos) {//realiza los calculos de hora y asigna el prec
     return objetoOrdenado
 };
 
-function getTarifaJornada(objeto, arrayObj, arrayObj2) {
-
-    switch (objeto.horario) {
+function getTarifaJornada(objeto, arrayObj, arrayObj2, arrayObj3) {
+    //econsole.log('objeto_getTarifa:',objeto);
+    switch (objeto['values'].horario) {
         case 'Regular': {
-            let nombre = objeto.description
-            //console.log('obj dentro funcion tarifa:', objeto.horario)
+            let nombre = objeto['values'].description;
             const { tarifa } = arrayObj.filter(elemt => elemt.nombre == nombre.trim())[0];//del objeto tarifaJornada buscar el objeto con el mismo nombre y sacar su tarifa
             return tarifa
         }
-
             break;
 
         case 'Noche': {
-            let nombre = objeto.description
-            //console.log('obj dentro funcion tarifa:', objeto.horario)
+            let nombre = objeto['values'].description;
             const { tarifa } = arrayObj2.filter(elemt => elemt.nombre == nombre.trim())[0];//del objeto tarifaJornada buscar el objeto con el mismo nombre y sacar su tarifa
             return tarifa
         }
-
             break;
 
         case 'Feriado': {
-            let nombre = objeto.description
-            //console.log('obj dentro funcion tarifa:', objeto.horario)
-            const { tarifa } = arrayObj2.filter(elemt => elemt.nombre == nombre.trim())[0];//del objeto tarifaJornada buscar el objeto con el mismo nombre y sacar su tarifa
+            let nombre = objeto['values'].description;
+            const { tarifa } = arrayObj3.filter(elemt => elemt.nombre == nombre.trim())[0];//del objeto tarifaJornada buscar el objeto con el mismo nombre y sacar su tarifa
             return tarifa
         }
             break;
+
         default: {
-            let nombre = objeto.description
-            //console.log('obj dentro funcion tarifa:', objeto.horario)
+            let nombre = objeto['values'].description;
             const { tarifa } = arrayObj.filter(elemt => elemt.nombre == nombre.trim())[0];//del objeto tarifaJornada buscar el objeto con el mismo nombre y sacar su tarifa
             return tarifa
         }
-
             break;
     }
-
-}
-
-function cerrarFrmBoleta() {//error: despues de hacer la segunda boleta no se puede cerrar form boleta
-    console.log('in fun cerrando la vtnEmergente...')
-    const vtnEmergente = document.querySelector('.vtnEmergente')
-    console.log(vtnEmergente)
-    vtnEmergente.style.display = "none";
-    body.style.display = 'block';
-    limpiarElemento(vtnEmergente)
-    objetosLSBoleta = [];
 
 };
 
 function sincronizarLocalStorage(objetos) {//recibe nuevos datos lo guarda en LS y lo trae en memoria
     localStorage.removeItem('jornadaDatos');
     localStorage.setItem('jornadaDatos', JSON.stringify(objetos))
-    objetosLS = JSON.parse(localStorage.getItem('jornadaDatos'))
 };
 
 function guardarBoleta() {//escritura en collecion boleta y transaccionesLaboral de FB 
@@ -599,75 +622,67 @@ function guardarBoleta() {//escritura en collecion boleta y transaccionesLaboral
     let fechaBoleta = document.getElementById('fechaBoleta').value;
     let tiempoTotal = tiempoTotBoleta;
     let creado = new Date().toLocaleDateString('en-US') + ' ' + new Date().toLocaleTimeString();
-    let detalle = JSON.stringify(objetosLSBoleta);
+    let horasTrabajadas = JSON.stringify(objetosLSBoleta);
     let payStatusBol = false;
     let importeTotal = Number(document.getElementById('importeTotal').textContent);
     let descripcion = `Ticket N°${numBoleta} por ${tiempoTotal.toFixed(2)} horas laboradas`;
     let tipoTransaccion = 'debe';
     let importeHaber = '';
-    console.log('importe extraido de th:', importeTotal)
+    console.log('importe extraido de th:', importeTotal, document.getElementById('importeTotal').textContent)
+    if (Number(numBoleta) > 1000) {
+        guardarTransaccionesLaboral(fechaBoleta, dniBoleta, numBoleta, creado, descripcion, tipoTransaccion, importeTotal, importeHaber);
+        guardarBoletaPago(numBoleta, dniBoleta, nomBoleta, fechaBoleta, tiempoTotal, creado, horasTrabajadas, payStatusBol, importeTotal);
+        actualizaEstadoPago(objetosLSBoleta);
+        updateNumeracion('Ticket', { ultimoNumero: numBoleta });
+        console.log('Documento creado el:', creado);
+        //borrar datos de filas seleccionadas
+        objetosLSBoleta = [];
 
-    guardarTransaccionesLaboral(fechaBoleta, dniBoleta, numBoleta, creado, descripcion, tipoTransaccion, importeTotal, importeHaber);
-    guardarBoletaPago(numBoleta, dniBoleta, nomBoleta, fechaBoleta, tiempoTotal, creado, detalle, payStatusBol, importeTotal);
-    actualizaEstadoPago(objetosLSBoleta);
-    updateNumeracion('Ticket', { ultimoNumero: numBoleta })
+        //cierra el modal y muestra un mensage de guardado
+        showMessage(`Se registró Ticket N°${numBoleta}`, 'success')
+        const modal = bootstrap.Modal.getInstance(document.querySelector('#myModal'))
+        modal.hide()
 
-    console.log('Documento creado el:', creado)
-    cerrarFrmBoleta()
-}
+        //restear formulario
+        let formTicket = document.getElementById('formTicket');
+        formTicket['dniBoleta'].value = '';
+        formTicket['nomBoleta'].value = '';
+        formTicket['numeroTicket'].value = '';
+        //objetosProcesados = procesarDatos(objetoJornada);
+        //console.log('se elimino los detalles del ticket');
 
-function generaPDF() {//crea pdf error:no funciona libreria
+        clearHTML(tabla);
+        //clearHTML(modalBody);
+        //objetosLS=objetosNoSeleccionados;
+        pintarFilas(objetosNoSeleccionados, tabla)
+    } else {
+        alert('No se puede guardar...')
+    }
 
-    console.log('generando pdf...')//crear pdf a partir del lenguaje y no de html
-    const areaImpresion = document.querySelector('vtnEmergente'); // <-- Aquí puedes elegir cualquier elemento del DOM
-    html2pdf()
-        .set({
-            margin: 5,
-            filename: 'Boleta',
-            //se borro image jpg, averiguar codigo origina en github del cdn html2pdf
-            html2canvas: {
-                scale: 5, // A mayor escala, mejores gráficos, pero más peso
-                letterRendering: true,
-            },
-            jsPDF: {
-                unit: "mm",
-                format: 'a5',
-                orientation: 'landscape' // landscape o portrait
-            }
-        })
-        .from(areaImpresion)
-        .save()
-        .catch(err => console.log(err));
-    /*
-    navigator.share({
-        title:'probando esta nueva API',
-        text:'Desde Heinz Sport SAC',
-        url:'./cotizacion.pdf'
-    })
-*/
-}
+
+};
 
 function actualizaEstadoPago(objeto) {
-
     objeto.forEach(obj => {
         let idJor = obj.id;
         updateTask(idJor, { payStatus: true })
     })
-}
+};
 
 function pintarFilasBoleta(objetos, contenedor) {//crea filas de tabla y coloca datos de local Sorage
-    let tiempoTotal = objetos.reduce((total, obj) => total + obj.tiempo, 0)
-    let importeTotal = objetos.reduce((total, obj) => total + obj.importe, 0)//buscar la forma de hacer ambas operaciones en uno
+    let tiempoTotal = objetos.reduce((total, obj) => total + obj['values'].tiempo, 0)
+    let importeTotal = objetos.reduce((total, obj) => total + obj['values'].importe, 0)//buscar la forma de hacer ambas operaciones en uno
     console.log('tiempototal:', tiempoTotal)
+    const tableTicket = document.createElement('table')
     const thead = document.createElement('thead')
-    thead.innerHTML = `<tr><th>Dia</th><th>Entrada</th><th>Salida</th><th>Hora</th></tr>`
+    thead.innerHTML = `<tr><th>Horario</th><th>Dia</th><th>Entrada</th><th>Salida</th><th>Hora</th></tr>`
 
-    const tfoot = document.createElement('tfoot')
+    const tfoot = document.createElement('tfoot');
 
-    tfoot.innerHTML = `<tr><th>Horas</th><th id="tiempoTotal">${tiempoTotal}</th><th>Importe S/</th><th id="importeTotal">${importeTotal.toFixed(2)}</th></tr>`
-    const tbody = document.createElement('tbody')
-    tbody.setAttribute('id', "jornadaContainer")
-    tbody.setAttribute('class', "caja")
+    tfoot.innerHTML = `<tr><th>Horas</th><th id="tiempoTotal">${tiempoTotal}</th><th></th><th>Importe S/</th><th id="importeTotal">${importeTotal.toFixed(2)}</th></tr>`
+    const tbody = document.createElement('tbody');
+    tbody.setAttribute('id', "jornadaContainer");
+    tbody.setAttribute('class', "caja");
 
     objetos.forEach((obj) => {
         let fila = document.createElement('tr')
@@ -675,14 +690,22 @@ function pintarFilasBoleta(objetos, contenedor) {//crea filas de tabla y coloca 
         fila.setAttribute('data-id', obj.id);
 
         fila.innerHTML = `
-                        <td>${obj.nombreDia}</td>
-                        <td class="date">${obj.title.slice(11, 16)}</td>
-                        <td class="date">${obj.salida.slice(11, 16)}</td>
-                        <td class="hora">${obj.hora}</td>
+                        <td>${obj['values'].horario}</td>
+                        <td>${obj['values'].nombreDia}</td>
+                        <td class="date">${obj['values'].title.slice(11, 16)}</td>
+                        <td class="date">${obj['values'].salida.slice(11, 16)}</td>
+                        <td class="hora">${obj['values'].hora}</td>
                         `
         tbody.appendChild(fila);
     })
-    contenedor.appendChild(thead)
-    contenedor.appendChild(tbody)
-    contenedor.appendChild(tfoot)
+    tableTicket.appendChild(thead)
+    tableTicket.appendChild(tbody)
+    tableTicket.appendChild(tfoot)
+    console.log('tableTicket',tableTicket);
+    
+    contenedor.appendChild(tableTicket)
+};
+
+function restarDatosArray(arrayObjTotal, arrayObjParcial) {
+
 }

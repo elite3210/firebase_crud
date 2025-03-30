@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grabadora de Audio</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            margin-top: 2rem;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        #grabaciones {
+            margin-top: 20px;
+        }
+        .grabacion {
+            background-color: #f8f9fa;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            position: relative;
+        }
+        .grabacion audio {
+            margin: 10px 0;
+            width: 100%;
+        }
+        #timer {
+            font-size: 24px;
+            margin: 10px 0;
+            font-family: monospace;
+        }
+        .btn-eliminar {
+            background-color: #dc3545;
+        }
+        .btn-descargar {
+            background-color: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Grabadora de Audio</h1>
+        <button id="grabar">Iniciar Grabación</button>
+        <button id="detener" disabled>Detener Grabación</button>
+        <div id="timer">00:00</div>
+        <div id="grabaciones"></div>
+    </div>
+
+    <script>
+        // Clase principal que maneja la grabación de audio
+        class AudioRecorder {
+            constructor() {
+                // Inicialización de variables
+                this.mediaRecorder = null;
+                this.audioChunks = [];
+                this.isRecording = false;
+                this.timerInterval = null;
+                this.startTime = null;
+                
+                // Elementos del DOM
+                this.btnGrabar = document.getElementById('grabar');
+                this.btnDetener = document.getElementById('detener');
+                this.timerDisplay = document.getElementById('timer');
+                this.grabacionesContainer = document.getElementById('grabaciones');
+
+                // Vinculación de métodos al contexto de la clase
+                this.iniciarGrabacion = this.iniciarGrabacion.bind(this);
+                this.detenerGrabacion = this.detenerGrabacion.bind(this);
+                this.actualizarTimer = this.actualizarTimer.bind(this);
+
+                // Configuración de event listeners
+                this.btnGrabar.onclick = this.iniciarGrabacion;
+                this.btnDetener.onclick = this.detenerGrabacion;
+            }
+
+            // Método para formatear el tiempo en formato MM:SS
+            formatearTiempo(ms) {
+                const segundos = Math.floor(ms / 1000);
+                const minutos = Math.floor(segundos / 60);
+                const segundosRestantes = segundos % 60;
+                return `${minutos.toString().padStart(2, '0')}:${segundosRestantes.toString().padStart(2, '0')}`;
+            }
+
+            // Método para actualizar el timer en pantalla
+            actualizarTimer() {
+                if (this.startTime) {
+                    const tiempoTranscurrido = Date.now() - this.startTime;
+                    this.timerDisplay.textContent = this.formatearTiempo(tiempoTranscurrido);
+                }
+            }
+
+            // Método para iniciar la grabación
+            async iniciarGrabacion() {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    this.mediaRecorder = new MediaRecorder(stream);
+                    this.audioChunks = [];
+
+                    this.mediaRecorder.ondataavailable = (event) => {
+                        this.audioChunks.push(event.data);
+                    };
+
+                    this.mediaRecorder.onstop = () => {
+                        this.crearGrabacion();
+                    };
+
+                    // Iniciar grabación y timer
+                    this.mediaRecorder.start();
+                    this.isRecording = true;
+                    this.startTime = Date.now();
+                    this.timerInterval = setInterval(this.actualizarTimer, 1000);
+
+                    // Actualizar estado de los botones
+                    this.btnGrabar.disabled = true;
+                    this.btnDetener.disabled = false;
+                } catch (error) {
+                    console.error('Error al acceder al micrófono:', error);
+                    alert('Error al acceder al micrófono. Por favor, asegúrate de dar permisos de acceso.');
+                }
+            }
+
+            // Método para detener la grabación
+            detenerGrabacion() {
+                if (this.isRecording) {
+                    this.mediaRecorder.stop();
+                    this.mediaRecorder.stream.getTracks().forEach(track => track.stop());
+                    clearInterval(this.timerInterval);
+                    this.timerDisplay.textContent = '00:00';
+                    this.isRecording = false;
+                    this.btnGrabar.disabled = false;
+                    this.btnDetener.disabled = true;
+                }
+            }
+
+            // Método para crear el elemento de grabación en el DOM
+            crearGrabacion() {
+                const audioBlob = new Blob(this.audioChunks, { type: 'audio/wav' });
+                const audioUrl = URL.createObjectURL(audioBlob);
+                
+                const grabacionDiv = document.createElement('div');
+                grabacionDiv.className = 'grabacion';
+                
+                const fecha = new Date().toLocaleString();
+                
+                // Crear el elemento de grabación con controles
+                grabacionDiv.innerHTML = `
+                    <div>Grabación del ${fecha}</div>
+                    <audio controls src="${audioUrl}"></audio>
+                    <div>
+                        <button class="btn-descargar">Descargar</button>
+                        <button class="btn-eliminar">Eliminar</button>
+                    </div>
+                `;
+
+                // Configurar el botón de descarga
+                const btnDescargar = grabacionDiv.querySelector('.btn-descargar');
+                btnDescargar.onclick = () => this.descargarGrabacion(audioBlob, fecha);
+
+                // Configurar el botón de eliminar
+                const btnEliminar = grabacionDiv.querySelector('.btn-eliminar');
+                btnEliminar.onclick = () => this.eliminarGrabacion(grabacionDiv);
+
+                // Agregar la grabación al contenedor
+                this.grabacionesContainer.prepend(grabacionDiv);
+            }
+
+            // Método para descargar la grabación
+            descargarGrabacion(blob, fecha) {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `grabacion-${fecha.replace(/[/:]/g, '-')}.wav`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            }
+
+            // Método para eliminar la grabación
+            eliminarGrabacion(elemento) {
+                if (confirm('¿Estás seguro de que quieres eliminar esta grabación?')) {
+                    elemento.remove();
+                }
+            }
+        }
+
+        // Inicializar la aplicación
+        document.addEventListener('DOMContentLoaded', () => {
+            new AudioRecorder();
+        });
+    </script>
+</body>
+</html>

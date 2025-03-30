@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #000;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+        }
+
+        .container {
+            position: relative;
+        }
+
+        .letter {
+            display: inline-block;
+            font-size: 3em;
+            font-weight: 300;
+            color: #f8fc03;
+            opacity: 0;
+            transform: translateY(-100px) scale(0.5);
+            text-shadow: 0 0 10px rgba(255,255,255,0.5);
+            margin: 0 2px;
+        }
+
+        .letter.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .particle {
+            position: absolute;
+            pointer-events: none;
+            background: #f8fc03;
+            border-radius: 50%;
+        }
+
+        .restart-btn {
+            position: fixed;
+            bottom: 30px;
+            padding: 12px 24px;
+            background: transparent;
+            color: #ffffff;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+        }
+
+        .restart-btn:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.5);
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: translateY(100px) scale(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="container"></div>
+    <button class="restart-btn" onclick="restartAnimation()">REINICIAR</button>
+
+    <script>
+        const text = "PALAVA_E.R.I.L";
+        let currentIndex = 0;
+        let letters = [];
+
+        function createParticle(x, y) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            
+            const size = Math.random() * 4 + 2;
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            
+            const destinationX = x + (Math.random() - 0.5) * 200;
+            const destinationY = y + (Math.random() - 0.5) * 200;
+            
+            particle.style.left = `${x}px`;
+            particle.style.top = `${y}px`;
+            
+            document.body.appendChild(particle);
+
+            const animation = particle.animate([
+                { transform: 'translate(0, 0)', opacity: 1 },
+                { transform: `translate(${destinationX - x}px, ${destinationY - y}px)`, opacity: 0 }
+            ], {
+                duration: 1000 + Math.random() * 1000,
+                easing: 'cubic-bezier(0,0,0.2,1)'
+            });
+
+            animation.onfinish = () => particle.remove();
+        }
+
+        function createParticles(element) {
+            const rect = element.getBoundingClientRect();
+            const x = rect.left + rect.width / 2;
+            const y = rect.top + rect.height / 2;
+            
+            for (let i = 0; i < 20; i++) {
+                createParticle(x, y);
+            }
+        }
+
+        function initializeLetters() {
+            const container = document.getElementById('container');
+            container.innerHTML = '';
+            letters = [];
+            text.split('').forEach((char) => {
+                const span = document.createElement('span');
+                span.textContent = char;
+                span.className = 'letter';
+                container.appendChild(span);
+                letters.push(span);
+            });
+        }
+
+        function showNextLetter() {
+            if (currentIndex < letters.length) {
+                const letter = letters[currentIndex];
+                letter.classList.add('active');
+                createParticles(letter);
+                currentIndex++;
+                setTimeout(showNextLetter, 100);
+            }
+        }
+
+        function restartAnimation() {
+            currentIndex = 0;
+            letters.forEach(letter => {
+                letter.classList.remove('active');
+            });
+            setTimeout(showNextLetter, 500);
+        }
+
+        // Inicializar y comenzar
+        initializeLetters();
+        setTimeout(showNextLetter, 500);
+    </script>
+</body>
+</html>

@@ -141,3 +141,11 @@
         border-color: transparent;
         padding-left: 10px;
     }
+
+    .ctnInpBoleta{
+        width: 100%;
+        background-color: transparent;
+        border: 1px solid;
+        border-radius: 8px 8px 0px 0px;
+        margin-bottom: 2px;
+    }

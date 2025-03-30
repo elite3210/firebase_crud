@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagrama Circular Interactivo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 40px;
+        }
+
+        .wheel-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 100%;
+            max-width: 700px;
+            max-height: 700px;
+            margin: 0 auto;
+        }
+
+        .wheel {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .section {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 50%);
+            transform-origin: 50% 50%;
+            transition: all 0.3s ease;
+        }
+
+        .section:hover {
+            transform: scale(1.05);
+            filter: brightness(1.1);
+            cursor: pointer;
+        }
+
+        .section-content {
+            position: absolute;
+            top: 25%;
+            left: 75%;
+            transform: translate(-50%, -50%) rotate(45deg);
+            text-align: center;
+            width: 40%;
+        }
+
+        .section:nth-child(2) .section-content,
+        .section:nth-child(3) .section-content,
+        .section:nth-child(4) .section-content,
+        .section:nth-child(5) .section-content {
+            transform: translate(-50%, -50%) rotate(0deg);
+        }
+
+        .section:nth-child(6) .section-content,
+        .section:nth-child(7) .section-content,
+        .section:nth-child(8) .section-content {
+            transform: translate(-50%, -50%) rotate(0deg);
+        }
+
+        .title {
+            font-weight: bold;
+            color: #333;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            font-weight: bold;
+            color: #333;
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        .description {
+            font-size: 14px;
+        }
+
+        .center-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20%;
+            height: 20%;
+            border-radius: 50%;
+            background-color: white;
+            z-index: 10;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .center-text {
+            font-weight: bold;
+            color: #333;
+            font-size: 18px;
+        }
+
+        .tooltip {
+            position: fixed;
+            background-color: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            max-width: 250px;
+            z-index: 100;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+
+        .connector {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 40%;
+            height: 2px;
+            background-color: white;
+            transform-origin: left center;
+            z-index: 5;
+        }
+
+        .connector-dot {
+            position: absolute;
+            top: 50%;
+            right: 0;
+            width: 12px;
+            height: 12px;
+            background-color: white;
+            border-radius: 50%;
+            transform: translate(50%, -50%);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Ecosistema de Innovación</h1>
+        <div class="wheel-container">
+            <div class="wheel" id="wheel">
+                <!-- Las secciones se generarán dinámicamente con JavaScript -->
+            </div>
+            <div class="center-circle">
+                <div class="center-text">Centro de Innovación</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tooltip" id="tooltip"></div>
+
+    <script>
+        // Datos para las secciones
+        const sections = [
+            {
+                title: "Redes de",
+                subtitle: "contactos",
+                description: "Conecta con emprendedores, mentores e inversores para expandir tu red profesional.",
+                color: "#f0f0f0"
+            },
+            {
+                title: "Espacio de",
+                subtitle: "coworking",
+                description: "Ambientes de trabajo colaborativo para potenciar la creatividad y productividad.",
+                color: "#e8e8e8"
+            },
+            {
+                title: "Mentoría y",
+                subtitle: "asesoría especializada",
+                description: "Acompañamiento personalizado por expertos en diversas áreas del emprendimiento.",
+                color: "#f0f0f0"
+            },
+            {
+                title: "Formación",
+                subtitle: "y capacitación personalizada",
+                description: "Programas educativos adaptados a las necesidades específicas de cada proyecto.",
+                color: "#e8e8e8"
+            },
+            {
+                title: "Eventos",
+                subtitle: "exclusivos",
+                description: "Actividades y encuentros de networking para impulsar oportunidades de negocio.",
+                color: "#f0f0f0"
+            },
+            {
+                title: "Laboratorios",
+                subtitle: "y FabLab",
+                description: "Espacios equipados para la experimentación, prototipado y desarrollo de productos.",
+                color: "#e8e8e8"
+            },
+            {
+                title: "Capital",
+                subtitle: "semilla",
+                description: "Financiamiento inicial para transformar ideas innovadoras en proyectos viables.",
+                color: "#f0f0f0"
+            },
+            {
+                title: "Acceso a",
+                subtitle: "financiamiento e inversiones",
+                description: "Conexión con fuentes de capital y oportunidades de inversión para escalar proyectos.",
+                color: "#e8e8e8"
+            }
+        ];
+
+        // Crear las secciones dinámicamente
+        const wheel = document.getElementById('wheel');
+        const tooltip = document.getElementById('tooltip');
+
+        sections.forEach((section, index) => {
+            // Calcular el ángulo de rotación para cada sección
+            const angle = (index * 45);
+            
+            // Crear el elemento de sección
+            const sectionEl = document.createElement('div');
+            sectionEl.className = 'section';
+            sectionEl.style.backgroundColor = section.color;
+            sectionEl.style.transform = `rotate(${angle}deg)`;
+            
+            // Crear el conector
+            const connector = document.createElement('div');
+            connector.className = 'connector';
+            connector.style.transform = `rotate(${angle + 22.5}deg)`;
+            
+            const connectorDot = document.createElement('div');
+            connectorDot.className = 'connector-dot';
+            connector.appendChild(connectorDot);
+            
+            // Crear el contenido de la sección
+            const content = document.createElement('div');
+            content.className = 'section-content';
+            
+            const titleEl = document.createElement('div');
+            titleEl.className = 'title';
+            titleEl.textContent = section.title;
+            
+            const subtitleEl = document.createElement('div');
+            subtitleEl.className = 'subtitle';
+            subtitleEl.textContent = section.subtitle;
+            
+            content.appendChild(titleEl);
+            content.appendChild(subtitleEl);
+            
+            // Añadir todo a la sección
+            sectionEl.appendChild(connector);
+            sectionEl.appendChild(content);
+            
+            // Añadir eventos para mostrar el tooltip
+            sectionEl.addEventListener('mouseenter', (e) => {
+                tooltip.innerHTML = `
+                    <h3>${section.title} ${section.subtitle}</h3>
+                    <p>${section.description}</p>
+                `;
+                tooltip.style.opacity = 1;
+                
+                // Posicionar el tooltip cerca del cursor
+                updateTooltipPosition(e);
+            });
+            
+            sectionEl.addEventListener('mousemove', updateTooltipPosition);
+            
+            sectionEl.addEventListener('mouseleave', () => {
+                tooltip.style.opacity = 0;
+            });
+            
+            // Añadir interactividad al hacer clic
+            sectionEl.addEventListener('click', () => {
+                alert(`Has seleccionado: ${section.title} ${section.subtitle}`);
+            });
+            
+            // Añadir la sección al wheel
+            wheel.appendChild(sectionEl);
+        });
+
+        // Función para actualizar la posición del tooltip
+        function updateTooltipPosition(e) {
+            tooltip.style.left = `${e.pageX + 15}px`;
+            tooltip.style.top = `${e.pageY + 15}px`;
+            
+            // Asegurarse de que el tooltip no se salga de la ventana
+            const tooltipRect = tooltip.getBoundingClientRect();
+            if (tooltipRect.right > window.innerWidth) {
+                tooltip.style.left = `${e.pageX - tooltipRect.width - 15}px`;
+            }
+            if (tooltipRect.bottom > window.innerHeight) {
+                tooltip.style.top = `${e.pageY - tooltipRect.height - 15}px`;
+            }
+        }
+    </script>
+</body>
+</html>

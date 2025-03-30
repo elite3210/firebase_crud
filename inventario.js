@@ -14,11 +14,13 @@ const registroProductos = onGetProduct((querySnapshot) =>{
             obj.values              =doc.data();
             obj.values.idProducto   =doc.id;
             obj.values.importe   =Math.round(obj['values'].stock*obj['values'].precio)
+            obj.values.productToReceive   =obj['values'].productToReceive?obj['values'].productToReceive:0;
             obj.values.quantityAvailable=Math.round(obj['values'].stock)-obj['values'].assignedStock
+            obj.values.quantityAvailableAfter=Number(obj.values.quantityAvailable)+Number(obj.values.productToReceive);
             if (obj['values'].targetStock==0) {
                 obj.values.stockReplaced=0;
             } else {
-                obj.values.stockReplaced=Math.round(obj['values'].targetStock)-obj['values'].quantityAvailable
+                obj.values.stockReplaced=Math.round(obj['values'].targetStock)-Number(obj.values.quantityAvailableAfter);
             }
             
             items.push(obj);
