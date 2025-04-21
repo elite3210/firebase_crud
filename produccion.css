@@ -3,6 +3,7 @@
 /*Barra de navegacion*/
 
 section{
+    background-color: white;
     margin: 4px;
 }
 
@@ -192,4 +193,8 @@ label{
 }
 th{
     margin-right: 8px;
+}
+
+.container2{
+    background-color: white;
 }

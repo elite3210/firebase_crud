@@ -1,5 +1,3 @@
-import { MenuManager } from './src/menuComponent.js';
-import { menuItems } from './src/contenidoMenu.js';
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js";
 import { getDoc, doc } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js";
 import { onGetVentas,auth, db,traeroneProduct,updatePedido,deleteCotizacion} from './firebase.js';
@@ -12,20 +10,6 @@ import { showMessage } from "./src/app/showMessage.js";
 import { viewDocument } from "./ventas/viewDocument.js";
 import { newDocument } from "./ventas/newOrder.js";
 import { editOrder } from "./ventas/editOrder.js";
-
-// Configuración básica del menu
-const menuManager = new MenuManager('navbar', { leftMenu: menuItems });
-menuManager.init();
-menuManager.updateMenuItem('rightMenu', 1, {
-    title: 'Iniciar Sesión',
-    submenu: [
-        { title: 'Login', url: 'login.php' },
-        { title: 'Registro', url: 'register.php' }
-    ]
-});
-
-
-
 
 
 //console.log('terminando de importar archivos para  consultaVentas.js');

@@ -210,6 +210,10 @@ body{
     content: 'available';
     color: var(--dt-status-available-color);
 }
+.datatable-container .datatable tbody tr .pagado::after{
+    content: 'cancelado';
+    color: var(--dt-status-available-color);
+}
 .datatable-container .datatable tbody tr .enviado::after{
     content: 'enviado';
     color: var(--dt-status-away-color);
@@ -227,6 +231,10 @@ body{
 
 .datatable-container .datatable tbody tr .away::after{
     content: 'away';
+    color: var(--dt-status-away-color);
+}
+.datatable-container .datatable tbody tr .pendiente::after{
+    content: 'pendiente';
     color: var(--dt-status-away-color);
 }
 .datatable-container .datatable tbody tr .offline::after{

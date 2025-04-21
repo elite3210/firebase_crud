@@ -431,10 +431,10 @@ function pintarFrmEdicion(id) {
 function registrarFrmEdicion(e) {
     e.preventDefault()  //cancela envio datos por metodo post y su posterior reset
 
-    const titulo = tareaForm['tarea-title'];
-    const descripcion = tareaForm['tarea-description'];
-    const salida = tareaForm['salida-title'];
-    const horario = tareaForm['horario'];
+    const titulo = tareaForm['tarea-title'].value;
+    const descripcion = tareaForm['tarea-description'].value;
+    const salida = tareaForm['salida-title'].value;
+    const horario = tareaForm['horario'].value;
 
     const payStatus = false;                       //por defecto cuando se edita sera falso el pago, porque no se puede editar algo ppagado
 
@@ -443,7 +443,7 @@ function registrarFrmEdicion(e) {
         guardarTask(titulo.value, descripcion.value, salida.value, payStatus)//false el pago, por defecto al registrar por primera vez
     } else {
         console.log('actualizando Firebase...', id)
-        updateTask(id, { title: titulo.value, description: descripcion.value, salida: salida.value, payStatus: payStatus, horario: horario.value })
+        updateTask(id, { title: titulo, description: descripcion, salida: salida, payStatus: payStatus, horario: horario })
         editStatus = false
         //tareaForm['boton-task-save'].innerHTML='Registrar'
         console.log('filtrando..', id)
@@ -705,7 +705,3 @@ function pintarFilasBoleta(objetos, contenedor) {//crea filas de tabla y coloca 
     
     contenedor.appendChild(tableTicket)
 };
-
-function restarDatosArray(arrayObjTotal, arrayObjParcial) {
-
-}

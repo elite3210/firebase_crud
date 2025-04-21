@@ -1,4 +1,4 @@
-import { menuItems } from './contenidoMenu.js';
+
 export class MenuManager {
     constructor(targetId, config = {}) {
         // Elemento donde se renderizará el menú

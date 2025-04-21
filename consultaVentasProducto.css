@@ -7,6 +7,7 @@
     max-width: 120em;
 }
 .contenedor .ul{
+    background-color: white;
     width: 100%;
     display: flex;
     flex-flow: row nowrap;
@@ -15,7 +16,6 @@
     padding: 6px;
 }
 .contenedor .tabs-item{
-
     justify-content: center;
     align-items: center;
     width: 20%;
@@ -29,6 +29,7 @@
 }
 
 .contenedor .subContenedor{
+    background-color: white;
     height: 120vh;
     width: 100%;
     position: relative;
@@ -58,6 +59,7 @@
     margin: 0 0 0 0.2em;
 }
 .header{
+    background-color: white;
     border: solid 2px rgb(219, 219, 219);
     border-radius:6px;
 }

@@ -54,3 +54,9 @@ body{
     display: block;
 }
 
+.panels-item.active {
+    padding: 10px 5px 20px 5px ;
+    background-color: rgb(255, 255, 255);
+    height: 83vh;
+}
+

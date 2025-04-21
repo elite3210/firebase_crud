@@ -1,0 +1,264 @@
+/* Variables globales */
+:root {
+    --primary-color: #090947;
+    --secondary-color: #34495e;
+    --hover-color: #3498db;
+    --text-color: #a0e8fa;
+    --text-color-menu: rgba(68, 71, 247, 0.5);
+    --text-color-hover: #ffffff;
+    --navbar-height: 54px;
+    --menu-width: 50vw;
+    --transition-time: 1s;
+}
+        
+        /* Aquí van todos los estilos del menú */
+        .navbar {
+            /* ... estilos ... */
+        }
+        /* Reset y estilos base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #73d4d7;
+}
+
+/* Navbar principal */
+.navbar1 {
+    background-color: var(--primary-color);
+    padding: 0 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+}
+
+/* Contenedores de navegación */
+.nav-container,
+.nav-container-right {
+    position: relative;
+    display: flex;
+}
+
+.nav-container-right {
+    display: none;
+}
+
+/* Estilos de menú común */
+.menu,
+.menu-right {
+    list-style: none;
+    display: flex;
+    transition: transform var(--transition-time) ease;
+}
+
+/* Elementos del menú */
+.menu-item {
+    position: relative;
+}
+
+.menu-link {
+    display: block;
+    padding: 15px 20px;
+    color: var(--text-color);
+    text-decoration: none;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.menu-link:hover {
+    background-color: var(--text-color-menu);
+    color: var(--text-color-hover);
+}
+
+/* Submenús */
+.submenu {
+    display: none;
+    position: absolute;
+    background-color: var(--secondary-color);
+    min-width: 200px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}
+
+.submenu-item {
+    display: block;
+    padding: 12px 20px;
+    color: var(--text-color);
+    text-decoration: none;
+    font-size: 14px;
+    transition: background-color 0.3s;
+    background-color: var(--secondary-color);
+    /*magenta;*/
+}
+
+.submenu-item:hover {
+    background-color: var(--hover-color);
+}
+
+/* Botones de toggle */
+.menu-toggle,
+.menu-toggle-right {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 24px;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.menu-toggle {
+    padding-right: 25px;
+}
+
+/* Modificar la visibilidad del contenedor derecho y el botón */
+.nav-container-right {
+    display: flex;
+    /* Cambiado de 'none' a 'flex' */
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.menu-toggle-right {
+    display: block;
+    /* Cambiado de 'none' a 'block' */
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 24px;
+    padding: 10px;
+    cursor: pointer;
+    margin-right: -20px;
+}
+
+/* Mantener el menú derecho oculto en PC */
+.menu-right {
+    display: none;
+}
+
+/* Estilos base para el menú derecho */
+.menu-right {
+    display: none;
+    flex-direction: column;
+    width: var(--menu-width);
+    position: fixed;
+    right: 0;
+    top: var(--navbar-height);
+    height: calc(100vh - var(--navbar-height));
+    background-color: var(--primary-color);
+    transform: translateX(100%);
+    transition: transform var(--transition-time) ease;
+}
+
+/* Estado activo del menú derecho (común para PC y móvil) */
+.menu-right.active {
+    display: flex;
+    transform: translateX(0);
+}
+
+.menu-icon-company {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--primary-color);
+    color: var(--text-color-hover);
+    font-size: 24px;
+    padding: 10px;
+    cursor: pointer;
+    margin-left: -15px;
+    padding: 0px;
+    border: 0px;
+}
+
+/* Ajustes específicos para PC */
+@media screen and (min-width: 769px) {
+    .menu-right {
+        width: 300px;
+        /* O el ancho que prefieras para PC */
+    }
+
+    .submenu {
+        
+        background-color: var(--primary-color);
+        width: 100%;
+        padding-left: 3px;
+    }
+
+}
+
+
+/* Estilos para móvil */
+@media screen and (max-width: 768px) {
+
+    /* Contenedores en móvil */
+    .nav-container-right {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+    }
+
+    /* Botones toggle en móvil */
+    .menu-toggle,
+    .menu-toggle-right {
+        display: block;
+    }
+
+    .menu-toggle {
+        margin-left: -15px;
+    }
+
+    .menu-toggle-right {
+        margin-right: -20px;
+    }
+
+    /* Menús en móvil */
+    .menu,
+    .menu-right {
+        display: none;
+        flex-direction: column;
+        width: var(--menu-width);
+        position: fixed;
+        top: var(--navbar-height);
+        height: calc(100vh - var(--navbar-height));
+        background-color: var(--primary-color);
+    }
+
+    .menu {
+        left: 0;
+        transform: translateX(-100%);
+    }
+
+    .menu-right {
+        right: 0;
+        transform: translateX(100%);
+    }
+
+    /* Estados activos de los menús */
+    .menu.active {
+        display: flex;
+        transform: translateX(0);
+    }
+
+    /* ... resto del código media query ... */
+
+    .menu-right.active {
+        display: flex;
+        transform: translateX(0);
+    }
+
+    /* Ajustes de submenús en móvil */
+    .submenu {
+        position: static;
+        background-color: var(--primary-color);
+        padding-left: 20px;
+    }
+
+    .menu-item {
+        width: 100%;
+    }
+}

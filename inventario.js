@@ -1,10 +1,12 @@
 import {onGetProduct} from './firebase.js'
-import {renderTabs} from './producto_tabs.js'
+import {renderTabs} from './tabsPanels.js'
+
+//seleccionar elemento donde renderiza los tabs
+const tabsContainer=document.getElementById('tabs-container')
 
 //traer los productos de firebase toda la coleccion productos
-const tabsContainer=document.getElementById('tabs-container')
 const registroProductos = onGetProduct((querySnapshot) =>{
-    tabsContainer.innerHTML=''
+    
     const items     =[];
 
     if(querySnapshot){
@@ -22,27 +24,12 @@ const registroProductos = onGetProduct((querySnapshot) =>{
             } else {
                 obj.values.stockReplaced=Math.round(obj['values'].targetStock)-Number(obj.values.quantityAvailableAfter);
             }
-            
             items.push(obj);
         });
     }else{console.log('no se trajeron datos...')}
 
-    renderTabs('tabs-container',items)
+    //debe estar dentro del querysnapshot para renderizar con cada cambio
+    renderTabs(tabsContainer,items,'categoriaPadre')
     
 })
 
-/* 
-//el codigo de abajo sirve para agregar mas campos a la tabla porductos, por el metodo de actualizar tabla:
-const registroProductos = onGetProduct((querySnapshot) =>{
-
-    if(querySnapshot){
-        querySnapshot.forEach(doc =>{
-            let id                  =doc.id;
-            let assignedStock       =0;
-            let targetStock         =0;
-            let productToReceive    =0;
-            updateProduct(id,{assignedStock: assignedStock,targetStock:targetStock,productToReceive:productToReceive})
-            console.log('se actualizo el producto:',id)
-        })};    
-})
-*/

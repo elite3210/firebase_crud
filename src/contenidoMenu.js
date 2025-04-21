@@ -12,7 +12,7 @@ export const menuItems = [
             { title: 'Clientes', url: '../consultaCliente.html' },
             { title: 'Cotizaciones', url: '/ventas/cotizaciones' },
             { title: 'Pedidos', url: '../consultaVentas.html' },
-            { title: 'Facturación', url: '/ventas/facturacion' }
+            { title: 'Facturación', url: '/factura.html' }
         ]
     },
     {
@@ -28,9 +28,9 @@ export const menuItems = [
         title: 'Inventario',
         submenu: [
             { title: 'Productos', url: '../productos.html' },
-            { title: 'Almacenes', url: '../inventario.html' },
+            { title: 'Almacenes', url: '../almacenes.html' },
             { title: 'Movimientos', url: '/inventario/movimientos' },
-            { title: 'Reportes de Stock', url: '/inventario/reportes' }
+            { title: 'Reportes de Stock', url: '/inventario.html' }
         ]
     },
     {
@@ -47,8 +47,8 @@ export const menuItems = [
         submenu: [
             { title: 'Empleados', url: '../empleados.html' },
             { title: 'Asistencia', url: '../consultaJornada.html' },
-            { title: 'Nómina', url: '../consultaBoletaPago.html' },
-            { title: 'Capacitación', url: '/rrhh/capacitacion' }
+            { title: 'Boletas', url: '../consultaBoletaPago.html' },
+            { title: 'Planilla', url: '../planillaMensual.html' }
         ]
     },
     {
@@ -83,7 +83,9 @@ export const menuItems = [
             { title: 'Perfil de Usuario', url: '/config/perfil' },
             { title: 'Usuarios y Permisos', url: '/config/usuarios' },
             { title: 'Configuración General', url: '/config/general' },
-            { title: 'Respaldos', url: '/config/respaldos' }
+            { title: 'Respaldos', url: '/config/respaldos' },
+            { title: 'Departamentos', url: '../departamentos.html' },
+            { title: 'Puestos', url: '../puestos.html' }
         ]
     }
 ];

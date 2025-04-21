@@ -1,12 +1,16 @@
-import {boletaPagoRef,onGetBoletapago} from './firebase.js'
-import {getDocs,query,where} from "https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js";
+import {onGetBoletapago,updateBoleta} from './firebase.js'
+//import {getDocs,query,where} from "https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js";
 import { Datatable } from './dataTable.js';
+import { showMessage } from "./src/app/showMessage.js";
+import { deleteElementHTML} from "./plugins/deleteElementHTML.js";
+import { translateDate } from "./plugins/translateDate.js";
 
 datosFirebase();
 
 async function datosFirebase(){//trae los datos de firebase y los guarda en LocalStorage
     let items =[]
     const queryBoletaPago  = await onGetBoletapago((boletaSnapShot)=>{
+        items =[];
     //console.log('query que se trajo de Firebase_:',queryBoletaPago)
     boletaSnapShot.forEach((doc) => {
         const objeto={};
@@ -14,12 +18,13 @@ async function datosFirebase(){//trae los datos de firebase y los guarda en Loca
         objeto['values']                = doc.data();
         objeto['values'].tiempoTotal    = Number(objeto['values'].tiempoTotal).toFixed(2);
         objeto['values'].importe        = `S/${Number(objeto['values'].importe).toFixed(2)}`;
-        objeto['values'].estado        = objeto['values'].payStatus==false?`<div class="corona"><div class="progress-adelantado" title="hola mundo" style="width:50%;"></div></div>`:`<span class="cancelado"></span>`;
+        objeto['values'].estado        = objeto['values'].payStatus?`<span class="pagado"></span>`:`<span class="pendiente"></span>`;
         items.push(objeto)
     })
 
     items.sort((a,b)=> b['values'].numBoleta - a['values'].numBoleta)
     //sincronizarLocalStorage(items);
+    
     pintarTabla(items);
 })
 };
@@ -27,12 +32,14 @@ async function datosFirebase(){//trae los datos de firebase y los guarda en Loca
 function pintarTabla(array){//renderiza la tabla
     const titulo = { NUMERO: 'numBoleta', NOMBRE: 'nomBoleta', FECHA: 'fechaBoleta', HORAS:'tiempoTotal', IMPORTE: 'importe',ESTADO:'estado'};
     const toolsHeader=[
-        {
-        id: 'btnNew',text: 'nuevo', icon: 'overview', targetModal:'#myModal', action: function () {const item = dt.getSelected();crearBoleta(item);}
-        }
+        {id: 'btnNew',text: 'nuevo', icon: 'overview', targetModal:'#myModal', action: function () {const item = dt.getSelected();crearBoleta(item);}},
+        {id: 'btnPay',text: 'pago', icon: 'request_quote', targetModal:'#myModal', action: function () {const item = dt.getSelected();actualizarPago(item);}}
     ]
 
+    //<span class="material-symbols-outlined">request_quote</span>
+    
     const dt = new Datatable('#dataTable',toolsHeader);
+
     dt.setData(array, titulo);
     dt.makeTable2();
 };
@@ -116,12 +123,61 @@ nombre.textContent=`NOMBRE: ${item['values'].nomBoleta}`;
     tblDetalle.appendChild(tbody)
     tblDetalle.appendChild(tfoot)
     vtnDetalle.appendChild(tblDetalle)
-    //eventoClickFila()
 };
 
-function sincronizarLocalStorage(objetos){//recibe nuevos datos lo guarda en LS y lo trae en memoria
-    localStorage.removeItem('datosBoleta');
-    localStorage.setItem('datosBoleta',JSON.stringify(objetos));
-    objetosLS=JSON.parse(localStorage.getItem('datosBoleta'));
-    console.log('se actualizó el LS...');
+function actualizarPago(item){//prepra para pasar los datos a pintarFilasDetalle
+    //console.log('item a pagar:',item);
+    
+    const modalPago = document.querySelector(".modal-body");
+    const modalFooter = document.querySelector('.modal-footer');
+    const modalHeader = document.querySelector('.modal-header');
+    
+    deleteElementHTML('.modal-footer');
+    deleteElementHTML('.modal-header');
+
+    modalHeader.innerHTML='<h4 class="modal-title">Realizar pago</h4>';
+    //creando el boton pagar y añadiendo al modal footer
+    const btnPago = document.createElement('button');
+    btnPago.setAttribute('id', 'btn-guardar');
+    btnPago.setAttribute('class', 'btn btn-primary');
+    btnPago.textContent = 'Actualizar Pago';
+    btnPago.addEventListener('click',actualizarPagoBoleta);
+    modalFooter.appendChild(btnPago);
+    
+    const htmlForm=`
+    <form id='formPagoBoleta'>
+        <div>
+            <div class="input-group">
+                <label for="fechaPago">Fecha:</label>
+                <input class="form-control" type="date" id="fechaPago">
+            </div>
+
+            <div class="input-group"> 
+                <label for="metodoPago">Metodo Pago:</label>
+                <input  class='form-control' type="text" id="metodoPago" placeholder="metodo de Pago"></input>
+            </div>
+        </div>
+    </form>
+    
+    `
+    modalPago.innerHTML=htmlForm;
+    const formPago = document.getElementById('formPagoBoleta');
+    console.log('form, fechasss:',formPago,translateDate());
+    formPago['fechaPago'].value=translateDate(item['values'].fechaBoleta);
+    formPago['metodoPago'].value="Yape/Angela";
+
+    function actualizarPagoBoleta(){
+        const formPago = document.getElementById('formPagoBoleta');
+        const fechaPago=formPago['fechaPago'].value;
+        const metodoPago=formPago['metodoPago'].value;
+
+        if (fechaPago && metodoPago ) {
+            updateBoleta(item.id,{fechaPago:fechaPago,payStatus:true,metodoPago:metodoPago});
+            showMessage('Pago registrado...','succedd')
+            const modal = bootstrap.Modal.getInstance(document.querySelector('#myModal'))
+            modal.hide()
+        } else {
+            showMessage('Registrar completar datos solicitados')
+        }
+    }
 };

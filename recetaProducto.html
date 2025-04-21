@@ -1,237 +1,227 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css" rel="stylesheet"/>
-    <script src="https://kit.fontawesome.com/434a77214b.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
-    <script src="https://parzibyte.github.io/ejemplos-javascript/html-a-pdf/html2pdf.bundle.min.js"></script>
-    <script src="JsBarcode.code128.min.js"></script>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css" rel="stylesheet" />
+  <script src="https://kit.fontawesome.com/434a77214b.js" crossorigin="anonymous"></script>
+  <!--estilos para la barra de menus-->
+  <link rel="stylesheet" href="./barraMenus.css">
 
-    
+  <script src="https://parzibyte.github.io/ejemplos-javascript/html-a-pdf/html2pdf.bundle.min.js"></script>
+  <script src="JsBarcode.code128.min.js"></script>
 
-    <title>Cotizacion</title>
-    <style>
-        
-        .contenedor{
-          background-color: rgb(201, 201, 182);
-          width: 100%;
-          border-radius: 10px;
-          margin: 2px;
-        }
-        .contenedor2{
-          width: 100%;
-          margin: 2px;
-        }
+  <title>Lista Materiales</title>
+  <style id="menu-manager-styles">
+    .contenedor {
+      background-color: rgb(201, 201, 182);
+      width: 100%;
+      border-radius: 10px;
+      margin: 2px;
+    }
 
-        th{
-            background-color: rgb(168, 168, 151);
-        }
-        td{
-            text-align: left;
-            border-bottom: 2px  rgb(124, 124, 124);
-            padding: 0px;
-            vertical-align:middle;
-            align-content: center;
-        }
+    .contenedor2 {
+      background-color: white;
+      width: 100%;
+      margin: 2px;
+    }
+
+    th {
+      background-color: rgb(168, 168, 151);
+    }
+
+    td {
+      text-align: left;
+      border-bottom: 2px rgb(124, 124, 124);
+      padding: 0px;
+      vertical-align: middle;
+      align-content: center;
+    }
 
 
-        .btn-edit{
-            background-color: transparent;
-            border-color: transparent;
-        }
-        .btn-edit:hover{
-            color: rgb(51, 255, 0);
-            background-color: black;
-            
-        }
-        .btn-delete{
-            background-color: transparent;
-            border-color: transparent;
-        }
-        .btn-delete:hover{
-            color: red;
-        }
-        .celda{
-            background-color: transparent;
-            border-color: transparent; 
-            padding: 0%;
-            width: 150px;
-            background-color: beige;
-        }
-        .ventana{
-            background-color: rgb(254, 255, 241)
-        }
-        tr{
-            padding: none;
-        }
-        tr:nth-child(even){background-color: rgb(228, 226, 226);}
-        /*tr:hover{
+    .btn-edit {
+      background-color: transparent;
+      border-color: transparent;
+    }
+
+    .btn-edit:hover {
+      color: rgb(51, 255, 0);
+      background-color: black;
+
+    }
+
+    .btn-delete {
+      background-color: transparent;
+      border-color: transparent;
+    }
+
+    .btn-delete:hover {
+      color: red;
+    }
+
+    .celda {
+      background-color: transparent;
+      border-color: transparent;
+      padding: 0%;
+      width: 150px;
+      background-color: beige;
+    }
+
+    .ventana {
+      background-color: rgb(254, 255, 241)
+    }
+
+    tr {
+      padding: none;
+    }
+
+    tr:nth-child(even) {
+      background-color: rgb(228, 226, 226);
+    }
+
+    /*tr:hover{
             background-color: rgb(228, 164, 253);
         }*/
-        
-        .button-content{
-            background-color: rgb(170, 170, 167);
-            text-align: right;
-            padding: 10px;
-            border-radius: 10px;
-        }
 
-        input{
-            width: 60px;
-            border-color: transparent;
-            background-color: transparent;
-        }
-     
-        .semaforo-rojo{
-          background-color: red;
-        }
-        .semaforo-ambar{
-          background-color: gold;
-        }
-        .semaforo-verde{
-          background-color: chartreuse;
-        }
-        .ruc{
-          margin-left: 38px;
-        }
-        .cliente{
-          margin-left: 20px;
-        }
-        .codigo{
-          margin-left: 17px;
-        }
-        .tabla{
-          padding: 5px;
-          width: 100%;
-          
-        }
-        H1{
-          text-align: center;
-        }
-        h4{
-          text-align: right;
-          font-size: 12px;
-        }
-        .total{
-          font-size: large;
-          font-weight: 600;
-          font-family: 'Courier New', Courier, monospace;
-        }
-        
-    </style>
+    .button-content {
+      background-color: rgb(170, 170, 167);
+      text-align: right;
+      padding: 10px;
+      border-radius: 10px;
+    }
+
+    input {
+      width: 60px;
+      border-color: transparent;
+      background-color: transparent;
+    }
+
+    .semaforo-rojo {
+      background-color: red;
+    }
+
+    .semaforo-ambar {
+      background-color: gold;
+    }
+
+    .semaforo-verde {
+      background-color: chartreuse;
+    }
+
+    .ruc {
+      margin-left: 38px;
+    }
+
+    .cliente {
+      margin-left: 20px;
+    }
+
+    .codigo {
+      margin-left: 17px;
+    }
+
+    .tabla {
+      padding: 5px;
+      width: 100%;
+
+    }
+
+    H1 {
+      text-align: center;
+    }
+
+    h4 {
+      text-align: right;
+      font-size: 12px;
+    }
+
+    .total {
+      font-size: large;
+      font-weight: 600;
+      font-family: 'Courier New', Courier, monospace;
+    }
+  </style>
 </head>
 
-<body>
-    <header>
-        <nav class="navbar" role="navigation" aria-label="main navigation">
-          <div class="navbar-brand">
-            <a class="navbar-item" href="http://www.heinzsport.com">
-              <img src="./imagenes/heinz_sport_sac_logo.png" width="112" height="28">
-            </a>
-        
-            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-              <span aria-hidden="true"></span>
-              <span aria-hidden="true"></span>
-              <span aria-hidden="true"></span>
-            </a>
-          </div>
-        
-          <div id="navbarBasicExample" class="navbar-menu">
-            <div class="navbar-start">
-              <a class="navbar-item" href="./index.html">Home</a>
-              <a class="navbar-item"href="./carrito/index.html">Catálogo</a>
-        
-              <div class="navbar-item has-dropdown is-hoverable">
-                <a class="navbar-link">Intranet</a>
-        
-                <div class="navbar-dropdown">
-                  <a class="navbar-item" href="./personal.html">Recursos Humanos</a>
-                  <a class="navbar-item" href="./menu.html">Eventos</a>
-                  <a class="navbar-item" href="./entrada_salida.html">Registro</a>
-                  <hr class="navbar-divider">
-                  <a class="navbar-item" href="./documento.html">Documentos</a>
-                  <a class="navbar-item" href="./productos.html">productos</a>
-                  <a class="navbar-item" href="./ventas.html">Ventas</a>
-                </div>
-              </div>
-            </div>
-        
-            <div class="navbar-end">
-              <div class="navbar-item">
-                <div class="buttons">
-                  <a class="button is-primary"><strong>Sign up</strong></a>
-                  <a class="button is-light">Log in</a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </nav>
-      </header>
+<body id="app">
+  <header id="navbar">
+    <div class="navbar1">
+      <div class="nav-container">
+        <button class="menu-toggle">☰</button>
+        <button class="menu-icon-company" id="fullscreenButton">Heinz Sport</button>
+        <ul class="menu"></ul>
+      </div>
+      <div class="nav-container-right">
+        <button id="btn-userName" style="background-color:transparent;color:magenta; border:none;"></button>
+        <button class="menu-toggle-right">☻</button>
+        <ul class="menu-right"></ul>
+      </div>
+    </div>
+  </header>
+  <br>
 
-
-      
-      
   <div class="contenedor">
-    <form  id="formulario">
-      <h1>RECETA</h1><h4 id="fecha">Lima, 13 de Diciembre de 2022</h4>
-      
-      <label for="usuario">Producto  :</label><input  class=' celda cliente' type="text" id="usuario"></br>
-      <label for="descripcion">Descripcion  :</label><input class='celda descripcion' type="text" id="descripcion"></br>
-      <label class='boton' for="boton">Codigo :</label><input class='celda codigo'  type="text" id="codigo" size="6"><span class="validity"></span> 
-      
-      <button  id="boton" >Ingresar</button>
+    <form id="formulario">
+      <h1>RECETA</h1>
+      <h4 id="fecha">Lima, 13 de Diciembre de 2022</h4>
+
+      <label for="usuario">Producto :</label><input class=' celda cliente' type="text" id="usuario"></br>
+      <label for="descripcion">Descripcion :</label><input class='celda descripcion' type="text" id="descripcion"></br>
+      <label class='boton' for="boton">Codigo :</label><input class='celda codigo' type="text" id="codigo"
+        size="6"><span class="validity"></span>
+
+      <button id="boton">Ingresar</button>
       <button class="semaforo" id="semaforo">''</button>
     </form>
   </div>
 
   <div class="contenedor2">
-    <table id='table' class="tabla">  
-        <thead>
-            <tr><th></th><th>Item</th><th>Codigo</th><th>Cantidad</th><th>Unidad</th><th>Descripcion</th><th>Peso</th><th>Importe</th><th></th></tr>
-        </thead>
+    <table id='table' class="tabla">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Item</th>
+          <th>Codigo</th>
+          <th>Cantidad</th>
+          <th>Unidad</th>
+          <th>Descripcion</th>
+          <th>Peso</th>
+          <th>Importe</th>
+          <th></th>
+        </tr>
+      </thead>
 
-        <tbody id="container"></tbody>
-        
-        <tfoot class="button-content">
-          <tr><th></th><th></th><th></th><th></th><th>Peso (Kilos)</th><th><input id="celda_total"  class="total" type="text" value="0"></input></th><th>Costo S/.</th><th><input id="costoTotal"  class="total" type="text" value="0"></th><th></th></tr>
-        </tfoot>
+      <tbody id="container"></tbody>
+
+      <tfoot class="button-content">
+        <tr>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th>Peso (Kilos)</th>
+          <th><input id="celda_total" class="total" type="text" value="0"></input></th>
+          <th>Costo S/.</th>
+          <th><input id="costoTotal" class="total" type="text" value="0"></th>
+          <th></th>
+        </tr>
+      </tfoot>
     </table>
   </div>
   <div class="contenedor">
     <button id="btn-guardar">Guardar</button>
     <button id="btn-imprimir">Imprimir</button>
-    <h4>Heinz Sport SAC :: RUC 20605216715</h4>    
+    <h4>Heinz Sport SAC :: RUC 20605216715</h4>
   </div>
 
-  
-  <a href="./consultaProduccion.html">Consultar</a>
 
-  <script type="module" src="./recetaProducto.js"></script>
+
 </body>
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-  // Get all "navbar-burger" elements
-  const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
-  // Add a click event on each of them
-  $navbarBurgers.forEach( el => {
-    el.addEventListener('click', () => {
-  
-      // Get the target from the "data-target" attribute
-      const target = el.dataset.target;
-      const $target = document.getElementById(target);
-  
-      // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
-      el.classList.toggle('is-active');
-      $target.classList.toggle('is-active');
-  
-    });
-  });
-  
-  });
-  </script>
-  <script src="https://cdn.jsdelivr.net/npm/gridjs/dist/gridjs.umd.js"></script>
-  
+<!--Script para el menu y pantalla completa-->
+<script type="module" src="./menusPantallaCompleta.js"></script>
+<script type="module" src="./recetaProducto.js"></script>
+
+
 </html>

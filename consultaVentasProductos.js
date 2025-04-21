@@ -1,4 +1,5 @@
 import { Datatable } from './dataTable.js'
+import{translateDate} from './plugins/translateDate.js'
 
 const ctx = document.getElementById('myChart');
 const ctx2 = document.getElementById('myChart2');
@@ -8,6 +9,7 @@ const panels = document.querySelectorAll('.panels div')
 const indicador = document.querySelector('.indicador')
 const nombreMes = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Setiembre', 'Octubre', 'Noviembre', 'Diciembre']
 
+console.log('se muestra del año y mes:',translateDate().slice(0,4),translateDate().slice(5,7));
 
 const departamentosClientes = {
     'OSORIO SIGUAS SILVIO VITALIANO': 'LIMA',
@@ -111,7 +113,7 @@ let itemsLocalStorage = JSON.parse(localStorage.getItem('todasLasVentas')) // it
 itemsLocalStorage.forEach(doc => {
     let detalle = JSON.parse(doc['values'].detalleCotizacion)
 
-    if (doc['values'].estado != 'nuevo' && doc['values'].estado != 'Anulado' && doc['values'].fechaEnvio > '2024-01-01') {//Regla para considerar una venta, cuando se entrega el pedido se considera una venta, falta implementar cuando se recibe el pago tambien se debe considwerar una venta
+    if (doc['values'].estado != 'nuevo' && doc['values'].estado != 'Anulado' && doc['values'].fechaEnvio > `${translateDate().slice(0,4)-1}-${translateDate().slice(5,7)+1}-01`) {//Regla para considerar una venta, cuando se entrega el pedido se considera una venta, falta implementar cuando se recibe el pago tambien se debe considwerar una venta
         for (const fila of detalle) {//cada fila de detalle se extrae y tralada a values
             let producto = {}
             producto.id = doc.id

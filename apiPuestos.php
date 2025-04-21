@@ -2,38 +2,35 @@
 require 'conexion.php';
 
 try {
-    // Conexión a la base de datos usando PDO
-    //$pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
-    //$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
     // Determinar el método HTTP
     $method = $_SERVER['REQUEST_METHOD'];
 
     switch ($method) {
         case 'GET':
             // Obtener todos los usuarios
-            if (isset($_GET['employee_id'])) {
+            if (isset($_GET['position_id'])) {
                 // Obtener un solo usuario
-                $id = $_GET['employee_id'];
-                $stmt = $pdo->prepare("SELECT * FROM Employees where employee_id = ?");
+                $id = $_GET['position_id'];
+                $stmt = $pdo->prepare("SELECT * FROM JobPositions where position_id = ?");
                 $stmt->execute([$id]);
                 $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
                 echo json_encode($usuario);
             } else {
                 // Obtener todos los usuarios
-                $stmt = $pdo->query("SELECT * FROM Employees");
-                $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                echo json_encode($usuarios);
+                $stmt = $pdo->query("SELECT * FROM JobPositions");
+                $Datos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                echo json_encode($Datos);
             }
             break;
 
         case 'POST':
             // Crear un nuevo usuario
             $data = json_decode(file_get_contents("php://input"), true);
-            $stmt = $pdo->prepare("INSERT INTO Employees (identity_document,first_name,last_name,email,phone_number,hire_date,position_id,department_id,manager_id,hourly_rate,status,address,city,state,zip_code,birth_date,gender) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-            $stmt->execute([$data['identity_document'], $data['first_name'], $data['last_name'], $data['email'], $data['phone_number'], $data['hire_date'], $data['position_id'], $data['department_id'], $data['manager_id'], $data['hourly_rate'], $data['status'], $data['address'], $data['city'], $data['state'], $data['zip_code'], $data['birth_date'], $data['gender']]);
-            echo json_encode(['message' => 'Empleado creado exitosamente']);
+            $stmt = $pdo->prepare("INSERT INTO JobPositions (position_title,min_salary,max_salary,department_id) VALUES (?,?,?,?)");
+            $stmt->execute([$data['position_title'], $data['min_salary'], $data['max_salary'], $data['department_id']]);
+            echo json_encode(['message' => 'JobPositions creado exitosamente']);
             break;
+
             
         case 'PUT':
             // Actualizar un usuario existente

@@ -6,7 +6,8 @@ import { Datatable } from './dataTable.js';
 let mesReporte = document.getElementById('mesReporte');
 let btnConsulta = document.getElementById('btnConsulta');
 let btnConsultaTotal = document.getElementById('btnConsultaTotal');
-const queryBoletaPago  = await getDocs(query(boletaPagoRef,where("payStatus", "==", false)));
+//const queryBoletaPago  = await getDocs(query(boletaPagoRef,where("payStatus", "==", false)));
+const queryBoletaPago  = await getDocs(query(boletaPagoRef));
 datosFirebase(queryBoletaPago)
 
 const tarifaJornada = [
@@ -73,8 +74,8 @@ function sincronizarLocalStorage(objetos) {//recibe nuevos datos lo guarda en LS
 
 function orderByMes(arrayObj) {
     let itemsMes=[];
-    
-    const anio=[2024,2023,2022];
+     
+    const anio=[2025,2024,2023,2022];
     anio.forEach((anio)=>{
         const nombreMes =['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Setiembre','Octubre','Noviembre','Diciembre'];
         let colaborador =['Angela','Alexandra','Xiomara','Rocio','Heinz','Mariela','Elí','Alison','Alison','Madeleine','Oswaldo','Alison'];
@@ -82,7 +83,7 @@ function orderByMes(arrayObj) {
         objeto['id']=anio
         objeto['values']={};
         colaborador.forEach(()=>{
-            acumuladorColaborador=0;
+            const acumuladorColaborador=0;
             
         })
         nombreMes.forEach((mes)=>{
