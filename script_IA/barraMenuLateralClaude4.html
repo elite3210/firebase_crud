@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heinz Sport - Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #090947;
+            --secondary-color: #303f9f;
+            --hover-color: #3949ab;
+            --text-color: #ffffff;
+            --submenu-bg: #e8eaf6;
+            --submenu-text: #333;
+            --transition-speed: 0.3s;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            transition: all var(--transition-speed);
+            overflow-y: auto;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 100;
+        }
+
+        .sidebar-hidden {
+            left: -250px;
+        }
+
+        .menu-icon-company {
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            padding: 15px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color var(--transition-speed);
+            border: none;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .menu-icon-company:hover {
+            background-color: var(--hover-color);
+        }
+
+        .user-info {
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .user-info i {
+            font-size: 18px;
+        }
+
+        .menu-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .menu-item {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .menu-title {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            cursor: pointer;
+            transition: background-color var(--transition-speed);
+        }
+
+        .menu-title:hover {
+            background-color: var(--hover-color);
+        }
+
+        .menu-title i, .menu-title .emoji {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .menu-title .arrow {
+            margin-left: auto;
+            transition: transform var(--transition-speed);
+        }
+
+        .menu-title.active .arrow {
+            transform: rotate(90deg);
+        }
+
+        .submenu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height var(--transition-speed);
+            background-color: var(--submenu-bg);
+        }
+
+        .submenu.active {
+            max-height: 500px;
+        }
+
+        .submenu-item {
+            padding: 10px 15px 10px 45px;
+            display: block;
+            color: var(--submenu-text);
+            text-decoration: none;
+            transition: background-color var(--transition-speed);
+        }
+
+        .submenu-item:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .hamburger-menu {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            cursor: pointer;
+            z-index: 200;
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            border: none;
+            border-radius: 5px;
+            padding: 8px 12px;
+            font-size: 18px;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            margin-left: 250px;
+            transition: margin-left var(--transition-speed);
+            background-color: #a0e8fa;
+        }
+
+        .main-content.expanded {
+            margin-left: 0;
+        }
+
+        @media screen and (max-width: 768px) {
+            .sidebar {
+                left: -250px;
+            }
+
+            .sidebar.active {
+                left: 0;
+            }
+
+            .hamburger-menu {
+                display: block;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding-top: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="hamburger-menu" id="hamburgerMenu">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div class="sidebar" id="sidebar">
+        <button id="fullscreenButton" class="menu-icon-company">
+            <i class="fas fa-expand"></i>
+            Heinz Sport
+        </button>
+        <div class="user-info">
+            <i class="fas fa-user"></i>
+            <span id="userName">Usuario Actual</span>
+        </div>
+        <ul class="menu-list" id="menuList">
+            <!-- Los menús se generarán dinámicamente con JavaScript -->
+        </ul>
+    </div>
+
+    <div class="main-content" id="mainContent">
+        <h1>Bienvenido al Dashboard</h1>
+        <p>Contenido principal aquí</p>
+    </div>
+
+    <script>
+        // Datos del menú importados desde el archivo JSON
+        const menuItems = [
+            {
+                title: 'Dashboard',
+                submenu: [
+                    { title: 'Resumen Ejecutivo', url: '../app.html' },
+                    { title: 'Indicadores Clave (KPIs)', url: '../documento.html' }
+                ]
+            },
+            {
+                title: 'Ventas',
+                submenu: [
+                    { title: 'Clientes', url: '../consultaCliente.html' },
+                    { title: 'Cotizaciones', url: '/ventas/cotizaciones' },
+                    { title: 'Pedidos', url: '../consultaVentas.html' },
+                    { title: 'Facturación', url: '/factura.html' }
+                ]
+            },
+            {
+                title: 'Compras',
+                submenu: [
+                    { title: 'Proveedores', url: '../consultaProveedor.html' },
+                    { title: 'Órdenes de Compra', url: '../consultaCompras.html' },
+                    { title: 'Recepción de Mercancía', url: '/compras/recepcion' },
+                    { title: 'Facturas de Proveedores', url: '/compras/facturas' }
+                ]
+            },
+            {
+                title: 'Inventario',
+                submenu: [
+                    { title: 'Productos', url: '../productos.html' },
+                    { title: 'Almacenes', url: '../almacenes.html' },
+                    { title: 'Movimientos', url: '/inventario/movimientos' },
+                    { title: 'Reportes de Stock', url: '/inventario.html' }
+                ]
+            },
+            {
+                title: 'Finanzas',
+                submenu: [
+                    { title: 'Cuentas por Cobrar', url: '/finanzas/cuentas-cobrar' },
+                    { title: 'Cuentas por Pagar', url: '/finanzas/cuentas-pagar' },
+                    { title: 'Contabilidad', url: '/finanzas/contabilidad' },
+                    { title: 'Presupuestos', url: '/finanzas/presupuestos' }
+                ]
+            },
+            {
+                title: 'Recursos Humanos',
+                submenu: [
+                    { title: 'Empleados', url: '../empleados.html' },
+                    { title: 'Asistencia', url: '../consultaJornada.html' },
+                    { title: 'Boletas', url: '../consultaBoletaPago.html' },
+                    { title: 'Planilla', url: '../planillaMensual.html' }
+                ]
+            },
+            {
+                title: 'Fabricacion',
+                submenu: [
+                    { title: 'Órdenes de Producción', url: '../produccion.html' },
+                    { title: 'Lista de Materiales', url: '../recetaProducto.html' },
+                    { title: 'Planificación de Producción', url: '/fabricacion/planificacion' },
+                    { title: 'Control de Calidad', url: '/fabricacion/calidad' },
+                    { title: 'Mantenimiento', url: '/fabricacion/mantenimiento' },
+                    { title: 'Estaciones de Trabajo', url: '/fabricacion/estaciones' },
+                    { title: 'Rutas de Producción', url: '/fabricacion/rutas' },
+                    { title: 'Desperdicios y Mermas', url: '/fabricacion/desperdicios' },
+                    { title: 'Costos de Producción', url: '/fabricacion/costos' },
+                    { title: 'Reportes de Producción', url: '/fabricacion/reportes' },
+                    { title: 'Maquinarias', url: '../activosFijos.html' }
+                ]
+            },
+            {
+                title: 'Reportes',
+                submenu: [
+                    { title: 'Ventas', url: '../consultaVentasProducto.html' },
+                    { title: 'Ventas Mensual', url: '../reporteVentaMensual.html' },
+                    { title: 'Compras', url: '/reportes/compras' },
+                    { title: 'Inventario', url: '../inventario.html' },
+                    { title: 'Financieros', url: '/reportes/financieros' }
+                ]
+            },
+            {
+                title: 'Configuración',
+                submenu: [
+                    { title: 'Perfil de Usuario', url: '/config/perfil' },
+                    { title: 'Usuarios y Permisos', url: '/config/usuarios' },
+                    { title: 'Configuración General', url: '/config/general' },
+                    { title: 'Respaldos', url: '/config/respaldos' },
+                    { title: 'Departamentos', url: '../departamentos.html' },
+                    { title: 'Puestos', url: '../puestos.html' }
+                ]
+            }
+        ];
+
+        // Íconos para cada menú principal
+        const menuIcons = {
+            'Dashboard': '<i class="fas fa-tachometer-alt"></i>',
+            'Ventas': '<i class="fas fa-chart-line"></i>',
+            'Compras': '<i class="fas fa-shopping-cart"></i>',
+            'Inventario': '<i class="fas fa-boxes"></i>',
+            'Finanzas': '<i class="fas fa-money-bill-wave"></i>',
+            'Recursos Humanos': '<i class="fas fa-users"></i>',
+            'Fabricacion': '<i class="fas fa-industry"></i>',
+            'Reportes': '<i class="fas fa-file-alt"></i>',
+            'Configuración': '<i class="fas fa-cogs"></i>'
+        };
+
+        // Función para generar el menú dinámicamente
+        function generateMenu() {
+            const menuList = document.getElementById('menuList');
+            
+            menuItems.forEach((item, index) => {
+                const li = document.createElement('li');
+                li.className = 'menu-item';
+                
+                const menuTitle = document.createElement('div');
+                menuTitle.className = 'menu-title';
+                menuTitle.innerHTML = `
+                    ${menuIcons[item.title] || '<i class="fas fa-circle"></i>'}
+                    <span>${item.title}</span>
+                    <i class="fas fa-chevron-right arrow"></i>
+                `;
+                
+                const submenu = document.createElement('div');
+                submenu.className = 'submenu';
+                
+                item.submenu.forEach(subItem => {
+                    const a = document.createElement('a');
+                    a.href = subItem.url;
+                    a.className = 'submenu-item';
+                    a.textContent = subItem.title;
+                    submenu.appendChild(a);
+                });
+                
+                li.appendChild(menuTitle);
+                li.appendChild(submenu);
+                menuList.appendChild(li);
+                
+                // Evento para desplegar/contraer el submenú
+                menuTitle.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    submenu.classList.toggle('active');
+                });
+            });
+        }
+
+        // Manejar el botón hamburguesa para móviles
+        document.getElementById('hamburgerMenu').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('active');
+        });
+
+        // Función para alternar el modo pantalla completa
+        document.getElementById('fullscreenButton').addEventListener('click', function() {
+            if (!document.fullscreenElement) {
+                if (document.documentElement.requestFullscreen) {
+                    document.documentElement.requestFullscreen();
+                } else if (document.documentElement.mozRequestFullScreen) { /* Firefox */
+                    document.documentElement.mozRequestFullScreen();
+                } else if (document.documentElement.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
+                    document.documentElement.webkitRequestFullscreen();
+                } else if (document.documentElement.msRequestFullscreen) { /* IE/Edge */
+                    document.documentElement.msRequestFullscreen();
+                }
+                this.querySelector('i').classList.remove('fa-expand');
+                this.querySelector('i').classList.add('fa-compress');
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.mozCancelFullScreen) { /* Firefox */
+                    document.mozCancelFullScreen();
+                } else if (document.webkitExitFullscreen) { /* Chrome, Safari & Opera */
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) { /* IE/Edge */
+                    document.msExitFullscreen();
+                }
+                this.querySelector('i').classList.remove('fa-compress');
+                this.querySelector('i').classList.add('fa-expand');
+            }
+        });
+
+        // Inicializar el menú y mostrar un nombre de usuario de ejemplo
+        document.addEventListener('DOMContentLoaded', function() {
+            generateMenu();
+            document.getElementById('userName').textContent = 'Juan Pérez';
+        });
+
+        // Eventos para controlar cambios en el estado de pantalla completa
+        document.addEventListener('fullscreenchange', updateFullscreenButton);
+        document.addEventListener('webkitfullscreenchange', updateFullscreenButton);
+        document.addEventListener('mozfullscreenchange', updateFullscreenButton);
+        document.addEventListener('MSFullscreenChange', updateFullscreenButton);
+
+        function updateFullscreenButton() {
+            const button = document.getElementById('fullscreenButton');
+            const icon = button.querySelector('i');
+            
+            if (document.fullscreenElement) {
+                icon.classList.remove('fa-expand');
+                icon.classList.add('fa-compress');
+            } else {
+                icon.classList.remove('fa-compress');
+                icon.classList.add('fa-expand');
+            }
+        }
+    </script>
+</body>
+</html>

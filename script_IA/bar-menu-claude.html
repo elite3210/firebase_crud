@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heinz Sport - Panel de Control</title>
+    <style>
+        :root {
+            --primary-color: #1a73e8;
+            --secondary-color: #4285f4;
+            --background-color: #f8f9fa;
+            --text-color: #333333;
+            --menu-width: 250px;
+            --header-height: 60px;
+            --transition-speed: 0.3s;
+            --hover-color: #e8f0fe;
+            --border-color: #dadce0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+        }
+
+        .layout-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: var(--menu-width);
+            height: 100vh;
+            background: white;
+            position: fixed;
+            left: 0;
+            top: 0;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            transition: transform var(--transition-speed);
+            z-index: 1000;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        #fullscreenButton {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color var(--transition-speed);
+        }
+
+        #fullscreenButton:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .user-icon {
+            font-size: 20px;
+            margin-right: 10px;
+        }
+
+        .user-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 10px 0;
+        }
+
+        .menu-item {
+            position: relative;
+        }
+
+        .menu-header {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: background-color var(--transition-speed);
+            font-weight: 500;
+        }
+
+        .menu-header:hover {
+            background-color: var(--hover-color);
+        }
+
+        .menu-icon {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .menu-arrow {
+            margin-left: auto;
+            transition: transform var(--transition-speed);
+        }
+
+        .submenu {
+            list-style: none;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height var(--transition-speed);
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+
+        .submenu-item {
+            padding: 10px 20px 10px 50px;
+            cursor: pointer;
+            transition: background-color var(--transition-speed);
+            font-size: 14px;
+        }
+
+        .submenu-item:hover {
+            background-color: var(--hover-color);
+        }
+
+        .menu-item.active .menu-header {
+            background-color: var(--hover-color);
+            color: var(--primary-color);
+        }
+
+        .menu-item.active .menu-arrow {
+            transform: rotate(180deg);
+        }
+
+        .menu-item.active .submenu {
+            max-height: 500px;
+        }
+
+        /* Mobile Hamburger */
+        .hamburger-menu {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1001;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 5px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: var(--menu-width);
+            padding: 20px;
+            transition: margin-left var(--transition-speed);
+        }
+
+        /* Responsive Styles */
+        @media screen and (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .hamburger-menu {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding-top: 60px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="layout-container">
+        <button class="hamburger-menu" id="hamburgerMenu">☰</button>
+
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <button id="fullscreenButton" class="menu-icon-company">Heinz Sport</button>
+            </div>
+
+            <div class="user-info">
+                <span class="user-icon">👤</span>
+                <span class="user-name">Usuario Actual</span>
+            </div>
+
+            <ul class="sidebar-menu">
+                <li class="menu-item">
+                    <div class="menu-header">
+                        <span class="menu-icon">📊</span>
+                        <span>Dashboard</span>
+                        <span class="menu-arrow">▼</span>
+                    </div>
+                    <ul class="submenu">
+                        <li class="submenu-item">Resumen Ejecutivo</li>
+                        <li class="submenu-item">Indicadores Clave (KPIs)</li>
+                    </ul>
+                </li>
+
+                <li class="menu-item">
+                    <div class="menu-header">
+                        <span class="menu-icon">💼</span>
+                        <span>Ventas</span>
+                        <span class="menu-arrow">▼</span>
+                    </div>
+                    <ul class="submenu">
+                        <li class="submenu-item">Clientes</li>
+                        <li class="submenu-item">Cotizaciones</li>
+                        <li class="submenu-item">Pedidos</li>
+                        <li class="submenu-item">Facturación</li>
+                    </ul>
+                </li>
+
+                <li class="menu-item">
+                    <div class="menu-header">
+                        <span class="menu-icon">📦</span>
+                        <span>Inventario</span>
+                        <span class="menu-arrow">▼</span>
+                    </div>
+                    <ul class="submenu">
+                        <li class="submenu-item">Productos</li>
+                        <li class="submenu-item">Almacenes</li>
+                        <li class="submenu-item">Movimientos</li>
+                        <li class="submenu-item">Reportes de Stock</li>
+                    </ul>
+                </li>
+
+                <li class="menu-item">
+                    <div class="menu-header">
+                        <span class="menu-icon">💰</span>
+                        <span>Finanzas</span>
+                        <span class="menu-arrow">▼</span>
+                    </div>
+                    <ul class="submenu">
+                        <li class="submenu-item">Cuentas por Cobrar</li>
+                        <li class="submenu-item">Cuentas por Pagar</li>
+                        <li class="submenu-item">Contabilidad</li>
+                        <li class="submenu-item">Presupuestos</li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+
+        <main class="main-content">
+            <h1>Panel de Control</h1>
+            <p>Contenido principal aquí...</p>
+        </main>
+    </div>
+
+</body>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Menu toggle functionality
+        const menuItems = document.querySelectorAll('.menu-item');
+        menuItems.forEach(item => {
+            const menuHeader = item.querySelector('.menu-header');
+            menuHeader.addEventListener('click', () => {
+                // Close other open menus
+                menuItems.forEach(otherItem => {
+                    if (otherItem !== item && otherItem.classList.contains('active')) {
+                        otherItem.classList.remove('active');
+                    }
+                });
+
+                // Toggle current menu
+                item.classList.toggle('active');
+            });
+        });
+
+        // Mobile hamburger menu toggle
+        const hamburgerMenu = document.getElementById('hamburgerMenu');
+        const sidebar = document.getElementById('sidebar');
+
+        hamburgerMenu.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+        });
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', (event) => {
+            const isClickInsideSidebar = sidebar.contains(event.target);
+            const isClickOnHamburger = hamburgerMenu.contains(event.target);
+
+            if (!isClickInsideSidebar && !isClickOnHamburger && window.innerWidth <= 768 && sidebar.classList.contains('active')) {
+                sidebar.classList.remove('active');
+            }
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                sidebar.classList.remove('active'); // Reset mobile state
+            }
+        });
+
+        // Fullscreen button functionality (example)
+        const fullscreenButton = document.getElementById('fullscreenButton');
+        fullscreenButton.addEventListener('click', () => {
+            alert('Acción de Heinz Sport - Puede ser personalizada');
+        });
+    });
+</script>
+
+</html>

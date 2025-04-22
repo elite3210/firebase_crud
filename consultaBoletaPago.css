@@ -2,7 +2,7 @@
 
 tbody{
     border-radius: 18px;
-    background-color: beige;
+   
     margin: 5px;
 }
 table{
@@ -15,16 +15,7 @@ table{
 th{
     background-color: rgb(168, 168, 151);
 }
-th, td{
-    text-align: left;
-    border-bottom: 2px solid rgb(124, 124, 124);
-    color: black;
-}
-td{
-    border-bottom: 1px dotted rgb(87, 87, 87);
-    padding: 0%;
-    
-}
+
 
 .btn-edit{
     background-color: transparent;
@@ -64,23 +55,12 @@ td{
     padding: 0%;
 }
 
-tr{
-    padding: none;
-}
+
 /*tr:nth-child(even){background-color: rgb(228, 226, 226);}*/
-tr:hover{
-    background-color:rgb(92, 247, 170);
-}
 
-.button-content{
-    background-color: rgb(168, 168, 151);
-    text-align: right;
-    padding: 10px;
-}
 
-.filaSeleccionada{
-    background-color:rgb(92, 247, 170);
-}
+
+
 section{
     width: 100%;
     display: flex;
@@ -88,14 +68,7 @@ section{
 .izquierda{
     width: 60%;
 }
-.derecha{
-    height: 100vh;
-    padding: 40px;
-    margin: auto;
-    width: 40%;
-    background-color: rgb(92, 247, 170);
 
-}
 
 #cajaOpciones{
     display: flex;

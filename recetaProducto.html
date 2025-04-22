@@ -5,16 +5,15 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css" rel="stylesheet" />
-  <script src="https://kit.fontawesome.com/434a77214b.js" crossorigin="anonymous"></script>
   <!--estilos para la barra de menus-->
-  <link rel="stylesheet" href="./barraMenus.css">
+  <link rel="stylesheet" href="./src/menuEstilos.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <script src="https://parzibyte.github.io/ejemplos-javascript/html-a-pdf/html2pdf.bundle.min.js"></script>
   <script src="JsBarcode.code128.min.js"></script>
 
   <title>Lista Materiales</title>
-  <style id="menu-manager-styles">
+  <style>
     .contenedor {
       background-color: rgb(201, 201, 182);
       width: 100%;
@@ -145,23 +144,38 @@
   </style>
 </head>
 
-<body id="app">
-  <header id="navbar">
-    <div class="navbar1">
-      <div class="nav-container">
-        <button class="menu-toggle">☰</button>
-        <button class="menu-icon-company" id="fullscreenButton">Heinz Sport</button>
-        <ul class="menu"></ul>
-      </div>
-      <div class="nav-container-right">
-        <button id="btn-userName" style="background-color:transparent;color:magenta; border:none;"></button>
-        <button class="menu-toggle-right">☻</button>
-        <ul class="menu-right"></ul>
-      </div>
-    </div>
-  </header>
-  <br>
+<body>
+  <!-- Mobile Menu Button -->
+  <button class="mobile-menu-btn" id="mobileMenuBtn">
+    <i class="fas fa-bars"></i>
+</button>
 
+<!-- Overlay for mobile -->
+<div class="overlay" id="overlay"></div>
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <button id="fullscreenButton" class="menu-icon-company">
+            <i class="fas fa-building"></i> Heinz Sport
+        </button>
+    </div>
+    
+    <div class="user-info">
+        <i class="fas fa-user-circle"></i>
+        <div>
+            <div  id="btn-userName" class="user-name">Juan Pérez</div>
+            <div class="user-role">Administrador</div>
+        </div>
+    </div>
+    
+    <ul class="sidebar-menu" id="sidebarMenu">
+        <!-- Los elementos del menú se generarán con JavaScript -->
+    </ul>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
   <div class="contenedor">
     <form id="formulario">
       <h1>RECETA</h1>
@@ -215,12 +229,15 @@
     <button id="btn-imprimir">Imprimir</button>
     <h4>Heinz Sport SAC :: RUC 20605216715</h4>
   </div>
+</div>
+
+  
 
 
 
 </body>
 <!--Script para el menu y pantalla completa-->
-<script type="module" src="./menusPantallaCompleta.js"></script>
+<script type="module" src="./src/menuComponente.js"></script>
 <script type="module" src="./recetaProducto.js"></script>
 
 

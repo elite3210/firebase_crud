@@ -7,7 +7,7 @@ import { htmlToPDF } from './plugins/htmlToPDF.js'
 //window.open("http://127.0.0.1:5500/consultaCliente.html");
 console.log('inicio de la carga de pagina..');
 //traer los socios comerciales clientes de firebase
-const sociosContainer = document.getElementById('sociosContainer');
+const sociosContainer = document.getElementById('dataTable');
 const saldoTotal = document.getElementById('saldoTotal');
 
 let numeroClientes = 0;
@@ -88,7 +88,7 @@ function renderTableContact(objContact) {
     //clearHTML(sociosContainer);
 
     const titulo = { '#': 'contador', RANK: 'clienteRank', NOMBRE: 'razonSocial', RUC: 'ruc', TELEFONO: 'telefono', SALDO: 'saldo' }
-    const dt = new Datatable('#sociosContainer',
+    const dt = new Datatable('#dataTable',
         [
             {
                 id: 'btnAdd', text: 'editar', icon: 'group_add', targetModal: '#myModal',

@@ -24,6 +24,7 @@ onAuthStateChanged(auth, async (user) => {//esto es para mostrar datos de la DB 
     const usuarioCifrada = await getDoc(usuariosRef)
     const btnUserName = document.querySelector('#btn-userName')
     btnUserName.textContent = usuarioCifrada.data().userName;
+    btnUserName.setAttribute('class','userOn')
 
     //traer los pedidos comerciales clientes de firebase
     let todosPedidosLS = JSON.parse(localStorage.getItem('todasLasVentas'))

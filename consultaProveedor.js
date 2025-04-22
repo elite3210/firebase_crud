@@ -2,7 +2,7 @@ import { onGetSocios, updateClientes, guardarSocios } from './firebase.js'
 import { Datatable } from './dataTable.js'
 
 //traer los socios comerciales clientes de firebase
-const sociosContainer = document.getElementById('sociosContainer')
+const sociosContainer = document.getElementById('dataTable')
 
 
 const registroSocios = await onGetSocios((sociosSnapShot) => {
@@ -36,7 +36,7 @@ function renderTableSocios(items) {
   clearHTML(sociosContainer);
 
   const titulo = { '#': 'contador', RANK: 'proveedorRank', RUC: 'ruc', NOMBRE: 'razonSocial', TELEFONO: 'telefono', CONTACTO: 'nombresContacto', SALDO: 'saldo' }
-  const dt = new Datatable('#sociosContainer',
+  const dt = new Datatable('#dataTable',
     [
       {
         id: 'btnEdit', text: 'editar', icon: 'note_add', targetModal: '#myModal',

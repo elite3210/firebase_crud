@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heinz Sport - Sistema ERP</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #090947;
+            --primary-light: #534bae;
+            --primary-dark: #000051;
+            --text-light: #a0e8fa;
+            --text-dark: #212121;
+            --accent-color: #ff5722;
+            --hover-color: #3949ab;
+            --sidebar-width: 250px;
+            --transition-speed: 0.3s;
+            --sidebar-collapsed-width: 0px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            overflow-y: auto;
+            transition: transform var(--transition-speed);
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            background-color: var(--primary-dark);
+            text-align: center;
+        }
+
+        .menu-icon-company {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 15px;
+            padding: 10px;
+            width: 100%;
+            border-radius: 5px;
+            transition: background-color var(--transition-speed);
+        }
+
+        .menu-icon-company:hover {
+            background-color: var(--hover-color);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .user-info i {
+            font-size: 1.5rem;
+            margin-right: 10px;
+        }
+
+        .user-name {
+            font-weight: 600;
+        }
+
+        .user-role {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        /* Menu Styles */
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+        }
+
+        .menu-item {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .menu-item > a {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            color: var(--text-light);
+            text-decoration: none;
+            transition: background-color var(--transition-speed);
+            cursor: pointer;
+        }
+
+        .menu-item > a:hover {
+            background-color: var(--hover-color);
+        }
+
+        .menu-item i, .menu-item .icon {
+            margin-right: 15px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .submenu {
+            list-style: none;
+            background-color: rgba(0, 0, 0, 0.1);
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height var(--transition-speed);
+        }
+
+        .submenu.active {
+            max-height: 500px; /* Altura suficiente para mostrar todos los submenús */
+        }
+
+        .submenu-item a {
+            display: block;
+            padding: 12px 20px 12px 55px;
+            color: var(--text-light);
+            text-decoration: none;
+            transition: background-color var(--transition-speed);
+        }
+
+        .submenu-item a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .arrow {
+            margin-left: auto;
+            transition: transform var(--transition-speed);
+        }
+
+        .arrow.active {
+            transform: rotate(90deg);
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 20px;
+            transition: margin-left var(--transition-speed);
+            background-color: #a0e8fa;
+        }
+
+        /* Mobile Menu Button */
+        .mobile-menu-btn {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 999;
+        }
+
+        /* Overlay for mobile */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        /* Media Queries */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding-top: 60px;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .overlay.active {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Overlay for mobile -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <button id="fullscreenButton" class="menu-icon-company">
+                <i class="fas fa-building"></i> Heinz Sport
+            </button>
+        </div>
+        
+        <div class="user-info">
+            <i class="fas fa-user-circle"></i>
+            <div>
+                <div class="user-name">Juan Pérez</div>
+                <div class="user-role">Administrador</div>
+            </div>
+        </div>
+        
+        <ul class="sidebar-menu" id="sidebarMenu">
+            <!-- Los elementos del menú se generarán con JavaScript -->
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <h1>Bienvenido al Sistema ERP de Heinz Sport</h1>
+        <p>Seleccione una opción del menú para comenzar.</p>
+    </div>
+
+</body>
+<script>
+    // Datos del menu importados del archivo contenidoMenu.js
+    const menuItems = [
+        {
+            title: 'Dashboard',
+            submenu: [
+                { title: 'Resumen Ejecutivo', url: '../app.html' },
+                { title: 'Indicadores Clave (KPIs)', url: '../documento.html' }
+            ]
+        },
+        {
+            title: 'Ventas',
+            submenu: [
+                { title: 'Clientes', url: '../consultaCliente.html' },
+                { title: 'Cotizaciones', url: '/ventas/cotizaciones' },
+                { title: 'Pedidos', url: '../consultaVentas.html' },
+                { title: 'Facturación', url: '/factura.html' }
+            ]
+        },
+        {
+            title: 'Compras',
+            submenu: [
+                { title: 'Proveedores', url: '../consultaProveedor.html' },
+                { title: 'Órdenes de Compra', url: '../consultaCompras.html' },
+                { title: 'Recepción de Mercancía', url: '/compras/recepcion' },
+                { title: 'Facturas de Proveedores', url: '/compras/facturas' }
+            ]
+        },
+        {
+            title: 'Inventario',
+            submenu: [
+                { title: 'Productos', url: '../productos.html' },
+                { title: 'Almacenes', url: '../almacenes.html' },
+                { title: 'Movimientos', url: '/inventario/movimientos' },
+                { title: 'Reportes de Stock', url: '/inventario.html' }
+            ]
+        },
+        {
+            title: 'Finanzas',
+            submenu: [
+                { title: 'Cuentas por Cobrar', url: '/finanzas/cuentas-cobrar' },
+                { title: 'Cuentas por Pagar', url: '/finanzas/cuentas-pagar' },
+                { title: 'Contabilidad', url: '/finanzas/contabilidad' },
+                { title: 'Presupuestos', url: '/finanzas/presupuestos' }
+            ]
+        },
+        {
+            title: 'Recursos Humanos',
+            submenu: [
+                { title: 'Empleados', url: '../empleados.html' },
+                { title: 'Asistencia', url: '../consultaJornada.html' },
+                { title: 'Boletas', url: '../consultaBoletaPago.html' },
+                { title: 'Planilla', url: '../planillaMensual.html' }
+            ]
+        },
+        {
+            title: 'Fabricacion',
+            submenu: [
+                { title: 'Órdenes de Producción', url: '../produccion.html' },
+                { title: 'Lista de Materiales', url: '../recetaProducto.html' },
+                { title: 'Planificación de Producción', url: '/fabricacion/planificacion' },
+                { title: 'Control de Calidad', url: '/fabricacion/calidad' },
+                { title: 'Mantenimiento', url: '/fabricacion/mantenimiento' },
+                { title: 'Estaciones de Trabajo', url: '/fabricacion/estaciones' },
+                { title: 'Rutas de Producción', url: '/fabricacion/rutas' },
+                { title: 'Desperdicios y Mermas', url: '/fabricacion/desperdicios' },
+                { title: 'Costos de Producción', url: '/fabricacion/costos' },
+                { title: 'Reportes de Producción', url: '/fabricacion/reportes' },
+                { title: 'Maquinarias', url: '../activosFijos.html' }
+            ]
+        },
+        {
+            title: 'Reportes',
+            submenu: [
+                { title: 'Ventas', url: '../consultaVentasProducto.html' },
+                { title: 'Ventas Mensual', url: '../reporteVentaMensual.html' },
+                { title: 'Compras', url: '/reportes/compras' },
+                { title: 'Inventario', url: '../inventario.html' },
+                { title: 'Financieros', url: '/reportes/financieros' }
+            ]
+        },
+        {
+            title: 'Configuración',
+            submenu: [
+                { title: 'Perfil de Usuario', url: '/config/perfil' },
+                { title: 'Usuarios y Permisos', url: '/config/usuarios' },
+                { title: 'Configuración General', url: '/config/general' },
+                { title: 'Respaldos', url: '/config/respaldos' },
+                { title: 'Departamentos', url: '../departamentos.html' },
+                { title: 'Puestos', url: '../puestos.html' }
+            ]
+        }
+    ];
+
+    // Mapeo de iconos para cada menú
+    const icons = {
+        'Dashboard': '<i class="fas fa-chart-line"></i>',
+        'Ventas': '<i class="fas fa-shopping-cart"></i>',
+        'Compras': '<i class="fas fa-truck"></i>',
+        'Inventario': '<i class="fas fa-boxes"></i>',
+        'Finanzas': '<i class="fas fa-dollar-sign"></i>',
+        'Recursos Humanos': '<i class="fas fa-users"></i>',
+        'Fabricacion': '<i class="fas fa-industry"></i>',
+        'Reportes': '<i class="fas fa-file-alt"></i>',
+        'Configuración': '<i class="fas fa-cog"></i>'
+    };
+
+    // Función para generar el menú
+    function generateMenu() {
+        const sidebarMenu = document.getElementById('sidebarMenu');
+        
+        menuItems.forEach(item => {
+            const li = document.createElement('li');
+            li.className = 'menu-item';
+            
+            const a = document.createElement('a');
+            a.innerHTML = `
+                ${icons[item.title] || '<i class="fas fa-circle"></i>'} 
+                <span>${item.title}</span>
+                <span class="arrow">
+                    <i class="fas fa-chevron-right"></i>
+                </span>
+            `;
+            
+            li.appendChild(a);
+            
+            // Crear submenu
+            if (item.submenu && item.submenu.length > 0) {
+                const ul = document.createElement('ul');
+                ul.className = 'submenu';
+                
+                item.submenu.forEach(subItem => {
+                    const subLi = document.createElement('li');
+                    subLi.className = 'submenu-item';
+                    
+                    const subA = document.createElement('a');
+                    subA.href = subItem.url;
+                    subA.textContent = subItem.title;
+                    
+                    subLi.appendChild(subA);
+                    ul.appendChild(subLi);
+                });
+                
+                li.appendChild(ul);
+                
+                // Añadir evento para desplegar/contraer submenú
+                a.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Toggle submenu
+                    const submenu = this.nextElementSibling;
+                    submenu.classList.toggle('active');
+                    
+                    // Toggle arrow
+                    const arrow = this.querySelector('.arrow');
+                    arrow.classList.toggle('active');
+                });
+            }
+            
+            sidebarMenu.appendChild(li);
+        });
+    }
+
+    // Generar el menú al cargar la página
+    document.addEventListener('DOMContentLoaded', function() {
+        generateMenu();
+        
+        // Botón de menú móvil
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        
+        mobileMenuBtn.addEventListener('click', function() {
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        });
+        
+        // Cerrar menú al hacer clic en el overlay
+        overlay.addEventListener('click', function() {
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+        });
+        
+        // Botón de pantalla completa
+        const fullscreenButton = document.getElementById('fullscreenButton');
+        
+        fullscreenButton.addEventListener('click', function() {
+            if (!document.fullscreenElement) {
+                if (document.documentElement.requestFullscreen) {
+                    document.documentElement.requestFullscreen();
+                } else if (document.documentElement.webkitRequestFullscreen) {
+                    document.documentElement.webkitRequestFullscreen();
+                } else if (document.documentElement.msRequestFullscreen) {
+                    document.documentElement.msRequestFullscreen();
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+            }
+        });
+    });
+</script>
+</html>

@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú Dinámico Mejorado</title>
+    <style id="menu-manager-styles">
+        /* Variables globales */
+        :root {
+            --primary-color: #090947;
+            --secondary-color: #34495e;
+            --hover-color: #3498db;
+            --text-color: #a0e8fa;
+            --text-color-menu: rgba(68, 71, 247, 0.5);
+            --text-color-hover: #ffffff;
+            --navbar-height: 54px;
+            --menu-width: 50vw;
+            --transition-time: 0.3s; /* Reducido para mayor fluidez */
+        }
+
+        /* Reset y estilos base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #73d4d7;
+        }
+
+        /* Navbar principal */
+        .navbar1 {
+            background-color: var(--primary-color);
+            padding: 0 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            z-index: 1000;
+        }
+
+        /* Contenedores de navegación */
+        .nav-container,
+        .nav-container-right {
+            display: flex;
+            align-items: center;
+        }
+
+        /* Botones de toggle */
+        .menu-toggle,
+        .menu-toggle-right {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 24px;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .menu-toggle {
+            margin-left: -15px;
+        }
+
+        .menu-toggle-right {
+            margin-right: -20px;
+        }
+
+        /* Menús principales */
+        .menu,
+        .menu-right {
+            list-style: none;
+            display: flex;
+            transition: transform var(--transition-time) ease;
+        }
+
+        /* Elementos del menú */
+        .menu-item {
+            position: relative;
+        }
+
+        .menu-link {
+            display: block;
+            padding: 15px 20px;
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 16px;
+            transition: background-color var(--transition-time);
+        }
+
+        .menu-link:hover {
+            background-color: var(--text-color-menu);
+            color: var(--text-color-hover);
+        }
+
+        /* Submenús */
+        .submenu {
+            display: none;
+            position: absolute;
+            background-color: var(--secondary-color);
+            min-width: 200px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        .submenu-item {
+            display: block;
+            padding: 12px 20px;
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 14px;
+            transition: background-color var(--transition-time);
+        }
+
+        .submenu-item:hover {
+            background-color: var(--hover-color);
+        }
+
+        /* Estilos para móviles */
+        @media screen and (max-width: 768px) {
+            .menu,
+            .menu-right {
+                display: none;
+                flex-direction: column;
+                width: var(--menu-width);
+                position: fixed;
+                top: var(--navbar-height);
+                height: calc(100vh - var(--navbar-height));
+                background-color: var(--primary-color);
+            }
+
+            .menu {
+                left: 0;
+                transform: translateX(-100%);
+            }
+
+            .menu-right {
+                right: 0;
+                transform: translateX(100%);
+            }
+
+            .menu.active,
+            .menu-right.active {
+                display: flex;
+                transform: translateX(0);
+            }
+
+            .submenu {
+                position: static;
+                background-color: var(--primary-color);
+                padding-left: 20px;
+            }
+        }
+
+        /* Estilos para PC */
+        @media screen and (min-width: 769px) {
+            .menu-right {
+                width: 300px;
+            }
+
+            .submenu {
+                background-color: var(--primary-color);
+                width: 100%;
+                padding-left: 3px;
+            }
+        }
+    </style>
+</head>
+<body id="app">
+    <header id="navbar">
+        <div class="navbar1">
+            <div class="nav-container">
+                <button class="menu-toggle">☰</button>
+                <button class="menu-icon-company" id="fullscreenButton">Heinz Sport</button>
+                <ul class="menu"></ul>
+            </div>
+            <div class="nav-container-right">
+                <button id="btn-userName" style="background-color:transparent;color:magenta; border:none;"></button>
+                <button class="menu-toggle-right">☻</button>
+                <ul class="menu-right"></ul>
+            </div>
+        </div>
+    </header>
+    
+</body>
+<script>
+    const menuItems = [
+        { title: 'Dashboard', submenu: [{ title: 'Resumen Ejecutivo', url: '#' }, { title: 'Indicadores Clave (KPIs)', url: '#' }] },
+        { title: 'Ventas', submenu: [{ title: 'Clientes', url: '#' }, { title: 'Cotizaciones', url: '#' }, { title: 'Pedidos', url: '#' }] },
+        // ... otros menús ...
+    ];
+
+    class MenuManager {
+        constructor(targetId, config = {}) {
+            this.targetElement = document.getElementById(targetId);
+            if (!this.targetElement) throw new Error(`Elemento con id '${targetId}' no encontrado`);
+
+            this.config = {
+                rightButtonContent: '☻',
+                rightButtonCloseContent: 'X',
+                leftButtonContent: '☰',
+                menuWidth: '50vw',
+                menuWidthPC: '300px',
+                transitionTime: '0.3s',
+                theme: 'default',
+                rightMenu: [{ title: 'Perfil', submenu: [{ title: 'Mi Cuenta', url: '#' }, { title: 'Cerrar Sesión', url: '#' }] }],
+                ...config
+            };
+
+            this.injectStyles();
+            this.initializeElements();
+            this.bindEvents();
+            this.renderMenus();
+        }
+
+        injectStyles() {
+            if (!document.getElementById('menu-manager-styles')) {
+                const styleSheet = document.createElement('style');
+                styleSheet.id = 'menu-manager-styles';
+                styleSheet.textContent = `
+                    /* Repetir los mismos estilos aquí */
+                `;
+                document.head.appendChild(styleSheet);
+            }
+        }
+
+        initializeElements() {
+            this.elements = {
+                menuLeft: document.querySelector('.menu'),
+                menuRight: document.querySelector('.menu-right'),
+                toggleLeft: document.querySelector('.menu-toggle'),
+                toggleRight: document.querySelector('.menu-toggle-right')
+            };
+        }
+
+        bindEvents() {
+            this.handleSubmenuClick = this.handleSubmenuClick.bind(this);
+            this.handleOutsideClick = this.handleOutsideClick.bind(this);
+            this.toggleMenu = this.toggleMenu.bind(this);
+        }
+
+        renderMenus() {
+            this.renderMenu(this.config.leftMenu, this.elements.menuLeft);
+            this.renderMenu(this.config.rightMenu, this.elements.menuRight);
+            this.setButtonContent(this.config.rightButtonContent);
+            this.elements.toggleLeft.innerHTML = this.config.leftButtonContent;
+        }
+
+        renderMenu(menuConfig, container) {
+            if (!container) return;
+            container.innerHTML = menuConfig.map(item => `
+                <li class="menu-item">
+                    <a href="javascript:void(0)" class="menu-link">${item.title}</a>
+                    ${this.renderSubmenu(item.submenu)}
+                </li>
+            `).join('');
+            this.attachMenuEventListeners(container);
+        }
+
+        renderSubmenu(submenuItems) {
+            if (!submenuItems?.length) return '';
+            return `
+                <ul class="submenu">
+                    ${submenuItems.map(item => `<li><a href="${item.url}" class="submenu-item">${item.title}</a></li>`).join('')}
+                </ul>
+            `;
+        }
+
+        attachMenuEventListeners(container) {
+            container.querySelectorAll('.menu-link').forEach(link => {
+                link.addEventListener('click', this.handleSubmenuClick);
+            });
+        }
+
+        setButtonContent(content, options = {}) {
+            const { silent = false } = options;
+            if (!content && !silent) {
+                console.warn('Contenido del botón no especificado');
+                return false;
+            }
+            if (this.elements.toggleRight) {
+                this.elements.toggleRight.innerHTML = content;
+                const event = new CustomEvent('buttonContentChanged', { detail: { content, timestamp: new Date() } });
+                this.elements.toggleRight.dispatchEvent(event);
+                return true;
+            }
+            return false;
+        }
+
+        updateMenuConfig(menuType, newConfig) {
+            if (menuType !== 'leftMenu' && menuType !== 'rightMenu') {
+                console.warn('Tipo de menú no válido');
+                return false;
+            }
+            this.config[menuType] = newConfig;
+            this.renderMenus();
+            return true;
+        }
+
+        updateMenuItem(menuType, itemIndex, newData) {
+            if (!this.config[menuType]) {
+                console.warn(`Tipo de menú '${menuType}' no válido`);
+                return false;
+            }
+            if (typeof this.config[menuType][itemIndex] === 'undefined') {
+                this.config[menuType][itemIndex] = newData;
+            } else {
+                this.config[menuType][itemIndex] = { ...this.config[menuType][itemIndex], ...newData };
+            }
+            this.renderMenus();
+            return true;
+        }
+
+        toggleMenu(menuSelector, otherMenuSelector) {
+            const menu = document.querySelector(menuSelector);
+            const otherMenu = document.querySelector(otherMenuSelector);
+            menu.classList.toggle('active');
+            otherMenu.classList.remove('active');
+            if (!this.state.isPCView && menuSelector === '.menu-right') {
+                const isMenuActive = menu.classList.contains('active');
+                const newContent = isMenuActive ? this.config.rightButtonCloseContent : this.config.rightButtonContent;
+                this.setButtonContent(newContent);
+            }
+        }
+
+        handleSubmenuClick(event) {
+            event.preventDefault();
+            const menuLink = event.currentTarget;
+            const submenu = menuLink.nextElementSibling;
+            if (!submenu) return;
+
+            const parentUl = menuLink.closest('ul');
+            this.#closeOtherSubmenus(submenu, parentUl);
+
+            submenu.style.display = submenu.style.display === 'block' ? 'none' : 'block';
+        }
+
+        #closeOtherSubmenus(currentSubmenu, parentUl) {
+            parentUl.querySelectorAll('.submenu').forEach(submenu => {
+                if (submenu !== currentSubmenu) submenu.style.display = 'none';
+            });
+        }
+
+        handleOutsideClick(event) {
+            const { menuLeft, menuRight, toggleLeft, toggleRight } = this.elements;
+            if (!menuLeft.contains(event.target) && !toggleLeft.contains(event.target)) {
+                menuLeft.classList.remove('active');
+            }
+            if (!menuRight.contains(event.target) && !toggleRight.contains(event.target)) {
+                menuRight.classList.remove('active');
+                if (!this.state.isPCView) this.setButtonContent(this.config.rightButtonContent);
+            }
+            this.#closeAllSubmenus();
+        }
+
+        #closeAllSubmenus() {
+            document.querySelectorAll('.submenu').forEach(submenu => {
+                submenu.style.display = 'none';
+            });
+        }
+
+        initializeEventListeners() {
+            const { toggleLeft, toggleRight } = this.elements;
+            toggleLeft.addEventListener('click', (e) => {
+                this.toggleMenu('.menu', '.menu-right');
+                e.stopPropagation();
+            });
+            toggleRight.addEventListener('click', (e) => {
+                this.toggleMenu('.menu-right', '.menu');
+                e.stopPropagation();
+            });
+
+            document.addEventListener('click', this.handleOutsideClick.bind(this));
+            window.addEventListener('resize', () => {
+                this.state.isPCView = window.innerWidth > 768;
+                const menuRightElement = document.querySelector('.menu-right');
+                if (menuRightElement) {
+                    menuRightElement.classList.remove('active');
+                    this.setButtonContent(this.config.rightButtonContent);
+                }
+                this.#closeAllSubmenus();
+            });
+        }
+
+        init() {
+            this.initializeEventListeners();
+        }
+    }
+
+    const menuManager = new MenuManager('navbar', { leftMenu: menuItems });
+    menuManager.init();
+    menuManager.updateMenuItem('rightMenu', 1, {
+        title: 'Iniciar Sesión',
+        submenu: [{ title: 'Login', url: '#' }, { title: 'Registro', url: '#' }]
+    });
+</script>
+</html>

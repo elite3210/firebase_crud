@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heinz Sport - Barra Lateral</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #e74c3c;
+            --text-color: #ecf0f1;
+            --hover-color: #3498db;
+            --transition-speed: 0.3s;
+            --sidebar-width: 250px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            display: flex;
+        }
+
+        .sidebar {
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            transition: transform var(--transition-speed);
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .content {
+            margin-left: var(--sidebar-width);
+            padding: 20px;
+            width: calc(100% - var(--sidebar-width));
+            transition: margin var(--transition-speed);
+        }
+
+        .menu-header {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .menu-icon-company {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 18px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            width: 100%;
+            transition: background-color var(--transition-speed);
+        }
+
+        .menu-icon-company:hover {
+            background-color: #c0392b;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            width: 100%;
+        }
+
+        .user-icon {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+
+        .user-name {
+            font-size: 16px;
+        }
+
+        .menu-items {
+            list-style: none;
+        }
+
+        .menu-item {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .menu-link {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            color: var(--text-color);
+            text-decoration: none;
+            transition: background-color var(--transition-speed);
+        }
+
+        .menu-link:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .menu-icon {
+            margin-right: 15px;
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .menu-arrow {
+            margin-left: auto;
+            transition: transform var(--transition-speed);
+        }
+
+        .submenu {
+            list-style: none;
+            background-color: var(--secondary-color);
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height var(--transition-speed);
+        }
+
+        .submenu-link {
+            padding: 12px 20px 12px 50px;
+            display: block;
+            color: var(--text-color);
+            text-decoration: none;
+            transition: background-color var(--transition-speed);
+        }
+
+        .submenu-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .active .menu-arrow {
+            transform: rotate(180deg);
+        }
+
+        .active .submenu {
+            max-height: 500px;
+        }
+
+        .active > .menu-link {
+            background-color: var(--accent-color);
+        }
+
+        .hamburger {
+            display: none;
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 5px;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        /* Media query para dispositivos móviles */
+        @media screen and (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                width: 80%;
+                max-width: 300px;
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .hamburger {
+                display: block;
+            }
+
+            .content {
+                margin-left: 0;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="hamburger" id="hamburgerBtn">☰</button>
+    
+    <div class="sidebar" id="sidebar">
+        <div class="menu-header">
+            <button id="fullscreenButton" class="menu-icon-company">Heinz Sport</button>
+            <div class="user-info">
+                <span class="user-icon">👤</span>
+                <span class="user-name">Juan Pérez</span>
+            </div>
+        </div>
+        
+        <ul class="menu-items" id="menuItems">
+            <!-- El menú se generará dinámicamente con JavaScript -->
+        </ul>
+    </div>
+    
+    <div class="content">
+        <h1>Bienvenido a Heinz Sport</h1>
+        <p>Selecciona una opción del menú lateral.</p>
+    </div>
+
+    <script>
+        // Datos del menú en formato JSON
+        const menuData = [
+            {
+                id: 1,
+                title: "Dashboard",
+                icon: "📊",
+                url: "#dashboard"
+            },
+            {
+                id: 2,
+                title: "Inventario",
+                icon: "📦",
+                submenu: [
+                    { id: 21, title: "Productos", url: "#productos" },
+                    { id: 22, title: "Categorías", url: "#categorias" },
+                    { id: 23, title: "Proveedores", url: "#proveedores" }
+                ]
+            },
+            {
+                id: 3,
+                title: "Ventas",
+                icon: "💰",
+                submenu: [
+                    { id: 31, title: "Registrar venta", url: "#registrar-venta" },
+                    { id: 32, title: "Historial", url: "#historial-ventas" }
+                ]
+            },
+            {
+                id: 4,
+                title: "Clientes",
+                icon: "👥",
+                url: "#clientes"
+            },
+            {
+                id: 5,
+                title: "Reportes",
+                icon: "📈",
+                submenu: [
+                    { id: 51, title: "Ventas diarias", url: "#ventas-diarias" },
+                    { id: 52, title: "Ventas mensuales", url: "#ventas-mensuales" },
+                    { id: 53, title: "Productos populares", url: "#productos-populares" }
+                ]
+            },
+            {
+                id: 6,
+                title: "Configuración",
+                icon: "⚙️",
+                url: "#configuracion"
+            }
+        ];
+
+        // Función para generar el menú dinámicamente
+        function generateMenu(menuItems, parentElement) {
+            menuItems.forEach(item => {
+                const li = document.createElement('li');
+                li.className = 'menu-item';
+                
+                const link = document.createElement('a');
+                link.href = item.url || '#';
+                link.className = 'menu-link';
+                
+                const icon = document.createElement('span');
+                icon.className = 'menu-icon';
+                icon.textContent = item.icon;
+                
+                const title = document.createElement('span');
+                title.textContent = item.title;
+                
+                link.appendChild(icon);
+                link.appendChild(title);
+                
+                li.appendChild(link);
+                
+                // Si tiene submenú
+                if (item.submenu && item.submenu.length) {
+                    const arrow = document.createElement('span');
+                    arrow.className = 'menu-arrow';
+                    arrow.textContent = '▼';
+                    link.appendChild(arrow);
+                    
+                    const submenu = document.createElement('ul');
+                    submenu.className = 'submenu';
+                    
+                    item.submenu.forEach(subItem => {
+                        const subLi = document.createElement('li');
+                        const subLink = document.createElement('a');
+                        subLink.href = subItem.url;
+                        subLink.className = 'submenu-link';
+                        subLink.textContent = subItem.title;
+                        
+                        subLi.appendChild(subLink);
+                        submenu.appendChild(subLi);
+                    });
+                    
+                    li.appendChild(submenu);
+                    
+                    // Event listener para desplegar submenú
+                    link.addEventListener('click', function(e) {
+                        if (item.submenu) {
+                            e.preventDefault();
+                            li.classList.toggle('active');
+                        }
+                    });
+                }
+                
+                parentElement.appendChild(li);
+            });
+        }
+
+        // Generar el menú al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuContainer = document.getElementById('menuItems');
+            generateMenu(menuData, menuContainer);
+            
+            // Toggle del menú hamburguesa para móviles
+            const hamburgerBtn = document.getElementById('hamburgerBtn');
+            const sidebar = document.getElementById('sidebar');
+            
+            hamburgerBtn.addEventListener('click', function() {
+                sidebar.classList.toggle('show');
+                hamburgerBtn.textContent = sidebar.classList.contains('show') ? '✕' : '☰';
+            });
+
+            // Botón de pantalla completa (fullscreenButton)
+            const fullscreenButton = document.getElementById('fullscreenButton');
+            fullscreenButton.addEventListener('click', function() {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen().catch(err => {
+                        console.error(`Error al intentar mostrar pantalla completa: ${err.message}`);
+                    });
+                } else {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen();
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

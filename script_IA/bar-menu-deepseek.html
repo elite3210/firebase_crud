@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Heinz Sport - Barra de Menú</title>
+    <style id="menu-manager-styles">
+        /* Variables globales */
+        :root {
+            --primary-color: #090947;
+            --secondary-color: #34495e;
+            --hover-color: #3498db;
+            --text-color: #a0e8fa;
+            --text-color-menu: rgba(68, 71, 247, 0.5);
+            --text-color-hover: #ffffff;
+            --navbar-height: 54px;
+            --menu-width: 50vw;
+            --transition-time: 0.3s; /* Reducido para mayor fluidez */
+        }
+
+        /* Reset y estilos base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #73d4d7;
+        }
+
+        /* Navbar principal */
+        .navbar1 {
+            background-color: var(--primary-color);
+            padding: 0 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            z-index: 1000;
+        }
+
+        /* Contenedores de navegación */
+        .nav-container,
+        .nav-container-right {
+            display: flex;
+            align-items: center;
+        }
+
+        /* Botones de toggle */
+        .menu-toggle,
+        .menu-toggle-right {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 24px;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .menu-toggle {
+            margin-left: -15px;
+        }
+
+        .menu-toggle-right {
+            margin-right: -20px;
+        }
+
+        /* Menús principales */
+        .menu,
+        .menu-right {
+            list-style: none;
+            display: flex;
+            transition: transform var(--transition-time) ease;
+        }
+
+        /* Elementos del menú */
+        .menu-item {
+            position: relative;
+        }
+
+        .menu-link {
+            display: block;
+            padding: 15px 20px;
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 16px;
+            transition: background-color var(--transition-time);
+        }
+
+        .menu-link:hover {
+            background-color: var(--text-color-menu);
+            color: var(--text-color-hover);
+        }
+
+        /* Submenús */
+        .submenu {
+            display: none;
+            position: absolute;
+            background-color: var(--secondary-color);
+            min-width: 200px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        .submenu-item {
+            display: block;
+            padding: 12px 20px;
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 14px;
+            transition: background-color var(--transition-time);
+        }
+
+        .submenu-item:hover {
+            background-color: var(--hover-color);
+        }
+
+        /* Estilos para móviles */
+        @media screen and (max-width: 768px) {
+            .menu,
+            .menu-right {
+                display: none;
+                flex-direction: column;
+                width: var(--menu-width);
+                position: fixed;
+                top: var(--navbar-height);
+                height: calc(100vh - var(--navbar-height));
+                background-color: var(--primary-color);
+            }
+
+            .menu {
+                left: 0;
+                transform: translateX(-100%);
+            }
+
+            .menu-right {
+                right: 0;
+                transform: translateX(100%);
+            }
+
+            .menu.active,
+            .menu-right.active {
+                display: flex;
+                transform: translateX(0);
+            }
+
+            .submenu {
+                position: static;
+                background-color: var(--primary-color);
+                padding-left: 20px;
+            }
+        }
+
+        /* Estilos para PC */
+        @media screen and (min-width: 769px) {
+            .menu-right {
+                width: 300px;
+            }
+
+            .submenu {
+                background-color: var(--primary-color);
+                width: 100%;
+                padding-left: 3px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header id="navbar">
+        <nav class="navbar" role="navigation" aria-label="Menú principal">
+            <div class="nav-container">
+                <button class="menu-toggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobile-menu">
+                    ☰
+                </button>
+                <a href="#" class="brand" aria-label="Heinz Sport - Inicio">Heinz Sport</a>
+                <ul class="menu" role="menubar"></ul>
+            </div>
+            <div class="user-menu">
+                <button class="user-button" id="user-button" aria-label="Menú de usuario" aria-expanded="false"
+                    aria-controls="user-dropdown">
+                    <span id="username">Usuario</span>
+                    <span>▼</span>
+                </button>
+                <div class="user-dropdown" id="user-dropdown" role="menu"></div>
+            </div>
+        </nav>
+        <div class="mobile-menu" id="mobile-menu" role="menu"></div>
+    </header>
+
+    <script>
+        class MenuManager {
+            constructor(config = {}) {
+                // Configuración por defecto
+                this.defaultConfig = {
+                    menuItems: [],
+                    userMenuItems: [
+                        { title: 'Mi perfil', url: '/perfil' },
+                        { title: 'Configuración', url: '/configuracion' },
+                        { title: 'Cerrar sesión', url: '/logout' }
+                    ],
+                    currentPath: window.location.pathname,
+                    brand: {
+                        text: 'Heinz Sport',
+                        url: '/'
+                    },
+                    user: {
+                        name: 'Usuario'
+                    }
+                };
+
+                // Combinar configuración
+                this.config = { ...this.defaultConfig, ...config };
+
+                // Elementos DOM
+                this.dom = {
+                    navbar: document.getElementById('navbar'),
+                    menu: document.querySelector('.menu'),
+                    mobileMenu: document.getElementById('mobile-menu'),
+                    userDropdown: document.getElementById('user-dropdown'),
+                    userButton: document.getElementById('user-button'),
+                    menuToggle: document.querySelector('.menu-toggle'),
+                    brand: document.querySelector('.brand'),
+                    username: document.getElementById('username')
+                };
+
+                // Estado
+                this.state = {
+                    mobileMenuOpen: false,
+                    userMenuOpen: false,
+                    isMobile: window.innerWidth <= 992
+                };
+
+                // Inicialización
+                this.init();
+            }
+
+            init() {
+                // Configurar elementos
+                this.setupBrand();
+                this.setupUser();
+                this.renderMenus();
+                this.setupEventListeners();
+                this.setupAccessibility();
+                this.handleResize();
+            }
+
+            setupBrand() {
+                if (this.config.brand) {
+                    this.dom.brand.textContent = this.config.brand.text;
+                    this.dom.brand.href = this.config.brand.url;
+                }
+            }
+
+            setupUser() {
+                if (this.config.user) {
+                    this.dom.username.textContent = this.config.user.name;
+                }
+            }
+
+            renderMenus() {
+                this.renderMainMenu();
+                this.renderUserMenu();
+                this.markCurrentPage();
+            }
+
+            renderMainMenu() {
+                // Limpiar menús
+                this.dom.menu.innerHTML = '';
+                this.dom.mobileMenu.innerHTML = '';
+
+                // Renderizar cada ítem del menú
+                this.config.menuItems.forEach(item => {
+                    const hasSubmenu = item.submenu && item.submenu.length > 0;
+                    const isCurrent = this.isCurrentPage(item);
+
+                    // Crear elemento del menú
+                    const menuItem = document.createElement('li');
+                    menuItem.className = `menu-item ${isCurrent ? 'active' : ''}`;
+                    menuItem.setAttribute('role', 'none');
+
+                    // Crear enlace principal
+                    const menuLink = document.createElement(hasSubmenu ? 'button' : 'a');
+                    menuLink.className = 'menu-link';
+                    menuLink.setAttribute('role', 'menuitem');
+
+                    if (hasSubmenu) {
+                        menuLink.setAttribute('aria-haspopup', 'true');
+                        menuLink.setAttribute('aria-expanded', 'false');
+                    }
+
+                    if (!hasSubmenu && item.url) {
+                        menuLink.href = item.url;
+                    } else {
+                        menuLink.href = '#';
+                    }
+
+                    menuLink.textContent = item.title;
+
+                    // Agregar submenú si existe
+                    if (hasSubmenu) {
+                        const submenu = this.createSubmenu(item.submenu);
+                        menuItem.appendChild(menuLink);
+                        menuItem.appendChild(submenu);
+                    } else {
+                        menuItem.appendChild(menuLink);
+                    }
+
+                    // Agregar al menú principal (desktop)
+                    this.dom.menu.appendChild(menuItem.cloneNode(true));
+
+                    // Agregar al menú móvil
+                    const mobileItem = menuItem.cloneNode(true);
+                    if (hasSubmenu) {
+                        const mobileLink = mobileItem.querySelector('.menu-link');
+                        mobileLink.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            const submenu = mobileItem.querySelector('.submenu');
+                            submenu.classList.toggle('active');
+                            mobileLink.setAttribute('aria-expanded', submenu.classList.contains('active'));
+                        });
+                    }
+                    this.dom.mobileMenu.appendChild(mobileItem);
+                });
+            }
+
+            createSubmenu(items) {
+                const submenu = document.createElement('ul');
+                submenu.className = 'submenu';
+                submenu.setAttribute('role', 'menu');
+
+                items.forEach(item => {
+                    const submenuItem = document.createElement('li');
+                    submenuItem.setAttribute('role', 'none');
+
+                    const link = document.createElement('a');
+                    link.className = 'submenu-item';
+                    link.href = item.url;
+                    link.textContent = item.title;
+                    link.setAttribute('role', 'menuitem');
+
+                    if (this.isCurrentPage(item)) {
+                        link.setAttribute('aria-current', 'page');
+                    }
+
+                    submenuItem.appendChild(link);
+                    submenu.appendChild(submenuItem);
+                });
+
+                return submenu;
+            }
+
+            renderUserMenu() {
+                this.dom.userDropdown.innerHTML = '';
+
+                this.config.userMenuItems.forEach(item => {
+                    const menuItem = document.createElement('div');
+                    menuItem.setAttribute('role', 'none');
+
+                    const link = document.createElement('a');
+                    link.className = 'submenu-item';
+                    link.href = item.url;
+                    link.textContent = item.title;
+                    link.setAttribute('role', 'menuitem');
+
+                    menuItem.appendChild(link);
+                    this.dom.userDropdown.appendChild(menuItem);
+                });
+            }
+
+            markCurrentPage() {
+                // Marcar página actual en el menú principal
+                this.config.menuItems.forEach((item, index) => {
+                    const isCurrent = this.isCurrentPage(item);
+                    const menuItems = document.querySelectorAll('.menu-item');
+
+                    if (isCurrent) {
+                        menuItems[index]?.classList.add('active');
+                    }
+
+                    // Marcar en submenús si existen
+                    if (item.submenu) {
+                        item.submenu.forEach(subItem => {
+                            if (this.isCurrentPage(subItem)) {
+                                menuItems[index]?.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            }
+
+            isCurrentPage(item) {
+                if (!item.url) return false;
+                return this.config.currentPath === item.url ||
+                    this.config.currentPath.startsWith(item.url + '/');
+            }
+
+            setupEventListeners() {
+                // Toggle menú móvil
+                this.dom.menuToggle.addEventListener('click', () => {
+                    this.toggleMobileMenu();
+                });
+
+                // Toggle menú de usuario
+                this.dom.userButton.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.toggleUserMenu();
+                });
+
+                // Submenús desktop
+                document.querySelectorAll('.menu-item').forEach(item => {
+                    const link = item.querySelector('.menu-link[aria-haspopup="true"]');
+                    if (link) {
+                        link.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            const submenu = item.querySelector('.submenu');
+                            const isOpen = submenu.style.display === 'block';
+
+                            this.closeAllSubmenus();
+
+                            if (!isOpen) {
+                                submenu.style.display = 'block';
+                                link.setAttribute('aria-expanded', 'true');
+                            }
+                        });
+                    }
+                });
+
+                // Cerrar menús al hacer clic fuera
+                document.addEventListener('click', (e) => {
+                    if (!this.dom.navbar.contains(e.target)) {
+                        this.closeAllMenus();
+                    }
+                });
+
+                // Manejar resize
+                window.addEventListener('resize', () => {
+                    this.handleResize();
+                });
+
+                // Manejar teclado para accesibilidad
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        this.closeAllMenus();
+                    }
+                });
+            }
+
+            setupAccessibility() {
+                // Asegurar que los elementos tengan los roles ARIA adecuados
+                this.dom.menu.setAttribute('role', 'menubar');
+                this.dom.mobileMenu.setAttribute('role', 'menu');
+                this.dom.userDropdown.setAttribute('role', 'menu');
+            }
+
+            toggleMobileMenu() {
+                this.state.mobileMenuOpen = !this.state.mobileMenuOpen;
+                this.dom.mobileMenu.classList.toggle('active');
+                this.dom.menuToggle.setAttribute('aria-expanded', this.state.mobileMenuOpen);
+
+                if (!this.state.mobileMenuOpen) {
+                    this.closeAllSubmenus();
+                }
+            }
+
+            toggleUserMenu() {
+                this.state.userMenuOpen = !this.state.userMenuOpen;
+                this.dom.userDropdown.classList.toggle('active');
+                this.dom.userButton.setAttribute('aria-expanded', this.state.userMenuOpen);
+            }
+
+            closeAllMenus() {
+                this.state.mobileMenuOpen = false;
+                this.state.userMenuOpen = false;
+
+                this.dom.mobileMenu.classList.remove('active');
+                this.dom.userDropdown.classList.remove('active');
+                this.closeAllSubmenus();
+
+                this.dom.menuToggle.setAttribute('aria-expanded', 'false');
+                this.dom.userButton.setAttribute('aria-expanded', 'false');
+            }
+
+            closeAllSubmenus() {
+                document.querySelectorAll('.submenu').forEach(submenu => {
+                    submenu.style.display = 'none';
+                });
+
+                document.querySelectorAll('.menu-link[aria-haspopup="true"]').forEach(link => {
+                    link.setAttribute('aria-expanded', 'false');
+                });
+            }
+
+            handleResize() {
+                const wasMobile = this.state.isMobile;
+                this.state.isMobile = window.innerWidth <= 992;
+
+                if (wasMobile !== this.state.isMobile) {
+                    if (!this.state.isMobile) {
+                        this.closeAllMenus();
+                    }
+                }
+            }
+
+            // Métodos públicos para actualización
+            updateMenuItems(newItems) {
+                this.config.menuItems = newItems;
+                this.renderMenus();
+            }
+
+            updateUserMenuItems(newItems) {
+                this.config.userMenuItems = newItems;
+                this.renderUserMenu();
+            }
+
+            updateUserInfo(userData) {
+                this.config.user = { ...this.config.user, ...userData };
+                this.setupUser();
+            }
+
+            setCurrentPath(path) {
+                this.config.currentPath = path;
+                this.markCurrentPage();
+            }
+        }
+
+        // Datos del menú (pueden venir de una API o ser estáticos)
+        const menuItems = [
+            {
+                title: 'Dashboard',
+                submenu: [
+                    { title: 'Resumen Ejecutivo', url: '/app.html' },
+                    { title: 'Indicadores Clave', url: '/documento.html' }
+                ]
+            },
+            {
+                title: 'Ventas',
+                submenu: [
+                    { title: 'Clientes', url: '/consultaCliente.html' },
+                    { title: 'Cotizaciones', url: '/ventas/cotizaciones' },
+                    { title: 'Pedidos', url: '/consultaVentas.html' },
+                    { title: 'Facturación', url: '/factura.html' }
+                ]
+            },
+            {
+                title: 'Compras',
+                submenu: [
+                    { title: 'Proveedores', url: '/consultaProveedor.html' },
+                    { title: 'Órdenes de Compra', url: '/consultaCompras.html' },
+                    { title: 'Recepción', url: '/compras/recepcion' },
+                    { title: 'Facturas', url: '/compras/facturas' }
+                ]
+            },
+            {
+                title: 'Inventario',
+                submenu: [
+                    { title: 'Productos', url: '../productos.html' },
+                    { title: 'Almacenes', url: '../almacenes.html' },
+                    { title: 'Movimientos', url: '/inventario/movimientos' },
+                    { title: 'Reportes de Stock', url: '/inventario.html' }
+                ]
+            },
+            {
+                title: 'Recursos Humanos',
+                submenu: [
+                    { title: 'Empleados', url: '/empleados.html' },
+                    { title: 'Asistencia', url: '/consultaJornada.html' },
+                    { title: 'Boletas', url: '/consultaBoletaPago.html' }
+                ]
+            }
+        ];
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', () => {
+            const menuManager = new MenuManager({
+                menuItems: menuItems,
+                currentPath: window.location.pathname,
+                user: {
+                    name: 'Juan Pérez',
+                    role: 'Administrador'
+                }
+            });
+
+            // Ejemplo de cómo actualizar dinámicamente
+            // setTimeout(() => {
+            //     menuManager.updateUserInfo({
+            //         name: 'Ana Gómez',
+            //         role: 'Supervisor'
+            //     });
+            // }, 3000);
+        });
+    </script>
+</body>
+
+</html>
