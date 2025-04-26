@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Heinz Sport ERP</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    /* Estilos generales */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      color: #333;
+      overflow-x: hidden;
+    }
+
+    .container {
+      display: flex;
+      height: 100vh;
+    }
+
+    /* Barra lateral izquierda (Escritorio) */
+    .sidebar {
+      width: 250px;
+      background-color: #090947;
+      color: white;
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      transition: transform 0.3s ease-in-out;
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .sidebar.hidden {
+      transform: translateX(-100%);
+    }
+
+    .sidebar-header {
+      padding: 20px;
+      text-align: center;
+      background-color: #06063d;
+    }
+
+    .sidebar-header h1 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .sidebar-header p {
+      font-size: 14px;
+    }
+
+    .menu {
+      flex-grow: 1;
+      overflow-y: auto;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      padding: 15px 20px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .menu-item:hover {
+      background-color: #0a0a5c;
+    }
+
+    .menu-item i {
+      margin-right: 15px;
+    }
+
+    .submenu {
+      display: none;
+      flex-direction: column;
+    }
+
+    .submenu a {
+      padding: 10px 40px;
+      color: white;
+      text-decoration: none;
+      display: block;
+    }
+
+    .submenu a:hover {
+      background-color: #0a0a5c;
+    }
+
+    .menu-item.active .submenu {
+      display: flex;
+    }
+
+    /* Contenido principal */
+    .main-content {
+      margin-left: 250px;
+      padding: 20px;
+      flex-grow: 1;
+      background-color: #fff;
+      transition: margin-left 0.3s ease;
+    }
+
+    /* Barra superior (Móvil) */
+    .top-bar {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: #090947;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 20px;
+      z-index: 1000;
+    }
+
+    .top-bar i {
+      cursor: pointer;
+    }
+
+    .top-bar .company-name {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    /* Menú lateral derecho (Usuario) */
+    .user-sidebar {
+      width: 250px;
+      background-color: #090947;
+      color: white;
+      position: fixed;
+      top: 0;
+      right: -250px;
+      height: 100%;
+      transition: right 0.3s ease-in-out;
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .user-sidebar.open {
+      right: 0;
+    }
+
+    .user-sidebar-header {
+      padding: 20px;
+      text-align: center;
+    }
+
+    .user-sidebar-menu {
+      flex-grow: 1;
+      overflow-y: auto;
+    }
+
+    .user-sidebar-menu a {
+      display: block;
+      padding: 15px 20px;
+      color: white;
+      text-decoration: none;
+      transition: background-color 0.3s ease;
+    }
+
+    .user-sidebar-menu a:hover {
+      background-color: #0a0a5c;
+    }
+
+    /* Overlay */
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 998;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+
+      .main-content {
+        margin-left: 0;
+      }
+
+      .top-bar {
+        display: flex;
+      }
+
+      .sidebar:not(.hidden) ~ .overlay,
+      .user-sidebar.open ~ .overlay {
+        display: block;
+      }
+    }
+
+    /* Botón pantalla completa */
+    .fullscreen-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #090947;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      display: none;
+    }
+
+    @media (min-width: 769px) {
+      .fullscreen-btn {
+        display: block;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar Izquierdo -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h1>Heinz Sport</h1>
+      <p>Admin | Rol: Gerente</p>
+    </div>
+    <div class="menu">
+      <div class="menu-item" onclick="toggleSubMenu(this)">
+        <i class="fa-solid fa-chart-line"></i> Dashboard
+        <div class="submenu">
+          <a href="#">Resumen</a>
+          <a href="#">Estadísticas</a>
+        </div>
+      </div>
+      <div class="menu-item" onclick="toggleSubMenu(this)">
+        <i class="fa-solid fa-dollar-sign"></i> Ventas
+        <div class="submenu">
+          <a href="#">Pedidos</a>
+          <a href="#">Clientes</a>
+        </div>
+      </div>
+      <div class="menu-item" onclick="toggleSubMenu(this)">
+        <i class="fa-solid fa-cart-shopping"></i> Compras
+        <div class="submenu">
+          <a href="#">Proveedores</a>
+          <a href="#">Ordenes</a>
+        </div>
+      </div>
+      <div class="menu-item" onclick="toggleSubMenu(this)">
+        <i class="fa-solid fa-box"></i> Inventario
+        <div class="submenu">
+          <a href="#">Productos</a>
+          <a href="#">Stock</a>
+        </div>
+      </div>
+      <div class="menu-item" onclick="toggleSubMenu(this)">
+        <i class="fa-solid fa-coins"></i> Finanzas
+        <div class="submenu">
+          <a href="#">Facturación</a>
+          <a href="#">Contabilidad</a>
+        </div>
+      </div>
+      <div class="menu-item" onclick="toggleSubMenu(this)">
+        <i class="fa-solid fa-users"></i> Recursos Humanos
+        <div class="submenu">
+          <a href="#">Empleados</a>
+          <a href="#">Nómina</a>
+        </div>
+      </div>
+      <div class="menu-item" onclick="toggleSubMenu(this)">
+        <i class="fa-solid fa-industry"></i> Fabricación
+        <div class="submenu">
+          <a href="#">Producción</a>
+          <a href="#">Calidad</a>
+        </div>
+      </div>
+      <div class="menu-item" onclick="toggleSubMenu(this)">
+        <i class="fa-solid fa-file-alt"></i> Reportes
+        <div class="submenu">
+          <a href="#">Generar reporte</a>
+          <a href="#">Historial</a>
+        </div>
+      </div>
+      <div class="menu-item" onclick="toggleSubMenu(this)">
+        <i class="fa-solid fa-cog"></i> Configuración
+        <div class="submenu">
+          <a href="#">General</a>
+          <a href="#">Seguridad</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top Bar (Móvil) -->
+  <div class="top-bar">
+    <i class="fa-solid fa-bars" onclick="toggleSidebar()"></i>
+    <span class="company-name">Heinz Sport</span>
+    <i class="fa-solid fa-user" onclick="toggleUserSidebar()"></i>
+  </div>
+
+  <!-- Overlay -->
+  <div class="overlay" onclick="closeMenus()"></div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <h1>Bienvenido al ERP Heinz Sport</h1>
+    <p>Selecciona una opción del menú para comenzar.</p>
+  </div>
+
+  <!-- User Sidebar -->
+  <div class="user-sidebar" id="userSidebar">
+    <div class="user-sidebar-header">
+      <h2>Admin</h2>
+      <p>Rol: Gerente</p>
+    </div>
+    <div class="user-sidebar-menu">
+      <a href="#"><i class="fa-solid fa-user"></i> Perfil</a>
+      <a href="#"><i class="fa-solid fa-cog"></i> Configuración</a>
+      <a href="#"><i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar sesión</a>
+    </div>
+  </div>
+
+  <!-- Botón Pantalla Completa -->
+  <button class="fullscreen-btn" onclick="toggleFullscreen()">Pantalla Completa</button>
+
+  <script>
+    // Función para alternar submenús
+    function toggleSubMenu(item) {
+      item.classList.toggle('active');
+    }
+
+    // Función para mostrar/ocultar sidebar en móvil
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      sidebar.classList.toggle('hidden');
+    }
+
+    // Función para mostrar/ocultar sidebar de usuario
+    function toggleUserSidebar() {
+      const userSidebar = document.getElementById('userSidebar');
+      userSidebar.classList.toggle('open');
+    }
+
+    // Función para cerrar todos los menús al hacer clic fuera
+    function closeMenus() {
+      const sidebar = document.getElementById('sidebar');
+      const userSidebar = document.getElementById('userSidebar');
+      sidebar.classList.add('hidden');
+      userSidebar.classList.remove('open');
+    }
+
+    // Función para pantalla completa
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+      } else {
+        document.exitFullscreen();
+      }
+    }
+
+    // Detectar cambios en el tamaño de la ventana
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 768) {
+        const sidebar = document.getElementById('sidebar');
+        sidebar.classList.remove('hidden');
+      }
+    });
+  </script>
+</body>
+</html>

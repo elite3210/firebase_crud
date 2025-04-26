@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -101,7 +102,7 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .menu-item > a {
+        .menu-item>a {
             display: flex;
             align-items: center;
             padding: 15px 20px;
@@ -111,11 +112,12 @@
             cursor: pointer;
         }
 
-        .menu-item > a:hover {
+        .menu-item>a:hover {
             background-color: var(--hover-color);
         }
 
-        .menu-item i, .menu-item .icon {
+        .menu-item i,
+        .menu-item .icon {
             margin-right: 15px;
             width: 20px;
             text-align: center;
@@ -130,7 +132,8 @@
         }
 
         .submenu.active {
-            max-height: 500px; /* Altura suficiente para mostrar todos los submenús */
+            max-height: 500px;
+            /* Altura suficiente para mostrar todos los submenús */
         }
 
         .submenu-item a {
@@ -193,19 +196,20 @@
 
         /* Media Queries */
         @media (max-width: 768px) {
+
             .sidebar {
                 transform: translateX(-100%);
             }
-            
+
             .sidebar.active {
                 transform: translateX(0);
             }
-            
+
             .main-content {
                 margin-left: 0;
                 padding-top: 60px;
             }
-            
+
             .mobile-menu-btn {
                 display: block;
             }
@@ -214,13 +218,80 @@
                 display: block;
             }
         }
+
+        /* Mobile Topbar */
+        .mobile-topbar {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50px;
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 1001;
+            padding: 0 10px;
+        }
+
+        .topbar-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .topbar-section.left {
+            flex: 0 0 50px;
+        }
+
+        .topbar-section.center {
+            flex: 1;
+            font-weight: bold;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+
+        .topbar-section.right {
+            flex: 0 0 50px;
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        /* Mostrar topbar solo en móvil */
+        @media (max-width: 768px) {
+            .mobile-topbar {
+                display: flex;
+            }
+        }
     </style>
 </head>
+
 <body>
     <!-- Mobile Menu Button -->
     <button class="mobile-menu-btn" id="mobileMenuBtn">
         <i class="fas fa-bars"></i>
     </button>
+
+    <!-- Mobile Topbar -->
+    <div class="mobile-topbar">
+        <div class="topbar-section left">
+            <i class="fas fa-bars" id="topbarMenuIcon"></i>
+        </div>
+        <div class="topbar-section center">
+            Heinz Sport
+        </div>
+        <div class="topbar-section right">
+            <img src="https://via.placeholder.com/35" alt="Usuario" class="user-avatar">
+        </div>
+    </div>
+
 
     <!-- Overlay for mobile -->
     <div class="overlay" id="overlay"></div>
@@ -232,7 +303,7 @@
                 <i class="fas fa-building"></i> Heinz Sport
             </button>
         </div>
-        
+
         <div class="user-info">
             <i class="fas fa-user-circle"></i>
             <div>
@@ -240,7 +311,7 @@
                 <div class="user-role">Administrador</div>
             </div>
         </div>
-        
+
         <ul class="sidebar-menu" id="sidebarMenu">
             <!-- Los elementos del menú se generarán con JavaScript -->
         </ul>
@@ -363,11 +434,11 @@
     // Función para generar el menú
     function generateMenu() {
         const sidebarMenu = document.getElementById('sidebarMenu');
-        
+
         menuItems.forEach(item => {
             const li = document.createElement('li');
             li.className = 'menu-item';
-            
+
             const a = document.createElement('a');
             a.innerHTML = `
                 ${icons[item.title] || '<i class="fas fa-circle"></i>'} 
@@ -376,70 +447,70 @@
                     <i class="fas fa-chevron-right"></i>
                 </span>
             `;
-            
+
             li.appendChild(a);
-            
+
             // Crear submenu
             if (item.submenu && item.submenu.length > 0) {
                 const ul = document.createElement('ul');
                 ul.className = 'submenu';
-                
+
                 item.submenu.forEach(subItem => {
                     const subLi = document.createElement('li');
                     subLi.className = 'submenu-item';
-                    
+
                     const subA = document.createElement('a');
                     subA.href = subItem.url;
                     subA.textContent = subItem.title;
-                    
+
                     subLi.appendChild(subA);
                     ul.appendChild(subLi);
                 });
-                
+
                 li.appendChild(ul);
-                
+
                 // Añadir evento para desplegar/contraer submenú
-                a.addEventListener('click', function(e) {
+                a.addEventListener('click', function (e) {
                     e.preventDefault();
-                    
+
                     // Toggle submenu
                     const submenu = this.nextElementSibling;
                     submenu.classList.toggle('active');
-                    
+
                     // Toggle arrow
                     const arrow = this.querySelector('.arrow');
                     arrow.classList.toggle('active');
                 });
             }
-            
+
             sidebarMenu.appendChild(li);
         });
     }
 
     // Generar el menú al cargar la página
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         generateMenu();
-        
+
         // Botón de menú móvil
         const mobileMenuBtn = document.getElementById('mobileMenuBtn');
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('overlay');
-        
-        mobileMenuBtn.addEventListener('click', function() {
+
+        mobileMenuBtn.addEventListener('click', function () {
             sidebar.classList.toggle('active');
             overlay.classList.toggle('active');
         });
-        
+
         // Cerrar menú al hacer clic en el overlay
-        overlay.addEventListener('click', function() {
+        overlay.addEventListener('click', function () {
             sidebar.classList.remove('active');
             overlay.classList.remove('active');
         });
-        
+
         // Botón de pantalla completa
         const fullscreenButton = document.getElementById('fullscreenButton');
-        
-        fullscreenButton.addEventListener('click', function() {
+
+        fullscreenButton.addEventListener('click', function () {
             if (!document.fullscreenElement) {
                 if (document.documentElement.requestFullscreen) {
                     document.documentElement.requestFullscreen();
@@ -459,5 +530,12 @@
             }
         });
     });
+
+    document.getElementById('topbarMenuIcon').addEventListener('click', function () {
+        sidebar.classList.toggle('active');
+        overlay.classList.toggle('active');
+    });
+
 </script>
+
 </html>

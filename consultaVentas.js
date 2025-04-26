@@ -23,6 +23,8 @@ onAuthStateChanged(auth, async (user) => {//esto es para mostrar datos de la DB 
     const usuariosRef = doc(db, `Usuarios/${user.uid}`)
     const usuarioCifrada = await getDoc(usuariosRef)
     const btnUserName = document.querySelector('#btn-userName')
+    const userRol = document.querySelector('#userRol')
+    userRol.setAttribute('class','rolOn')
     btnUserName.textContent = usuarioCifrada.data().userName;
     btnUserName.setAttribute('class','userOn')
 
@@ -78,7 +80,7 @@ function renderDatatable(items) {
   
   items.sort((a, b) => b.values.numero - a.values.numero);//metodo para ordenar por numero de documento, en array de objetos, seleccionar del objeto el atributo a ordenar, repetir en a y b
 
-  const titulo = { OV:'numero', Factura:'invoice', GUIA:'numberGuia' ,FECHA: 'fecha', CLIENTE: 'cliente',"RUC/DNI":'ruc', IMPORTE: 'importeTotalVista', RE: 'retrasoEnvio', RP: 'retrasoPago', STATUS: 'progreso' }
+  const titulo = { OV:'numero', FE:'invoice', GUIA:'numberGuia' ,FECHA: 'fecha', CLIENTE: 'cliente', IMPORTE: 'importeTotalVista', RE: 'retrasoEnvio', RP: 'retrasoPago', STATUS: 'progreso' }
   const dt = new Datatable('#dataTable',
     [
       {

@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heinz Sport - ERP</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #090947;
+            --secondary-color: #1a1a6e;
+            --accent-color: #3a3a8a;
+            --text-color: #ffffff;
+            --text-secondary: #cccccc;
+            --bg-color: #f5f5f5;
+            --overlay-color: rgba(0, 0, 0, 0.5);
+            --sidebar-width: 280px;
+            --right-sidebar-width: 250px;
+            --header-height: 60px;
+            --transition-speed: 0.3s;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        /* Estilos para desktop */
+        .desktop-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar izquierdo */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            height: 100vh;
+            position: fixed;
+            transition: transform var(--transition-speed) ease;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--accent-color);
+        }
+
+        .sidebar-header .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--text-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sidebar-header .logo i {
+            margin-right: 10px;
+            color: #4CAF50;
+        }
+
+        .user-info {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--accent-color);
+        }
+
+        .user-info .avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+        }
+
+        .user-info .name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .user-info .role {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .menu {
+            padding: 15px 0;
+        }
+
+        .menu-item {
+            position: relative;
+        }
+
+        .menu-item > a {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: var(--text-color);
+            text-decoration: none;
+            transition: background-color var(--transition-speed);
+        }
+
+        .menu-item > a:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .menu-item i {
+            width: 30px;
+            font-size: 18px;
+            margin-right: 10px;
+        }
+
+        .menu-item .menu-arrow {
+            margin-left: auto;
+            transition: transform var(--transition-speed);
+        }
+
+        .menu-item.active .menu-arrow {
+            transform: rotate(90deg);
+        }
+
+        .submenu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height var(--transition-speed) ease;
+            background-color: var(--secondary-color);
+        }
+
+        .menu-item.active .submenu {
+            max-height: 500px;
+        }
+
+        .submenu a {
+            display: block;
+            padding: 10px 20px 10px 60px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: background-color var(--transition-speed), color var(--transition-speed);
+        }
+
+        .submenu a:hover {
+            background-color: var(--accent-color);
+            color: var(--text-color);
+        }
+
+        /* Contenido principal */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            transition: margin var(--transition-speed);
+            min-height: 100vh;
+        }
+
+        .header {
+            height: var(--header-height);
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            justify-content: space-between;
+        }
+
+        .header .fullscreen-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color var(--transition-speed);
+        }
+
+        .header .fullscreen-btn:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        .page-title {
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        /* Sidebar derecho (móvil) */
+        .right-sidebar {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: var(--right-sidebar-width);
+            height: 100vh;
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            transition: right var(--transition-speed) ease;
+            z-index: 1001;
+            overflow-y: auto;
+        }
+
+        .right-sidebar.active {
+            right: 0;
+        }
+
+        .right-sidebar-header {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--accent-color);
+        }
+
+        .right-sidebar-header .close-btn {
+            position: absolute;
+            left: 15px;
+            top: 15px;
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .right-sidebar-menu {
+            padding: 15px 0;
+        }
+
+        .right-sidebar-menu a {
+            display: block;
+            padding: 12px 20px;
+            color: var(--text-color);
+            text-decoration: none;
+            transition: background-color var(--transition-speed);
+        }
+
+        .right-sidebar-menu a:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .right-sidebar-menu i {
+            width: 30px;
+            font-size: 18px;
+            margin-right: 10px;
+        }
+
+        /* Overlay */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--overlay-color);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity var(--transition-speed), visibility var(--transition-speed);
+        }
+
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Estilos para móvil */
+        .mobile-header {
+            display: none;
+            height: var(--header-height);
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 0 15px;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .mobile-header .logo {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .mobile-header .menu-toggle, .mobile-header .user-toggle {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .desktop-layout {
+                display: block;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+                top: var(--header-height);
+                height: calc(100vh - var(--header-height));
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .sidebar-header, .user-info {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding-top: var(--header-height);
+            }
+
+            .header {
+                display: none;
+            }
+
+            .mobile-header {
+                display: flex;
+            }
+
+            .content {
+                padding: 15px;
+            }
+        }
+
+        /* Modo pantalla completa */
+        body.fullscreen {
+            overflow: hidden;
+        }
+
+        body.fullscreen .main-content {
+            margin-left: 0;
+        }
+
+        body.fullscreen .sidebar {
+            display: none;
+        }
+
+        body.fullscreen .header {
+            display: none;
+        }
+
+        body.fullscreen .mobile-header {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Vista móvil -->
+    <div class="mobile-header">
+        <button class="menu-toggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="logo">Heinz Sport</div>
+        <button class="user-toggle">
+            <i class="fas fa-user"></i>
+        </button>
+    </div>
+
+    <!-- Sidebar izquierdo -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <a href="#" class="logo">
+                <i class="fas fa-running"></i>
+                Heinz Sport
+            </a>
+        </div>
+
+        <div class="user-info">
+            <div class="avatar">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="name">John Doe</div>
+            <div class="role">Administrador</div>
+        </div>
+
+        <div class="menu">
+            <div class="menu-item">
+                <a href="#">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+            </div>
+
+            <div class="menu-item">
+                <a href="#" class="menu-toggle">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Ventas</span>
+                    <i class="fas fa-chevron-down menu-arrow"></i>
+                </a>
+                <div class="submenu">
+                    <a href="#">Clientes</a>
+                    <a href="#">Pedidos</a>
+                    <a href="#">Facturas</a>
+                    <a href="#">Devoluciones</a>
+                </div>
+            </div>
+
+            <div class="menu-item">
+                <a href="#" class="menu-toggle">
+                    <i class="fas fa-box-open"></i>
+                    <span>Compras</span>
+                    <i class="fas fa-chevron-down menu-arrow"></i>
+                </a>
+                <div class="submenu">
+                    <a href="#">Proveedores</a>
+                    <a href="#">Órdenes de compra</a>
+                    <a href="#">Facturas de compra</a>
+                </div>
+            </div>
+
+            <div class="menu-item">
+                <a href="#" class="menu-toggle">
+                    <i class="fas fa-warehouse"></i>
+                    <span>Inventario</span>
+                    <i class="fas fa-chevron-down menu-arrow"></i>
+                </a>
+                <div class="submenu">
+                    <a href="#">Productos</a>
+                    <a href="#">Categorías</a>
+                    <a href="#">Movimientos</a>
+                    <a href="#">Ajustes de inventario</a>
+                    <a href="#">Almacenes</a>
+                </div>
+            </div>
+
+            <div class="menu-item">
+                <a href="#" class="menu-toggle">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Finanzas</span>
+                    <i class="fas fa-chevron-down menu-arrow"></i>
+                </a>
+                <div class="submenu">
+                    <a href="#">Cuentas bancarias</a>
+                    <a href="#">Transacciones</a>
+                    <a href="#">Presupuestos</a>
+                    <a href="#">Informes financieros</a>
+                </div>
+            </div>
+
+            <div class="menu-item">
+                <a href="#" class="menu-toggle">
+                    <i class="fas fa-users"></i>
+                    <span>Recursos Humanos</span>
+                    <i class="fas fa-chevron-down menu-arrow"></i>
+                </a>
+                <div class="submenu">
+                    <a href="#">Empleados</a>
+                    <a href="#">Departamentos</a>
+                    <a href="#">Nóminas</a>
+                    <a href="#">Asistencias</a>
+                    <a href="#">Vacaciones</a>
+                </div>
+            </div>
+
+            <div class="menu-item">
+                <a href="#" class="menu-toggle">
+                    <i class="fas fa-industry"></i>
+                    <span>Fabricación</span>
+                    <i class="fas fa-chevron-down menu-arrow"></i>
+                </a>
+                <div class="submenu">
+                    <a href="#">Órdenes de producción</a>
+                    <a href="#">Listas de materiales</a>
+                    <a href="#">Rutas de producción</a>
+                    <a href="#">Control de calidad</a>
+                </div>
+            </div>
+
+            <div class="menu-item">
+                <a href="#" class="menu-toggle">
+                    <i class="fas fa-chart-pie"></i>
+                    <span>Reportes</span>
+                    <i class="fas fa-chevron-down menu-arrow"></i>
+                </a>
+                <div class="submenu">
+                    <a href="#">Ventas</a>
+                    <a href="#">Compras</a>
+                    <a href="#">Inventario</a>
+                    <a href="#">Financieros</a>
+                    <a href="#">Personalizados</a>
+                </div>
+            </div>
+
+            <div class="menu-item">
+                <a href="#" class="menu-toggle">
+                    <i class="fas fa-cog"></i>
+                    <span>Configuración</span>
+                    <i class="fas fa-chevron-down menu-arrow"></i>
+                </a>
+                <div class="submenu">
+                    <a href="#">Usuarios</a>
+                    <a href="#">Roles</a>
+                    <a href="#">Empresa</a>
+                    <a href="#">Integraciones</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar derecho (móvil) -->
+    <div class="right-sidebar">
+        <div class="right-sidebar-header">
+            <button class="close-btn">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="avatar">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="name">John Doe</div>
+            <div class="role">Administrador</div>
+        </div>
+
+        <div class="right-sidebar-menu">
+            <a href="#">
+                <i class="fas fa-user"></i>
+                <span>Mi perfil</span>
+            </a>
+            <a href="#">
+                <i class="fas fa-cog"></i>
+                <span>Configuración</span>
+            </a>
+            <a href="#">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Cerrar sesión</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Overlay -->
+    <div class="overlay"></div>
+
+    <!-- Contenido principal -->
+    <div class="desktop-layout">
+        <div class="main-content">
+            <div class="header">
+                <div></div>
+                <button class="fullscreen-btn"><i class="fas fa-expand"></i></button>
+                <button class="fullscreen-btn"><i class="fas fa-expand"></i></button>
+                <button class="fullscreen-btn"><i class="fas fa-expand"></i></button>
+                <button class="fullscreen-btn"><i class="fas fa-expand"></i></button>
+                <button class="fullscreen-btn"><i class="fas fa-expand"></i></button>
+                <button class="fullscreen-btn"><i class="fas fa-expand"></i></button>
+                <button class="fullscreen-btn"><i class="fas fa-expand"></i></button>
+                <button class="fullscreen-btn"><i class="fas fa-expand"></i></button>
+                <button class="fullscreen-btn"><i class="fas fa-expand"></i></button>
+            </div>
+
+            <div class="content">
+                <h1 class="page-title">Dashboard</h1>
+                
+                <div class="card">
+                    <h2>Bienvenido al sistema Heinz Sport ERP</h2>
+                    <p>Seleccione una opción del menú lateral para comenzar.</p>
+                </div>
+
+                <div class="card">
+                    <h3>Resumen del sistema</h3>
+                    <p>Aquí irían los widgets y gráficos del dashboard...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elementos del DOM
+            const sidebar = document.querySelector('.sidebar');
+            const rightSidebar = document.querySelector('.right-sidebar');
+            const overlay = document.querySelector('.overlay');
+            const menuItems = document.querySelectorAll('.menu-item > a.menu-toggle');
+            const mobileMenuToggle = document.querySelector('.mobile-header .menu-toggle');
+            const mobileUserToggle = document.querySelector('.mobile-header .user-toggle');
+            const rightSidebarClose = document.querySelector('.right-sidebar .close-btn');
+            const fullscreenBtn = document.querySelector('.fullscreen-btn');
+            const html = document.documentElement;
+
+            // Toggle submenús
+            menuItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const parent = this.parentElement;
+                    parent.classList.toggle('active');
+                    
+                    // Cerrar otros submenús abiertos
+                    document.querySelectorAll('.menu-item').forEach(otherItem => {
+                        if (otherItem !== parent && otherItem.classList.contains('active')) {
+                            otherItem.classList.remove('active');
+                        }
+                    });
+                });
+            });
+
+            // Mostrar/ocultar sidebar en móvil
+            mobileMenuToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('active');
+                overlay.classList.toggle('active');
+                rightSidebar.classList.remove('active');
+            });
+
+            // Mostrar/ocultar right sidebar en móvil
+            mobileUserToggle.addEventListener('click', function() {
+                rightSidebar.classList.toggle('active');
+                overlay.classList.toggle('active');
+                sidebar.classList.remove('active');
+            });
+
+            // Cerrar right sidebar
+            rightSidebarClose.addEventListener('click', function() {
+                rightSidebar.classList.remove('active');
+                overlay.classList.remove('active');
+            });
+
+            // Cerrar menús al hacer clic en el overlay
+            overlay.addEventListener('click', function() {
+                sidebar.classList.remove('active');
+                rightSidebar.classList.remove('active');
+                overlay.classList.remove('active');
+            });
+
+            // Pantalla completa
+            fullscreenBtn.addEventListener('click', function() {
+                if (!document.fullscreenElement) {
+                    html.requestFullscreen().catch(err => {
+                        alert(`Error al intentar pantalla completa: ${err.message}`);
+                    });
+                    document.body.classList.add('fullscreen');
+                } else {
+                    document.exitFullscreen();
+                    document.body.classList.remove('fullscreen');
+                }
+            });
+
+            // Cambiar texto del botón de pantalla completa
+            document.addEventListener('fullscreenchange', function() {
+                if (document.fullscreenElement) {
+                    fullscreenBtn.innerHTML = '<i class="fas fa-compress"></i> Salir de pantalla completa';
+                } else {
+                    fullscreenBtn.innerHTML = '<i class="fas fa-expand"></i> Pantalla completa';
+                }
+            });
+
+            // Cerrar menús al cambiar tamaño de pantalla (si pasa de móvil a desktop)
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 768) {
+                    sidebar.classList.remove('active');
+                    rightSidebar.classList.remove('active');
+                    overlay.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

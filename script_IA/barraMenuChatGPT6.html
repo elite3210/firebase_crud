@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heinz Sport - Sistema ERP</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #090947;
+            --primary-light: #534bae;
+            --primary-dark: #000051;
+            --text-light: #a0e8fa;
+            --text-dark: #212121;
+            --accent-color: #ff5722;
+            --hover-color: #3949ab;
+            --sidebar-width: 250px;
+            --transition-speed: 0.3s;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            overflow-y: auto;
+            transition: transform var(--transition-speed);
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            background-color: var(--primary-dark);
+            text-align: center;
+        }
+
+        .menu-icon-company {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 15px;
+            padding: 10px;
+            width: 100%;
+            border-radius: 5px;
+            transition: background-color var(--transition-speed);
+        }
+
+        .menu-icon-company:hover {
+            background-color: var(--hover-color);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .user-info i {
+            font-size: 1.5rem;
+            margin-right: 10px;
+        }
+
+        .user-name {
+            font-weight: 600;
+        }
+
+        .user-role {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+        }
+
+        .menu-item {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .menu-item > a {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            color: var(--text-light);
+            text-decoration: none;
+            transition: background-color var(--transition-speed);
+            cursor: pointer;
+        }
+
+        .menu-item > a:hover {
+            background-color: var(--hover-color);
+        }
+
+        .menu-item i, .menu-item .icon {
+            margin-right: 15px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .submenu {
+            list-style: none;
+            background-color: rgba(0, 0, 0, 0.1);
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height var(--transition-speed);
+        }
+
+        .submenu.active {
+            max-height: 500px;
+        }
+
+        .submenu-item a {
+            display: block;
+            padding: 12px 20px 12px 55px;
+            color: var(--text-light);
+            text-decoration: none;
+            transition: background-color var(--transition-speed);
+        }
+
+        .submenu-item a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .arrow {
+            margin-left: auto;
+            transition: transform var(--transition-speed);
+        }
+
+        .arrow.active {
+            transform: rotate(90deg);
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 20px;
+            transition: margin-left var(--transition-speed);
+            background-color: #a0e8fa;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        /* Mobile Topbar */
+        .mobile-topbar {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50px;
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 1001;
+            padding: 0 10px;
+        }
+
+        .topbar-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .topbar-section.left {
+            flex: 0 0 50px;
+            cursor: pointer;
+        }
+
+        .topbar-section.center {
+            flex: 1;
+            font-weight: bold;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+
+        .topbar-section.right {
+            flex: 0 0 50px;
+            cursor: pointer;
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        /* Right-side user menu */
+        .user-sidebar {
+            width: 220px;
+            position: fixed;
+            top: 0;
+            right: -220px;
+            height: 100vh;
+            background-color: var(--primary-dark);
+            color: var(--text-light);
+            transition: right 0.3s ease;
+            z-index: 1002;
+            padding: 20px;
+        }
+
+        .user-sidebar.active {
+            right: 0;
+        }
+
+        .user-sidebar h3 {
+            margin-bottom: 10px;
+        }
+
+        .user-sidebar ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .user-sidebar li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding-top: 60px;
+            }
+
+            .mobile-topbar {
+                display: flex;
+            }
+
+            .sidebar-header,
+            .user-info {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Overlay -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Mobile Topbar -->
+    <div class="mobile-topbar">
+        <div class="topbar-section left" id="topbarMenuIcon">
+            <i class="fas fa-bars"></i>
+        </div>
+        <div class="topbar-section center">
+            Heinz Sport
+        </div>
+        <div class="topbar-section right" id="topbarUserIcon">
+            <img src="https://via.placeholder.com/35" alt="Usuario" class="user-avatar">
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <button id="fullscreenButton" class="menu-icon-company">
+                <i class="fas fa-building"></i> Heinz Sport
+            </button>
+        </div>
+        <div class="user-info">
+            <i class="fas fa-user-circle"></i>
+            <div>
+                <div class="user-name">Juan Pérez</div>
+                <div class="user-role">Administrador</div>
+            </div>
+        </div>
+        <ul class="sidebar-menu" id="sidebarMenu"></ul>
+    </div>
+
+    <!-- Right User Sidebar -->
+    <div class="user-sidebar" id="userSidebar">
+        <h3>Juan Pérez</h3>
+        <p>Administrador</p>
+        <ul>
+            <li>Perfil</li>
+            <li>Configuración</li>
+            <li>Cerrar sesión</li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <h1>Bienvenido al Sistema ERP de Heinz Sport</h1>
+        <p>Seleccione una opción del menú para comenzar.</p>
+    </div>
+
+    <script>
+        const menuItems = [/* igual que en tu script original */];
+
+        const icons = {
+            'Dashboard': '<i class="fas fa-chart-line"></i>',
+            'Ventas': '<i class="fas fa-shopping-cart"></i>',
+            'Compras': '<i class="fas fa-truck"></i>',
+            'Inventario': '<i class="fas fa-boxes"></i>',
+            'Finanzas': '<i class="fas fa-dollar-sign"></i>',
+            'Recursos Humanos': '<i class="fas fa-users"></i>',
+            'Fabricacion': '<i class="fas fa-industry"></i>',
+            'Reportes': '<i class="fas fa-file-alt"></i>',
+            'Configuración': '<i class="fas fa-cog"></i>'
+        };
+
+        function generateMenu() {
+            const sidebarMenu = document.getElementById('sidebarMenu');
+            menuItems.forEach(item => {
+                const li = document.createElement('li');
+                li.className = 'menu-item';
+                const a = document.createElement('a');
+                a.innerHTML = `
+                    ${icons[item.title] || '<i class="fas fa-circle"></i>'} 
+                    <span>${item.title}</span>
+                    <span class="arrow"><i class="fas fa-chevron-right"></i></span>
+                `;
+                li.appendChild(a);
+                if (item.submenu) {
+                    const ul = document.createElement('ul');
+                    ul.className = 'submenu';
+                    item.submenu.forEach(sub => {
+                        const subLi = document.createElement('li');
+                        subLi.className = 'submenu-item';
+                        const subA = document.createElement('a');
+                        subA.href = sub.url;
+                        subA.textContent = sub.title;
+                        subLi.appendChild(subA);
+                        ul.appendChild(subLi);
+                    });
+                    li.appendChild(ul);
+                    a.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        const submenu = this.nextElementSibling;
+                        submenu.classList.toggle('active');
+                        const arrow = this.querySelector('.arrow');
+                        arrow.classList.toggle('active');
+                    });
+                }
+                sidebarMenu.appendChild(li);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            generateMenu();
+
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            const userSidebar = document.getElementById('userSidebar');
+
+            document.getElementById('topbarMenuIcon').addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+                overlay.classList.toggle('active');
+            });
+
+            document.getElementById('topbarUserIcon').addEventListener('click', () => {
+                userSidebar.classList.toggle('active');
+                overlay.classList.toggle('active');
+            });
+
+            overlay.addEventListener('click', () => {
+                sidebar.classList.remove('active');
+                userSidebar.classList.remove('active');
+                overlay.classList.remove('active');
+            });
+
+            document.getElementById('fullscreenButton').addEventListener('click', function () {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen();
+                } else {
+                    document.exitFullscreen();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

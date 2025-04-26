@@ -3,12 +3,13 @@
     --primary-light: #534bae;
     --primary-dark: #000051;
     --text-light: #a0e8fa;
-    --text-dark: #212121;
+    --text-dark: #39495d;
     --accent-color: #ff5722;
     --hover-color: #3949ab;
     --sidebar-width: 250px;
     --transition-speed: 0.3s;
     --sidebar-collapsed-width: 0px;
+    --topbar-height: 50px;
 }
 
 * {
@@ -22,12 +23,6 @@ body {
     display: flex;
     min-height: 100vh;
     overflow-x: hidden;
-}
-
-/*estilos para el usuario*/
-
-.userOn{
-    color: fuchsia;
 }
 
 /* Sidebar Styles */
@@ -44,13 +39,14 @@ body {
     z-index: 1000;
 }
 
-.sidebar-header {
-    padding: 20px;
+.sidebar-header{
+    display: flex;
+    padding: 10px;
     background-color: var(--primary-dark);
     text-align: center;
 }
 
-.menu-icon-company {
+.menu-icon-company  {
     background: none;
     border: none;
     color: var(--text-light);
@@ -59,12 +55,28 @@ body {
     cursor: pointer;
     margin-bottom: 15px;
     padding: 10px;
-    width: 100%;
+    width: 20%;
+    border-radius: 5px;
+    transition: background-color var(--transition-speed);
+}
+
+.company-name{
+    background: none;
+    border: none;
+    color: var(--text-light);
+    font-size: 1rem;
+    cursor: pointer;
+    margin-bottom: 15px;
+
+    width: 65%;
     border-radius: 5px;
     transition: background-color var(--transition-speed);
 }
 
 .menu-icon-company:hover {
+    background-color: var(--hover-color);
+}
+.company-name:hover {
     background-color: var(--hover-color);
 }
 
@@ -113,6 +125,14 @@ body {
     background-color: var(--hover-color);
 }
 
+.sidebar-header>a{
+    padding-top: 8px;
+
+    text-decoration: none;
+    padding: none;
+    margin: none;
+}
+
 .menu-item i,
 .menu-item .icon {
     margin-right: 15px;
@@ -122,20 +142,24 @@ body {
 
 .submenu {
     list-style: none;
-    background-color: rgba(0, 0, 0, 0.1);
+    padding-left: 5px;
+    border-left: solid 5px #000051;
+    background-color: var(--text-dark);
     max-height: 0;
     overflow: hidden;
     transition: max-height var(--transition-speed);
 }
 
 .submenu.active {
-    max-height: 500px;
+    border-left: solid 5px #000051;
+    padding-left: 5px;
+    max-height: 700px;
     /* Altura suficiente para mostrar todos los submenús */
 }
 
 .submenu-item a {
     display: block;
-    padding: 12px 20px 12px 55px;
+    padding: 12px 20px 12px 5px;
     color: var(--text-light);
     text-decoration: none;
     transition: background-color var(--transition-speed);
@@ -163,20 +187,69 @@ body {
     background-color: #a0e8fa;
 }
 
-/* Mobile Menu Button */
-.mobile-menu-btn {
+/* Mobile Topbar */
+.mobile-topbar {
     display: none;
     position: fixed;
-    top: 15px;
-    left: 15px;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--topbar-height);
     background-color: var(--primary-color);
     color: var(--text-light);
+    align-items: center;
+    justify-content: space-between;
+    z-index: 1001;
+    padding: 0 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.topbar-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.topbar-section.left {
+    flex: 0 0 50px;
+}
+
+.topbar-section.center {
+    flex: 1;
+    font-weight: bold;
+    font-size: 1.1rem;
+    text-align: center;
+}
+
+.topbar-section.right {
+    flex: 0 0 50px;
+}
+
+.menu-icon, .user-icon {
+    background: none;
     border: none;
-    border-radius: 5px;
-    padding: 10px;
+    color: var(--text-light);
     font-size: 1.2rem;
     cursor: pointer;
-    z-index: 999;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color var(--transition-speed);
+}
+
+.menu-icon:hover, .user-icon:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.user-avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+    cursor: pointer;
 }
 
 /* Overlay for mobile */
@@ -191,26 +264,111 @@ body {
     z-index: 999;
 }
 
+/* User menu sidebar */
+.user-sidebar {
+    width: var(--sidebar-width);
+    background-color: var(--primary-color);
+    color: var(--text-light);
+    height: 100vh;
+    position: fixed;
+    right: 0;
+    top: 0;
+    overflow-y: auto;
+    transition: transform var(--transition-speed);
+    z-index: 1000;
+    transform: translateX(100%);
+}
+
+.user-sidebar.active {
+    transform: translateX(0);
+}
+
+.user-sidebar-header {
+    padding: 55px;
+    background-color: var(--primary-dark);
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.user-sidebar-header i {
+    font-size: 2rem;
+    margin-right: 15px;
+}
+
+.user-menu {
+    list-style: none;
+    padding: 0;
+}
+
+.user-menu-item {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.user-menu-item a {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    color: var(--text-light);
+    text-decoration: none;
+    transition: background-color var(--transition-speed);
+}
+
+.user-menu-item a:hover {
+    background-color: var(--hover-color);
+}
+
+.user-menu-item i {
+    margin-right: 15px;
+    width: 20px;
+    text-align: center;
+}
+
 /* Media Queries */
 @media (max-width: 768px) {
     .sidebar {
         transform: translateX(-100%);
+        top: var(--topbar-height);
+        height: calc(100vh - var(--topbar-height));
     }
 
     .sidebar.active {
         transform: translateX(0);
     }
 
-    .main-content {
-        margin-left: 0;
-        padding-top: 60px;
+    .sidebar-header, .user-info {
+        display: none;
     }
 
-    .mobile-menu-btn {
-        display: block;
+    .main-content {
+        margin-left: 0;
+        padding-top: calc(var(--topbar-height) + 20px);
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .mobile-topbar {
+        display: flex;
     }
 
     .overlay.active {
         display: block;
     }
+}
+
+@media (min-width: 769px) {
+    .user-sidebar {
+        display: none;
+    }
+}
+
+.rolOn{
+    font-style:italic;
+    color: chartreuse;
+    font-size:x-small;
+}
+
+.userOn{
+    color:magenta;
+    
 }

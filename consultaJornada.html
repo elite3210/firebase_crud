@@ -23,34 +23,82 @@
 </head>
 
 <body>
-  <!-- Mobile Menu Button -->
-  <button class="mobile-menu-btn" id="mobileMenuBtn">
-    <i class="fas fa-bars"></i>
-</button>
-
-<!-- Overlay for mobile -->
-<div class="overlay" id="overlay"></div>
-
-<!-- Sidebar -->
-<div class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-        <button id="fullscreenButton" class="menu-icon-company">
-            <i class="fas fa-building"></i> Heinz Sport
-        </button>
+  <!-- Mobile Topbar -->
+  <div class="mobile-topbar">
+    <div class="topbar-section left">
+      <button class="menu-icon" id="mobileMenuBtn">
+        <i class="fas fa-bars"></i>
+      </button>
     </div>
-    
-    <div class="user-info">
+    <div class="topbar-section center">
+      Heinz Sport
+    </div>
+    <div class="topbar-section right">
+      <button class="user-icon" id="userMenuBtn">
         <i class="fas fa-user-circle"></i>
-        <div>
-            <div  id="btn-userName" class="user-name">Juan Pérez</div>
-            <div class="user-role">Administrador</div>
-        </div>
+      </button>
     </div>
-    
+  </div>
+
+  <!-- Overlay for mobile -->
+  <div class="overlay" id="overlay"></div>
+
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <!-- En PC se muestra, en móvil se oculta -->
+    <div class="sidebar-header">
+      <img class="menu-icon-company" src="./imagenes/logo_skieks_gris.svg"></img>
+      <a href="./index.html">
+        <span class="company-name">Heinz Sport SAC</span>
+      </a>
+      <button id="fullscreenimg" class="menu-icon-company"></button>
+    </div>
+
+    <!-- En PC se muestra, en móvil se oculta -->
+    <div class="user-info">
+      <i class="fas fa-user-circle"></i>
+      <div>
+        <div id="btn-userName" class="user-name">Juan Pérez</div>
+        <div id="userRol" class="user-role">Administrador</div>
+      </div>
+    </div>
+
     <ul class="sidebar-menu" id="sidebarMenu">
-        <!-- Los elementos del menú se generarán con JavaScript -->
+      <!-- Los elementos del menú se generarán con JavaScript -->
     </ul>
-</div>
+  </div>
+
+  <!-- User Sidebar (solo en móvil) -->
+  <div class="user-sidebar" id="userSidebar">
+    <div class="user-sidebar-header">
+      <i class="fas fa-user-circle"></i>
+      <div>
+        <div id="btn-userName" class="user-name">Juan Pérez</div>
+        <div id="userRol" class="user-role">Administrador</div>
+      </div>
+    </div>
+    <ul class="user-menu">
+      <li class="user-menu-item">
+        <a href="./login.html">
+          <i class="fas fa-id-card"></i>
+          <span>Mi Perfil</span>
+        </a>
+      </li>
+      <li class="user-menu-item">
+        <a href="/config/configuracion">
+          <i class="fas fa-cog"></i>
+          <span>Configuración</span>
+        </a>
+      </li>
+      <li class="user-menu-item">
+        <a href="/logout">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Cerrar Sesión</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
 
 <!-- Main Content -->
 <div class="main-content">
